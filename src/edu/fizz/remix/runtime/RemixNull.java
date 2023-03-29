@@ -1,0 +1,19 @@
+package edu.fizz.remix.runtime;
+
+public final class RemixNull implements Expression {
+
+    private static final RemixNull nullExpression = new RemixNull();
+
+    private RemixNull() {
+    }
+
+    public static RemixNull value() {
+        return nullExpression;
+    }
+
+    @Override
+    public Object evaluate(Context context) throws ReturnException {
+        return nullExpression;
+    }
+
+}

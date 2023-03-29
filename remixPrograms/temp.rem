@@ -1,0 +1,5 @@
+sum : 0
+(sum + 1) ↲
+for each (number) from (1) to (10000) do
+	sum : sum + number
+(sum) ↲

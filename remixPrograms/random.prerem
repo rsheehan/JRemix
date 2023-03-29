@@ -1,0 +1,26 @@
+
+"Random numbers"\n
+new line
+
+"The random function takes a positive integer parameter
+and returns a number from 1 to the number inclusive.
+e.g. random 4 produces numbers from 1 to 4" \n
+repeat[
+	{random 4," "}_]
+... 10 times
+new line
+
+"Random from 2 to 5"\n
+repeat[
+	{random from 2 to 5," "}_]
+... 20 times
+new line
+
+"Random from 5 to -1"\n
+repeat[
+	{random from 5 to -1," "}_]
+... 20 times
+new line
+
+{"length of list: ",length of {2, 3, 5}}\n
+{"length of range: ",length of (5 to 2)}\n

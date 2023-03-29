@@ -1,0 +1,33 @@
+
+================
+Insertion Sort.
+================
+
+list : apply [random 100] 10 times
+
+{"unsorted: ",list} \n
+insertion sort (list)
+{"  sorted: ",list} \n
+
+insertion sort (list) : [[
+	for each (position) from 2 to (length of (list)) [[
+		for each (this) from (position) to 2 [[
+			swap if element to the left is greater than (this) in (list)]
+		]]
+	]]
+]
+
+swap if element to the left is greater than (this) in (list) :: [ [; N.B. transparent short circuit
+	left : this - 1
+	if (list{left} > list{this}) [[
+		swap (list) element (this) with (left)]
+	] otherwise [[
+		return]
+	]]
+]
+
+swap (list) element (this) with (that) : [[
+	temp : list{this}
+	list{this} : list{that}
+	list{that} : temp]
+]

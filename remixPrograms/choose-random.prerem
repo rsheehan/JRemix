@@ -1,0 +1,15 @@
+
+- A remix version of Scratch's random pick.
+
+choose a random value from (list) :[
+	list{random (length of (list))}]
+
+ten random values from {1, 2, 4, 8, 16, 32, 64, 128, 256}
+ten random values from (10 to 20)
+
+ten random values from (list) :[
+	{"Generating random values from ",list}↲
+	repeat[
+		(choose a random value from (list))__]
+	… 10 times
+	new line]

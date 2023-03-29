@@ -1,0 +1,30 @@
+
+(number) with Δ (delta) :
+	create
+		number : number
+		delta : delta
+
+		getter
+			number
+
+		(other) equals (me) :
+			(absolute (number - other's number)) < delta
+
+		(me) as string :
+			join {number, " with Δ ", delta}
+
+a : 1.0 with Δ 0.5
+b : 0.99 with Δ 0.01
+
+{"a: ", (a) as string} ↲
+{"b: ", (b) as string} ↲
+
+if ((b) equals (a))
+	"b is equal to a" ↲
+… otherwise
+	"b is not equal to a" ↲
+
+if ((a) equals (b))
+	"a is equal to b" ↲
+… otherwise
+	"a is not equal to b" ↲

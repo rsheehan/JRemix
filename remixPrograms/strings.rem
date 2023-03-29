@@ -1,0 +1,12 @@
+sentence : "the quick brown fox jumps over the lazy dog"
+
+(sentence) ↲
+
+for each (number) from (1) to (length of (sentence)) do
+	((number) in (sentence)) __
+new line
+
+for each (character) in (sentence) do
+	(character) __
+	if (character = "z")
+		return

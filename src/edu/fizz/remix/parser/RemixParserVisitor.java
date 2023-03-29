@@ -1,0 +1,540 @@
+// Generated from java-escape by ANTLR 4.11.1
+package edu.fizz.remix.parser;
+import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+
+/**
+ * This interface defines a complete generic visitor for a parse tree produced
+ * by {@link RemixParser}.
+ *
+ * @param <T> The return type of the visit operation. Use {@link Void} for
+ * operations with no return type.
+ */
+public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#program}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProgram(RemixParser.ProgramContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#functionDefinition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionDefinition(RemixParser.FunctionDefinitionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#functionComment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionComment(RemixParser.FunctionCommentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#functionSignature}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionSignature(RemixParser.FunctionSignatureContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code sigWord}
+	 * labeled alternative in {@link RemixParser#sigPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSigWord(RemixParser.SigWordContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code sigParam}
+	 * labeled alternative in {@link RemixParser#sigPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSigParam(RemixParser.SigParamContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code sigBlock}
+	 * labeled alternative in {@link RemixParser#sigPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSigBlock(RemixParser.SigBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#createObject}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCreateObject(RemixParser.CreateObjectContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#object}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObject(RemixParser.ObjectContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#field}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitField(RemixParser.FieldContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#getterSetter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGetterSetter(RemixParser.GetterSetterContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#getter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGetter(RemixParser.GetterContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#setter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSetter(RemixParser.SetterContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#fieldId}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFieldId(RemixParser.FieldIdContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#methodDefinition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethodDefinition(RemixParser.MethodDefinitionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#methodSignature}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethodSignature(RemixParser.MethodSignatureContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code methSigWord}
+	 * labeled alternative in {@link RemixParser#methodSigPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethSigWord(RemixParser.MethSigWordContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code methSigParam}
+	 * labeled alternative in {@link RemixParser#methodSigPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethSigParam(RemixParser.MethSigParamContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code methSigSelf}
+	 * labeled alternative in {@link RemixParser#methodSigPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethSigSelf(RemixParser.MethSigSelfContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code methSigBlock}
+	 * labeled alternative in {@link RemixParser#methodSigPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethSigBlock(RemixParser.MethSigBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#blockOfStatements}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlockOfStatements(RemixParser.BlockOfStatementsContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code assStatement}
+	 * labeled alternative in {@link RemixParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssStatement(RemixParser.AssStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code expr}
+	 * labeled alternative in {@link RemixParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpr(RemixParser.ExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code blank}
+	 * labeled alternative in {@link RemixParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlank(RemixParser.BlankContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code redo}
+	 * labeled alternative in {@link RemixParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRedo(RemixParser.RedoContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code return}
+	 * labeled alternative in {@link RemixParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReturn(RemixParser.ReturnContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#endOfStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEndOfStatement(RemixParser.EndOfStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code setVariable}
+	 * labeled alternative in {@link RemixParser#assignmentStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSetVariable(RemixParser.SetVariableContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code setListElement}
+	 * labeled alternative in {@link RemixParser#assignmentStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSetListElement(RemixParser.SetListElementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprBoolean}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprBoolean(RemixParser.ExprBooleanContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprNotEql}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprNotEql(RemixParser.ExprNotEqlContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprVar}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprVar(RemixParser.ExprVarContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprNumber}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprNumber(RemixParser.ExprNumberContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprGreatEql}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprGreatEql(RemixParser.ExprGreatEqlContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprListElement}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprListElement(RemixParser.ExprListElementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprConcat}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprConcat(RemixParser.ExprConcatContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprAdd}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprAdd(RemixParser.ExprAddContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprMap}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprMap(RemixParser.ExprMapContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprLess}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprLess(RemixParser.ExprLessContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprDiv}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprDiv(RemixParser.ExprDivContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprObject}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprObject(RemixParser.ExprObjectContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprLessEql}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprLessEql(RemixParser.ExprLessEqlContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprEqual}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprEqual(RemixParser.ExprEqualContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprParen}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprParen(RemixParser.ExprParenContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprSub}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprSub(RemixParser.ExprSubContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprMul}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprMul(RemixParser.ExprMulContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprString}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprString(RemixParser.ExprStringContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprMod}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprMod(RemixParser.ExprModContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprList}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprList(RemixParser.ExprListContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprGetterMethod}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprGetterMethod(RemixParser.ExprGetterMethodContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprGreater}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprGreater(RemixParser.ExprGreaterContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprBlock}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprBlock(RemixParser.ExprBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprFncCall}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprFncCall(RemixParser.ExprFncCallContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprSetterMethod}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprSetterMethod(RemixParser.ExprSetterMethodContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#getterMethodCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGetterMethodCall(RemixParser.GetterMethodCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#setterMethodCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSetterMethodCall(RemixParser.SetterMethodCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#listElement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitListElement(RemixParser.ListElementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#listPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitListPart(RemixParser.ListPartContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#functionCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCall(RemixParser.FunctionCallContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code callWord}
+	 * labeled alternative in {@link RemixParser#callPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallWord(RemixParser.CallWordContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code callParam}
+	 * labeled alternative in {@link RemixParser#callPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallParam(RemixParser.CallParamContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code callSelf}
+	 * labeled alternative in {@link RemixParser#callPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallSelf(RemixParser.CallSelfContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code callNumber}
+	 * labeled alternative in {@link RemixParser#callPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallNumber(RemixParser.CallNumberContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code callBoolean}
+	 * labeled alternative in {@link RemixParser#callPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallBoolean(RemixParser.CallBooleanContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code callString}
+	 * labeled alternative in {@link RemixParser#callPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallString(RemixParser.CallStringContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code callBlock}
+	 * labeled alternative in {@link RemixParser#callPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallBlock(RemixParser.CallBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code callList}
+	 * labeled alternative in {@link RemixParser#callPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallList(RemixParser.CallListContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code callMap}
+	 * labeled alternative in {@link RemixParser#callPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallMap(RemixParser.CallMapContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#list}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitList(RemixParser.ListContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#separator}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSeparator(RemixParser.SeparatorContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code commaList}
+	 * labeled alternative in {@link RemixParser#listContents}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCommaList(RemixParser.CommaListContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code blockList}
+	 * labeled alternative in {@link RemixParser#listContents}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlockList(RemixParser.BlockListContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code emptyList}
+	 * labeled alternative in {@link RemixParser#listContents}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEmptyList(RemixParser.EmptyListContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#map}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMap(RemixParser.MapContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code commaMap}
+	 * labeled alternative in {@link RemixParser#mapContents}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCommaMap(RemixParser.CommaMapContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code blockMap}
+	 * labeled alternative in {@link RemixParser#mapContents}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlockMap(RemixParser.BlockMapContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#keyValue}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitKeyValue(RemixParser.KeyValueContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#key}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitKey(RemixParser.KeyContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#value}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitValue(RemixParser.ValueContext ctx);
+}

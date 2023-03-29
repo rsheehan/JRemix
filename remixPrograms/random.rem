@@ -1,0 +1,25 @@
+"Random numbers" ↲
+new line
+
+"The random function takes a positive integer parameter
+and returns a number from 1 to the number inclusive.
+e.g. random 4 produces numbers from 1 to 4" ↲
+new line
+
+repeat
+	(random 4) __
+… 10 times
+new line
+
+"Random from 2 to 5" ↲
+repeat
+	(random from 2 to 5) __
+… 20 times
+new line
+
+"Random from 5 to -1" ↲
+repeat
+	(random from 5 to -1) __
+… 20 times
+new line
+

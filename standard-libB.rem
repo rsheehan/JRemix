@@ -1,0 +1,189 @@
+
+	-====================-
+==============================
+ The Remix standard library
+ This version has explicit blocks.
+==============================
+	-====================-
+
+- Print a new line character.
+new line : [
+	print "\n"
+]
+
+- Shortcut print call.
+(value) _ : [
+	print (value)
+]
+
+- Print a "value" followed by a space.
+(value) __ : [
+	print {value, " "}
+]
+
+- Print a "value" followed by a new line.
+/print (value) ↲/\n : [
+	print (value)
+	new line
+]
+
+==============================
+ Boolean functions
+==============================
+
+- Negate the "value".
+not (value): [
+	if (value) [
+		return false
+	]
+	true
+]
+
+- The boolean "and" operation.
+(valueA) and (valueB) : [
+	if (not (valueA)) [
+		return false
+	]
+	if (not (valueB)) [
+		return false
+	]
+	true
+]
+
+- The boolean "or" operation.
+(valueA) or (valueB) : [
+	if (valueA) [
+		return true
+	]
+	if (valueB) [
+		return true
+	]
+	false
+]
+
+==============================
+ Looping functions
+==============================
+
+- Run "block" for each item in the "list".
+- "block" will usually refer to the variable passed as "#item".
+- Return either the last statement result or whatever is returned from "block".
+for /each (#item) in (list)(block) : [
+	list_pos : start (list)
+	do [
+		if (end (list_pos)) [
+			return last
+		]
+		#item : next (list_pos)
+		- A return in the (block) following breaks out of the loop, with its result.
+		last : do (block)
+		redo
+	]
+]
+
+- A for loop from "start" to "finish" value.
+for /each (#item) from (start) to (finish) (block) : [
+	for each (#item) in ((start) to (finish)) (block)
+]
+
+- Repeat the "block" for ever.
+repeat (block) forever: [
+	do (block)
+	redo
+]
+
+- Repeat the "block" a definite number of times.
+repeat (block) (count) times : [
+	if (count ≤ 0) [
+		return last
+	]
+	last : do (block)
+	count : count - 1
+	redo
+]
+
+- Repeat a "block" until some "condition" is true.
+repeat (block) until (condition) : [
+	last : do (block)
+	if (condition) [
+		return last
+	]
+	redo
+]
+
+- While a "condition" is true keep doing "block".
+while (condition) do (block) : [
+	if (not (condition)) [
+		return last
+	]
+	last : do (block)
+	redo
+]
+
+==============================
+ List create functions
+==============================
+
+- Filter "list" using "condition-block" on each "#item".
+filter (list) by (#item) where (condition_block) : [
+	newlist : {}
+	for each (#item) in (list) [
+		if (condition_block) [
+			append (#item) to (newlist)
+		]
+	]
+	new-list
+]
+
+- Collect items from "list" until "condition" is true.
+keep (#item) from (list) until (condition_block) : [
+	newlist : {}
+	for each (#item) in (list) [
+		if (condition_block) [
+			return
+		]
+		append (#item) to (newlist)
+	]
+	newlist
+]
+
+- Create a new list by applying "block" to each element of "list".
+- Uses the variable name passed as #item.
+apply (block) to each (#item) from (list) : [
+	result : {}
+	for each (#item) in (list) [
+		append (do (block)) to (result)
+	]
+	result
+]
+
+- Create a new list by applying "block" "n" times.
+apply (block) (n) times : [
+	result : {}
+	repeat [
+		append (do (block)) to (result)
+	] (n) times
+	result
+]
+
+==============================
+ Numeric functions
+==============================
+
+absolute (number) : [
+	if (number < 0) [
+		return -1 × number
+	]
+	number
+]
+
+(number) is divisible by (div) : [
+	return number % div = 0
+]
+
+random from (start) to (finish) : [
+	if (start < finish) [
+		return random (1 + finish - start) + start - 1
+	]
+	random (1 + start - finish) + finish - 1
+]

@@ -1,0 +1,33 @@
+=================
+Calculate primes.
+=================
+
+primes : {2}
+
+(first in (primes)) __
+repeat
+	biggest-prime : last in (primes)
+	start : biggest-prime + 1
+	finish : (biggest-prime × biggest-prime) + 1
+
+	more-primes : filter and show (x) from ((start) to (finish)) where
+		(x) is not divisible by any number in (primes)
+
+	primes : join (primes) and (more-primes)
+… 4 times
+
+-----------
+
+filter and show (#item) from (list) where [condition_block] :
+	new-list : {}
+	for each (#item) in (list) do
+		if (condition_block)
+			(#item) __
+			append (#item) to (new-list)
+	new-list
+
+(x) is not divisible by any number in (list) :
+	for each (number) in (list) do
+		if ((x) is divisible by (number))
+			return false
+		true
