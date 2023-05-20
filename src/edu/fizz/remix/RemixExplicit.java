@@ -3,7 +3,6 @@ package edu.fizz.remix;
 import edu.fizz.remix.parser.RemixLexer;
 import edu.fizz.remix.parser.RemixParser;
 import edu.fizz.remix.runtime.Block;
-import edu.fizz.remix.runtime.Runtime;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
