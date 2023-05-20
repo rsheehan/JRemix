@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from /Users/rshe005/Library/CloudStorage/OneDrive-TheUniversityofAuckland/MyDrive/IdeaProjects/remix/src/RemixParser.g4 by ANTLR 4.12.0
 package edu.fizz.remix.parser;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class RemixParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.12.0", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -101,7 +101,7 @@ public class RemixParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "java-escape"; }
+	public String getGrammarFileName() { return "RemixParser.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -153,7 +153,7 @@ public class RemixParser extends Parser {
 			setState(72);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 416343439444L) != 0) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 416343439444L) != 0)) {
 				{
 				setState(70);
 				_errHandler.sync(this);
@@ -350,7 +350,7 @@ public class RemixParser extends Parser {
 				setState(96); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 137438953492L) != 0 );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 137438953492L) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -623,7 +623,7 @@ public class RemixParser extends Parser {
 			setState(136);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 137438953492L) != 0) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 137438953492L) != 0)) {
 				{
 				{
 				setState(133);
@@ -1210,7 +1210,7 @@ public class RemixParser extends Parser {
 				setState(244); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 137438953492L) != 0 );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 137438953492L) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -1380,7 +1380,7 @@ public class RemixParser extends Parser {
 			setState(262);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 416343431252L) != 0) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 416343431252L) != 0)) {
 				{
 				{
 				setState(259);
@@ -3087,7 +3087,7 @@ public class RemixParser extends Parser {
 				setState(433);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if (((_la) & ~0x3f) == 0 && ((1L << _la) & 414732812372L) != 0) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 414732812372L) != 0)) {
 					{
 					setState(425);
 					expression(0);
@@ -3135,7 +3135,7 @@ public class RemixParser extends Parser {
 				setState(459);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				while (((_la) & ~0x3f) == 0 && ((1L << _la) & 414732812372L) != 0) {
+				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 414732812372L) != 0)) {
 					{
 					{
 					setState(442);

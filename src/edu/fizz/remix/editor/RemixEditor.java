@@ -8,24 +8,34 @@ import edu.fizz.remix.runtime.Runtime;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.*;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 public class RemixEditor extends JFrame {
 
     private final JTextPane editorTextPane;
-//    protected final JTextArea documentPane;
+    private Point caretPoint; // the point of the top left of the caret within the document pane
+    // this is always set when a caret update occurs
     private final JSplitPane splitPane;
     private static RemixStyledDocument doc;
     protected final JTextArea remixOutput;
-    protected final JTextArea docTextArea;
+    private final PopupFactory popupFactory = new PopupFactory();
+    private Popup docPopup;
+    private final JPanel docPanel = new JPanel();
+    protected final JTextArea docArea;
+
     private final HashMap<Object, Action> actions;
 
     private RemixSwingWorker remixRunner;
@@ -36,11 +46,27 @@ public class RemixEditor extends JFrame {
     private RedoAction redoAction;
     private final UndoManager undo = new UndoManager();
 
+    class CatchKeys extends KeyAdapter {
+        @Override
+        public void keyTyped(KeyEvent e) {
+            switch (e.getKeyChar()) {
+                case '\t':
+                    break;
+                default :
+                    if (docPopup != null)
+                        docPopup.hide();
+            }
+            super.keyTyped(e);
+        }
+    }
+
     public RemixEditor() {
         super("Remix");
         //Create the text pane and configure it.
         editorTextPane = new JTextPane();
+        editorTextPane.addKeyListener(new CatchKeys());
         editorTextPane.setMargin(new Insets(5,10,5,10));
+
         // the base font
         editorTextPane.setFont(new Font("monospaced", Font.PLAIN, 13)); // previously "Monaco" on Mac
         doc = new RemixStyledDocument(editorTextPane);
@@ -60,14 +86,6 @@ public class RemixEditor extends JFrame {
 
         JScrollPane scrollPane = new JScrollPane(editorTextPane);
         scrollPane.setPreferredSize(new Dimension(800, 800));
-//        documentPane = new JTextArea();
-//        documentPane.setEditable(false);
-//        documentPane.setLineWrap(true);
-//        documentPane.setWrapStyleWord(true);
-
-        // A split pane for the code and documentation
-//        JSplitPane codeDocSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, documentPane);
-//        codeDocSplitPane.setOneTouchExpandable(true);
 
         //Create the text area for the output and configure it.
         remixOutput = new JTextArea();
@@ -86,22 +104,16 @@ public class RemixEditor extends JFrame {
         CaretListenerLabel caretListenerLabel = new CaretListenerLabel("text position: 0, style: default");
         statusPane.add(caretListenerLabel);
 
-        //Create the text area for the documentation.
-        docTextArea = new JTextArea("Shift-TAB shows function completions.");
-        docTextArea.setPreferredSize(new Dimension(300, 800));
-        docTextArea.setEditable(false);
-        docTextArea.setLineWrap(true);
-        docTextArea.setWrapStyleWord(true);
-
         //Add the components.
         getContentPane().add(splitPane, BorderLayout.CENTER);
-        getContentPane().add(docTextArea, BorderLayout.EAST);
         getContentPane().add(statusPane, BorderLayout.PAGE_END);
 
         //Set up the menu bar.
         actions = createActionTable(editorTextPane);
-        JMenu editMenu = createEditMenu();
         JMenuBar mb = new JMenuBar();
+        JMenu fileMenu = createFileMenu();
+        mb.add(fileMenu);
+        JMenu editMenu = createEditMenu();
         mb.add(editMenu);
         setJMenuBar(mb);
         JMenu controlMenu = createControlMenu();
@@ -118,7 +130,10 @@ public class RemixEditor extends JFrame {
         //Start watching for undoable edits and caret changes.
         doc.addUndoableEditListener(new MyUndoableEditListener());
         editorTextPane.addCaretListener(caretListenerLabel);
-//        doc.addDocumentListener(new MyDocumentListener());
+
+        docArea = new JTextArea("Document goes here.");
+        docArea.setForeground(Color.red);
+        docPanel.add(docArea);
     }
 
     private void addKeystrokeActions() {
@@ -128,7 +143,14 @@ public class RemixEditor extends JFrame {
             public void actionPerformed(ActionEvent e) {
             try {
                 String docText = doc.completionHandling(editorTextPane.getCaretPosition());
-                docTextArea.setText(docText);
+                if (docPopup != null)
+                    docPopup.hide();
+                if (docText != null && docText.length() > 0) {
+                    docArea.setText(docText);
+                    Point location = getPopupScreenLocation();
+                    docPopup = popupFactory.getPopup(editorTextPane, docPanel, location.x, location.y);
+                    docPopup.show();
+                }
                 RemixEdLexer.fullLex(); // overkill, needs to change
             } catch (BadLocationException ex) {
                 throw new RuntimeException(ex);
@@ -137,22 +159,33 @@ public class RemixEditor extends JFrame {
         });
     }
 
+    private Point getPopupScreenLocation() {
+        Point editorLocation = editorTextPane.getLocationOnScreen();
+        return new Point(caretPoint.x + editorLocation.x, caretPoint.y + editorLocation.y + 16);
+    }
+
     //This listens for and reports caret movements.
-    protected static class CaretListenerLabel extends JLabel implements CaretListener {
+    protected class CaretListenerLabel extends JLabel implements CaretListener {
         public CaretListenerLabel(String label) {
             super(label);
         }
 
         //Might not be invoked from the event dispatch thread.
         public void caretUpdate(CaretEvent event) {
-            int dot = event.getDot();
-            displayPositionInfo(dot);
+            int mark = event.getMark();
+            displayPositionInfo(mark);
+            Rectangle2D rect;
+            try {
+                rect = ((JTextComponent)event.getSource()).modelToView2D(mark);
+            } catch (BadLocationException e) {
+                throw new RuntimeException(e);
+            }
+            caretPoint = new Point((int)rect.getX(), (int)rect.getY());
         }
 
-        protected void displayPositionInfo(final int dot) {
-            // if dot and mark are different then there is a selection
+        protected void displayPositionInfo(final int mark) {
             SwingUtilities.invokeLater(() ->
-                    setText("text position: " + dot + ", style: " + RemixEdLexer.getStyleName(dot)));
+                    setText("text position: " + mark + ", style: " + RemixEdLexer.getStyleName(mark)));
         }
     }
 
@@ -235,6 +268,16 @@ public class RemixEditor extends JFrame {
         inputMap.put(key, menuItem.getAction());
     }
 
+    //Create the file menu.
+    protected JMenu createFileMenu() {
+        JMenu menu = new JMenu("File");
+        OpenFileAction openAction = new OpenFileAction();
+        menu.add(openAction);
+        SaveFileAction saveAction = new SaveFileAction();
+        menu.add(saveAction);
+        return menu;
+    }
+
     //Create the edit menu.
     protected JMenu createEditMenu() {
         JMenu menu = new JMenu("Edit");
@@ -285,11 +328,54 @@ public class RemixEditor extends JFrame {
         for (Action a : actionsArray) {
             actions.put(a.getValue(Action.NAME), a);
         }
-	    return actions;
+        return actions;
     }
 
     private Action getActionByName(String name) {
         return actions.get(name);
+    }
+
+    class OpenFileAction extends AbstractAction {
+        public OpenFileAction() {
+            super("Open…");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            JFileChooser chooser = new JFileChooser("remixPrograms");
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "Remix programs", "rem");
+            chooser.setFileFilter(filter);
+            int returnVal = chooser.showOpenDialog(editorTextPane);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                try {
+                    doc.remove(0, doc.getLength());
+                } catch (BadLocationException e) {
+                    throw new RuntimeException(e);
+                }
+                try {
+                    File remFile = chooser.getSelectedFile();
+                    Scanner myReader = new Scanner(remFile);
+                    while (myReader.hasNextLine()) {
+                        String line = myReader.nextLine();
+                        doc.insertLine(line + "\n");
+                    }
+                    myReader.close();
+                } catch (FileNotFoundException | BadLocationException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    class SaveFileAction extends AbstractAction {
+        public SaveFileAction() {
+            super("Save");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+        }
     }
 
     class UndoAction extends AbstractAction {

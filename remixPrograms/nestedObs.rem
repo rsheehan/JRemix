@@ -1,0 +1,27 @@
+add three to (value) :
+	caller : create
+		value : value
+
+		add one to value:
+			inc(value)
+
+		exec (me) :
+			{"value in first exec: ", value}↲
+			caller : create
+				value : value
+				add two to value:
+					value + 2
+
+				exec (me) :
+					value : add two to value
+					{"value from 2: ", value}↲
+
+			exec (caller)
+			add one to value
+			{"value from exec: ", value}↲
+
+	exec (caller)
+
+value : 4
+add three to (value)
+{"value: ", value}↲

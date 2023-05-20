@@ -23,14 +23,14 @@ public class CompletionTester {
             i = Math.abs(i) - 1;
         }
         ArrayList<String> completions = new ArrayList<>();
-        while (i >= 0 && i < Runtime.originalFunctionList.size()) {
-            String completion = Runtime.originalFunctionList.get(i);
-            if (completion.startsWith(searchWord)) {
-                completions.add(Runtime.completionTable.get(completion));
-            } else
-                break;
-            i++;
-        }
+//        while (i >= 0 && i < Runtime.originalFunctionList.size()) {
+//            String completion = Runtime.originalFunctionList.get(i);
+//            if (completion.startsWith(searchWord)) {
+//                completions.add(Runtime.completionTable.get(completion));
+//            } else
+//                break;
+//            i++;
+//        }
         System.out.println(completions);
     }
 }

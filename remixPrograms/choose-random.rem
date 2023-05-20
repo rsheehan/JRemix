@@ -11,6 +11,6 @@ ten random values from (list) :
 	{"Generating random values from ", (list) as string} ↲
 
 	repeat
-		(choose a random value from (list)) __
+		(choose a random value from (list)) _ _
 	… 10 times
 	new line

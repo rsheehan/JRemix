@@ -1,4 +1,4 @@
-my-list : apply [random 100] (80) times
+my-list : apply [random 100] 80 times
 (my-list) as string ↲
 
 sort (my-list) from 1 to (length of (my-list))
@@ -23,11 +23,9 @@ merge (list) from (start) to (middle) to (finish) :
 	- while values on both sides
 	while [(left ≤ middle) and (right ≤ finish)] do
 		if (list{left} ≤ list{right})
-			append (list{left}) to (working-list)
-			inc (left)
+			append (list{(left) inc}) to (working-list)
 		… otherwise
-			append (list{right}) to (working-list)
-			inc (right)
+			append (list{(right) inc}) to (working-list)
 	- remaining values on the left
 	if (left ≤ middle)
 		for each (item) in (list) from position (left) to (middle) do

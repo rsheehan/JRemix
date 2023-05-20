@@ -17,20 +17,20 @@ new line :
 	print "\n"
 
 =-
-Shortcut print call.
+Print the "value".
 =-
 (value) _ :
 	print (value)
 
 =-
-Print a "value" followed by a space.
+Print the "value" followed by a space.
 =-
-(value) __ :
+(value) _ _ :
 	print (value)
 	print " "
 
 =-
-Print a "value" followed by a new line.
+Print the "value" followed by a new line.
 =-
 /print (value) ↲/\n :
 	print (value)
@@ -74,8 +74,8 @@ The boolean "or" operation.
 
 =-
 Run "block" for each "item" in the "list".
-"block" will usually refer to the variable passed as "item".
-Return either the last statement result or whatever is returned from "block".
+"block" will usually use the variable passed as "item".
+Return either the last statement value or whatever is returned from "block".
 =-
 for each (#item) in (list) do [block] :
 	list-pos : start (list)
@@ -96,7 +96,7 @@ for each (#number) from (start) to (finish) do [block] :
 =-
 Run "block" for each "item" in the "list" at all positions from "start" to "finish".
 "start" to "finish" can go backwards.
-"block" will usually refer to the variable passed as "item".
+"block" will usually use the variable passed as "item".
 =-
 for each (#item) in (list) from position (start) to (finish) do [block] :
 	for each (pos) from (start) to (finish) do
@@ -104,7 +104,7 @@ for each (#item) in (list) from position (start) to (finish) do [block] :
 		do (block)
 
 =-
-Run "block" for each "item" in the "list" keeping count in "count"
+Run "block" for each "item" in the "list" keeping count in "count".
 =-
 for each (#item) in (list) keeping (#count) do [block] :
 	#count : 0
@@ -175,7 +175,7 @@ keep (#item) from (list) until [condition] :
 
 =-
 Create a new list by applying "block" to each element of "list".
-Uses the variable name passed as #item.
+"block" will usually use the variable passed as "item".
 =-
 apply [block] to each (#item) from (list) :
 	newlist : {}
@@ -314,6 +314,21 @@ dec (#x) :
 	#x : #x - 1
 
 =-
+Increment numeric variable "x".
+Return the previous value.
+=-
+(#x) inc :
+	#x : #x + 1
+	#x - 1
+
+=-
+Decrement numeric variable "x".
+Return the previous value.
+=-
+(#x) dec :
+	#x : #x - 1
+	#x + 1
+=-
 The absolute value of "number".
 =-
 absolute (number) :
@@ -322,7 +337,7 @@ absolute (number) :
 	number
 
 =-
-Whether or not "number" is divisible by "div".
+Is "number" divisible by "div"?
 =-
 (number) is divisible by (div) :
 	return number % div = 0
@@ -357,7 +372,7 @@ distance from (a) to (b) :
 	√((δx)² + (δy)²)
 
 ==============================
- String functions
+ List string functions
 ==============================
 
 =-
@@ -395,8 +410,8 @@ Print the "list" as a string.
 =-
 Print the "list" as a string followed by a space.
 =-
-(list) as string __ :
-	((list) as string) __
+(list) as string _ _ :
+	((list) as string) _ _
 
 =-
 Print the "list" as a string followed by a new line.

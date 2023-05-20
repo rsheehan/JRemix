@@ -7,7 +7,6 @@ import java.util.*;
 
 import static java.lang.Character.isDigit;
 import static java.lang.System.err;
-import static java.lang.System.out;
 
 public class RemixEdLexer {
     private enum LexMode {

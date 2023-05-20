@@ -14,8 +14,8 @@ public class Runtime {
     private static HashMap<String, Function> originalFunctionTable;
     public static HashMap<String, Function> functionTable;
     // maps the completion name to the display name
-    public static HashMap<String, String> originalCompletionTable;
-    public static HashMap<String, String> completionTable;
+    public static HashMap<String, CompletionNamesAndDoc> originalCompletionTable;
+    public static HashMap<String, CompletionNamesAndDoc> completionTable;
     // sorted list of function completion names
     public static ArrayList<String> originalFunctionList;
     public static ArrayList<String> functionList;
@@ -104,16 +104,16 @@ public class Runtime {
     public static void buildOriginalCompletions() {
         for (String name : functionTable.keySet()) {
 //            System.out.println(name);
-            CompletionNames bothNames = completionNames(name);
+            CompletionNamesAndDoc namesAndDoc = completionNames(name);
             int uniquifier = 0;
             // for functions with same string e.g. "average of ()", "average () of ()" both
             // have string of "averageof".
-            String completionString = bothNames.completionString();
+            String completionString = namesAndDoc.completionString();
             while (originalCompletionTable.containsKey(completionString)) {
-                completionString = bothNames.completionString().concat(String.valueOf(uniquifier));
+                completionString = namesAndDoc.completionString().concat(String.valueOf(uniquifier));
                 uniquifier++;
             }
-            originalCompletionTable.put(completionString, bothNames.displayName);
+            originalCompletionTable.put(completionString, namesAndDoc);
             originalFunctionList.add(completionString);
         }
         originalFunctionList.sort(null);
@@ -132,13 +132,14 @@ public class Runtime {
 //        functionList.sort(null);
 //    }
 
-    private record CompletionNames(
+    public record CompletionNamesAndDoc(
             String displayName, // the full name with formal parameters
-            String completionString // the name with parameters and spaces removed
+            String completionString, // the name with parameters and spaces removed
+            String functionComment
     ){}
 
     // TODO: choose a method to connect the completionNames to the functionComment
-    private static CompletionNames completionNames(String internalName) {
+    private static CompletionNamesAndDoc completionNames(String internalName) {
         Function function = functionTable.get(internalName);
         StringBuilder screenName = new StringBuilder();
         StringBuilder completionName = new StringBuilder();
@@ -150,30 +151,31 @@ public class Runtime {
                 String formal = function.formalParameters.get(param);
                 if (formal.startsWith("#"))
                     formal = formal.substring(1);
-                if (function.blockParameters.get(param++))
+                if (function.blockParameters.get(param))
                     screenName.append("[").append(formal).append("]");
                 else
                     screenName.append("(").append(formal).append(")");
+                param++;
             } else {
                 screenName.append(ch);
                 completionName.append(ch);
             }
         }
-//        System.out.printf("%s: %s%n", screenName.toString(), completionName.toString());
-        return new CompletionNames(screenName.toString(), completionName.toString());
+//        System.out.printf("%s: %s, %s%n", screenName.toString(), completionName.toString(), function.functionComment);
+        return new CompletionNamesAndDoc(screenName.toString(), completionName.toString(), function.functionComment);
     }
 
     /* Initially the completions are only on the first characters.
     *  So we can use a binary search to quickly find the starting position.
     *  I could change this to a linear search so that matches anywhere
-    *  in side the function name work.
+    *  inside the function name work.
     *  Currently only works on originalCompletionTable and FunctionList. */
-    public static ArrayList<String> createCompletions(String searchWord){
+    public static ArrayList<CompletionNamesAndDoc> createCompletions(String searchWord){
         int i = Collections.binarySearch(Runtime.originalFunctionList, searchWord);
         if (i < 0) {
             i = Math.abs(i) - 1;
         }
-        ArrayList<String> completions = new ArrayList<>();
+        ArrayList<CompletionNamesAndDoc> completions = new ArrayList<>();
         while (i >= 0 && i < Runtime.originalFunctionList.size()) {
             String completion = Runtime.originalFunctionList.get(i);
             if (completion.startsWith(searchWord)) {

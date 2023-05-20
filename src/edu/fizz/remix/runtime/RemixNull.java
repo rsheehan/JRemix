@@ -4,7 +4,7 @@ public final class RemixNull implements Expression {
 
     private static final RemixNull nullExpression = new RemixNull();
 
-    private RemixNull() {
+    RemixNull() {
     }
 
     public static RemixNull value() {

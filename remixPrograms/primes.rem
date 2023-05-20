@@ -4,7 +4,7 @@ Calculate primes.
 
 primes : {2}
 
-(first in (primes)) __
+(first in (primes)) _ _
 repeat
 	biggest-prime : last in (primes)
 	start : biggest-prime + 1
@@ -22,7 +22,7 @@ filter and show (#item) from (list) where [condition_block] :
 	new-list : {}
 	for each (#item) in (list) do
 		if (condition_block)
-			(#item) __
+			(#item) _ _
 			append (#item) to (new-list)
 	new-list
 

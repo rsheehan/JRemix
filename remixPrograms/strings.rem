@@ -3,10 +3,30 @@ sentence : "the quick brown fox jumps over the lazy dog"
 (sentence) ↲
 
 for each (number) from (1) to (length of (sentence)) do
-	((number) in (sentence)) __
+	((number) in (sentence)) _ _
 new line
 
-for each (character) in (sentence) do
-	(character) __
-	if (character = "z")
-		return
+pos : start(sentence)
+character : next(pos)
+repeat
+	(character) _ _
+	character : next(pos)
+… until
+	character = "z"
+new line
+
+(string) backwards :
+	result : ""
+	for each (char-pos) from 1 to (length of (string)) do
+		result : (char-pos) in (string) ⊕ result
+	result
+
+reverse (#string) :
+	#string : (#string) backwards
+
+reverse (sentence)
+(sentence) ↲
+
+((sentence) backwards) ↲
+
+(sentence) ↲

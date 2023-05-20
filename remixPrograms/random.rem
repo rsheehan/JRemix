@@ -7,19 +7,19 @@ e.g. random 4 produces numbers from 1 to 4" ↲
 new line
 
 repeat
-	(random 4) __
+	(random 4) _ _
 … 10 times
 new line
 
 "Random from 2 to 5" ↲
 repeat
-	(random from 2 to 5) __
+	(random from 2 to 5) _ _
 … 20 times
 new line
 
 "Random from 5 to -1" ↲
 repeat
-	(random from 5 to -1) __
+	(random from 5 to -1) _ _
 … 20 times
 new line
 

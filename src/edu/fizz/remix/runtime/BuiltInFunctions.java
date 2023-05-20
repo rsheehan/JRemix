@@ -21,7 +21,12 @@ public class BuiltInFunctions {
     public static final class IncludeFunction extends Function {
 
         public IncludeFunction() {
-            super(List.of("using |"), List.of("package"), List.of(false));
+            super(List.of("using |"),
+                    List.of("package"),
+                    List.of(false),
+                    false,
+                    "Use the \"package\" library."
+            );
         }
 
         @Override
@@ -37,7 +42,10 @@ public class BuiltInFunctions {
             super(
                     List.of("quit |"),
                     List.of("message"),
-                    List.of(false));
+                    List.of(false),
+                    false,
+                    "Quit the Remix environment showing the \"message\" on the command line."
+            );
         }
 
         public Object execute(Context context) {
@@ -50,7 +58,15 @@ public class BuiltInFunctions {
 
     /** Copy function. */
     public static final class CopyFunction extends Function {
-        public CopyFunction() {super(List.of("copy |"),List.of("original"),List.of(false));}
+        public CopyFunction() {
+            super(
+                List.of("copy |"),
+                List.of("original"),
+                List.of(false),
+                false,
+                "Create a copy of \"original\"."
+            );
+        }
 
         @Override
         public Object execute(Context context) {
@@ -85,7 +101,13 @@ public class BuiltInFunctions {
     /** The "type of" function. Returns a string representing the type. */
     public static final class TypeOfFunction extends Function {
         public TypeOfFunction() {
-            super(List.of("type of |"), List.of("value"), List.of(false));
+            super(
+                    List.of("type of |"),
+                    List.of("value"),
+                    List.of(false),
+                    false,
+                    "The type of \"value\"."
+            );
         }
 
         public Object execute(Context context) {
@@ -97,7 +119,13 @@ public class BuiltInFunctions {
     /** The "is a (type)" function. */
     public static final class IsATypeFunction extends Function {
         public IsATypeFunction() {
-            super(List.of("| is a |"), List.of("value", "typeString"),List.of(false, false));
+            super(
+                    List.of("| is a |"),
+                    List.of("value", "typeString"),
+                    List.of(false, false),
+                    false,
+                    "Is \"value\" of type \"typeString\"?"
+            );
         }
 
         @Override
@@ -130,7 +158,7 @@ public class BuiltInFunctions {
                     List.of("block"),
                     List.of(true),
                     true,
-                    "Executes the block."
+                    "Execute the \"block\"."
             );
         }
 
@@ -148,7 +176,7 @@ public class BuiltInFunctions {
                     List.of("value"),
                     List.of(false),
                     false,
-                    "Print the value."
+                    "Print the \"value\"."
             );
         }
 
@@ -180,7 +208,7 @@ public class BuiltInFunctions {
                     Arrays.asList("condition", "consequence"),
                     List.of(false, true),
                     true,
-                    "If condition is true then execute the consequence block."
+                    "If \"condition\" is true then execute the \"consequence\"."
             );
         }
 
@@ -207,7 +235,7 @@ public class BuiltInFunctions {
                     Arrays.asList("condition", "consequence", "alternative"),
                     List.of(false, true, true),
                     true,
-                    "If condition is true execute consequence,\notherwise execute alternative."
+                    "If \"condition\" is true execute \"consequence\", otherwise execute \"alternative\"."
             );
         }
 
@@ -234,17 +262,17 @@ public class BuiltInFunctions {
         public StartFunction() {
             super(
                     Arrays.asList("start |", "start of |"),
-                    List.of("listMapOrString"),
+                    List.of("list"),
                     List.of(false),
                     false,
-                    "Create an iterator from listMapOrString"
+                    "Create an iterator from a list, range, map or string."
             );
         }
 
         @Override
         public Iterator<?> execute(Context context) {
             Iterator<?> iterator = null;
-            Object listMapOrString = context.retrieve("listMapOrString");
+            Object listMapOrString = context.retrieve("list");
             if (listMapOrString instanceof List)
                 iterator = ((List<?>)listMapOrString).iterator();
             else if (listMapOrString instanceof Map)
@@ -282,7 +310,7 @@ public class BuiltInFunctions {
                     List.of("position"),
                     List.of(false),
                     false,
-                    "Extract the next value from position and move on."
+                    "Extract the next value from \"position\" and move on."
             );
         }
 
@@ -302,7 +330,7 @@ public class BuiltInFunctions {
                     List.of("position"),
                     List.of(false),
                     false,
-                    "True if position iterator is at the end."
+                    "True if \"position\" iterator is at the end."
             );
         }
 
@@ -322,7 +350,8 @@ public class BuiltInFunctions {
                     Arrays.asList("start", "finish"),
                     List.of(false, false),
                     false,
-                    "Create a range from start to finish."
+                    "Create a range from \"start\" to \"finish\".\n" +
+                            "Ranges can go up or down."
             );
         }
 
@@ -334,7 +363,7 @@ public class BuiltInFunctions {
         }
     }
 
-    /** Concatenate two strings, returning a new string */
+    /** Join two values, returning a new string. */
     public static final class ConcatFunction extends Function {
 
         public ConcatFunction() {
@@ -343,12 +372,12 @@ public class BuiltInFunctions {
                     Arrays.asList("first", "second"),
                     List.of(false, false),
                     false,
-                    "Concatenate first and second as a new string."
+                    "Concatenate \"first\" and \"second\" as a string."
             );
         }
 
         @Override
-        public SimpleExpression<String> execute(Context context) {
+        public String execute(Context context) {
             Object first = context.retrieve("first");
             Object second = context.retrieve("second");
             String s1; String s2;
@@ -358,37 +387,54 @@ public class BuiltInFunctions {
                 second = second.toString();
             s1 = (String)first;
             s2 = (String)second;
-            return new SimpleExpression<>(s1 + s2);
+            return s1 + s2;
         }
     }
 
-    /** Extract a particular character from a string. returns a string. */
+    /** Extract a particular item from a sequence.
+     * A sequence is a list, range or string.  */
     public static final class ExtractFunction extends Function {
 
         public ExtractFunction() {
             super(
                     List.of("| in |"),
-                    Arrays.asList("index", "string"),
+                    Arrays.asList("index", "sequence"),
                     List.of(false, false),
                     false,
-                    "Extract a character from string at index."
+                    "Extract a character from \"sequence\" at \"index\"\n" +
+                            "A sequence is a list, range or string."
             );
         }
 
         @Override
         public Object execute(Context context) {
-            String string = (String) context.retrieve("string");
-            Long index = (Long) context.retrieve("index");
-            int i = index.intValue();
-            if (i < 1 || i > string.length()) {
-                return new SimpleExpression<>("");
+            Object object = context.retrieve("sequence");
+            int index = ((Long) context.retrieve("index")).intValue();
+            if (object instanceof ArrayList list) { // includes RangeExpressions
+                if (index < 1 || index > list.size()) {
+                    return new RemixNull();
+                } else {
+                    return list.get(index - 1);
+                }
+            } else if (object instanceof String string) {
+                if (index < 1 || index > string.length()) {
+                    return new String("");
+                } else {
+                    return String.valueOf(string.charAt(index - 1));
+                }
+            } else if (object instanceof RangeExpression range) {
+                if (index < 1 || index > range.size()) {
+                    return new RemixNull();
+                } else {
+                    return range.get(index - 1 );
+                }
             }
-            return new SimpleExpression<>(String.valueOf(string.charAt(i - 1)));
+            return new RemixNull();
         }
     }
 
     /** Append a value onto a list. */
-    // now also does strings
+    // does not do strings or ranges, maps
     public static final class AppendFunction extends Function {
 
         public AppendFunction() {
@@ -397,16 +443,16 @@ public class BuiltInFunctions {
                     Arrays.asList("value", "list"),
                     List.of(false, false),
                     false,
-                    "Append value to the end of list."
+                    "Append \"value\" to the end of \"list\"."
             );
         }
 
         @Override
         public Object execute(Context context) {
             Object value = context.retrieve("value");
-            Object listOrString = context.retrieve("list");
+//            Object listOrString = context.retrieve("list");
             @SuppressWarnings ("unchecked")
-            List<Object> list = (List<Object>)listOrString;
+            List<Object> list = (List<Object>)context.retrieve("list");
             list.add(value);
             return list;
         }
@@ -448,7 +494,7 @@ public class BuiltInFunctions {
                     List.of("max"),
                     List.of(false),
                     false,
-                    "Produce a random value from 1 to max."
+                    "Produce a random value from 1 to \"max\"."
             );
         }
 
@@ -466,7 +512,7 @@ public class BuiltInFunctions {
                     List.of("number"),
                     List.of(false),
                     false,
-                    "The square root of number."
+                    "The square root of \"number\"."
             );
         }
 

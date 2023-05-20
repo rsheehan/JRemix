@@ -1,10 +1,28 @@
 family : {
-	{name : "Robert", age : 64}
-	{name : "Stephanie", age : 61}
-	{name : "Emily", age : 35}
-	{name : "Christian", age : 33}
-	{name : "Dominic", age : 31}
-	{name : "Benedict", age : 21}
+	{
+		name : "Robert"
+		age : 64
+	}
+	{
+		name : "Stephanie"
+		age : 61
+	}
+	{
+		name : "Emily"
+		age : 35
+	}
+	{
+		name : "Christian"
+		age : 33
+	}
+	{
+		name : "Dominic"
+		age : 31
+	}
+	{
+		name : "Benedict"
+		age : 21
+	}
 }
 
 names : apply

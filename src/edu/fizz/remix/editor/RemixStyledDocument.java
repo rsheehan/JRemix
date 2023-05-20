@@ -3,7 +3,10 @@ package edu.fizz.remix.editor;
 import edu.fizz.remix.runtime.Runtime;
 
 import javax.swing.*;
-import javax.swing.text.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Style;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -35,6 +38,14 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
     public RemixStyledDocument(JTextPane textPane) {
         this.textPane = textPane;
+    }
+
+    /* Insert a line.
+        Does not do a lex.
+        Useful for inserting lots of lines and then call fullLex.
+     */
+    public void insertLine(String line) throws BadLocationException {
+        insertString(getLength(), line, null);
     }
 
     @Override
@@ -302,36 +313,39 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
     // Called from keystroke event handler set up in RemixEditor.
     public String completionHandling(int offset) throws BadLocationException {
-        String completion = null;
+        Runtime.CompletionNamesAndDoc completion = null;
+        String completionText = null;
         if (completionsHere == null) {
             String seedWord = wordSoFar(offset);
             seedWord = seedWord.stripLeading();
-            ArrayList<String> completions = Runtime.createCompletions(seedWord.replace(" ", ""));
+            ArrayList<Runtime.CompletionNamesAndDoc> completions = Runtime.createCompletions(seedWord.replace(" ", ""));
             if (seedWord.length() > 0 && completions.size() > 0) {
                 int seedLength = seedWord.length();
-                completions.add(seedWord); // so we can cycle back to the start
+                completions.add(new Runtime.CompletionNamesAndDoc(seedWord, "", "")); // so we can cycle back to the start
                 completionsHere = new CompletionInfo(completions, offset - seedLength);
                 completion = completionsHere.nextCompletion();
+                completionText = completion.displayName();
                 // couldn't call super.replace as that calls back into this class
                 super.remove(completionsHere.offset, seedLength);
-                super.insertString(completionsHere.offset, completion, defaultStyle);
+                super.insertString(completionsHere.offset, completionText, defaultStyle);
                 // show the popup of documentation here
 
-                if (completion.contains("(") || completion.contains("[")) // don't move on otherwise
+                if (completionText.contains("(") || completionText.contains("[")) // don't move on otherwise
                     moveCursorToNextParam(completionsHere.offset);
             }
         } else {
             int completionLength = completionsHere.currentLength();
             completion = completionsHere.nextCompletion();
+            completionText = completion.displayName();
             // see comment above
             super.remove(completionsHere.offset, completionLength);
-            super.insertString(completionsHere.offset, completion, defaultStyle);
+            super.insertString(completionsHere.offset, completionText, defaultStyle);
             // show the popup of documentation here
 
-            if (completion.contains("(") || completion.contains("["))
+            if (completionText.contains("(") || completionText.contains("["))
                 moveCursorToNextParam(completionsHere.offset);
         }
-        return completion;
+        return completion == null ? null : completion.functionComment();
     }
 
     private void moveCursorToNextParam(int pos) throws BadLocationException {
@@ -489,20 +503,20 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
     private static class CompletionInfo {
 
-        private final ArrayList<String> completionList;
+        private final ArrayList<Runtime.CompletionNamesAndDoc> completionList;
         private final int offset;
         private int currentIndex = -1;
 
-        private CompletionInfo(ArrayList<String> completionList, int offset) {
+        private CompletionInfo(ArrayList<Runtime.CompletionNamesAndDoc> completionList, int offset) {
             this.completionList = completionList;
             this.offset = offset;
         }
 
         private int currentLength() {
-            return completionList.get(currentIndex).length();
+            return completionList.get(currentIndex).displayName().length();
         }
 
-        private String nextCompletion() {
+        private Runtime.CompletionNamesAndDoc nextCompletion() {
             currentIndex++;
             if (currentIndex >= completionList.size())
                 currentIndex = 0;
