@@ -25,7 +25,7 @@ Print the "value".
 =-
 Print the "value" followed by a space.
 =-
-(value) _ _ :
+(value) /_ _/__ :
 	print (value)
 	print " "
 

@@ -1,4 +1,4 @@
-- Swap example
+- Swap example -
 
 swap (#a) with (#b) :
 	temp : #b

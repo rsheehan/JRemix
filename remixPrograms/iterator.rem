@@ -22,7 +22,6 @@ make (n) stars :
 				next (me) :
 					index : index + 1
 					stars : stars ⊕ "*"
-					stars
 
 s : make (8) stars
 
