@@ -26,7 +26,7 @@ Print the "value".
 =-
 Print the "value" followed by a space.
 =-
-(value) _/__ /_ :[
+(value) __ :[
 	print (value)
 	print " "]
 
@@ -292,9 +292,10 @@ when [block] :[
 
 =-
 If "option" block is true, return executed "result".
-The transparent return breaks out of the "when" block.
+Used in a "when" block.
+The transparent return breaks out of the "when".
 =-
-this [option] do [result] ::[
+/this [option] do [result] ::[
 	if (do (option))[
 		return do (result)]]
 

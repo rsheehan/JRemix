@@ -409,10 +409,25 @@ public class RemixEdLexer {
     }
 
     // pos is the start of a single word
+    // if preceded by ":" then find the indentation before the variable being assigned to
+    // e.g. var : apply     - with the remainder of the apply function indented on the next line
     public static int indentationBefore(int pos) throws BadLocationException {
-        String before;
+        String before = "";
         int count = 0;
         // work out current indentation
+        while (pos > 0) {
+            pos--;
+            before = document.getText(pos, 1);
+            if (!before.equals(" ")) {
+                break;
+            }
+        }
+
+        if (before.equals(":"))
+            pos = startOfVar(pos);
+        else
+            pos++;
+
         while (pos > 0) {
             pos--;
             before = document.getText(pos, 1);
@@ -425,6 +440,25 @@ public class RemixEdLexer {
             }
         }
         return count;
+    }
+
+    // pos is ":" need to move back over variable being assigned to so that we
+    // can find the indentation at the start
+    public static int startOfVar(int pos) throws BadLocationException {
+        while (pos > 0) {
+            pos--;
+            if (!document.getText(pos, 1).equals(" "))
+                break;
+        }
+        while (pos > 0) {
+            if (wordChar(getChar(pos)))
+                pos--;
+            else {
+                pos++;
+                break;
+            }
+        }
+        return pos;
     }
 
     // pos is the end of a single word
