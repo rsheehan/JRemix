@@ -6,7 +6,7 @@ import java.util.*;
 
 public class BuiltInFunctions {
 
-    private static RemixSwingWorker remixRunner = null;
+    static RemixSwingWorker remixRunner = null;
 //    private static JTextArea remixOutput = null;
 
 //    public static void setOutputArea(JTextArea output) {

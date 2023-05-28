@@ -6,7 +6,7 @@ add three to (value) :
 			inc(value)
 
 		exec (me) :
-			{"value in first exec: ", value}↲
+			"value in first exec: ", value ↲
 			caller : create
 				value : value
 				add two to value:
@@ -14,14 +14,14 @@ add three to (value) :
 
 				exec (me) :
 					value : add two to value
-					{"value from 2: ", value}↲
+					"value from 2: ", value ↲
 
 			exec (caller)
 			add one to value
-			{"value from exec: ", value}↲
+			"value from exec: ", value ↲
 
 	exec (caller)
 
 value : 4
 add three to (value)
-{"value: ", value}↲
+"value: ", value ↲

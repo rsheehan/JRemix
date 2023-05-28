@@ -1,10 +1,10 @@
 - Bottles of Beer -
 
 for each (n) in (99 to 1) do
-	{(n) bottles, " of beer on the wall, ", (n) bottles, " of beer."} ↲
+	(n) bottles, " of beer on the wall, ", (n) bottles, " of beer." ↲
 	"Take one down, pass it around." ↲
-	{(n - 1) bottles, " of beer on the wall!"} ↲
-	new line
+	(n - 1) bottles, " of beer on the wall!" ↲
+	↲
 
 (n) bottles :
 	when

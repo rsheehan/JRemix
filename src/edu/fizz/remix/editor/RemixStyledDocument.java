@@ -146,17 +146,36 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 }
             }
         }
+        // also remove parens if input is a digit between "( )"
+        if (Character.isDigit(input.toCharArray()[0]) && surroundedByParens(offset)) {
+            offset--;
+            super.remove(offset, 2);
+            super.insertString(offset, input, defaultStyle);
+            textPane.setCaretPosition(offset + 1);
+            return false;
+        }
         return true;
+    }
+
+    /* Is the offset position surrounded by parentheses? */
+    private boolean surroundedByParens(int offset) throws BadLocationException {
+        if (offset > 0 && offset < getLength()) {
+            String before = getText(offset - 1, 1);
+            String after = getText(offset, 1);
+            return before.equals("(") && after.equals(")");
+        }
+        return false;
     }
 
     /* Should we remove surrounding parentheses? */
     private boolean removeParens(int offset, String opening) throws BadLocationException {
         if ("{[\"".contains(opening))
-            if (offset > 0 && offset < getLength()) {
-                String before = getText(offset - 1, 1);
-                String after = getText(offset, 1);
-                return before.equals("(") && after.equals(")");
-            }
+            return surroundedByParens(offset);
+//            if (offset > 0 && offset < getLength()) {
+//                String before = getText(offset - 1, 1);
+//                String after = getText(offset, 1);
+//                return before.equals("(") && after.equals(")");
+//            }
         return false;
     }
 

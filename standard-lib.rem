@@ -16,11 +16,12 @@ Print a new line character.
 new line :
 	print "\n"
 
-=-
+=
 Print the "value".
-=-
+
 (value) _ :
 	print (value)
+=
 
 =-
 Print the "value" followed by a space.
@@ -29,12 +30,13 @@ Print the "value" followed by a space.
 	print (value)
 	print " "
 
-=-
+=
 Print the "value" followed by a new line.
-=-
+
 /print (value) ↲/\n :
 	print (value)
 	new line
+=
 
 ==============================
  Boolean functions
@@ -402,20 +404,22 @@ The "list" as a string.
 		return list
 	"{" ⊕ (join (list) with separator ", ") ⊕ "}"
 
-=-
+=
 Print the "list" as a string.
-=-
+
 (list) as string _ :
 	((list) as string) _
+=
 
 =-
 Print the "list" as a string followed by a space.
 =-
-(list) as string _ _ :
-	((list) as string) _ _
+(list) as string __ :
+	((list) as string) __
 
-=-
+=
 Print the "list" as a string followed by a new line.
-=-
+
 (list) as string ↲ :
 	((list) as string) ↲
+=

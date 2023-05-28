@@ -47,7 +47,8 @@ methodSigPart		: WORD					# methSigWord
 
 blockOfStatements	: LBLOCK statement* RBLOCK ;
 
-statement			: assignmentStatement	# assStatement
+statement			: assignmentStatement	# assStatement	// label not used
+					| printStatement		# prStatement	// label not used
 					| expression 			# expr
 					| endOfStatement		# blank // need to reconsider this
 					| REDO					# redo
@@ -58,6 +59,9 @@ endOfStatement		: EOL | EOS ;
 
 assignmentStatement	: WORD COLON expression 			# setVariable
 					| WORD listPart+ COLON expression	# setListElement
+					;
+
+printStatement		: (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) # prntStatement
 					;
 
 expression			: expression ADD expression				# exprAdd

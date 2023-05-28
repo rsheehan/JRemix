@@ -26,4 +26,4 @@ make (n) stars :
 s : make (8) stars
 
 for each (line) in (s) do
-	(line) ↲
+	line ↲

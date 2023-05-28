@@ -15,6 +15,8 @@ RBLOCK				: ']' ;
 LBRACE				: '{' ;
 RBRACE				: '}' ;
 COMMA				: ',' ;
+ENDPRINT			: '_' ;
+PRINTLN				: ('\\n' | '↲') ;
 
 SPACE				: (' ' | '\t') -> skip ;
 CONT				: ( // also used to help deal with PreProcess output
@@ -76,5 +78,5 @@ WORD				: FIRSTCHAR CHARACTER* ;
 STRING				: '"' ('\\"' | .)*? '"' ;
 
 // everything apart from white space, newline or special is a character
-fragment FIRSTCHAR	: ~[.()[\]{,}:—|§@…'’⊕+\-*×÷%=≠<≤>≥0-9" \t\n] ;
-fragment CHARACTER	: ~[.()[\]{,}:—|§@…'’⊕+*×÷%=≠<≤>≥" \t\n] ;
+fragment FIRSTCHAR	: ~[.()[\]{,}:—|§@…'’⊕+\-*×÷%=≠<≤>≥0-9" \t\n↲] ;
+fragment CHARACTER	: ~[.()[\]{,}:—|§@…'’⊕+*×÷%=≠<≤>≥" \t\n↲] ;

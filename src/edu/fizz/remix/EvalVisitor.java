@@ -2,16 +2,15 @@ package edu.fizz.remix;
 
 import edu.fizz.remix.parser.RemixParser;
 import edu.fizz.remix.parser.RemixParserBaseVisitor;
+import edu.fizz.remix.runtime.Runtime;
 import edu.fizz.remix.runtime.*;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import edu.fizz.remix.runtime.Runtime;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ParseTree;
 
 public class EvalVisitor extends RemixParserBaseVisitor<Object> {
 
@@ -274,6 +273,20 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         String varName = ctx.WORD().getText();
         Expression expression = (Expression) visit(ctx.expression());
         return new AssignmentStatement(varName, expression);
+    }
+
+    /** (expression (COMMA expression)*)? PRINTLN */
+    public PrintStatement visitPrntStatement(RemixParser.PrntStatementContext ctx) {
+        List<Expression> expressionList = new ArrayList<Expression>();
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n-1; i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixParser.ExpressionContext) {
+                expressionList.add((Expression) visit(node));
+            }
+        }
+        boolean newline = ctx.getChild(n-1).getText().equals("↲");
+        return new PrintStatement(expressionList, newline);
     }
 
     /** expression ADD expression */

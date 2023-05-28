@@ -1,11 +1,11 @@
 list : apply [random 100] 400 times
 
-{"unsorted: ", (list) as string} ↲
+"unsorted: ", (list) as string ↲
 
 check for missing values in (list)
 insertion sort (list)
 
-{"sorted: ", (list) as string} ↲
+"sorted: ", (list) as string ↲
 
 ----------
 
@@ -14,7 +14,7 @@ check for missing values in (list) :
 	count each item in (list) into (count-of-values)
 	for each (item) in (count-of-values) keeping (count) do
 		if (item = 0)
-			{count, " is missing"} ↲
+			count, " is missing" ↲
 
 count each item in (list) into (result) :
 	for each (item) in (list) do

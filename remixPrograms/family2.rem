@@ -29,12 +29,12 @@ names : apply
 	person{name}
 … to each (person) from (family)
 
-{"The people in the family are ", join (names) with separator ", ", "."} ↲
+"The people in the family are ", join (names) with separator ", ", "." ↲
 
-{"The average age of the family is ", average "age" of (family), "."} ↲
+"The average age of the family is ", average "age" of (family), "." ↲
 
 ages : apply
 	person{age}
 … to each (person) from (family)
 
-{(ages) as string, " has average ", average of (ages)} ↲
+(ages) as string, " has average ", average of (ages) ↲

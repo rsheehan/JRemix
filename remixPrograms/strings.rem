@@ -1,6 +1,6 @@
 sentence : "the quick brown fox jumps over the lazy dog"
 
-(sentence) ↲
+sentence ↲
 
 for each (number) from (1) to (length of (sentence)) do
 	((number) in (sentence)) __
@@ -25,8 +25,8 @@ reverse (#string) :
 	#string : (#string) backwards
 
 reverse (sentence)
-(sentence) ↲
+sentence ↲
 
-((sentence) backwards) ↲
+(sentence) backwards ↲
 
-(sentence) ↲
+sentence ↲

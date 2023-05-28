@@ -1,16 +1,15 @@
-- A remix version of Scratch's random pick.
+- A remix version of Scratch's random pick -
 
-choose a random value from (list) :
-	list{random (length of (list))}
+choose a random value from (the-list) :
+	the-list{random (length of (the-list))}
 
 ten random values from {1, 2, 4, 8, 16, 32, 64, 128, 256}
 ten random values from (10 to 20)
 
-ten random values from (list) :
+ten random values from (a-list) :
 
-	{"Generating random values from ", (list) as string} ↲
+	"Generating random values from ", (a-list) as string ↲
 
 	repeat
-		(choose a random value from (list)) __
-	… 10 times
-	new line
+		choose a random value from (a-list), " " _
+	… 10 times. ↲

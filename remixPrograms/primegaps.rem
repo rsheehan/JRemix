@@ -1,0 +1,37 @@
+=============================
+Calculate gaps between primes
+=============================
+
+primes : {2}
+gap : 0
+
+repeat
+	biggest-prime : last in (primes)
+	start : biggest-prime + 1
+	finish : (biggest-prime × biggest-prime) + 1
+
+	more-primes : filter (x) from ((start) to (finish)) and show (gap) where
+		(x) is not divisible by any number in (primes)
+
+	primes : join (primes) and (more-primes)
+… 4 times
+
+-----------
+
+filter (#item) from (list) and show (#gap) where [condition_block] :
+	new-list : {}
+	prev : first in (list) - 1
+	for each (#item) in (list) do
+		if (condition_block)
+			append (#item) to (new-list)
+			if ((#item - prev) > #gap)
+				#gap : #item - prev
+				"gap: ", #gap, " between ", prev, " and ", #item ↲
+			prev : #item
+	new-list
+
+(x) is not divisible by any number in (list) :
+	for each (number) in (list) do
+		if ((x) is divisible by (number))
+			return false
+		true

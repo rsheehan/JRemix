@@ -5,11 +5,11 @@
 	n × (n - 1)!
 
 for each (n) from 1 to 20 do
-	{n, "! = ", (n)!} ↲
+	n, "! = ", (n)! ↲
 
 new line
 n : 170.0
-{n, "! = ", (n)!} ↲
+n, "! = ", (n)! ↲
 
 real (number) with δ (δ) :
 	create

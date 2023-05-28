@@ -1,4 +1,4 @@
-// Generated from /Users/rshe005/Library/CloudStorage/OneDrive-TheUniversityofAuckland/MyDrive/IdeaProjects/remix/src/RemixParser.g4 by ANTLR 4.12.0
+// Generated from /Users/robert/Library/CloudStorage/OneDrive-TheUniversityofAuckland/MyDrive/IdeaProjects/remix/src/RemixParser.g4 by ANTLR 4.12.0
 package edu.fizz.remix.parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -151,6 +151,13 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAssStatement(RemixParser.AssStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code prStatement}
+	 * labeled alternative in {@link RemixParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrStatement(RemixParser.PrStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code expr}
 	 * labeled alternative in {@link RemixParser#statement}.
 	 * @param ctx the parse tree
@@ -198,6 +205,13 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSetListElement(RemixParser.SetListElementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code prntStatement}
+	 * labeled alternative in {@link RemixParser#printStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrntStatement(RemixParser.PrntStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code exprBoolean}
 	 * labeled alternative in {@link RemixParser#expression}.
