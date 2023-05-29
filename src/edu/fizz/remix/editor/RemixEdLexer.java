@@ -10,7 +10,7 @@ import static java.lang.System.err;
 
 public class RemixEdLexer {
     private enum LexMode {
-        startOfline,
+        startOfLine,
         insideLine,
     }
 //    private static JTextPane textPane;
@@ -88,7 +88,7 @@ public class RemixEdLexer {
     }
 
     public static void fullLex() throws BadLocationException {
-        mode = LexMode.startOfline;
+        mode = LexMode.startOfLine;
         int pos = 0;
         while (pos < document.getLength()) {
             pos = processChar(pos);
@@ -110,7 +110,7 @@ public class RemixEdLexer {
         char ch = getChar(pos);
 
         switch (mode) {
-            case startOfline -> {
+            case startOfLine -> {
                 return dealWithStartOfLine(ch, pos);
             }
             case insideLine -> {
@@ -140,7 +140,7 @@ public class RemixEdLexer {
                 return dealWithSingleLineComment(pos);
             }
             case '=' -> {
-                mode = LexMode.startOfline;
+                mode = LexMode.startOfLine;
                 return dealWithMultiLineComment(pos);
             }
             default -> {
@@ -166,7 +166,7 @@ public class RemixEdLexer {
                 return dealWithSpaces(pos);
             }
             case '\t' -> err.println("Only use tabs at the start of a line.");
-            case '\n' -> mode = LexMode.startOfline;
+            case '\n' -> mode = LexMode.startOfLine;
             case '\"' -> {
                 return dealWithString(pos);
             }
@@ -227,7 +227,7 @@ public class RemixEdLexer {
 
     private static int dealWithSingleLineComment(int pos) throws BadLocationException {
         int commentPos;
-        mode = LexMode.startOfline; // after throwing the rest away
+        mode = LexMode.startOfLine; // after throwing the rest away
         for (commentPos = pos + 1; commentPos < document.getLength(); commentPos++) {
             char ch = getChar(commentPos);
             if (ch == '\n')
@@ -341,7 +341,7 @@ public class RemixEdLexer {
 
     private static boolean isVariable(int startWord, int endWord) throws BadLocationException {
         List<String> beforeList = Arrays.asList("", ":", ".", "\n", "\t", ",", "{", "⊕", "+", "-", "*", "×", "/", "÷", "%", "=", "<", ">", "≠", "≤", "≥");
-        List<String> afterList = Arrays.asList("'", ":", ",", "}", ".", "\n", "⊕", "+", "-", "*", "×", "/", "÷", "%", "=", "<", ">", "≠", "≤", "≥");
+        List<String> afterList = Arrays.asList("'", ":", ",", "}", ".", "↲", "\n", "⊕", "+", "-", "*", "×", "/", "÷", "%", "=", "<", ">", "≠", "≤", "≥");
         Map<String, String> matchingPairs = Map.of(
                 "(", ")",
                 "[", "]",
@@ -353,6 +353,8 @@ public class RemixEdLexer {
         Variables are single words on lines,
         between "," and ","
         "," and "'" - e.g. , Robert's
+        "," and "~"
+        "," and "↲"
         "{", and ","
         "{" and "'"
         "," and "}"
@@ -376,6 +378,12 @@ public class RemixEdLexer {
         String after = getCharAfter(endWord);
         if (beforeList.contains(before) && afterList.contains(after))
             return true;
+        if (beforeList.contains(before) && after.equals("~")) { // a "~" on the end of the line
+            // doesn't work if further things like comments on the line
+            String two_after = getCharAfter(endWord + 2);
+            if (two_after.equals("\n"))
+                return true;
+        }
         if (openers.contains(before) && afterList.contains(after))
             return true;
         if (beforeList.contains(before) && closers.contains(after))

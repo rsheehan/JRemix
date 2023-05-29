@@ -18,11 +18,11 @@ repeat
 
 -----------
 
-filter (#item) from (list) and show (#gap) where [condition_block] :
+filter (#item) from (list) and show (#gap) where [condition-block] :
 	new-list : {}
 	prev : first in (list) - 1
 	for each (#item) in (list) do
-		if (condition_block)
+		if (condition-block)
 			append (#item) to (new-list)
 			if ((#item - prev) > #gap)
 				#gap : #item - prev

@@ -3,13 +3,13 @@ sentence : "the quick brown fox jumps over the lazy dog"
 sentence ↲
 
 for each (number) from (1) to (length of (sentence)) do
-	((number) in (sentence)) __
+	((number) in (sentence)) _
 new line
 
 pos : start(sentence)
 character : next(pos)
 repeat
-	(character) __
+	(character) _
 	character : next(pos)
 … until
 	character = "z"

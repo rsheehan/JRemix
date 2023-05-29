@@ -27,7 +27,7 @@ Print the "value".
 =-
 Print the "value" followed by a space.
 =-
-(value) __ :[
+(value) _ :[
 	print (value)
 	print " "]
 
@@ -415,8 +415,8 @@ Print the "list" as a string.
 =-
 Print the "list" as a string followed by a space.
 =-
-(list) as string __ :[
-	((list) as string) __]
+(list) as string _ :[
+	((list) as string) _]
 
 =
 Print the "list" as a string followed by a new line.

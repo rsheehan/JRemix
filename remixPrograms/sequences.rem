@@ -7,5 +7,5 @@ each "Hello"
 
 each (sequence) :
 	for each (number) from (1) to (length of (sequence)) do
-		{number, ":", (number) in (sequence)} __
-	new line
+		number, ":", (number) in (sequence), " " ~
+	↲

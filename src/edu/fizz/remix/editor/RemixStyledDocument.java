@@ -231,10 +231,10 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                             return false; // don't replace as pi is part of word
                     }
                 }
-                if (replacement.equals("↲") && lineStart(offset - 1)) {
-                    replacement = "() ↲";
-                    fixCaret = true;
-                }
+//                if (replacement.equals("↲") && lineStart(offset - 1)) {
+//                    replacement = "() ↲";
+//                    fixCaret = true;
+//                }
                 if (replacement.equals(" ⊕") && getText(offset, 1).equals(")")) {
                     super.replace(offset - targetLen, targetLen + 1, replacement, defaultStyle);
                 } else {

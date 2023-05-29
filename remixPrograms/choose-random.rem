@@ -11,5 +11,5 @@ ten random values from (a-list) :
 	"Generating random values from ", (a-list) as string ↲
 
 	repeat
-		choose a random value from (a-list), " " _
+		choose a random value from (a-list), " " ~
 	… 10 times. ↲

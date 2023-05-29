@@ -49,7 +49,7 @@ public class RemixParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "':'", "'('", "')'", "'['", "']'", "'{'", "'}'", "','", "'_\\n'", 
+			null, "':'", "'('", "')'", "'['", "']'", "'{'", "'}'", "','", "'~'", 
 			null, null, null, "'\\n'", "'.'", null, null, null, "' + '", "' - '", 
 			null, null, "' % '", "' < '", "' > '", null, null, "' = '", null, null, 
 			null, "'return'", "'redo'", "'create'", null, null, null, null, "''s'"

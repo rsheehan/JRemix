@@ -15,7 +15,7 @@ RBLOCK				: ']' ;
 LBRACE				: '{' ;
 RBRACE				: '}' ;
 COMMA				: ',' ;
-ENDPRINT			: '_' ;
+ENDPRINT			: '~' ;
 PRINTLN				: ('\\n' | '↲') ;
 
 SPACE				: (' ' | '\t') -> skip ;
@@ -78,5 +78,5 @@ WORD				: FIRSTCHAR CHARACTER* ;
 STRING				: '"' ('\\"' | .)*? '"' ;
 
 // everything apart from white space, newline or special is a character
-fragment FIRSTCHAR	: ~[.()[\]{,}:—|§@…'’⊕+\-*×÷%=≠<≤>≥0-9" \t\n↲] ;
-fragment CHARACTER	: ~[.()[\]{,}:—|§@…'’⊕+*×÷%=≠<≤>≥" \t\n↲] ;
+fragment FIRSTCHAR	: ~[.()[\]{,}:—|§@…'’⊕+\-*×÷%=≠<≤>≥0-9" ~\t\n↲] ;
+fragment CHARACTER	: ~[.()[\]{,}:—|§@…'’⊕+*×÷%=≠<≤>≥" ~\t\n↲] ;

@@ -10,6 +10,6 @@ ten random values from (10 to 20)
 ten random values from (list) :[
 	{"Generating random values from ",list}↲
 	repeat[
-		(choose a random value from (list))__]
+		(choose a random value from (list))~]
 	… 10 times
 	new line]
