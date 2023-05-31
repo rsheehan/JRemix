@@ -57,6 +57,12 @@ public class BinaryExpression implements Expression {
                 }
             }
             return result;
+        }  else if (val1 instanceof Boolean && val2 instanceof Boolean) {
+            return switch (operator) {
+                case "=" -> val1 == val2;
+                case "!=" -> val1 != val2;
+                default -> null;
+            };
         } else if (val1 instanceof Long && val2 instanceof Long) {
             long l1, l2;
             l1 = ((Number) val1).longValue();
