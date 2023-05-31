@@ -15,14 +15,7 @@
 Print a new line character.
 =-
 new line :[
-	print "\n"]
-
-=
-Print the "value".
-
-(value) _ :
-	print (value)
-=
+	↲]
 
 =-
 Print the "value" followed by a space.
@@ -30,14 +23,6 @@ Print the "value" followed by a space.
 (value) _ :[
 	print (value)
 	print " "]
-
-=
-Print the "value" followed by a new line.
-
-/print (value) ↲/\n :
-	print (value)
-	new line
-=
 
 ==============================
  Boolean functions
@@ -95,6 +80,20 @@ Run "block" for each "number" from "start" to "finish".
 =-
 for each (#number) from (start) to (finish) do [block] :[
 	for each (#number) in ((start) to (finish)) do (block)]
+
+=-
+Run "block" for each "number" from "start" to "finish" in steps of "step".
+=-
+for each (#number) from (start) to (finish) in steps of (step) do [block]:[
+	if (start < finish)[
+		test : [#number ≤ finish]]
+	… otherwise[
+		test : [#number ≥ finish]]
+	#number : start
+	while (test) do[
+		last : do (block)
+		#number : #number + step]
+	last]
 
 =-
 Run "block" for each "item" in the "list" at all positions from "start" to "finish".
@@ -405,22 +404,6 @@ The "list" as a string.
 		return list]
 	"{" ⊕ (join (list) with separator ", ") ⊕ "}"]
 
-=
-Print the "list" as a string.
 
-(list) as string _ :
-	((list) as string) _
-=
 
-=-
-Print the "list" as a string followed by a space.
-=-
-(list) as string _ :[
-	((list) as string) _]
 
-=
-Print the "list" as a string followed by a new line.
-
-(list) as string ↲ :
-	((list) as string) ↲
-=

@@ -168,7 +168,9 @@ public class BuiltInFunctions {
         }
     }
 
-    /** The "print" function. Prints the string version of the value. */
+    /** The "print" function. Prints the string version of the value.
+     *  Now prints lists as real lists.
+     *  */
     public static final class PrintFunction extends Function {
         public PrintFunction() {
             super(
@@ -186,16 +188,48 @@ public class BuiltInFunctions {
             return RemixNull.value();
         }
 
-        private static void printValue(Object value) {
-            if (value instanceof List<?> list)
-                for (Object item : list) {
+        static void printValue(Object value) {
+            if (value instanceof List<?> list) {
+                publish("{");
+                for (Iterator<?> iter = list.iterator(); iter.hasNext(); ) {
+                    Object item = iter.next();
                     printValue(item);
-            } else {
-                if (remixRunner == null)
-                    System.out.print(value);
-                else {
-                    remixRunner.publish(value.toString());
+                    if (iter.hasNext())
+                        publish(", ");
                 }
+                publish("}");
+            } else if (value instanceof Map<?, ?> map) {
+                publish("{");
+                for (Iterator<?> iter = map.keySet().iterator(); iter.hasNext(); ) {
+                    String key = (String)iter.next();
+                    publish(key);
+                    publish(": ");
+                    publish(map.get(key));
+                    if (iter.hasNext())
+                        publish(", ");
+                };
+                publish("}");
+            } else if (value instanceof RemixObject object) {
+                Method method = object.findMethod("| to string");
+                if (method != null) {
+                    try {
+                        publish(method.execute(object.getContext()));
+                    } catch (ReturnException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    publish("To print an object you need a \"(me) to string\" method.");
+                }
+            } else {
+                publish(value);
+            }
+        }
+
+        static void publish(Object value) {
+            if (remixRunner == null)
+                System.out.print(value);
+            else {
+                remixRunner.publish(value.toString());
             }
         }
     }

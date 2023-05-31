@@ -26,18 +26,10 @@ public class PrintStatement implements Expression {
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         for (Expression expression : expressionList) {
             Object value = expression.evaluate(context);
-            if (BuiltInFunctions.remixRunner == null)
-                System.out.print(value);
-            else {
-                BuiltInFunctions.remixRunner.publish(value.toString());
-            }
+            BuiltInFunctions.PrintFunction.printValue(value);
         }
         if (newline)
-            if (BuiltInFunctions.remixRunner == null)
-                System.out.println();
-            else {
-                BuiltInFunctions.remixRunner.publish("\n");
-            }
+            BuiltInFunctions.PrintFunction.publish("\n");
         return new RemixNull();
     }
 }

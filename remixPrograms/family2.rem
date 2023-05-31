@@ -37,4 +37,4 @@ ages : apply
 	person{age}
 … to each (person) from (family)
 
-(ages) as string, " has average ", average of (ages) ↲
+ages, " has average ", average of (ages) ↲
