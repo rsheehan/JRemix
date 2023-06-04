@@ -15,7 +15,11 @@ public class VarValueExpression implements Expression {
 
     @Override
     public Object evaluate(Context context) {
-        return context.retrieve(varName);
+        Object value = context.retrieve(varName);
+        if (value == null) {
+            System.err.printf("\"%s\" has no value.%n", varName);
+        }
+        return value;
     }
 
     @Override

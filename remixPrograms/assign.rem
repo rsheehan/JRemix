@@ -1,0 +1,27 @@
+=
+Assignment example.
+=
+"** ASSIGNMENT **" ↲
+
+a : 1
+b :
+... true.
+c : "word
+then more"
+d : 2 + (3 * 4)
+e : 3 = 4
+
+c ↲
+"Should be - \"word then more\", over 2 lines.\n" ↲
+
+b ↲
+"Should be - \"true\".\n" ↲
+
+a ↲
+"Should be - \"1\".\n" ↲
+
+d ↲
+"Should be - \"14\".\n" ↲
+
+e ↲
+"Should be - \"false\".\n" ↲

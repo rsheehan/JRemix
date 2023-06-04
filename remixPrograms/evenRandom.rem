@@ -1,0 +1,14 @@
+===================================================================
+ Generate a list of 100 random integers and count the even values.
+===================================================================
+
+list-of-numbers : apply [random 1000] 100 times
+
+"There are ", even values in (list-of-numbers), " even values in the list." ↲
+
+even values in (the-list) :
+	even : 0
+	for each (item) in (the-list) do
+		if ((item) is divisible by 2)
+			even : even + 1
+	return even

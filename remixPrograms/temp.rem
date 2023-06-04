@@ -1,6 +1,21 @@
-sum : 0
-sum + 1 ↲
-for each (number) from (1) to (10000) do
-	sum : sum + number
-sum ↲
-sum (1 to 10000) ↲
+var call (#abc) :
+	#abc : 732
+
+leaking variable :
+	create
+
+		(my) leaking method :
+			count : 9
+			var call (count)
+			"count inside method: ", count ↲
+
+x : leaking variable
+(x) leaking method
+"count outside method: ", count ↲
+
+leaking function? :
+	var call (count)
+	"count inside function: ", count ↲
+
+leaking function?
+"count outside function: ", count ↲

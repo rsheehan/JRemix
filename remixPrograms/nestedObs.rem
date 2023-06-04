@@ -25,3 +25,10 @@ add three to (value) :
 value : 4
 add three to (value)
 "value: ", value ↲
+
+= Output
+value in first exec: 4
+value from 2: 6
+value from exec: 5
+value: 4
+=

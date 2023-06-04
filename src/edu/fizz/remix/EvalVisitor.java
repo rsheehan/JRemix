@@ -285,7 +285,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 expressionList.add((Expression) visit(node));
             }
         }
-        boolean newline = ctx.getChild(n-1).getText().equals("↲");
+        String end = ctx.getChild(n-1).getText();
+        boolean newline = "\\n↲".contains(end);
         return new PrintStatement(expressionList, newline);
     }
 

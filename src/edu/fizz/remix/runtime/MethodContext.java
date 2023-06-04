@@ -9,11 +9,13 @@ package edu.fizz.remix.runtime;
 public class MethodContext extends Context {
 
     private final RemixObject object; // a specific instance
+    private final Context localContext;
 
-    public MethodContext(RemixObject object, Context parent) {
+    public MethodContext(Context parent, RemixObject object) {
         variables = object.getContext().variables;
         this.object = object;
-        parentContext = parent;
+        localContext = new Context(parent, null); // ???
+        parentContext = parent; //new Context(parent, null);
     }
 
     /*
@@ -31,22 +33,44 @@ public class MethodContext extends Context {
             return null;
     }
 
+    /*
+     * Called from FunctionCallExpression when assigning parameters
+     * This has to go into the localContext not the object's variables.
+     */
+    public void assignParam(String varName, Object value) {
+        localContext.variables.put(varName, value);
+    }
+
     public void assign(String varName, Object value) {
         // check to see if the variable is an instance variable
         // i.e. in the variables map
+        // otherwise use the method local context
         if (variables.containsKey(varName)) {
             variables.put(varName, value);
+//        } else if (localContext.variables.containsKey((varName))) {
+//            localContext.assign(varName, value);
         } else {
-            parentContext.assign(varName, value);
+            localContext.assign(varName, value);
         }
     }
 
     public Object retrieve(String varName) {
         if (variables.containsKey(varName)) {
             return variables.get(varName);
+        } else if (localContext.variables.containsKey((varName))) {
+            return localContext.retrieve(varName);
         } else {
             return parentContext.variables.get(varName);
         }
+    }
+
+    // Find the original Context of a variable, necessary for reference vars.
+    public Context originalContext(String varName) {
+        if (variables.get(varName) != null || localContext.variables.get(varName) != null)
+            return this;
+        if (parentContext != null)
+            return parentContext.originalContext(varName);
+        return null;
     }
 
     @Override

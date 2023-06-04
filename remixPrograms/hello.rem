@@ -2,7 +2,7 @@
 
 repeat [] 1000000 times
 
-"Finished!" \n ; the \n doesn't work
+"Finished!" \n ; the \n now works
 
 1, 2, 3 ↲
 1 _. 2 _. 3 ↲
@@ -17,7 +17,7 @@ if (a = 1)
 
 b : true
 
-{"a is ", a, ", b is ", b} ↲
+"a is ", a, ", b is ", b ↲
 if ((a != 1) or (b))
 	"a is not 1 or b is true" ↲
 
@@ -50,7 +50,7 @@ evens ↲
 for each (i) in (evens) do [(i) _]
 new line
 
-(keep (x) from (1 to 100) until [x = 20]) as string ↲
+keep (x) from (1 to 100) until [x = 20] ↲
 
 cubes : apply
 	i × i × i

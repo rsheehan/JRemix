@@ -1,0 +1,24 @@
+- Test block has value of last statement when executed
+"** PRINT AND EVAL BLOCK **" ↲
+
+a : "This should be printed after \"Doing the block.\""
+
+block :
+	1
+	"Doing the block." ↲
+	3
+	a
+
+block ↲
+do (block) ↲
+
+test : [a < b]
+a : 7
+b : 5
+a, " is " ~
+if (test)
+	"less than " ~
+... otherwise
+	"not less than " ~
+b ↲
+new line

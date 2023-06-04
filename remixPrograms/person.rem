@@ -1,0 +1,20 @@
+person called (name) age (age) and sex (sex) :
+	create
+		name : name
+		age : age
+		sex : sex
+
+		(my) pronoun :
+			if (sex = "male")
+				"he"
+			… otherwise
+				"she"
+
+		(me) to string :
+			name ⊕ " is " ⊕ age ⊕ " years old, " ⊕ (my) pronoun ⊕ " is " ⊕ sex ⊕ "."
+
+who : person called "Robert" age 64 and sex "male"
+wife : person called "Stephanie" age 62 and sex "female"
+
+who ↲
+wife ↲

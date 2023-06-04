@@ -1,0 +1,18 @@
+- Test do function
+"** DO **" ↲
+
+block : ["Do is working 4." ↲]
+
+do (["Do is working 1." ↲])
+do ["Do is working 2." ↲]
+do
+	"Do is working 3." ↲
+do (block)
+do
+	"Do is working 5." ↲
+	"Do is working 6." ↲
+[
+"This should appear, because this block is evaluated." ↲
+"this certainly shouldn't appear"
+"This should too." ↲
+]

@@ -1,3 +1,4 @@
+- Delta -
 
 (number) with Δ (delta) :
 	create
@@ -10,14 +11,14 @@
 		(other) equals (me) :
 			(absolute (number - other's number)) < delta
 
-		(me) as string :
-			join {number, " with Δ ", delta}
+		(me) to string :
+			number ⊕ " with Δ " ⊕ delta
 
 a : 1.0 with Δ 0.5
 b : 0.99 with Δ 0.01
 
-{"a: ", (a) as string} ↲
-{"b: ", (b) as string} ↲
+"a: ", a ↲
+"b: ", b ↲
 
 if ((b) equals (a))
 	"b is equal to a" ↲

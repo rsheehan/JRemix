@@ -211,9 +211,10 @@ public class BuiltInFunctions {
                 publish("}");
             } else if (value instanceof RemixObject object) {
                 Method method = object.findMethod("| to string");
+                MethodContext methodContext = new MethodContext(null, object);
                 if (method != null) {
                     try {
-                        publish(method.execute(object.getContext()));
+                        publish(method.execute(methodContext)); //object.getContext()));
                     } catch (ReturnException | InterruptedException e) {
                         throw new RuntimeException(e);
                     }

@@ -1,11 +1,11 @@
 list : apply [random 100] 400 times
 
-"unsorted: ", (list) as string ↲
+"unsorted: ", list ↲
 
 check for missing values in (list)
 insertion sort (list)
 
-"sorted: ", (list) as string ↲
+"sorted: ", list ↲
 
 ----------
 
@@ -16,9 +16,9 @@ check for missing values in (list) :
 		if (item = 0)
 			count, " is missing" ↲
 
-count each item in (list) into (result) :
+count each item in (list) into (tally) :
 	for each (item) in (list) do
-		result{item} : result{item} + 1
+		tally{item} : tally{item} + 1
 
 ================
  Insertion Sort

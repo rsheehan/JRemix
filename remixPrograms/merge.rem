@@ -1,8 +1,8 @@
 my-list : apply [random 100] 80 times
-(my-list) as string ↲
+my-list ↲
 
 sort (my-list) from 1 to (length of (my-list))
-(my-list) as string ↲
+my-list ↲
 
 ============
  Merge sort

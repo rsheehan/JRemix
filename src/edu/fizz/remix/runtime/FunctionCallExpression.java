@@ -50,8 +50,8 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             if (remixObject != null)
                 method = remixObject.findMethod(routineName);
             if (method != null) {
-                Context methodContext = new MethodContext(remixObject, context);
-                return executeFunctionOrMethod(context, method, methodContext);
+                Context methodContext = new MethodContext(context, remixObject);
+                return executeFunctionOrMethod(method, methodContext);
             }
         }
 
@@ -65,7 +65,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             return null;
         }
         Context functionContext = new Context(context, function);
-        return executeFunctionOrMethod(context, function, functionContext);
+        return executeFunctionOrMethod(function, functionContext);
     }
 
     /*
@@ -75,7 +75,8 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
     we add the parameters to this.
     Any local variables also go into the functionContext not the callingContext
      */
-    private Object executeFunctionOrMethod(Context callingContext, Function routine, Context functionContext) throws ReturnException, InterruptedException {
+    private Object executeFunctionOrMethod(Function routine, Context functionContext) throws ReturnException, InterruptedException {
+        Context callingContext = functionContext.parentContext;
         for (int i = 0; i < routine.numArgs(); i++) {
             String formal = routine.getArgument(i);
 
@@ -102,7 +103,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
                     // the value here is now a RefParameter
                 } else {
                     Object variable  = callingContext.retrieve(actualName);
-                    if (variable == null) {
+                    if (variable == null) { // hasn't been given a value yet, give it Null
                         callingContext.assign(actualName, RemixNull.value());
                         value = new RefParameter(actualName, callingContext);
                     } else {
