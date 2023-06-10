@@ -1,0 +1,35 @@
+=======================
+Find the middle number.
+=======================
+
+middle of (n1) (n2) (n3) :
+	when
+		[(n1) between (n2) and (n3)] do [n1]
+		[(n2) between (n1) and (n3)] do [n2]
+		n3
+
+(n1) between (n2) and (n3) :
+	((n2 ≤ n1) and (n1 ≤ n3)) or ((n3 ≤ n1) and (n1 ≤ n2))
+
+---------------------------------------------------
+
+test {
+	"First A"
+		middle of 2 1 3
+	… expected 2,
+	"First B"
+		middle of 2 3 1
+	… expected 2,
+	"Second A"
+		middle of 1 2 3
+	… expected 2,
+	"Second B"
+		middle of 3 2 1
+	… expected 2,
+	"Third A"
+		middle of 1 3 2
+	… expected 2,
+	"Third B"
+		middle of 3 1 2
+	… expected 2
+}

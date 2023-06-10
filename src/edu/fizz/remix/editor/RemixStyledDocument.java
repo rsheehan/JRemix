@@ -451,8 +451,8 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         Autoindent to the same depth as on the previous line.
         Takes strings into account.
         If the new line is after ":" we indent one extra tab.
-        If the newline is after "[" we indent one extra tab and add
-        a newline before the closing "]" which is indented to the original depth.
+        If the newline is after "[" or "{" we indent one extra tab and add
+        a newline before the closing "]" or "}" which is indented to the original depth.
         now
         Trying to remove "[" and "]" when we indent inside the braces.
         Could possibly add "..." at the start of a following line if there is more
@@ -473,17 +473,20 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         }
 
         boolean followsOpenBlock = false;
+        boolean followsListStart = false;
         if (before.equals(":"))
             tabbedReturn.append("\t");
         else if (before.equals("[")) {
             followsOpenBlock = true;
+        } else if (before.equals("{")) {
+            followsListStart = true;
         }
         pos = offset;
         if (pos < getLength()) {
             after = getText(pos, 1);
         }
         boolean precedesCloseBlock = after.equals("]");
-
+        boolean precedesListEnd = after.equals("}");
         int tabs = indentationOnThisLine(pos);
         String tabsOnLine = "\t".repeat(tabs);
         tabbedReturn.append(tabsOnLine);
@@ -499,9 +502,17 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         } else if (followsOpenBlock) {
             tabbedReturn.append("\t\n");
             tabbedReturn.append(tabsOnLine);
+        } else if (followsListStart && precedesListEnd) {
+            tabbedReturn.append("\t\n");
+            tabbedReturn.append(tabsOnLine);
+        } else if (followsListStart) { // next line indented one more tab
+            tabbedReturn.append("\t");
+        } else if (precedesListEnd) {
+            // subtract a tab on the new line
+            tabbedReturn.deleteCharAt(tabbedReturn.length() - 1);
         }
         super.insertString(offset, tabbedReturn.toString(), defaultStyle);
-        if (followsOpenBlock) {
+        if (followsOpenBlock || followsListStart) {
             textPane.setCaretPosition(offset + tabs + 2);
         }
     }

@@ -46,7 +46,7 @@ public class Block implements Expression {
             Expression expression = iterator.next();
             if (expression instanceof RedoStatement) {
                 // pause in case the program gets interrupted
-                if (RemixREPL.remixRunner.isCancelled())
+                if (RemixREPL.remixRunner != null && RemixREPL.remixRunner.isCancelled())
                     throw new InterruptedException();
                 iterator = statements.iterator();
                 continue;
@@ -72,10 +72,11 @@ public class Block implements Expression {
     }
 
     public String toString() {
-        StringBuilder result = new StringBuilder();
+        StringBuilder result = new StringBuilder("[ ");
         for (Expression expression : statements) {
-            result.append(" ").append(expression.toString());
+            result.append(expression.toString()).append(". ");
         }
+        result.append(" ]");
         return result.toString();
     }
 

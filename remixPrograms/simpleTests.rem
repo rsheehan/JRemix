@@ -1,0 +1,18 @@
+- Simple Tests -
+
+simple function :
+	1
+
+function (param) :
+	param
+
+test {
+	"Function no parameters"
+		simple function
+	… expected 1
+
+
+	"Function returns parameter"
+		function 2
+	… expected 2
+}

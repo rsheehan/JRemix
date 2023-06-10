@@ -82,7 +82,11 @@ public class Runtime {
 
     /** Add a name of method and the reference parameter position. */
     public static void addMethodName(String name, int refPos) {
-        Integer pos = methodTable.get(name);
+        Integer pos;
+        if (standard)
+            pos = originalMethodTable.get(name);
+        else
+            pos = methodTable.get(name);
         if (pos == null) { // new method name
             if (standard)
                 originalMethodTable.put(name, refPos);

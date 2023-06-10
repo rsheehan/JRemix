@@ -403,6 +403,54 @@ The "list" as a string.
 		return list
 	"{" ⊕ (join (list) with separator ", ") ⊕ "}"
 
+==============================
+ Testing functions
+==============================
 
+=-
+Create a test of "code" with expected "result" described by "description".
+=-
+(description) [code] expected (result) :
+	{ description : description, code : code, expected : result }
 
+=-
+Create a test of "code" with expected "result".
+=-
+[code] expected (result) :
+	"" (code) expected (result)
 
+=-
+Make a group of tests out of "list-of-tests" and run all tests.
+=-
+test (list-of-tests) :
+	test-object : create
+		tests : list-of-tests
+		passing : 0
+		failing : 0
+
+		assert test (number) (description) [code] produces (expected) :
+			result : do (code)
+			if (description ≠ "")
+				description ↲
+			… otherwise
+				"Test #", number ↲
+			if (result = expected)
+				inc (passing)
+				"  Passed" ↲
+			… otherwise
+				inc (failing)
+				"  Failed: produces ", result, ", should be ", expected ↲
+
+		execute tests (me) :
+			"Starting tests: " ↲
+
+			for each (test) in (tests) keeping (count) do
+				assert test (count) (test{"description"}) (test{"code"}) produces (test{"expected"})
+			↲
+			test-string : length of (tests) ⊕ " Tests"
+			test-string ↲
+			repeat ["=" ~] (length of (test-string)) times.↲
+			"Passing : ", passing ↲
+			"Failing : ", failing ↲
+
+	execute tests (test-object)

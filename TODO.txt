@@ -1,0 +1,28 @@
+Can currently concatenate "⊕" lists to strings.
+But this does not convert the list to a string the same way the print function does.
+Same with maps I presume.
+
+Add the ability to print blocks.
+
+Bug - the code leaks the value of "count" which is a var parameter used inside a method.
+===
+leaking method :
+	for each (item) in {1,2,4} keeping (count) do
+		item
+	"count inside method: ", count ↲
+
+count : 4
+leaking method
+"count outside function: ", count ↲
+
+leaking variable :
+	create
+
+		(my) leaking method :
+			for each (item) in {1,2,4} keeping (count) do
+				item
+			"count inside method: ", count ↲
+
+x : leaking variable
+(x) leaking method
+"count outside function: ", count ↲

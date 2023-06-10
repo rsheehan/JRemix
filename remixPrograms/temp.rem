@@ -1,21 +1,24 @@
-var call (#abc) :
-	#abc : 732
+simple function :
+	1
 
-leaking variable :
-	create
+test {
+	"Function no parameters"
+		simple function
+	… expected 1
 
-		(my) leaking method :
-			count : 9
-			var call (count)
-			"count inside method: ", count ↲
 
-x : leaking variable
-(x) leaking method
-"count outside method: ", count ↲
+	[2] expected 2
+}
 
-leaking function? :
-	var call (count)
-	"count inside function: ", count ↲
+simple function :
+	1
 
-leaking function?
-"count outside function: ", count ↲
+test {
+	"Function no parameters"
+		simple function
+	… expected 1
+
+
+	[2] expected 2
+
+}

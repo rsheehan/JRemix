@@ -9,8 +9,6 @@ import java.util.List;
         this has a new line at the end
     (n) bottles, " of beer on the wall, ", (n) bottles, " of beer." _
         this has no new line
-    (n) bottles, "of beer on the wall,", (n) bottles, "of beer." __
-        this has no new line but separates values with a space
  */
 public class PrintStatement implements Expression {
 

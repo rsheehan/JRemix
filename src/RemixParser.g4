@@ -116,7 +116,7 @@ list				: LBRACE listContents RBRACE ;
 separator			: EOL | COMMA ;
 
 listContents		: (expression (COMMA expression)*)?	# commaList
-					| LBLOCK EOL* (expression (separator EOL* expression)*)* RBLOCK EOL? # blockList
+					| LBLOCK EOL* (expression (separator EOL* expression)*)* RBLOCK EOL* # blockList
 					| EOL*								# emptyList
 					;
 

@@ -1,0 +1,25 @@
+
+simple function :[
+	1]
+
+test {[
+	"Function no parameters"[
+		simple function]
+	… expected 1
+
+
+	[2] expected 2]
+}
+
+simple function :[
+	1]
+
+test {[
+	"Function no parameters"[
+		simple function]
+	… expected 1
+
+
+	[2] expected 2]
+
+}
