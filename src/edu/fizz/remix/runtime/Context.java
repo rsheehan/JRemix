@@ -12,6 +12,7 @@ public class Context {
      Most functions don't throw return values higher.
      Some builtins and transparent functions "::" do,
      along with anonymous blocks.
+     TODO: Do we need to hold onto the function or can we just use its transparency?
     */
     private Function contextFunction = null;
 

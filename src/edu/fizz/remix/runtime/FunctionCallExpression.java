@@ -102,6 +102,9 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
                     value = callingContext.getRefParameter(actualName);
                     // the value here is now a RefParameter
                 } else {
+                    /*
+                    We are accessing an ordinary variable in the callingContext.
+                     */
                     Object variable  = callingContext.retrieve(actualName);
                     if (variable == null) { // hasn't been given a value yet, give it Null
                         callingContext.assign(actualName, RemixNull.value());

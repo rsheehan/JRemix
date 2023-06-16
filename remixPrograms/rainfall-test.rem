@@ -2,28 +2,36 @@
 Test rainfall problem.
 ======================
 
+filter (list) by (#value) where [filter] stopping when [terminal] :
+	result : {}
+	for each (#value) in (list) do
+		if (do (terminal))
+			return result
+		if (do (filter))
+			append (#value) to (result)
+	result
+
 average rainfall (rain-fall) :
-	positive : filter (rain-fall) by (x) where [x ≥ 0]
-	valid-data : keep (x) from (positive) until [x = 999]
+	valid-data : filter (rain-fall) by (x) where [x ≥ 0] stopping when [x = 999]
 	if (length of (valid-data) = 0)
 		return "No valid data"
 	average of (valid-data)
 
 ---- testing ----
 
-test-list : {
+test {
 	"All negatives"
 		rain : {-1, -2, -3}
 		average rainfall (rain)
-	… expected "No valid data",
-	"General sample with some negative values before the terminal value" [
+	… expected "No valid data"
+
+	"General sample with some negative values before the terminal value"
 		rain-fall : {-1, -3, 0, 5, -2, 1.0, 0, -1, 6, 9, 0, 999, -2, 0, 10, -1}
 		average rainfall (rain-fall)
-	] expected 3,
+	… expected 3
+
 	[
 		rain-fall : {1, 3}
 		average rainfall(rain-fall)
 	] expected 2
 }
-
-test (test-list)

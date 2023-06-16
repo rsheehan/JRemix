@@ -5,16 +5,18 @@ person called (name) age (age) and sex (sex) :
 		sex : sex
 
 		(my) pronoun :
-			if (sex = "male")
-				"he"
-			… otherwise
-				"she"
+			when
+				[sex = "male"] do ["he"]
+				[sex = "female"] do ["she"]
+				"they"
 
 		(me) to string :
 			name ⊕ " is " ⊕ age ⊕ " years old, " ⊕ (my) pronoun ⊕ " is " ⊕ sex ⊕ "."
 
 who : person called "Robert" age 64 and sex "male"
 wife : person called "Stephanie" age 62 and sex "female"
+other : person called "Zindy" age 20 and sex "indeterminate"
 
 who ↲
 wife ↲
+other ↲

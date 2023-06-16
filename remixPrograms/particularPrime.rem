@@ -13,7 +13,7 @@ prime number (n) :
 		finish : (biggest-prime × biggest-prime) + 1
 		test-range : (start) to (finish)
 		more-primes : {}
-		result : filter (x) from (test-range) currently (prime-count) stopping at (n) producing (more-primes)
+		result : (prime-count) stopping at (n) filter (x) from (test-range) producing (more-primes)
 			(x) is not divisible by any number in (primes) up to (√(x))
 		if (result = 0)
 			primes : join (primes) and (more-primes)
@@ -23,7 +23,7 @@ prime number (n) :
 
 -----------
 
-filter (#item) from (list) currently (#count) stopping at (n) producing (#more-primes) [condition-block] :
+(#count) stopping at (n) filter (#item) from (list) producing (#more-primes) [condition-block] :
 	for each (#item) in (list) do
 		if (condition-block)
 			inc (#count)

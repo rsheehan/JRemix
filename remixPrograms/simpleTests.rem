@@ -6,13 +6,20 @@ simple function :
 function (param) :
 	param
 
+function var (#param) :
+	#param
+
 test {
 	"Function no parameters"
 		simple function
 	… expected 1
 
-
 	"Function returns parameter"
 		function 2
 	… expected 2
+
+	"Function returns value of var parameter"
+		var : 3
+		function var (var)
+	… expected 3
 }

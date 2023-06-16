@@ -97,7 +97,7 @@ public class BinaryExpression implements Expression {
                 case ">=" -> d1 >= d2;
                 case "=" -> d1 == d2;
                 case "!=" -> d1 != d2;
-                default -> null;
+                default -> false;
             };
         }
     }

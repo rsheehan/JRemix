@@ -285,7 +285,7 @@ last in (list) :[
 
 =-
 Executes statements in "block".
-These statements are usually "this [] do []"
+These statements are usually "[] do []"
 The difference between "when" and "do" - "when" is not transparent.
 =-
 when [block] :[
@@ -444,9 +444,9 @@ test (list-of-tests) :[
 
 		execute tests (me) :[
 			"Starting tests: " ↲
-
-			for each (test) in (tests) keeping (count) do[
-				assert test (count) (test{"description"}) (test{"code"}) produces (test{"expected"})]
+			for each (test) in (tests) keeping (test-number) do[
+				assert test (test-number) (test{"description"})
+				… (test{"code"}) produces (test{"expected"})]
 			↲
 			test-string : length of (tests) ⊕ " Tests"
 			test-string ↲

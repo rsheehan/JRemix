@@ -54,13 +54,28 @@ public class MethodContext extends Context {
         }
     }
 
+    /*
+    Retrieve a variable value inside a method call.
+    After checking for reference variables
+    first check the instance variables
+    then check the local context.
+
+    */
     public Object retrieve(String varName) {
-        if (variables.containsKey(varName)) {
+        if (varName.startsWith("#")) {
+            if (localContext.variables.containsKey(varName)) {
+                RefParameter refValue = (RefParameter) localContext.variables.get(varName);
+                return refValue.getRefValue();
+            } else {
+                System.err.printf("Can't find ref param %s%n", varName);
+                return null;
+            }
+        } else if (variables.containsKey(varName)) {
             return variables.get(varName);
         } else if (localContext.variables.containsKey((varName))) {
             return localContext.retrieve(varName);
         } else {
-            return parentContext.variables.get(varName);
+            return null;
         }
     }
 

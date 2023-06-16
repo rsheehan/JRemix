@@ -94,9 +94,9 @@ public class RemixEditor extends JFrame {
         remixOutput.setLineWrap( true );
         remixOutput.setWrapStyleWord( true );
         JScrollPane scrollPaneForOutput = new JScrollPane(remixOutput);
-
+        scrollPaneForOutput.setPreferredSize(new Dimension(800, 800));
         //Create a split pane for the output and the text area.
-        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, scrollPaneForOutput);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, scrollPaneForOutput);
         splitPane.setOneTouchExpandable(true);
 
         //Create the status area.
@@ -448,7 +448,7 @@ public class RemixEditor extends JFrame {
             @Override
             public void windowOpened(WindowEvent event) {
                 super.windowOpened(event);
-                frame.splitPane.setDividerLocation(0.8);
+                frame.splitPane.setDividerLocation(0.5);
 //                BuiltInFunctions.setOutputArea(frame.remixOutput);
             }
         });

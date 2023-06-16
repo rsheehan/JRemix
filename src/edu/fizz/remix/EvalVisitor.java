@@ -277,7 +277,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
 
     /** (expression (COMMA expression)*)? PRINTLN */
     public PrintStatement visitPrntStatement(RemixParser.PrntStatementContext ctx) {
-        List<Expression> expressionList = new ArrayList<Expression>();
+        List<Expression> expressionList = new ArrayList<>();
         int n = ctx.getChildCount();
         for (int i = 0; i < n-1; i++) {
             ParseTree node = ctx.getChild(i);
@@ -578,6 +578,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
 
     /** WORD listPart+
      * Access to both list elements and map elements.
+     * If there is only one listPart it could be a function call instead.
+     * This is taken care of at runtime; see GetElementExpression.evaluate.
      */
     @Override
     public GetElementExpression visitListElement(RemixParser.ListElementContext ctx) {

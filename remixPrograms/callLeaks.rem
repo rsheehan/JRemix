@@ -1,0 +1,44 @@
+- Test for function and method leaks -
+- Need to catch "expected" exceptions
+leaking function :
+	for each (item) in {1,2,4} keeping (count) do
+		item
+
+leaking function2 :
+	count
+
+leaking variable :
+	create
+
+		(my) leaking method1 :
+			for each (item) in {1,2,4} keeping (count) do
+				item
+
+		(my) leaking method2 :
+			count
+
+test {
+	"leaks from function"
+		count : 7
+		leaking function
+		count
+	… expected 7
+
+=	"leaks into function"
+		count : 4
+		leaking function2
+=	… expected 4
+
+	"leaks from method"
+		count : 7
+		x : leaking variable
+		(x) leaking method1
+		count
+	… expected 7
+
+=	"leaks into method"
+		count : 4
+		x : leaking variable
+		(x) leaking method2
+=	… expected 4
+}

@@ -1,25 +1,9 @@
 
-simple function :[
-	1]
+person : {"Robert"}
 
-test {[
-	"Function no parameters"[
-		simple function]
-	… expected 1
+person (value) :[
+	2]
 
-
-	[2] expected 2]
-}
-
-simple function :[
-	1]
-
-test {[
-	"Function no parameters"[
-		simple function]
-	… expected 1
-
-
-	[2] expected 2]
-
-}
+name : 1
+person {name} ↲
+person ({name}) \n
