@@ -1,0 +1,44 @@
+- For loops and sequences -
+
+list : {1, 2, 4, 8}
+range : 5 to 10
+string : "abcdefg"
+map : {x : 2, y : 6, z: 10, a : 15}
+
+list ↲
+range ↲
+string ↲
+map ↲
+
+for each (item) in (list) do
+	(item) _
+↲
+for each (item) in (range) do
+	(item) _
+↲
+for each (item) in (string) do
+	(item) _
+↲
+for each (item) in (map) do
+	item, ":", map{item}, " " ~
+↲
+for each (item) in (list) from position 4 to 2 do
+	(item) _
+↲
+for each (item) in (range) from position 4 to 2 do
+	(item) _
+↲
+for each (item) in (string) from position 4 to 2 do
+	(item) _
+↲
+for each (item) in (list) keeping (count) do
+	count, ":", item, " " ~
+↲
+for each (item) in (range) keeping (count) do
+	count, ":", item, " " ~
+↲
+for each (item) in (string) keeping (count) do
+	count, ":", item, " " ~
+↲
+for each (item) in (map) keeping (count) do
+	count, ":", item, ":", map{item}, " " ~

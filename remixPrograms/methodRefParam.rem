@@ -1,0 +1,30 @@
+- Demonstrate a method with a reference parameter -
+
+an object :
+	create
+		x : 3
+
+		getter
+			x
+
+		(me) add to (#a) :
+			#a : #a + x
+
+z : an object
+b : 0
+
+test {
+	"original value" [b] expected 0
+
+	"instance get" [z's x] expected 3
+
+	"updated via method"
+		(z) add to (b)
+		b
+	… expected 3
+
+	"and again"
+		(z) add to (b)
+		b
+	… expected 6
+}

@@ -1,0 +1,42 @@
+=
+Student record
+=
+
+(name) age (age) has languages (languages) :
+	create
+		name : name
+		age : age
+		languages : languages
+
+		getter
+			name, age
+			languages
+
+		(me) to string :
+			things : ""
+			for each (item) in (languages) do
+				if (languages{item} = "Expert")
+					if (length of (things) > 0)
+						things : things ⊕ ", "
+					things : things ⊕ item
+			if (length of (things) = 0)
+				things : "nothing"
+			name ⊕ " age " ⊕ age ⊕ ", expert in " ⊕ things ⊕ "."
+
+student : "Martin D'vloper" age 26 has languages {
+	Java : "Expert"
+	python : "Advanced"
+	Remix : "Expert"
+}
+
+student's name ↲
+student's age ↲
+student's languages ↲
+↲
+student ↲
+↲
+merge {BASIC : "Expert"} into (student's languages)
+
+student's languages ↲
+↲
+student ↲

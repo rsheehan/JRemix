@@ -1,24 +1,23 @@
+- Some string manipulation -
+
 sentence : "the quick brown fox jumps over the lazy dog"
 
 sentence ↲
 
-for each (number) from (1) to (length of (sentence)) do
-	((number) in (sentence)) _
-new line
+for each (char) in (sentence) do
+	(char) _
+↲
 
-pos : start(sentence)
-character : next(pos)
-repeat
-	(character) _
-	character : next(pos)
-… until
-	character = "z"
-new line
+for each (char) in (sentence) do
+	if (char = "z")
+		return
+	(char) _
+↲
 
 (string) backwards :
 	result : ""
-	for each (char-pos) from 1 to (length of (string)) do
-		result : (char-pos) in (string) ⊕ result
+	for each (char) in (string) from position (length (string)) to 1 do
+		result : result ⊕ char
 	result
 
 reverse (#string) :

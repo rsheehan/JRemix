@@ -60,16 +60,17 @@ The boolean "or" operation.
 ==============================
 
 =-
-Run "block" for each "item" in the "list".
+Run "block" for each "item" in the "sequence".
 "block" will usually use the variable passed as "item".
 Return either the last statement value or whatever is returned from "block".
+A sequence is a list, range, map or string.
 =-
-for each (#item) in (list) do [block] :
-	list-pos : start (list)
+for each (#item) in (sequence) do [block] :
+	pos : start (sequence)
 	do
-		if (end (list-pos))
+		if (end (pos))
 			return last
-		#item : next (list-pos)
+		#item : next (pos)
 		- A return in the "block" following breaks out of the loop, with its result.
 		last : do (block)
 		redo
@@ -95,21 +96,23 @@ for each (#number) from (start) to (finish) in steps of (step) do [block]:
 	last
 
 =-
-Run "block" for each "item" in the "list" at all positions from "start" to "finish".
+Run "block" for each "item" in the "sequence" at all positions from "start" to "finish".
 "start" to "finish" can go backwards.
 "block" will usually use the variable passed as "item".
+A sequence here is a list, range or string.
 =-
-for each (#item) in (list) from position (start) to (finish) do [block] :
+for each (#item) in (sequence) from position (start) to (finish) do [block] :
 	for each (pos) from (start) to (finish) do
-		#item : list{pos}
+		#item : (pos) in (sequence)
 		do (block)
 
 =-
-Run "block" for each "item" in the "list" keeping count in "count".
+Run "block" for each "item" in the "sequence" keeping count in "count".
+A sequence is a list, range, map or string.
 =-
-for each (#item) in (list) keeping (#count) do [block] :
+for each (#item) in (sequence) keeping (#count) do [block] :
 	#count : 0
-	for each (#item) in (list) do
+	for each (#item) in (sequence) do
 		inc (#count)
 		do (block)
 
@@ -201,11 +204,12 @@ apply [block] (n) times :
 =-
 Can be used to construct list reduce functions.
 "initial" is executed first.
-Then each "item" in the "list" is executed in the "block".
+Then each "item" in the "sequence" is executed in the "block".
+A sequence is a list, range, map or string.
 =-
-starting with [initial] apply [block] on each (#item) in (list) :
+starting with [initial] apply [block] on each (#item) in (sequence) :
 	do (initial)
-	for each (#item) in (list) do
+	for each (#item) in (sequence) do
 		do (block)
 
 =-
@@ -277,6 +281,18 @@ The last value in the "list"
 =-
 last in (list) :
 	list{length of (list)}
+
+==============================
+ Map functions
+==============================
+
+=-
+Merge the "extra" map into "map".
+"map" is modified.
+=-
+merge (extra) into (map) :
+	for each (item) in (extra) do
+		map{item} : extra{item}
 
 ==============================
  Selection functions
@@ -431,7 +447,7 @@ test (list-of-tests) :
 		assert test (number) (description) [code] produces (expected) :
 			result : do (code)
 			if (description ≠ "")
-				description ↲
+				"\"", description, "\"" ↲
 			… otherwise
 				"Test #", number ↲
 			if (result = expected)

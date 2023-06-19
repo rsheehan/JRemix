@@ -7,11 +7,6 @@ import java.util.*;
 public class BuiltInFunctions {
 
     static RemixSwingWorker remixRunner = null;
-//    private static JTextArea remixOutput = null;
-
-//    public static void setOutputArea(JTextArea output) {
-//        remixOutput = output;
-//    }
 
     public static void setRemixRunner(RemixSwingWorker worker) {
         remixRunner = worker;
@@ -207,7 +202,7 @@ public class BuiltInFunctions {
                     publish(map.get(key));
                     if (iter.hasNext())
                         publish(", ");
-                };
+                }
                 publish("}");
             } else if (value instanceof RemixObject object) {
                 Method method = object.findMethod("| to string");
@@ -453,7 +448,7 @@ public class BuiltInFunctions {
                 }
             } else if (object instanceof String string) {
                 if (index < 1 || index > string.length()) {
-                    return new String("");
+                    return "";
                 } else {
                     return String.valueOf(string.charAt(index - 1));
                 }
@@ -493,12 +488,12 @@ public class BuiltInFunctions {
         }
     }
 
-    /** Return the length of a list, range or string. */
+    /** Return the length of a list, range, map or string. */
     public static final class LengthFunction extends Function {
 
         public LengthFunction() {
             super(
-                    List.of("length of |"),
+                    List.of("length |", "length of |"),
                     List.of("list"),
                     List.of(false),
                     false,
