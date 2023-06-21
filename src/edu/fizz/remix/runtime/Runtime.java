@@ -45,6 +45,7 @@ public class Runtime {
         methodTable = new HashMap<>(originalMethodTable);
         globalContext = new Context(originalGlobalContext);
         completionTable = new HashMap<>(originalCompletionTable);
+        // I don't use this yet see buildAdditionalCompletions()
         functionList = new ArrayList<>(originalFunctionList);
     }
 

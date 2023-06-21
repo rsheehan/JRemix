@@ -241,7 +241,7 @@ average of (list) :
 	… apply
 		sum : sum + item
 	… on each (item) in (list)
-	sum ÷ (length of (list))
+	sum ÷ ((list) length)
 
 =-
 Find the average of "key" elements in the "list-of-maps".
@@ -253,7 +253,7 @@ average (key) of (list-of-maps) :
 	… apply
 		sum : sum + map{key}
 	… on each (map) in (list-of-maps)
-	sum ÷ (length of (list-of-maps))
+	sum ÷ ((list-of-maps) length)
 
 =-
 Join the contents of "list1" and "list2".
@@ -280,7 +280,14 @@ first in (list) :
 The last value in the "list"
 =-
 last in (list) :
-	list{length of (list)}
+	list{(list) length}
+
+=-
+Is the "sequence" empty?
+A sequence is a list, range, map or string.
+=-
+no/empty (sequence) :
+	(sequence) length = 0
 
 ==============================
  Map functions
@@ -322,20 +329,20 @@ The transparent return breaks out of the "when".
 =-
 Increment numeric variable "x".
 =-
-inc (#x) :
+inc/++ (#x) :
 	#x : #x + 1
 
 =-
 Decrement numeric variable "x".
 =-
-dec (#x) :
+dec (#x) : ; can't have "--" at the start of a line
 	#x : #x - 1
 
 =-
 Increment numeric variable "x".
 Return the previous value.
 =-
-(#x) inc :
+(#x) inc/++ :
 	#x : #x + 1
 	#x - 1
 
@@ -343,7 +350,7 @@ Return the previous value.
 Decrement numeric variable "x".
 Return the previous value.
 =-
-(#x) dec :
+(#x) dec/-- :
 	#x : #x - 1
 	#x + 1
 =-
@@ -407,7 +414,7 @@ Joins the "list" with "separator" between elements.
 join (list) with separator (separator) :
 	string : ""
 	for each (item) in (list) keeping (count) do
-		if (count = length of (list))
+		if (count = (list) length)
 			return string ⊕ ((item) as string)
 		string : string ⊕ ((item) as string) ⊕ separator
 
@@ -463,9 +470,9 @@ test (list-of-tests) :
 				assert test (test-number) (test{"description"})
 				… (test{"code"}) produces (test{"expected"})
 			↲
-			test-string : length of (tests) ⊕ " Tests"
+			test-string : (tests) length ⊕ " Tests"
 			test-string ↲
-			repeat ["=" ~] (length of (test-string)) times.↲
+			repeat ["=" ~] ((test-string) length) times. ↲
 			"Passing : ", passing ↲
 			"Failing : ", failing ↲
 

@@ -16,4 +16,9 @@ public final class RemixNull implements Expression {
         return nullExpression;
     }
 
+    @Override
+    public String toString() {
+        return "NULL";
+    }
+
 }

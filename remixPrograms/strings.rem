@@ -16,7 +16,7 @@ for each (char) in (sentence) do
 
 (string) backwards :
 	result : ""
-	for each (char) in (string) from position (length (string)) to 1 do
+	for each (char) in (string) from position ((string) length) to 1 do
 		result : result ⊕ char
 	result
 

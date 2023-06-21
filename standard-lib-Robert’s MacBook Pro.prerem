@@ -61,17 +61,16 @@ The boolean "or" operation.
 ==============================
 
 =-
-Run "block" for each "item" in the "sequence".
+Run "block" for each "item" in the "list".
 "block" will usually use the variable passed as "item".
 Return either the last statement value or whatever is returned from "block".
-A sequence is a list, range, map or string.
 =-
-for each (#item) in (sequence) do [block] :[
-	pos : start (sequence)
+for each (#item) in (list) do [block] :[
+	list-pos : start (list)
 	do[
-		if (end (pos))[
+		if (end (list-pos))[
 			return last]
-		#item : next (pos)
+		#item : next (list-pos)
 		- A return in the "block" following breaks out of the loop, with its result.
 		last : do (block)
 		redo]]
@@ -97,23 +96,21 @@ for each (#number) from (start) to (finish) in steps of (step) do [block]:[
 	last]
 
 =-
-Run "block" for each "item" in the "sequence" at all positions from "start" to "finish".
+Run "block" for each "item" in the "list" at all positions from "start" to "finish".
 "start" to "finish" can go backwards.
 "block" will usually use the variable passed as "item".
-A sequence here is a list, range or string.
 =-
-for each (#item) in (sequence) from position (start) to (finish) do [block] :[
+for each (#item) in (list) from position (start) to (finish) do [block] :[
 	for each (pos) from (start) to (finish) do[
-		#item : (pos) in (sequence)
+		#item : list{pos}
 		do (block)]]
 
 =-
-Run "block" for each "item" in the "sequence" keeping count in "count".
-A sequence is a list, range, map or string.
+Run "block" for each "item" in the "list" keeping count in "count".
 =-
-for each (#item) in (sequence) keeping (#count) do [block] :[
+for each (#item) in (list) keeping (#count) do [block] :[
 	#count : 0
-	for each (#item) in (sequence) do[
+	for each (#item) in (list) do[
 		inc (#count)
 		do (block)]]
 
@@ -205,12 +202,11 @@ apply [block] (n) times :[
 =-
 Can be used to construct list reduce functions.
 "initial" is executed first.
-Then each "item" in the "sequence" is executed in the "block".
-A sequence is a list, range, map or string.
+Then each "item" in the "list" is executed in the "block".
 =-
-starting with [initial] apply [block] on each (#item) in (sequence) :[
+starting with [initial] apply [block] on each (#item) in (list) :[
 	do (initial)
-	for each (#item) in (sequence) do[
+	for each (#item) in (list) do[
 		do (block)]]
 
 =-
@@ -242,7 +238,7 @@ average of (list) :[
 	… apply[
 		sum : sum + item]
 	… on each (item) in (list)
-	sum ÷ ((list) length)]
+	sum ÷ (length of (list))]
 
 =-
 Find the average of "key" elements in the "list-of-maps".
@@ -254,7 +250,7 @@ average (key) of (list-of-maps) :[
 	… apply[
 		sum : sum + map{key}]
 	… on each (map) in (list-of-maps)
-	sum ÷ ((list-of-maps) length)]
+	sum ÷ (length of (list-of-maps))]
 
 =-
 Join the contents of "list1" and "list2".
@@ -281,26 +277,7 @@ first in (list) :[
 The last value in the "list"
 =-
 last in (list) :[
-	list{(list) length}]
-
-=-
-Is the "sequence" empty?
-A sequence is a list, range, map or string.
-=-
-no/empty (sequence) :[
-	(sequence) length = 0]
-
-==============================
- Map functions
-==============================
-
-=-
-Merge the "extra" map into "map".
-"map" is modified.
-=-
-merge (extra) into (map) :[
-	for each (item) in (extra) do[
-		map{item} : extra{item}]]
+	list{length of (list)}]
 
 ==============================
  Selection functions
@@ -330,20 +307,20 @@ The transparent return breaks out of the "when".
 =-
 Increment numeric variable "x".
 =-
-inc/++ (#x) :[
+inc (#x) :[
 	#x : #x + 1]
 
 =-
 Decrement numeric variable "x".
 =-
-dec (#x) : [; can't have "--" at the start of a line
+dec (#x) :[
 	#x : #x - 1]
 
 =-
 Increment numeric variable "x".
 Return the previous value.
 =-
-(#x) inc/++ :[
+(#x) inc :[
 	#x : #x + 1
 	#x - 1]
 
@@ -351,7 +328,7 @@ Return the previous value.
 Decrement numeric variable "x".
 Return the previous value.
 =-
-(#x) dec/-- :[
+(#x) dec :[
 	#x : #x - 1
 	#x + 1]
 =-
@@ -415,7 +392,7 @@ Joins the "list" with "separator" between elements.
 join (list) with separator (separator) :[
 	string : ""
 	for each (item) in (list) keeping (count) do[
-		if (count = (list) length)[
+		if (count = length of (list))[
 			return string ⊕ ((item) as string)]
 		string : string ⊕ ((item) as string) ⊕ separator]]
 
@@ -455,7 +432,7 @@ test (list-of-tests) :[
 		assert test (number) (description) [code] produces (expected) :[
 			result : do (code)
 			if (description ≠ "")[
-				"\"", description, "\"" ↲]
+				description ↲]
 			… otherwise[
 				"Test #", number ↲]
 			if (result = expected)[
@@ -471,9 +448,9 @@ test (list-of-tests) :[
 				assert test (test-number) (test{"description"})
 				… (test{"code"}) produces (test{"expected"})]
 			↲
-			test-string : (tests) length ⊕ " Tests"
+			test-string : length of (tests) ⊕ " Tests"
 			test-string ↲
-			repeat ["=" ~] ((test-string) length) times. ↲
+			repeat ["=" ~] (length of (test-string)) times.↲
 			"Passing : ", passing ↲
 			"Failing : ", failing ↲]]
 

@@ -1,8 +1,9 @@
-person : {"Robert"}
+=
+Student record
+=
 
-person (value) :
-	2
+students : {
+}
 
-name : 1
-person {name} ↲
-person ({name}) \n
+"here" ↲
+(students) length ↲

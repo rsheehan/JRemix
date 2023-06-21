@@ -30,4 +30,14 @@ public class PrintStatement implements Expression {
             BuiltInFunctions.PrintFunction.publish("\n");
         return new RemixNull();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder("print ");
+        for (Expression expression : expressionList) {
+            result.append(expression.toString()).append(", ");
+        }
+        result.delete(result.length() - 2, result.length());
+        return result.toString();
+    }
 }

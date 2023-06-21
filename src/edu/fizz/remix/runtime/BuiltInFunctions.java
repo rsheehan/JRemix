@@ -493,11 +493,11 @@ public class BuiltInFunctions {
 
         public LengthFunction() {
             super(
-                    List.of("length |", "length of |"),
+                    List.of("| length", "length of |"),
                     List.of("list"),
                     List.of(false),
                     false,
-                    "Return the length of a list, range or string."
+                    "Return the length of a list, range, map or string."
             );
         }
 

@@ -439,7 +439,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         StringBuilder word = new StringBuilder();
         while (--pos >= 0) {
             String ch = getText(pos, 1);
-            if (".()[\\]{,}:—|§@…'’⊕+*×÷%=≠<≤>≥0123456789\"\t\n".contains(ch))
+            if (".()[\\]{,}:—|§@…'’0123456789\"\t\n".contains(ch)) // ⊕+*×÷%=≠<≤>≥
                 break;
             word.append(ch);
         }

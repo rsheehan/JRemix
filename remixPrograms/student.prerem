@@ -1,0 +1,65 @@
+
+=
+Student record
+=
+
+students : {[
+	"Martin Developer" age 22 knows languages {[
+		Java : "Expert"
+		python : "Advanced"
+		Remix : "Expert"]
+	}
+	"May Smith" age 25 knows languages {[
+		C++ : "Advanced"
+		C : "Expert"
+		C# : "Competent"]
+	}
+	"Ray Oflight" age 19 knows languages {
+	}]
+}
+
+"Student data" ↲
+"============" ↲
+for each (student) in (students) do[
+	student's name ↲
+	student's age ↲
+	student's languages ↲
+	↲]
+
+May : students{2}
+merge {BASIC : "Expert"} into (May's languages)
+
+"Expertise" ↲
+"=========" ↲
+for each (student) in (students) do[
+	student ↲]
+
+----------------
+
+(name) age (age) knows languages (languages) :[
+	create[
+		name : name
+		age : age
+		languages : languages
+
+		getter[
+			name, age
+			languages]
+
+		(my) expert languages :[
+			filter (languages) by (language) where[
+				languages{language} = "Expert"]]
+
+		(me) to string :[
+			result : name ⊕ " age " ⊕ age ⊕ ", expert in "
+			expertise : (my) expert languages
+			if (no (expertise))[
+				result ⊕ "nothing"]
+			… otherwise[
+				for each (language) in (expertise) keeping (count) do[
+					when[
+						[count = 1] do[
+							result : result ⊕ language]
+						[count < (expertise) length] do[
+							result : result ⊕ ", " ⊕ language]
+						result ⊕ " and " ⊕ language]]]]]]

@@ -2,7 +2,41 @@
 Student record
 =
 
-(name) age (age) has languages (languages) :
+students : {
+	"Martin Developer" age 22 knows languages {
+		Java : "Expert"
+		python : "Advanced"
+		Remix : "Expert"
+	}
+	"May Smith" age 25 knows languages {
+		C++ : "Advanced"
+		C : "Expert"
+		C# : "Competent"
+	}
+	"Ray Oflight" age 19 knows languages {
+		python : "Novice"
+	}
+}
+
+"Student data" ↲
+"============" ↲
+for each (student) in (students) do
+	student's name ↲
+	student's age ↲
+	student's languages ↲
+	↲
+
+May : students{2}
+merge {BASIC : "Expert"} into (May's languages)
+
+"Expertise" ↲
+"=========" ↲
+for each (student) in (students) do
+	student ↲
+
+----------------
+
+(name) age (age) knows languages (languages) :
 	create
 		name : name
 		age : age
@@ -12,31 +46,20 @@ Student record
 			name, age
 			languages
 
+		(my) expert languages :
+			filter (languages) by (language) where
+				languages{language} = "Expert"
+
 		(me) to string :
-			things : ""
-			for each (item) in (languages) do
-				if (languages{item} = "Expert")
-					if (length of (things) > 0)
-						things : things ⊕ ", "
-					things : things ⊕ item
-			if (length of (things) = 0)
-				things : "nothing"
-			name ⊕ " age " ⊕ age ⊕ ", expert in " ⊕ things ⊕ "."
-
-student : "Martin D'vloper" age 26 has languages {
-	Java : "Expert"
-	python : "Advanced"
-	Remix : "Expert"
-}
-
-student's name ↲
-student's age ↲
-student's languages ↲
-↲
-student ↲
-↲
-merge {BASIC : "Expert"} into (student's languages)
-
-student's languages ↲
-↲
-student ↲
+			result : name ⊕ " age " ⊕ age ⊕ ", expert in "
+			expertise : (my) expert languages
+			if (no (expertise))
+				result ⊕ "nothing"
+			… otherwise
+				for each (language) in (expertise) keeping (count) do
+					when
+						[count = 1] do
+							result : result ⊕ language
+						[count < (expertise) length] do
+							result : result ⊕ ", " ⊕ language
+						result ⊕ " and " ⊕ language

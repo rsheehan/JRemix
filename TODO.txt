@@ -1,0 +1,10 @@
+Also the following should work
+
+students{1}'s name \n
+
+It currently requires a variable before the 's.
+
+Tabbing in the editor needs to be looked at after the "when" below:
+
+On objects
+	Make the "=" binary operator call the "equals" method for a Remix object.

@@ -14,15 +14,17 @@ public class RemixListExpression implements Expression {
     @Override
     public List<Object> evaluate(Context context) throws ReturnException, InterruptedException {
         ArrayList<Object> listValues = new ArrayList<>();
-        for (Expression exp : listExpressions) {
-            if (exp instanceof Block block) {
-                if (block.getContext() == null) {
-                    block = block.copy(); // the block could be called recursively we need a copy
-                    block.setContext(context);
-                }
-                listValues.add(block);
-            } else
-                listValues.add(exp.evaluate(context));
+        if (listExpressions != null) {
+            for (Expression exp : listExpressions) {
+                if (exp instanceof Block block) {
+                    if (block.getContext() == null) {
+                        block = block.copy(); // the block could be called recursively we need a copy
+                        block.setContext(context);
+                    }
+                    listValues.add(block);
+                } else
+                    listValues.add(exp.evaluate(context));
+            }
         }
         return listValues;
     }

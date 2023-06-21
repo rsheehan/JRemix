@@ -76,6 +76,7 @@ public class Block implements Expression {
         for (Expression expression : statements) {
             result.append(expression.toString()).append(". ");
         }
+        result.delete(result.length() - 2, result.length());
         result.append(" ]");
         return result.toString();
     }

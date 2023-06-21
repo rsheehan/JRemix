@@ -101,4 +101,9 @@ public class BinaryExpression implements Expression {
             };
         }
     }
+
+    @Override
+    public String toString() {
+        return first.toString() + " " + operator + " " + second.toString();
+    }
 }
