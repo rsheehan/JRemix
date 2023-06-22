@@ -27,7 +27,22 @@ public class BinaryExpression implements Expression {
             System.err.println("ReturnException caught in binary expression.");
             return null;
         }
-        if (val1 instanceof String || val2 instanceof String) {
+        if (val1 instanceof RemixObject object1 && val2 instanceof RemixObject object2) {
+            Method method = object2.findMethod("| equals |");
+            MethodContext methodContext = new MethodContext(null, object2);
+            String formal = method.getArgument(0);
+            if (method != null) {
+                try {
+                    methodContext.assignParam(formal, object1);
+                    return method.execute(methodContext);
+                } catch (ReturnException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                BuiltInFunctions.PrintFunction.publish("To compare objects you need a \"(other) equals (me)\" method.");
+                return false;
+            }
+        } else if (val1 instanceof String || val2 instanceof String) {
             String s1, s2;
             s1 = String.valueOf(val1);
             s2 = String.valueOf(val2);

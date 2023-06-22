@@ -20,12 +20,12 @@ b : 0.99 with Δ 0.01
 "a: ", a ↲
 "b: ", b ↲
 
-if ((b) equals (a))
+if (b = a)
 	"b is equal to a" ↲
 … otherwise
 	"b is not equal to a" ↲
 
-if ((a) equals (b))
+if (a = b)
 	"a is equal to b" ↲
 … otherwise
 	"a is not equal to b" ↲

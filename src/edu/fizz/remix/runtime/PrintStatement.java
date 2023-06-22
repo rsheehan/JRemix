@@ -7,7 +7,7 @@ import java.util.List;
     or a list of values. The intended syntax looks like:
     (n) bottles, " of beer on the wall, ", (n) bottles, " of beer." ↲
         this has a new line at the end
-    (n) bottles, " of beer on the wall, ", (n) bottles, " of beer." _
+    (n) bottles, " of beer on the wall, ", (n) bottles, " of beer." ~
         this has no new line
  */
 public class PrintStatement implements Expression {

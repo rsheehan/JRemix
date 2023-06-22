@@ -3,17 +3,17 @@ Student record
 =
 
 students : {
-	"Martin Developer" age 22 knows languages {
+	"Martin Developer" age 22 knows {
 		Java : "Expert"
 		python : "Advanced"
 		Remix : "Expert"
 	}
-	"May Smith" age 25 knows languages {
+	"May Smith" age 25 knows {
 		C++ : "Advanced"
 		C : "Expert"
 		C# : "Competent"
 	}
-	"Ray Oflight" age 19 knows languages {
+	"Ray Oflight" age 19 knows {
 		python : "Novice"
 	}
 }
@@ -26,8 +26,7 @@ for each (student) in (students) do
 	student's languages ↲
 	↲
 
-May : students{2}
-merge {BASIC : "Expert"} into (May's languages)
+merge {BASIC : "Expert"} into (students{2}'s languages)
 
 "Expertise" ↲
 "=========" ↲
@@ -36,7 +35,7 @@ for each (student) in (students) do
 
 ----------------
 
-(name) age (age) knows languages (languages) :
+(name) age (age) knows (languages) :
 	create
 		name : name
 		age : age

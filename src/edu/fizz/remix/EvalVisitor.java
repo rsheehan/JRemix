@@ -434,25 +434,39 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return (Block)visitChildren(ctx);
     }
 
-    /** WORD POSSESSIVE WORD */
+    /** (WORD | listElement) POSSESSIVE WORD */
     @Override
     public Expression visitGetterMethodCall(RemixParser.GetterMethodCallContext ctx) {
         FunctionCallExpression getterCall = new FunctionCallExpression();
-        // first WORD is the object name
-        getterCall.addParam(new VarValueExpression(ctx.WORD(0).getText()));
+        ParseTree node = ctx.getChild(0);
+        if (node instanceof RemixParser.ListElementContext) {
+            // must be listElement e.g. student{1}
+            getterCall.addParam((Expression)visit(node));
+        } else {
+            // otherwise WORD is the object name
+            getterCall.addParam(new VarValueExpression(node.getText()));
+        }
         // second WORD is the field name in the object
-        getterCall.addToName(ctx.WORD(1).getText());
+        node = ctx.getChild(2);
+        getterCall.addToName(node.getText());
         return getterCall;
     }
 
-    /** WORD POSSESSIVE WORD COLON expression */
+    /** (WORD | listElement) POSSESSIVE WORD COLON expression */
     @Override
     public Expression visitSetterMethodCall(RemixParser.SetterMethodCallContext ctx) {
         FunctionCallExpression setterCall = new FunctionCallExpression();
-        // first WORD is the object name
-        setterCall.addParam(new VarValueExpression(ctx.WORD(0).getText()));
+        ParseTree node = ctx.getChild(0);
+        if (node instanceof RemixParser.ListElementContext) {
+            // must be listElement e.g. student{1}
+            setterCall.addParam((Expression)visit(node));
+        } else {
+            // otherwise WORD is the object name
+            setterCall.addParam(new VarValueExpression(node.getText()));
+        }
         // second WORD is the field name in the object
-        setterCall.addToName(ctx.WORD(1).getText());
+        node = ctx.getChild(2);
+        setterCall.addToName(node.getText());
         // now add the expression
         setterCall.addParam((Expression) visit(ctx.expression()));
         return setterCall;

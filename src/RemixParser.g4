@@ -91,9 +91,9 @@ expression			: expression ADD expression				# exprAdd
 					| LPAREN EOL* expression EOL* RPAREN	# exprParen // after functionCall
 					;
 
-getterMethodCall	: WORD POSSESSIVE WORD; // e.g. Robert's name
+getterMethodCall	: (WORD | listElement) POSSESSIVE WORD; // e.g. Robert's name
 
-setterMethodCall    : WORD POSSESSIVE WORD COLON expression ; // e.g. Robert's name : "Rob"
+setterMethodCall    : (WORD | listElement) POSSESSIVE WORD COLON expression ; // e.g. Robert's name : "Rob"
 
 listElement			: WORD listPart+ ; // access a list element
 

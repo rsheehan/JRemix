@@ -7,19 +7,16 @@ a b :
 			x, y
 
 z : a b
-z's x \n
+z's x ↲
 z's y : 2
-z's y \n
+z's y ↲
 
 list : {
 	a b
-	{
-		3
-		a b
-	}
+	{3, a b}
 }
 
 list{1}'s x : 3
-list{1}'s x \n
+list{1}'s x ↲
 list{2}{2}'s y : 4
-list{2}{2}'s y \n
+list{2}{2}'s y ↲
