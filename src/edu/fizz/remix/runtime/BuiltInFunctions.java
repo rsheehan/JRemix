@@ -12,24 +12,24 @@ public class BuiltInFunctions {
         remixRunner = worker;
     }
 
-    /** The function to include a package. */
-    public static final class IncludeFunction extends Function {
-
-        public IncludeFunction() {
-            super(List.of("using |"),
-                    List.of("package"),
-                    List.of(false),
-                    false,
-                    "Use the \"package\" library."
-            );
-        }
-
-        @Override
-        public Object execute(Context context) {
-            return null;
-        }
-
-    }
+//    /** The function to include a package. */
+//    public static final class IncludeFunction extends Function {
+//
+//        public IncludeFunction() {
+//            super(List.of("using |"),
+//                    List.of("package"),
+//                    List.of(false),
+//                    false,
+//                    "Use the \"package\" library."
+//            );
+//        }
+//
+//        @Override
+//        public Object execute(Context context) {
+//            return null;
+//        }
+//
+//    }
 
     /** A terminating quit function. */
     public static final class QuitFunction extends Function {

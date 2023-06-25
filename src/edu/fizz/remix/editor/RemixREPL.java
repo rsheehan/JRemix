@@ -5,7 +5,7 @@ import edu.fizz.remix.PreProcess;
 import edu.fizz.remix.parser.RemixErrorListener;
 import edu.fizz.remix.parser.RemixLexer;
 import edu.fizz.remix.parser.RemixParser;
-import edu.fizz.remix.runtime.Block;
+import edu.fizz.remix.runtime.LibraryExpression;
 import edu.fizz.remix.runtime.Runtime;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -16,7 +16,7 @@ import java.io.IOException;
 
 public class RemixREPL {
 
-    public static Block loadPackage(String libName) throws Exception {
+    public static LibraryExpression loadPackage(String libName) throws Exception {
         String preRemFile;
         // Preprocess the .rem file
         preRemFile = PreProcess.processFile(libName);
@@ -26,7 +26,7 @@ public class RemixREPL {
         RemixParser parser = new RemixParser(tokens);
         ParseTree tree = parser.program(); // parse
         EvalVisitor eval = new EvalVisitor();
-        return (Block)eval.visit(tree);
+        return (LibraryExpression) eval.visit(tree);
     }
 
     public static void checkEditorText(String editorText) {
@@ -55,7 +55,9 @@ public class RemixREPL {
         parser.addErrorListener(new RemixErrorListener());
         ParseTree tree = parser.program(); // parse
         EvalVisitor eval = new EvalVisitor();
-        Runtime.run((Block)eval.visit(tree));
+
+        Runtime.resetToStandard();
+        Runtime.run((LibraryExpression)eval.visit(tree));
     }
 
 }

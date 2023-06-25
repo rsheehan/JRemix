@@ -1,26 +1,16 @@
 
-a b :[
-	create[
-		x : 1
-		y : 99
+small : library[
+	hidden : "a string"
 
-		getters/setters[
-			x, y]]]
+	4 ↲
 
-z : a b
-z's x \n
-z's y : 2
-z's y \n
+	(x) plus (y) :[
+		x ⊕ y]]
 
-list : {[
-	a b
-	{[
-		3
-		a b]
-	}]
-}
+outside : "global value"
 
-list{1}'s x : 3
-list{1}'s x \n
-list{2}{2}'s y : 4
-list{2}{2}'s y \n
+using (small)[
+	
+	hidden ↲
+
+	(outside) plus (hidden)]

@@ -25,24 +25,46 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
 
     // private Map<String, Object> currentVariableContext;
 
-    /** EOL* LBLOCK ( functionDefinition | statement )* RBLOCK EOF */
+    /** ( functionDefinition | statement )* EOF */
     /* This is where the Remix functions are added to the function table. */
     @Override
-    public Block visitProgram(RemixParser.ProgramContext ctx) {
-        Block theProgram = new Block();
+    public LibraryExpression visitProgram(RemixParser.ProgramContext ctx) {
+        /*
+        The current library could be the baseLibrary, or the programLibrary
+         */
+        LibraryExpression library = Runtime.getCurrentLibrary();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.StatementContext) {
                 Expression statement = (Expression)visit(node);
                 if (statement != null) // can be blank statements
-                    theProgram.addStatement(statement);
+                    library.block.addStatement(statement);
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
-                Runtime.addFunction(function);
+                library.addFunction(function);
             }
         }
-        return theProgram;
+        return library;
+    }
+
+    /** LIBRARY LBLOCK EOL* ( functionDefinition | statement )* RBLOCK */
+    @Override
+    public Object visitLibrary(RemixParser.LibraryContext ctx) {
+        LibraryExpression library = new LibraryExpression();
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n; i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixParser.StatementContext) {
+                Expression statement = (Expression)visit(node);
+                if (statement != null) // can be blank statements
+                    library.block.addStatement(statement);
+            } else if (node instanceof RemixParser.FunctionDefinitionContext) {
+                RemixFunction function = (RemixFunction)visit(node);
+                library.addFunction(function);
+            }
+        }
+        return library;
     }
 
     /** RETURN expression? */
@@ -131,30 +153,30 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 List<String> getSetNames = (List<String>)visit(node);
                 for (String name : getSetNames) {
                     String getMethodName = methodTable.createGetter(name);
-                    Runtime.addMethodName(getMethodName, 1);
+                    Runtime.getCurrentLibrary().addMethodName(getMethodName, 1);
                     String setMethodName = methodTable.createSetter(name);
-                    Runtime.addMethodName(setMethodName, 1);
+                    Runtime.getCurrentLibrary().addMethodName(setMethodName, 1);
                 }
             } else if (node instanceof RemixParser.GetterContext) {
                 @SuppressWarnings("unchecked")
                 List<String> getterNames = (List<String>)visit(node);
                 for (String name : getterNames) {
                     String methodName = methodTable.createGetter(name);
-                    Runtime.addMethodName(methodName, 1);
+                    Runtime.getCurrentLibrary().addMethodName(methodName, 1);
                 }
             }else if (node instanceof RemixParser.SetterContext) {
                 @SuppressWarnings("unchecked")
                 List<String> setterNames = (List<String>)visit(node);
                 for (String name : setterNames) {
                     String methodName = methodTable.createSetter(name);
-                    Runtime.addMethodName(methodName, 1);
+                    Runtime.getCurrentLibrary().addMethodName(methodName, 1);
                 }
             } else if (node instanceof RemixParser.MethodDefinitionContext) {
                 Method method = (Method)visit(node);
                 // add it to the methodTable for the object
                 methodTable.addMethod(method);
                 // add it to the global table
-                Runtime.addMethodName(method.getName(), method.getSelfRef());
+                Runtime.getCurrentLibrary().addMethodName(method.getName(), method.getSelfRef());
             }
         }
         objectExpr.addMethodTable(methodTable);

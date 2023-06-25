@@ -2,7 +2,7 @@ package edu.fizz.remix;
 
 import edu.fizz.remix.parser.RemixLexer;
 import edu.fizz.remix.parser.RemixParser;
-import edu.fizz.remix.runtime.Block;
+import edu.fizz.remix.runtime.LibraryExpression;
 import edu.fizz.remix.runtime.Runtime;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -15,7 +15,7 @@ public class Remix {
         return inputFile.endsWith(".rem");
     }
 
-    public static Block loadPackage(String libName) throws Exception {
+    public static LibraryExpression loadPackage(String libName) throws Exception {
         String inputFile;
         String preRemFile;
         inputFile = libName;
@@ -27,14 +27,14 @@ public class Remix {
         RemixParser parser = new RemixParser(tokens);
         ParseTree tree = parser.program(); // parse
         EvalVisitor eval = new EvalVisitor();
-        return (Block)eval.visit(tree); // adds all the functions and prepares the program
+        return (LibraryExpression)eval.visit(tree); // adds all the functions and prepares the program
     }
 
     public static void main(String[] args) throws Exception {
         Runtime.prepareEnvironment();
         Runtime.resetToStandard();
         if (args.length > 0 && isRemFile(args[0])) {
-            Block program = loadPackage(args[0]);
+            LibraryExpression program = loadPackage(args[0]);
             Runtime.run(program);
         } else {
             System.out.println("Not a Remix file.");

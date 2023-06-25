@@ -9,6 +9,10 @@ options { tokenVocab=RemixLexer; } // use tokens from RemixLexer.g4
 
 program				: ( functionDefinition | statement )* EOF ;
 
+library				: LIBRARY LBLOCK EOL* ( functionDefinition | statement )* RBLOCK ;
+
+usingLibrary		: USING LPAREN WORD RPAREN LBLOCK statement* RBLOCK ;
+
 functionDefinition	: functionComment? functionSignature COLON COLON? EOL? blockOfStatements ;
 
 functionComment		: DOC_COMMENT ;
@@ -53,6 +57,7 @@ statement			: assignmentStatement	# assStatement	// label not used
 					| endOfStatement		# blank // need to reconsider this
 					| REDO					# redo
 					| RETURN expression?	# return
+					| usingLibrary			# usingStatement
 					;
 
 endOfStatement		: EOL | EOS ;
@@ -85,6 +90,7 @@ expression			: expression ADD expression				# exprAdd
 					| blockOfStatements		# exprBlock
 					| list					# exprList
 					| map					# exprMap
+					| library				# exprLibrary
 					| createObject			# exprObject
 					| getterMethodCall		# exprGetterMethod
 					| setterMethodCall      # exprSetterMethod

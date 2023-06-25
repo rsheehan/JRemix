@@ -26,7 +26,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         */
 
         String routineName = singleName();
-        Integer refPos = Runtime.methodTable.get(routineName);
+        Integer refPos = Runtime.getCurrentLibrary().methodTable.get(routineName);
         if (refPos != null) {
             RemixObject remixObject = null;
             Method method = null;
@@ -57,7 +57,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
 
         // fall through into a possible function call
 
-        Function function = Runtime.functionTable.get(routineName);
+        Function function = Runtime.getCurrentLibrary().functionTable.get(routineName);
         if (function == null) {
             String readable = routineName; //.replace("_", " ");
             readable = readable.replace("|", "()");

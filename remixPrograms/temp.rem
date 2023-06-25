@@ -1,25 +1,20 @@
-a b :
-	create
-		x : 1
-		y : 99
+"the start"↲
 
-		getters/setters
-			x, y
+small : library
+	hidden : "a string"
 
-z : a b
-z's x \n
-z's y : 2
-z's y \n
+	4 ↲
 
-list : {
-	a b
-	{
-		3
-		a b
-	}
-}
+	(x) plus (y) :
+		x ⊕ y
 
-list{1}'s x : 3
-list{1}'s x \n
-list{2}{2}'s y : 4
-list{2}{2}'s y \n
+outside : "global value"
+=
+using (small)
+	
+	hidden ↲
+
+	(outside) plus (hidden)
+=
+
+"the end"↲

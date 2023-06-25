@@ -463,6 +463,7 @@ public class RemixEditor extends JFrame {
         // setup the Remix runtime
         try {
             Runtime.prepareEnvironment();
+            // after this the currentLibrary is the program library
         } catch (Exception e) {
             System.err.println("Error: initializing REPL");
             throw new RuntimeException(e);

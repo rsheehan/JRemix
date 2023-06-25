@@ -9,10 +9,14 @@ import java.util.HashMap;
 /** A Runtime includes the function table, object table and the stack of variable contexts. */
 public class Runtime {
 
-    // a global to indicate if function and method definitions are in the standard-lib
-    private static boolean standard;
-    private static HashMap<String, Function> originalFunctionTable;
-    public static HashMap<String, Function> functionTable;
+    /* The base library has the built-in and standard-lib functions. */
+    private static LibraryExpression baseLibrary = new LibraryExpression();
+    /* The program library copies the base library and adds the current
+       functions and statements.
+     */
+    private static LibraryExpression programLibrary = new LibraryExpression();
+    private static LibraryExpression currentLibrary;
+
     // maps the completion name to the display name
     public static HashMap<String, CompletionNamesAndDoc> originalCompletionTable;
     public static HashMap<String, CompletionNamesAndDoc> completionTable;
@@ -20,30 +24,17 @@ public class Runtime {
     public static ArrayList<String> originalFunctionList;
     public static ArrayList<String> functionList;
 
-    // different from the functionTable, only stores the refparam position
-    // there could be multiple object tables with a method of this name
-    private static HashMap<String, Integer> originalMethodTable;
-    public static HashMap<String, Integer> methodTable;
-    
-    private static Context originalGlobalContext;
-    private static Context globalContext;
-
     private static void initRuntime() {
-        originalFunctionTable = new HashMap<>();
-        originalMethodTable = new HashMap<>();
-        originalGlobalContext = new Context(null, null);
         originalCompletionTable = new HashMap<>();
         originalFunctionList = new ArrayList<>();
     }
 
     /*
      * Sets the functions, methods, and context back to the standard version.
-     * Also ensures any new methods
      */
     public static void resetToStandard() {
-        functionTable = new HashMap<>(originalFunctionTable);
-        methodTable = new HashMap<>(originalMethodTable);
-        globalContext = new Context(originalGlobalContext);
+        programLibrary = baseLibrary.clone();
+        currentLibrary = programLibrary;
         completionTable = new HashMap<>(originalCompletionTable);
         // I don't use this yet see buildAdditionalCompletions()
         functionList = new ArrayList<>(originalFunctionList);
@@ -51,64 +42,36 @@ public class Runtime {
 
     /** Set up the builtin functions. */
     public static void setUpBuiltIns() {
-        addFunction(new BuiltInFunctions.QuitFunction());
-        addFunction(new BuiltInFunctions.CopyFunction());
-        addFunction(new BuiltInFunctions.TypeOfFunction());
-        addFunction(new BuiltInFunctions.IsATypeFunction());
-        addFunction(new BuiltInFunctions.DoFunction());
-        addFunction(new BuiltInFunctions.PrintFunction());
-        addFunction(new BuiltInFunctions.IfFunction());
-        addFunction(new BuiltInFunctions.IfOtherwiseFunction());
-        addFunction(new BuiltInFunctions.StartFunction());
-        addFunction(new BuiltInFunctions.NextFunction());
-        addFunction(new BuiltInFunctions.EndFunction());
-        addFunction(new BuiltInFunctions.RangeFunction());
-        addFunction(new BuiltInFunctions.RandomFunction());
-        addFunction(new BuiltInFunctions.SquareRootFunction());
-        addFunction(new BuiltInFunctions.AppendFunction());
-        addFunction(new BuiltInFunctions.LengthFunction());
-        addFunction(new BuiltInFunctions.ConcatFunction());
-        addFunction(new BuiltInFunctions.ExtractFunction());
-    }
-
-    /** Add functions from the compile phase. */
-    public static void addFunction(Function function) {
-        for (String name : function.getAllNames()) {
-            if (standard)
-                originalFunctionTable.put(name, function);
-            else
-                functionTable.put(name, function);
-        }
-    }
-
-    /** Add a name of method and the reference parameter position. */
-    public static void addMethodName(String name, int refPos) {
-        Integer pos;
-        if (standard)
-            pos = originalMethodTable.get(name);
-        else
-            pos = methodTable.get(name);
-        if (pos == null) { // new method name
-            if (standard)
-                originalMethodTable.put(name, refPos);
-            else
-                methodTable.put(name, refPos);
-        } else if (pos != refPos) {
-            System.err.format("Conflicting method definition: %s%n", name);
-        }
+        baseLibrary.addFunction(new BuiltInFunctions.QuitFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.CopyFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.TypeOfFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.IsATypeFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.DoFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.PrintFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.IfFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.IfOtherwiseFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.StartFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.NextFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.EndFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.RangeFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.RandomFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.SquareRootFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.AppendFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.LengthFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.ConcatFunction());
+        baseLibrary.addFunction(new BuiltInFunctions.ExtractFunction());
     }
 
     /** Print the names of all the functions. */
     public static void printFunctionNames() {
-        for (String name : functionTable.keySet()) {
+        for (String name : programLibrary.functionTable.keySet()) {
             System.out.println(name + ": " + completionNames(name));
         }
     }
 
     /** Build the completion table from built-in and standard-lib. */
     public static void buildOriginalCompletions() {
-        for (String name : functionTable.keySet()) {
-//            System.out.println(name);
+        for (String name : baseLibrary.functionTable.keySet()) {
             CompletionNamesAndDoc namesAndDoc = completionNames(name);
             int uniquifier = 0;
             // for functions with same string e.g. "average of ()", "average () of ()" both
@@ -145,7 +108,7 @@ public class Runtime {
 
     // TODO: choose a method to connect the completionNames to the functionComment
     private static CompletionNamesAndDoc completionNames(String internalName) {
-        Function function = functionTable.get(internalName);
+        Function function = baseLibrary.functionTable.get(internalName);
         StringBuilder screenName = new StringBuilder();
         StringBuilder completionName = new StringBuilder();
         int param = 0;
@@ -166,7 +129,6 @@ public class Runtime {
                 completionName.append(ch);
             }
         }
-//        System.out.printf("%s: %s, %s%n", screenName.toString(), completionName.toString(), function.functionComment);
         return new CompletionNamesAndDoc(screenName.toString(), completionName.toString(), function.functionComment);
     }
 
@@ -192,20 +154,25 @@ public class Runtime {
         return completions;
     }
 
+    public static LibraryExpression getCurrentLibrary() {
+        return currentLibrary;
+    }
+
     /** Run the standard library setting up functions, objects and global data */
     public static void prepareEnvironment() throws Exception {
-        standard = true;
         initRuntime();
         setUpBuiltIns();
-        Block library = RemixREPL.loadPackage("standard-lib.rem");
-        resetToStandard(); // so the libraries to use are reset to the originals
-        standard = false;
+        currentLibrary = baseLibrary;
+        RemixREPL.loadPackage("standard-lib.rem");
+        //resetToStandard(); // so the libraries to use are reset to the originals
+        // this also makes the currentLibrary the program one
         try {
             // the only reason is in case the standard lib has some data values
-            library.evaluate(originalGlobalContext);
+            currentLibrary.block.evaluate(currentLibrary.context);
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in program.");
         }
+        currentLibrary = programLibrary; // now using the program to add things to
         buildOriginalCompletions(); // could recalculate at changes or else
         // have an original which gets extended just like the function table.
         // when a new function is defined I should add it.
@@ -215,9 +182,9 @@ public class Runtime {
     /**
      * Run the program.
      */
-    public static void run(Block program) {
+    public static void run(LibraryExpression program) {
         try {
-            program.evaluate(globalContext);
+            program.evaluate(program.context);
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in program.");
         } catch (InterruptedException exception) {

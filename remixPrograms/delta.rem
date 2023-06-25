@@ -29,3 +29,5 @@ if (a = b)
 	"a is equal to b" ↲
 … otherwise
 	"a is not equal to b" ↲
+
+"Equality isn't always commutative." ↲

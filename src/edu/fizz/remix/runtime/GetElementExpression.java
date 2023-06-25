@@ -78,7 +78,7 @@ public class GetElementExpression implements Expression {
             params += " |";
         }
         String name = listName + params;
-        Function function = Runtime.functionTable.get(name);
+        Function function = Runtime.getCurrentLibrary().functionTable.get(name);
         return (function != null && listElementIds.size() == 1);
     }
 

@@ -10,5 +10,5 @@ even values in (the-list) :
 	even : 0
 	for each (item) in (the-list) do
 		if ((item) is divisible by 2)
-			even : even + 1
+			(even) ++
 	return even
