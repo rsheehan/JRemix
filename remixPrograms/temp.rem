@@ -1,17 +1,16 @@
 "the start"↲
 
+outside : "global value"
+
 small : library
 	hidden : "a string"
-
 	4 ↲
 
 	(x) plus (y) :
 		x ⊕ y
-
-outside : "global value"
 =
 using (small)
-	
+
 	hidden ↲
 
 	(outside) plus (hidden)

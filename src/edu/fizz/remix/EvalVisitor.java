@@ -55,16 +55,22 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
-            if (node instanceof RemixParser.StatementContext) {
-                Expression statement = (Expression)visit(node);
-                if (statement != null) // can be blank statements
-                    library.block.addStatement(statement);
-            } else if (node instanceof RemixParser.FunctionDefinitionContext) {
+            if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 library.addFunction(function);
             }
         }
         return library;
+    }
+
+    /** USING LPAREN WORD RPAREN blockOfStatements */
+    @Override
+    public UsingLibBlock visitUsingLibrary(RemixParser.UsingLibraryContext ctx) {
+        /* Currently only a WORD i.e. variable for the lib identifier.
+        * Could be an expression instead. */
+        VarValueExpression library = new VarValueExpression(ctx.WORD().getText());
+        Block usingLibBlock = (Block) visit(ctx.blockOfStatements());
+        return new UsingLibBlock(library, usingLibBlock);
     }
 
     /** RETURN expression? */
@@ -137,7 +143,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return (RemixObjectExpression)visit(ctx.object());
     }
 
-    /** field* getter? methodDefinition* */
+    /** field* (getterSetter? getter? setter?) methodDefinition* */
     @Override
     public RemixObjectExpression visitObject(RemixParser.ObjectContext ctx) {
         RemixObjectExpression objectExpr = new RemixObjectExpression();

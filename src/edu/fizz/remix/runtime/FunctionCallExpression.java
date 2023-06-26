@@ -69,7 +69,8 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
     }
 
     /*
-    callingContext is the context as this call is started
+    callingContext is the context as this call is started. This is necessary for blocks
+    being passed as parameters because they will refer to variables in that context.
     routine is the function to call
     functionContext is the context the function executes in - it is a child of the calling context
     we add the parameters to this.
