@@ -1,16 +1,33 @@
 
-small : library[
-	hidden : "a string"
-
-	4 ↲
-
-	(x) plus (y) :[
-		x ⊕ y]]
+- Playing with libraries -
 
 outside : "global value"
 
-using (small)[
-	
-	hidden ↲
+small : library[
 
-	(outside) plus (hidden)]
+	(x) plus (y) :[
+		x ⊕ y]
+
+	a b :[
+		2]]
+
+using (small)[
+	hidden : "library value"
+
+	result : (outside) plus (hidden)]
+
+people : library[
+
+	name (name) age (age) :[
+		create[
+			name : name
+			age : age
+
+			(me) to string :[
+				name ⊕ ", " ⊕ age ⊕ " years old"]]]]
+
+using (people)[
+	Robert : name "Robert" age 64]
+
+Robert ↲
+result ↲

@@ -31,8 +31,9 @@ public class RemixEdLexer {
     private static LexMode mode;
 
     private static final List<String> keywords = Arrays.asList("return", "redo", "setter",
-            "setters", "getter", "getters", "getter/setter", "getters/setters");
+            "setters", "getter", "getters", "getter/setter", "getters/setters", "library", "using");
     // "create" is only a keyword if it is on a line by itself
+    // "using" should only be a keyword if is followed by parentheses
 
     private static final List<String> literalWords = Arrays.asList("true", "false");
 

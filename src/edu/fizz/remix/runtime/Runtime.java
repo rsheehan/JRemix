@@ -2,20 +2,21 @@ package edu.fizz.remix.runtime;
 
 import edu.fizz.remix.editor.RemixREPL;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
-/** A Runtime includes the function table, object table and the stack of variable contexts. */
+/** A Runtime includes the current library which has
+ *  the function table, object table and variable context. */
 public class Runtime {
 
     /* The base library has the built-in and standard-lib functions. */
-    private static LibraryExpression baseLibrary = new LibraryExpression();
+    private static final LibraryExpression baseLibrary = new LibraryExpression();
     /* The program library copies the base library and adds the current
        functions and statements.
      */
     private static LibraryExpression programLibrary = new LibraryExpression();
     private static LibraryExpression currentLibrary;
+
+    private static final Stack<LibraryExpression> libraryStack = new Stack<>();
 
     // maps the completion name to the display name
     public static HashMap<String, CompletionNamesAndDoc> originalCompletionTable;
@@ -35,6 +36,8 @@ public class Runtime {
     public static void resetToStandard() {
         programLibrary = baseLibrary.clone();
         currentLibrary = programLibrary;
+        libraryStack.removeAllElements();
+        libraryStack.add(currentLibrary);
         completionTable = new HashMap<>(originalCompletionTable);
         // I don't use this yet see buildAdditionalCompletions()
         functionList = new ArrayList<>(originalFunctionList);
@@ -158,6 +161,38 @@ public class Runtime {
         return currentLibrary;
     }
 
+    public static void setCurrentLibrary(LibraryExpression library) {
+        currentLibrary = library;
+    }
+
+    public static void pushLibrary(LibraryExpression library) {
+        libraryStack.push(library);
+    }
+
+    public static LibraryExpression popLibrary() {
+        return libraryStack.pop();
+    }
+
+    public static Integer searchMethodTables(String methodName) {
+        for (LibraryExpression library : libraryStack) {
+            Integer refPos = library.methodTable.get(methodName);
+            if (refPos != null) {
+                return refPos;
+            }
+        }
+        return null;
+    }
+
+    public static Function searchFunctionTables(String functionName) {
+        for (LibraryExpression library : libraryStack) {
+            Function function = library.functionTable.get(functionName);
+            if (function != null) {
+                return function;
+            }
+        }
+        return null;
+    }
+
     /** Run the standard library setting up functions, objects and global data */
     public static void prepareEnvironment() throws Exception {
         initRuntime();
@@ -172,11 +207,11 @@ public class Runtime {
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in program.");
         }
-        currentLibrary = programLibrary; // now using the program to add things to
         buildOriginalCompletions(); // could recalculate at changes or else
         // have an original which gets extended just like the function table.
         // when a new function is defined I should add it.
         // Completions should also include in scope variable names (a bit trickier)
+        currentLibrary = programLibrary; // now using the program to add things to
     }
 
     /**

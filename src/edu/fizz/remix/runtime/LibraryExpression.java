@@ -5,6 +5,10 @@ import java.util.HashMap;
 /**
  * A library expression holds a context, a function and a method table, and
  * a block of code to be executed when the library is completed.
+ * The context and block only make sense when a file is being loaded with
+ * loadPackage or running the contents of the editor window.
+ * A file and editor contents are libraries by default.
+ * Internal libraries from the "library"  don't use the block and context.
  * The main program is a library expression which also holds the built-in
  * functions and the standard-lib functions.
  */
@@ -47,6 +51,7 @@ public class LibraryExpression implements Expression {
 
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
-        return block.evaluate(context); // todo: contexts here need thinking about
+        block.evaluate(context); // this is creating the functions for the library function table.
+        return this;
     }
 }

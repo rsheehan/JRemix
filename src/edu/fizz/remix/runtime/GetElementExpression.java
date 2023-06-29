@@ -1,6 +1,6 @@
 package edu.fizz.remix.runtime;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -25,15 +25,14 @@ public class GetElementExpression implements Expression {
      */
     @Override
     public Object evaluate(Context context) throws InterruptedException, ReturnException {
-        functionCall();
         Object id = null;
         Object listOrMapPart = context.retrieve(listName);
         boolean listOrMapAccess = listOrMapPart instanceof Map<?,?> || listOrMapPart instanceof List<?>;
-        boolean functionCall = functionCall();
-        boolean ambiguous = listOrMapAccess && functionCall;
-        if (ambiguous) {
-            System.err.printf("Possibly ambiguous: %s%n", listName + "{...}");
-        }
+        boolean possibleFunctionCall = functionCall();
+        boolean ambiguous = listOrMapAccess && possibleFunctionCall;
+//        if (ambiguous) {
+//            System.err.printf("Possibly ambiguous: %s%n", listName + "{...}");
+//        }
         if (listOrMapAccess) { // always do this if existing list or map
             for (Expression elementId : listElementIds) {
                 id = elementId.evaluate(context);
@@ -56,11 +55,11 @@ public class GetElementExpression implements Expression {
             }
             return listOrMapPart;
         }
-        if (functionCall) { // only do this if not ambiguous
+        if (possibleFunctionCall) { // only do this if not ambiguous
             FunctionCallExpression functionCallExpression = new FunctionCallExpression();
             functionCallExpression.addToName(listName);
             for (Expression parameter : listElementIds) {
-                RemixListExpression listExpression = new RemixListExpression(Arrays.asList(parameter));
+                RemixListExpression listExpression = new RemixListExpression(Collections.singletonList(parameter));
                 functionCallExpression.addParam(listExpression);
             }
             return functionCallExpression.evaluate(context);
@@ -73,12 +72,12 @@ public class GetElementExpression implements Expression {
         This checks to see if a function call of the name and parameter list exists.
      */
     private boolean functionCall() {
-        String params = "";
+        StringBuilder params = new StringBuilder();
         for (Expression elementId : listElementIds) {
-            params += " |";
+            params.append(" |");
         }
         String name = listName + params;
-        Function function = Runtime.getCurrentLibrary().functionTable.get(name);
+        Function function = Runtime.searchFunctionTables(name);
         return (function != null && listElementIds.size() == 1);
     }
 

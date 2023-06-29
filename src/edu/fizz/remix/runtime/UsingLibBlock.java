@@ -14,7 +14,11 @@ public class UsingLibBlock implements Expression {
     }
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
+        // this should change the current Runtime library
         LibraryExpression library = (LibraryExpression) libraryVariable.evaluate(context);
-        return usingStatements.evaluate(context);
+        Runtime.pushLibrary(library);
+        Object result = usingStatements.evaluate(context);
+        Runtime.popLibrary();
+        return result;
     }
 }

@@ -34,7 +34,7 @@ public class RemixObjectExpression implements Expression {
     public RemixObject evaluate(Context definingContext) throws ReturnException, InterruptedException {
         RemixObject remixObject = new RemixObject(methodTable);
         for (Expression statement : initBlock.statements) {
-            AssignmentStatement assStmnt = (AssignmentStatement)statement;
+            FieldAssignmentStatement assStmnt = (FieldAssignmentStatement) statement;
             Object result = assStmnt.evaluate(definingContext);
             remixObject.instanceAssign(assStmnt.name(), result); // add the instance variable with initial value
         }

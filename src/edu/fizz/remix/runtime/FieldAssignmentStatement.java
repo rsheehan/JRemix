@@ -1,13 +1,9 @@
 package edu.fizz.remix.runtime;
 
-public class AssignmentStatement implements Expression {
+public class FieldAssignmentStatement extends AssignmentStatement {
 
-    protected final String variableName;
-    final Expression expression;
-
-    public AssignmentStatement(String name, Expression expression) {
-        variableName = name;
-        this.expression = expression;
+    public FieldAssignmentStatement(String name, Expression expression) {
+        super(name, expression);
     }
 
     @Override
@@ -23,17 +19,6 @@ public class AssignmentStatement implements Expression {
         } else {
             result = expression.evaluate(context);
         }
-        context.assign(variableName, result);
-        return result;
+        return result; // does not assign in the context
     }
-
-    public String name() {
-        return variableName;
-    }
-
-    @Override
-    public String toString() {
-        return variableName + " : " + expression.toString();
-    }
-
 }

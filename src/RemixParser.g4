@@ -9,7 +9,7 @@ options { tokenVocab=RemixLexer; } // use tokens from RemixLexer.g4
 
 program				: ( functionDefinition | statement )* EOF ;
 
-library				: LIBRARY LBLOCK EOL* functionDefinition* RBLOCK ;
+library				: LIBRARY LBLOCK EOL* (functionDefinition EOL*)* RBLOCK ;
 
 usingLibrary		: USING LPAREN WORD RPAREN blockOfStatements ;
 
@@ -27,7 +27,7 @@ sigPart				: WORD					# sigWord
 
 createObject		: CREATE LBLOCK EOL* object RBLOCK ;
 
-object				: field* (getterSetter? getter? setter?) methodDefinition* ; // still need to add getset section
+object				: field* (getterSetter? getter? setter?) methodDefinition* ;
 
 field				: WORD COLON expression EOL*;
 

@@ -1,0 +1,52 @@
+- Playing with libraries -
+
+lib1 : library
+
+	(x) plus (y) :
+		x + y
+
+	name (name) age (age) :
+		create
+			name : age
+			age : name
+
+			(me) to string :
+				name ⊕ ", " ⊕ age ⊕ " years old"
+
+
+lib2 : library
+
+	name (name) age (age) :
+		create
+			name : name
+			age : age
+
+			(me) to string :
+				name ⊕ ", " ⊕ age ⊕ " years old"
+
+"N.B. This is a test inside library usage." ↲
+"----------------------------------------" ↲
+using (lib1)
+	test {
+		"Simple function from library"
+			4 plus 3
+		… expected 7
+	}
+↲
+
+"N.B. This is a test with library usage inside." ↲
+"----------------------------------------------" ↲
+test {
+	"Simple function from library again"
+		using (lib1)
+			4 plus 5
+	… expected 9
+	"Method call from library"
+		using (lib1)
+			(name "Robert" age 64) to string
+	… expected "64, Robert years old"
+	"Method call same signature different library"
+		using (lib2)
+			(name "Robert" age 64) to string
+	… expected "Robert, 64 years old"
+}
