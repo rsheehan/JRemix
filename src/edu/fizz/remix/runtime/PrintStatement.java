@@ -24,10 +24,10 @@ public class PrintStatement implements Expression {
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         for (Expression expression : expressionList) {
             Object value = expression.evaluate(context);
-            BuiltInFunctions.PrintFunction.printValue(value);
+            BuiltInFunctionsLibrary.PrintFunction.printValue(value);
         }
         if (newline)
-            BuiltInFunctions.PrintFunction.publish("\n");
+            BuiltInFunctionsLibrary.PrintFunction.publish("\n");
         return new RemixNull();
     }
 

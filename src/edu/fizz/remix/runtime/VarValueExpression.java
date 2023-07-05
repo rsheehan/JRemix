@@ -18,7 +18,8 @@ public class VarValueExpression implements Expression {
         Object value = context.retrieve(varName);
 //        if (value == null) {
 //            System.err.printf("\"%s\" has no value.%n", varName);
-//        }
+//            value = new RemixNull();
+//        } // this causes a problem with GetElementExpression as it requires "null"
         return value;
     }
 

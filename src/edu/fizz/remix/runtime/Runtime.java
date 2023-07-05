@@ -2,14 +2,17 @@ package edu.fizz.remix.runtime;
 
 import edu.fizz.remix.editor.RemixREPL;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Stack;
 
 /** A Runtime includes the current library which has
  *  the function table, object table and variable context. */
 public class Runtime {
 
     /* The base library has the built-in and standard-lib functions. */
-    private static final LibraryExpression baseLibrary = new LibraryExpression();
+    private static final LibraryExpression baseLibrary = new BuiltInFunctionsLibrary();
     /* The program library copies the base library and adds the current
        functions and statements.
      */
@@ -34,7 +37,7 @@ public class Runtime {
      * Sets the functions, methods, and context back to the standard version.
      */
     public static void resetToStandard() {
-        programLibrary = baseLibrary.clone();
+        programLibrary = baseLibrary.copyFunctionsMethods();
         currentLibrary = programLibrary;
         libraryStack.removeAllElements();
         libraryStack.add(currentLibrary);
@@ -43,27 +46,31 @@ public class Runtime {
         functionList = new ArrayList<>(originalFunctionList);
     }
 
-    /** Set up the builtin functions. */
-    public static void setUpBuiltIns() {
-        baseLibrary.addFunction(new BuiltInFunctions.QuitFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.CopyFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.TypeOfFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.IsATypeFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.DoFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.PrintFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.IfFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.IfOtherwiseFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.StartFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.NextFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.EndFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.RangeFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.RandomFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.SquareRootFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.AppendFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.LengthFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.ConcatFunction());
-        baseLibrary.addFunction(new BuiltInFunctions.ExtractFunction());
-    }
+//    /** Set up the builtin functions. */
+//    public static void setUpBuiltIns() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+//        for (Class<?> declaredClass : BuiltInFunctionsLibrary.class.getDeclaredClasses()) {
+//            baseLibrary.addFunction((Function) declaredClass.getDeclaredConstructor().newInstance());
+//        }
+//        baseLibrary.addFunction(new BuiltInFunctions.QuitFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.IncludeFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.CopyFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.TypeOfFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.IsATypeFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.DoFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.PrintFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.IfFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.IfOtherwiseFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.StartFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.NextFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.EndFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.RangeFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.RandomFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.SquareRootFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.AppendFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.LengthFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.ConcatFunction());
+//        baseLibrary.addFunction(new BuiltInFunctions.ExtractFunction());
+//    }
 
     /** Print the names of all the functions. */
     public static void printFunctionNames() {
@@ -196,7 +203,7 @@ public class Runtime {
     /** Run the standard library setting up functions, objects and global data */
     public static void prepareEnvironment() throws Exception {
         initRuntime();
-        setUpBuiltIns();
+//        baseLibrary.setUpBuiltIns();
         currentLibrary = baseLibrary;
         RemixREPL.loadPackage("standard-lib.rem");
         //resetToStandard(); // so the libraries to use are reset to the originals

@@ -389,7 +389,9 @@ public class RemixEdLexer {
             return true;
         if (beforeList.contains(before) && closers.contains(after))
             return true;
-        if (before.equals("n") && afterList.contains(after) && followsReturn(startWord))
+        if (before.equals("n") && afterList.contains(after) && follows("return", startWord))
+            return true;
+        if (before.equals("g") && afterList.contains(after) && follows("using", startWord))
             return true;
 //        try {
         String beforePair = matchingPairs.get(before);
@@ -400,8 +402,8 @@ public class RemixEdLexer {
 //        }
     }
 
-    private static boolean followsReturn(int pos) throws BadLocationException {
-        // we know it must have an "n" as the first non-space character
+    private static boolean follows(String wordBefore, int pos) throws BadLocationException {
+        // we know it must have the last letter of wordBefore as the first non-space character
         StringBuilder word = new StringBuilder();
         boolean started = false;
         while (pos > 0) {
@@ -414,7 +416,7 @@ public class RemixEdLexer {
                 break;
             }
         }
-        return word.toString().equals("return");
+        return word.toString().equals(wordBefore);
     }
 
     // pos is the start of a single word

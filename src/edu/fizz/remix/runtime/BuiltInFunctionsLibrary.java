@@ -1,35 +1,21 @@
 package edu.fizz.remix.runtime;
 
+import edu.fizz.remix.editor.RemixREPL;
 import edu.fizz.remix.editor.RemixSwingWorker;
 
 import java.util.*;
 
-public class BuiltInFunctions {
-
+public class BuiltInFunctionsLibrary extends LibraryExpression {
+    /** So we know if running in the editor environment or the command line. */
     static RemixSwingWorker remixRunner = null;
 
     public static void setRemixRunner(RemixSwingWorker worker) {
         remixRunner = worker;
     }
 
-//    /** The function to include a package. */
-//    public static final class IncludeFunction extends Function {
-//
-//        public IncludeFunction() {
-//            super(List.of("using |"),
-//                    List.of("package"),
-//                    List.of(false),
-//                    false,
-//                    "Use the \"package\" library."
-//            );
-//        }
-//
-//        @Override
-//        public Object execute(Context context) {
-//            return null;
-//        }
-//
-//    }
+    public static RemixSwingWorker getRemixRunner() {
+        return remixRunner;
+    }
 
     /** A terminating quit function. */
     public static final class QuitFunction extends Function {
@@ -48,6 +34,48 @@ public class BuiltInFunctions {
             System.err.println(message);
             System.exit(1);
             return null;
+        }
+    }
+
+    /** Include a Remix source file. */
+    public static final class IncludeFunction extends Function {
+
+        public IncludeFunction() {
+            super(
+                    List.of("include |"),
+                    List.of("filename"),
+                    List.of(false),
+                    false,
+                    "Include the file called \"filename\"."
+            );
+        }
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            String filename = context.retrieve("filename").toString();
+            // assuming at the top level
+            LibraryExpression originalLibrary = Runtime.getCurrentLibrary();
+            LibraryExpression includeLibrary = originalLibrary.copyFunctionsMethods();
+            Runtime.setCurrentLibrary(includeLibrary);
+            try {
+                RemixREPL.loadPackage(filename);
+            } catch (Exception e) {
+                System.err.println("Exception: " + e);
+                return null;
+            }
+            // put old and new functions/methods back into current library
+            Runtime.setCurrentLibrary(originalLibrary);
+            originalLibrary.resetFunctionsMethods(includeLibrary);
+            Object result = null;
+            try {
+                // in case the included file has some setup statements
+                RemixSwingWorker saved = remixRunner;
+                remixRunner = null; // send printed output to command line
+                result = includeLibrary.block.evaluate(originalLibrary.context);
+                remixRunner = saved;
+            } catch (ReturnException exception) {
+                System.err.println("ReturnException caught in program.");
+            }
+            return result;
         }
     }
 
@@ -214,7 +242,17 @@ public class BuiltInFunctions {
                         throw new RuntimeException(e);
                     }
                 } else {
-                    publish("To print an object you need a \"(me) to string\" method.");
+                    publish("Object(");
+                    Map<String, Object> instanceVars = object.getContext().variables;
+                    int numberOfFields = instanceVars.size();
+                    int n = 1;
+                    for (Object key : instanceVars.keySet()) {
+                        //noinspection SuspiciousMethodCalls
+                        publish(key + ": " + instanceVars.get(key));
+                        if (n++ < numberOfFields)
+                            publish(", ");
+                    }
+                    publish(")");
                 }
             } else {
                 publish(value);
@@ -387,8 +425,8 @@ public class BuiltInFunctions {
 
         @Override
         public RangeExpression execute(Context context) {
-            Long start = (Long)context.retrieve("start");
-            Long finish = (Long)context.retrieve("finish");
+            long start = ((Number)context.retrieve("start")).longValue();
+            long finish = ((Number)context.retrieve("finish")).longValue();
             return new RangeExpression(start, finish);
         }
     }
@@ -440,6 +478,7 @@ public class BuiltInFunctions {
         public Object execute(Context context) {
             Object object = context.retrieve("sequence");
             int index = ((Long) context.retrieve("index")).intValue();
+            //noinspection rawtypes
             if (object instanceof ArrayList list) { // includes RangeExpressions
                 if (index < 1 || index > list.size()) {
                     return new RemixNull();

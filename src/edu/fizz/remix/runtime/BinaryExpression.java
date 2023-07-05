@@ -29,9 +29,9 @@ public class BinaryExpression implements Expression {
         }
         if (val1 instanceof RemixObject object1 && val2 instanceof RemixObject object2) {
             Method method = object2.findMethod("| equals |");
-            MethodContext methodContext = new MethodContext(null, object2);
-            String formal = method.getArgument(0);
             if (method != null) {
+                MethodContext methodContext = new MethodContext(null, object2);
+                String formal = method.getArgument(0);
                 try {
                     methodContext.assignParam(formal, object1);
                     return method.execute(methodContext);
@@ -39,8 +39,8 @@ public class BinaryExpression implements Expression {
                     throw new RuntimeException(e);
                 }
             } else {
-                BuiltInFunctions.PrintFunction.publish("To compare objects you need a \"(other) equals (me)\" method.");
-                return false;
+//                BuiltInFunctions.PrintFunction.publish("To compare objects you need a \"(other) equals (me)\" method.");
+                return object1.equals(object2);
             }
         } else if (val1 instanceof String || val2 instanceof String) {
             String s1, s2;

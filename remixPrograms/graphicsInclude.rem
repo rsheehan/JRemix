@@ -1,0 +1,8 @@
+graphics : include "remixPrograms/graphics.rem"
+
+using graphics
+
+	a "create window"
+
+	every 50 ticks do
+		"tick"↲

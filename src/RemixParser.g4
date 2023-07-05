@@ -11,7 +11,7 @@ program				: ( functionDefinition | statement )* EOF ;
 
 library				: LIBRARY LBLOCK EOL* (functionDefinition EOL*)* RBLOCK ;
 
-usingLibrary		: USING LPAREN WORD RPAREN blockOfStatements ;
+usingLibrary		: USING WORD blockOfStatements ;
 
 functionDefinition	: functionComment? functionSignature COLON COLON? EOL? blockOfStatements ;
 

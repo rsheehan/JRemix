@@ -160,43 +160,43 @@ while [condition] do [block] :[
 Filter "list" using "condition-block" on each "item".
 =-
 filter (list) by (#item) where [condition-block] :[
-	newlist : {}
+	new-list : {}
 	for each (#item) in (list) do[
 		if (condition-block)[
-			append (#item) to (newlist)]]
-	newlist]
+			append (#item) to (new-list)]]
+	new-list]
 
 =-
 Collect items from "list" until "condition" is true.
 The "condition" is checked before adding the "item".
 =-
 keep (#item) from (list) until [condition] :[
-	newlist : {}
+	new-list : {}
 	for each (#item) in (list) do[
 		if (condition)[
 			return]
-		append (#item) to (newlist)]
-	newlist]
+		append (#item) to (new-list)]
+	new-list]
 
 =-
 Create a new list by applying "block" to each element of "list".
 "block" will usually use the variable passed as "item".
 =-
 apply [block] to each (#item) from (list) :[
-	newlist : {}
+	new-list : {}
 	for each (#item) in (list) do[
-		append (do (block)) to (newlist)]
-	newlist]
+		append (do (block)) to (new-list)]
+	new-list]
 
 =-
 Create a new list by applying "block" "n" times.
 =-
 apply [block] (n) times :[
-	newlist : {}
+	new-list : {}
 	repeat[
-		append (do (block)) to (newlist)]
+		append (do (block)) to (new-list)]
 	… (n) times
-	newlist]
+	new-list]
 
 ==============================
  List reduce functions
@@ -266,6 +266,50 @@ join (list1) and (list2):[
 	… apply[
 		append (item) to (list)]
 	… on each (item) in (list2)]
+
+==============================
+ String functions
+==============================
+
+=-
+Concatenate the "string" "number" times.
+=-
+(string) (number) times :[
+	result : string
+	repeat[
+		result : result ⊕ string]
+	… (number - 1) times
+	result]
+
+==============================
+ List string functions
+==============================
+
+=-
+Joins the string versions of the elements in "list".
+=-
+join (list) :[
+	string : ""
+	for each (item) in (list) do[
+		string : string ⊕ item]]
+
+=-
+Joins the "list" with "separator" between elements.
+=-
+join (list) with separator (separator) :[
+	string : ""
+	for each (item) in (list) keeping (count) do[
+		if (count = (list) length)[
+			return string ⊕ ((item) as string)]
+		string : string ⊕ ((item) as string) ⊕ separator]]
+
+=-
+The "list" as a string.
+=-
+(list) as string :[
+	if (not ((list) is a "list"))[
+		return list]
+	"{" ⊕ (join (list) with separator ", ") ⊕ "}"]
 
 ==============================
  List functions
@@ -396,36 +440,6 @@ distance from (a) to (b) :[
 	δx : b{x} - a{x}
 	δy : b{y} - a{y}
 	√((δx)² + (δy)²)]
-
-==============================
- List string functions
-==============================
-
-=-
-Joins the string versions of the elements in "list".
-=-
-join (list) :[
-	string : ""
-	for each (item) in (list) do[
-		string : string ⊕ item]]
-
-=-
-Joins the "list" with "separator" between elements.
-=-
-join (list) with separator (separator) :[
-	string : ""
-	for each (item) in (list) keeping (count) do[
-		if (count = (list) length)[
-			return string ⊕ ((item) as string)]
-		string : string ⊕ ((item) as string) ⊕ separator]]
-
-=-
-The "list" as a string.
-=-
-(list) as string :[
-	if (not ((list) is a "list"))[
-		return list]
-	"{" ⊕ (join (list) with separator ", ") ⊕ "}"]
 
 ==============================
  Testing functions

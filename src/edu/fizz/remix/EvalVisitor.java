@@ -51,9 +51,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** LIBRARY LBLOCK EOL* functionDefinition* RBLOCK */
     @Override
     public Object visitLibrary(RemixParser.LibraryContext ctx) {
-//        LibraryExpression prevLibrary = Runtime.getCurrentLibrary();
         LibraryExpression library = new LibraryExpression();
-//        Runtime.setCurrentLibrary(library); // so methods get associated with the current one
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -62,7 +60,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 library.addFunction(function);
             }
         }
-//        Runtime.setCurrentLibrary(prevLibrary);
         return library;
     }
 
@@ -70,7 +67,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     @Override
     public UsingLibBlock visitUsingLibrary(RemixParser.UsingLibraryContext ctx) {
         /* Currently only a WORD i.e. variable for the lib identifier.
-        * Could be an expression instead. */
+        * Could be an expression instead.
+        * Or a comma separated list of lib identifiers. */
         VarValueExpression libraryName = new VarValueExpression(ctx.WORD().getText());
         Block usingLibBlock = (Block) visit(ctx.blockOfStatements());
         return new UsingLibBlock(libraryName, usingLibBlock);

@@ -1,3 +1,1 @@
 Tabbing in the editor needs to be looked at after the "when" in student.rem.
-
-Add default "equals" and "as string" methods to all Remix objects.

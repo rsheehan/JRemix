@@ -1,0 +1,44 @@
+"Asterick Diamonds" ↲
+"=================" ↲
+↲
+
+for each (size) from 1 to 41 in steps of 2 do
+	size, "." ↲
+	diamond of (size)
+	↲
+
+=-
+Show a diamond of "size".
+=-
+diamond of (size) :
+	top half of (size) diamond and produce (lines)
+	middle line of (size) diamond
+	bottom half of (size) diamond uses (lines)
+
+=-
+Show the top half of the diamond of "size".
+Fill in the "lines" list at the same time.
+=-
+top half of (size) diamond and produce (#lines) :
+	#lines : {}
+	if (size ≥ 3)
+		for each (row) from 1 to (size ÷ 2) do
+			spaces : size - (row × 2)
+			stars : (row × 2) - 1
+			append (" " (spaces) times ⊕ " *" (stars) times) to (#lines)
+			#lines{row} ↲
+
+=-
+Show the middle line of the diamond of "size".
+=-
+middle line of (size) diamond :
+	"* " (size) times ↲
+
+=-
+Show the bottom half of the diamond of "size".
+Uses the "lines" list.
+=-
+bottom half of (size) diamond uses (lines) :
+	if (size ≥ 3)
+		for each (row) from (size ÷ 2) to 1 do
+			lines{row} ↲

@@ -1,14 +1,14 @@
 package edu.fizz.remix.runtime;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 /**
- * A library expression holds a context, a function and a method table, and
- * a block of code to be executed when the library is completed.
+ * A library expression holds a function and a method table.
  * The context and block only make sense when a file is being loaded with
  * loadPackage or running the contents of the editor window.
- * A file and editor contents are libraries by default.
- * Internal libraries from the "library"  don't use the block and context.
+ *
+ * Internal libraries from the "library" expression don't use the block and context.
  * The main program is a library expression which also holds the built-in
  * functions and the standard-lib functions.
  */
@@ -20,6 +20,20 @@ public class LibraryExpression implements Expression {
     HashMap<String, Integer> methodTable = new HashMap<>();
 
     public LibraryExpression() {
+        setUpBuiltIns();
+    }
+
+    /** Add all Function classes in this library as Remix functions.
+     *  Used by subclasses. */
+    private void setUpBuiltIns() {
+        for (Class<?> declaredClass : getClass().getDeclaredClasses()) {
+            try {
+                addFunction((Function) declaredClass.getDeclaredConstructor().newInstance());
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /** Add functions from the compile phase. */
@@ -40,13 +54,17 @@ public class LibraryExpression implements Expression {
         }
     }
 
-    @Override
-    public LibraryExpression clone() {
+    public LibraryExpression copyFunctionsMethods() {
         // not really a clone, doesn't copy the block or context.
         LibraryExpression copy = new LibraryExpression();
         copy.functionTable = new HashMap<>(functionTable);
         copy.methodTable = new HashMap<>(methodTable);
         return copy;
+    }
+
+    public void resetFunctionsMethods(LibraryExpression other) {
+        functionTable = other.functionTable;
+        methodTable = other.methodTable;
     }
 
     @Override

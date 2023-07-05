@@ -24,9 +24,14 @@ lib2 : library
 			(me) to string :
 				name ⊕ ", " ⊕ age ⊕ " years old"
 
+lib3 : library
+
+	with (#refvar) reference :
+		#refvar : #refvar + #refvar
+
 "N.B. This is a test inside library usage." ↲
 "----------------------------------------" ↲
-using (lib1)
+using lib1
 	test {
 		"Simple function from library"
 			4 plus 3
@@ -38,15 +43,35 @@ using (lib1)
 "----------------------------------------------" ↲
 test {
 	"Simple function from library again"
-		using (lib1)
+		using lib1
 			4 plus 5
 	… expected 9
+
 	"Method call from library"
-		using (lib1)
-			(name "Robert" age 64) to string
-	… expected "64, Robert years old"
+		using lib1
+			(name "Peter" age 50) to string
+	… expected "50, Peter years old"
+
 	"Method call same signature different library"
-		using (lib2)
-			(name "Robert" age 64) to string
-	… expected "Robert, 64 years old"
+		using lib2
+			(name "Peter" age 50) to string
+	… expected "Peter, 50 years old"
 }
+↲
+
+"N.B. This is a test with reference parameter." ↲
+"---------------------------------------------" ↲
+using lib3
+	test {
+		"Simple reference call"
+			x : 16
+			with (x) reference
+		… expected 32
+
+		"Changed variable"
+			x
+		… expected 32
+	}
+
+↲. "Outside" ↲
+"x: ", x, " should be 32" ↲

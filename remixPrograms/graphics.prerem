@@ -1,8 +1,7 @@
 
-"Mockup graphics library"↲
-↲
+"Mockup graphics library loaded." ↲
 
-graphics : library[
+library[
 	set up [block] :[
 		do (block)]
 
@@ -13,10 +12,3 @@ graphics : library[
 	a (string) :[
 		set up[
 			string↲]]]
-
-using (graphics)[
-
-	a "create window"
-
-	every 50 ticks do[
-		"tick"↲]]

@@ -1,6 +1,6 @@
 "Mockup graphics library loaded." ↲
 
-library "javaLibName" ; if a value here then we use javaLibName.class as the LibraryExpression
+library
 	set up [block] :
 		do (block)
 
