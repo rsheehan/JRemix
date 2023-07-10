@@ -191,6 +191,7 @@ public class Runtime {
     }
 
     public static Function searchFunctionTables(String functionName) {
+        // N.B. searches from the bottom of the stack
         for (LibraryExpression library : libraryStack) {
             Function function = library.functionTable.get(functionName);
             if (function != null) {

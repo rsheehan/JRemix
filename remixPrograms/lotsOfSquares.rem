@@ -4,10 +4,10 @@ using graphics
 	show drawing window
 
 	square-pts : {
-		{x : -1, y : -1}
-		{x :  1, y : -1}
-		{x :  1, y :  1}
-		{x : -1, y :  1}
+		{-1, -1}
+		{ 1, -1}
+		{ 1,  1}
+		{-1,  1}
 	}
 
 	square : shape from (square-pts) scaled by 200 at (centre point)
@@ -26,8 +26,8 @@ using graphics
 	}
 
 	arrow : (red colour) shape from (arrow-pts) scaled by 10 at {
-		800
-		std height ÷ 2
+		x : 800
+		y : std height ÷ 2
 	} facing (π × 1.5)
 
 	draw (arrow)

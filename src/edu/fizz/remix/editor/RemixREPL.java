@@ -16,7 +16,7 @@ import java.io.IOException;
 
 public class RemixREPL {
 
-    public static LibraryExpression loadPackage(String libName) throws Exception {
+    public static void loadPackage(String libName) throws Exception {
         String preRemFile;
         // Preprocess the .rem file
         preRemFile = PreProcess.processFile(libName);
@@ -26,7 +26,7 @@ public class RemixREPL {
         RemixParser parser = new RemixParser(tokens);
         ParseTree tree = parser.program(); // parse
         EvalVisitor eval = new EvalVisitor();
-        return (LibraryExpression) eval.visit(tree);
+        eval.visit(tree);
     }
 
     public static void checkEditorText(String editorText) {

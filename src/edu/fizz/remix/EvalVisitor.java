@@ -7,6 +7,7 @@ import edu.fizz.remix.runtime.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,10 +49,26 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return library;
     }
 
-    /** LIBRARY LBLOCK EOL* functionDefinition* RBLOCK */
+    /** LIBRARY STRING? LBLOCK EOL* functionDefinition* RBLOCK */
     @Override
     public Object visitLibrary(RemixParser.LibraryContext ctx) {
-        LibraryExpression library = new LibraryExpression();
+        LibraryExpression library;
+        if (ctx.STRING() != null) {
+            String libName = ctx.STRING().getText();
+            libName = libName.substring(1, libName.length() - 1); // strip off quotes
+            try {
+                Class libClass = Class.forName(libName);
+                library = (LibraryExpression) libClass.getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                     InvocationTargetException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                System.err.printf("Class not found: %s%n", libName);
+                throw new RuntimeException(e);
+            }
+        } else {
+            library = new LibraryExpression();
+        }
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -63,15 +80,16 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return library;
     }
 
-    /** USING LPAREN WORD RPAREN blockOfStatements */
+    /** USING WORD (COMMA WORD)* blockOfStatements */
     @Override
     public UsingLibBlock visitUsingLibrary(RemixParser.UsingLibraryContext ctx) {
-        /* Currently only a WORD i.e. variable for the lib identifier.
-        * Could be an expression instead.
-        * Or a comma separated list of lib identifiers. */
-        VarValueExpression libraryName = new VarValueExpression(ctx.WORD().getText());
+        ArrayList<VarValueExpression> libraryNames = new ArrayList<>();
+        int n = ctx.getChildCount();
+        for (int i = 0; i < (n - 1) / 2; i++) {
+            libraryNames.add(new VarValueExpression(ctx.WORD(i).getText()));
+        }
         Block usingLibBlock = (Block) visit(ctx.blockOfStatements());
-        return new UsingLibBlock(libraryName, usingLibBlock);
+        return new UsingLibBlock(libraryNames.toArray(new VarValueExpression[1]), usingLibBlock);
     }
 
     /** RETURN expression? */

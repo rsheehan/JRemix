@@ -5,20 +5,24 @@ The UsingLibBlock is a statement which executes its block of statements.
  */
 public class UsingLibBlock implements Expression {
 
-    VarValueExpression libraryVariable;
+    VarValueExpression[] libraryNames;
     Block usingStatements;
 
-    public UsingLibBlock(VarValueExpression var, Block statements) {
-        libraryVariable = var;
+    public UsingLibBlock(VarValueExpression[] varNames, Block statements) {
+        libraryNames = varNames;
         usingStatements = statements;
     }
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         // this should change the current Runtime library
-        LibraryExpression library = (LibraryExpression) libraryVariable.evaluate(context);
-        Runtime.pushLibrary(library);
+        for (VarValueExpression libraryName : libraryNames) {
+            LibraryExpression library = (LibraryExpression) libraryName.evaluate(context);
+            Runtime.pushLibrary(library);
+        }
         Object result = usingStatements.evaluate(context);
-        Runtime.popLibrary();
+        for (VarValueExpression ignored : libraryNames) {
+            Runtime.popLibrary();
+        }
         return result;
     }
 }

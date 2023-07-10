@@ -1,0 +1,11 @@
+graphics : include graphics
+
+using graphics
+	show drawing window
+	pen size 10
+	current : random point
+	repeat
+		new : random point
+		draw (random colour) line from (current) to (new)
+		current : new
+	… 100 times

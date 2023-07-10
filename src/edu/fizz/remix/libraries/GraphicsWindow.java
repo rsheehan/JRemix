@@ -6,11 +6,11 @@ public class GraphicsWindow extends JFrame {
 
     GraphicsPanel drawPanel;
 
-    public GraphicsWindow(String title, int xPos, int yPos, int width, int height) {
+    public GraphicsWindow(String title, int width, int height) {
         super(title);
-        drawPanel =  new GraphicsPanel(xPos, yPos, width, height);
+        drawPanel =  new GraphicsPanel(width, height);
         add(drawPanel);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationByPlatform(true);
         pack();
         setVisible(true);

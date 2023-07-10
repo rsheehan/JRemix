@@ -440,6 +440,12 @@ distance from (a) to (b) :
 	δy : b{y} - a{y}
 	√((δx)² + (δy)²)
 
+=-
+Radian equivalent of "angle" degrees.
+=-
+(angle) degrees as radians :
+	(angle ÷ 180.0) × π
+
 ==============================
  Testing functions
 ==============================
@@ -467,10 +473,12 @@ test (list-of-tests) :
 
 		assert test (number) (description) [code] produces (expected) :
 			result : do (code)
+
 			if (description ≠ "")
 				"\"", description, "\"" ↲
 			… otherwise
 				"Test #", number ↲
+
 			if (result = expected)
 				inc (passing)
 				"  Passed" ↲
@@ -491,3 +499,9 @@ test (list-of-tests) :
 			"Failing : ", failing ↲
 
 	execute tests (test-object)
+
+==============================
+ Common library functions
+==============================
+include graphics :
+	include "remixPrograms/graphics.rem"

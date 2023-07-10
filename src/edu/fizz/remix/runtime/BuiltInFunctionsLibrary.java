@@ -598,4 +598,79 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
     }
 
+    public static final class SineFunction extends Function {
+        public SineFunction() {
+            super(
+                    List.of("sine |"),
+                    List.of("number"),
+                    List.of(false),
+                    false,
+                    "The sine of \"number\"."
+            );
+        }
+
+        @Override
+        public Double execute(Context context) {
+            double d = 0;
+            Object value = context.retrieve("number");
+            if (value instanceof Double)
+                d = (Double)value;
+            else if (value instanceof Long)
+                d = ((Long)value).doubleValue();
+            return Math.sin(d);
+        }
+    }
+
+    public static final class CosineFunction extends Function {
+        public CosineFunction() {
+            super(
+                    List.of("cosine |"),
+                    List.of("number"),
+                    List.of(false),
+                    false,
+                    "The cosine of \"number\"."
+            );
+        }
+
+        @Override
+        public Double execute(Context context) {
+            double d = 0;
+            Object value = context.retrieve("number");
+            if (value instanceof Double)
+                d = (Double)value;
+            else if (value instanceof Long)
+                d = ((Long)value).doubleValue();
+            return Math.cos(d);
+        }
+    }
+
+    public static final class ArcTangentFunction extends Function {
+        public ArcTangentFunction() {
+            super(
+                    List.of("arc tangent | over |"),
+                    List.of("change-y", "change-x"),
+                    List.of(false, false),
+                    false,
+                    "The arc tangent of \"change-y\"/\"change-x\"."
+            );
+        }
+
+        @Override
+        public Double execute(Context context) {
+            double y = 0;
+            double x = 0;
+            Object value = context.retrieve("change-y");
+            if (value instanceof Double)
+                y = (Double)value;
+            else if (value instanceof Long)
+                y = ((Long)value).doubleValue();
+            value = context.retrieve("change-x");
+            if (value instanceof Double)
+                y = (Double)value;
+            else if (value instanceof Long)
+                y = ((Long)value).doubleValue();
+            return Math.atan2(y, x);
+        }
+    }
+
 }

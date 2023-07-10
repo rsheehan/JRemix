@@ -1,13 +1,75 @@
-"Mockup graphics library loaded." ↲
+"Graphics library loaded." ↲
 
-library
-	set up [block] :
-		do (block)
+library "edu.fizz.remix.libraries.Graphics"
 
-	every (n) ticks do [block] :
-		"wait for ", n, " ticks"↲
-		"then do ", block↲
+	std width :
+		1000
+	std height :
+		800
 
-	a (string) :
-		set up
-			string↲
+	centre point :
+		{std width ÷ 2, std height ÷ 2}
+
+	random point :
+		{random (std width), random (std height)}
+
+	scale (polygon) by (scale) :
+		scaled-polygon : {}
+		for each (point) in (polygon) do
+			if ((point) is a "map")
+				append { point{x} × scale, point{y} × scale } to (scaled-polygon)
+			… otherwise
+				append { point{1} × scale, point{2} × scale } to (scaled-polygon)
+
+	white colour :
+		{255, 255, 255}
+	black colour :
+		{0, 0, 0}
+	red colour :
+		{255, 0, 0}
+	green colour :
+		{0, 255, 0}
+	blue colour :
+		{0, 0, 255}
+
+	random colour :
+		{random 255, random 255, random 255}
+
+	show drawing window :
+		show "Drawing" window of width (std width) and height (std height)
+
+	draw random line :
+		draw (random colour) line from (random point) to (random point)
+
+	(colour) shape from (polygon) scaled by (scale) at (position) facing (heading) :
+		create
+			colour : colour
+			polygon : polygon
+			position : position
+			heading : heading
+			scale : scale
+
+			setter
+				colour, position, heading
+
+			draw (me) :
+				(colour) pen colour
+				scaled-polygon : scale (polygon) by (scale)
+				draw (scaled-polygon) at (position) facing (heading)
+
+			fill (me) :
+				(colour) pen colour
+				scaled-polygon : scale (polygon) by (scale)
+				fill (scaled-polygon) at (position) facing (heading)
+
+	shape from (polygon) :
+		(white colour) shape from (polygon) scaled by 1 at (centre point) facing 0
+
+	shape from (polygon) at (position) :
+		(white colour) shape from (polygon) scaled by 1 at (position) facing 0
+
+	shape from (polygon) scaled by (scale) at (position) :
+		(white colour) shape from (polygon) scaled by (scale) at (position) facing 0
+
+	shape from (polygon) scaled by (scale) at (position) facing (heading) :
+		(white colour) shape from (polygon) scaled by (scale) at (position) facing (heading)

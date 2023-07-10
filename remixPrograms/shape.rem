@@ -1,0 +1,26 @@
+graphics : include graphics
+
+using graphics
+	show drawing window
+	square : {
+		{-1, -1}
+		{1, -1}
+		{1, 1}
+		{-1, 1}
+	}
+	(red colour) pen colour
+
+	draw (scale (square) by 100) at {500, 400} facing 0
+	draw (scale (square) by 70.5) at {500, 400} facing (π ÷ 4)
+
+	shape : (green colour) shape from (square) scaled by 50 at {200, 100} facing 0
+	draw (shape)
+
+	for each (angle) from 10 to 80 in steps of 10 do
+
+		shape's heading : (angle) degrees as radians
+		shape's colour : random colour
+		draw (shape)
+
+	box : (blue colour) shape from (square) scaled by 100 at {400, 500} facing (π ÷ 3)
+	fill (box)

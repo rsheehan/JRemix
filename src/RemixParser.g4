@@ -9,9 +9,9 @@ options { tokenVocab=RemixLexer; } // use tokens from RemixLexer.g4
 
 program				: ( functionDefinition | statement )* EOF ;
 
-library				: LIBRARY LBLOCK EOL* (functionDefinition EOL*)* RBLOCK ;
+library				: LIBRARY STRING? LBLOCK EOL* (functionDefinition EOL*)* RBLOCK ;
 
-usingLibrary		: USING WORD blockOfStatements ;
+usingLibrary		: USING WORD (COMMA WORD)* blockOfStatements ;
 
 functionDefinition	: functionComment? functionSignature COLON COLON? EOL? blockOfStatements ;
 
