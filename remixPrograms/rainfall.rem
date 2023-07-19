@@ -6,34 +6,13 @@ rain-fall : {-1, -3, 0, 5, -2, 1.0, 0, -1, 6, 7, 999, -2, 0, 10, -1}
 
 "Original data: ", rain-fall ↲
 ↲
-positive : filter (rain-fall) by (x) where [x ≥ 0]
-valid-data : keep (x) from (positive) until [x = 999]
-
-"Clean data: ", valid-data ↲
-↲
-publish average (valid-data) ↲
-↲
-
-publish average (rain) :
-	if (length of (rain) = 0)
-		return "No valid data."
-	"The average rainfall is " ⊕ average of (rain)
-
----- alternatively ----
-
-"Original data: ", rain-fall ↲
-↲
 valid-data : keep (x) from (rain-fall) where [x ≥ 0] until [x = 999]
 
 "Clean data: ", valid-data ↲
 ↲
 publish average (valid-data) ↲
 
-keep (#item) from (list) where [condition] until [termination] :
-	result : {}
-	for each (#item) in (list) do
-		if (termination)
-			return
-		if (condition)
-			append (#item) to (result)
-	result
+publish average (rain) :
+	if (length of (rain) = 0)
+		return "No valid data."
+	"The average rainfall is " ⊕ average of (rain)

@@ -1,26 +1,27 @@
 graphics : include graphics
 
 using graphics
-	show drawing window
-	square : {
-		{-1, -1}
-		{1, -1}
-		{1, 1}
-		{-1, 1}
-	}
-	(red colour) pen colour
+	window : window with shape layers
 
-	draw (scale (square) by 100) at {500, 400} facing 0
-	draw (scale (square) by 70.5) at {500, 400} facing (π ÷ 4)
+	show (window)
+	layer : (window) base layer
 
-	shape : (green colour) shape from (square) scaled by 50 at {200, 100} facing 0
-	draw (shape)
+	triangle : a triangle
+	(red colour) (triangle) at {500, 400} facing 0 scaled by 100
+	add (triangle) to (layer)
 
-	for each (angle) from 10 to 80 in steps of 10 do
+	triangle : copy (triangle)
+	(blue colour) (triangle) at {500, 400} facing (π ÷ 3) scaled by 100
+	add (triangle) to (layer)
 
-		shape's heading : (angle) degrees as radians
-		shape's colour : random colour
-		draw (shape)
+	triangle : copy (triangle)
+	(green colour) (triangle) at {200, 100} facing π scaled by 50
+	add (triangle) to (layer)
 
-	box : (blue colour) shape from (square) scaled by 100 at {400, 500} facing (π ÷ 3)
-	fill (box)
+update (window) ; N.B. can be outside the using block because it is a method call
+
+(colour) (shape) at (position) facing (heading) scaled by (scale) :
+	shape's colour : colour
+	shape's position : position
+	shape's heading : heading
+	shape's scale : scale

@@ -1,1 +1,7 @@
 Tabbing in the editor needs to be looked at after the "when" in student.rem.
+
+The whole LibraryStack design needs to be thought through carefully.
+Should be able to remove the stack from Runtime and just have it as part of the contexts.
+
+Current bug - after an include block the library functions are still in scope.
+It should pop off the stack.

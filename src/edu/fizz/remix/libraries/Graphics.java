@@ -1,11 +1,12 @@
 package edu.fizz.remix.libraries;
 
-import edu.fizz.remix.runtime.Context;
-import edu.fizz.remix.runtime.Function;
-import edu.fizz.remix.runtime.LibraryExpression;
-import edu.fizz.remix.runtime.ReturnException;
+import edu.fizz.remix.runtime.*;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class Graphics extends LibraryExpression {
 
-    static GraphicsWindow window;
+//    static GraphicsWindow window;
 
     private static double[] pointsFromMapOrList(Object p) {
         double[] point = new double[2];
@@ -34,7 +35,20 @@ public class Graphics extends LibraryExpression {
         return intPoint;
     }
 
-    static Color colorFromRGBorString(Object c) {
+    private static Path2D.Double polygonFromPoints(ArrayList<?> pointsList) {
+        Path2D.Double polygon = new Path2D.Double();
+        pointsList.forEach(element -> {
+            double[] point = pointsFromMapOrList(element);
+            if (polygon.getCurrentPoint() == null)
+                polygon.moveTo(point[0], point[1]);
+            else
+                polygon.lineTo(point[0], point[1]);
+        });
+        polygon.closePath();
+        return polygon;
+    }
+
+    private static Color colorFromRGBorString(Object c) {
         // TODO: so far just from RGB
         Color newColour;
         int red, green, blue;
@@ -64,11 +78,11 @@ public class Graphics extends LibraryExpression {
 
         public WindowFunction() {
             super(
-                    List.of("show | window of width | and height |"),
+                    List.of("| window of width | and height |"),
                     List.of("title", "width", "height"),
                     List.of(false, false, false),
                     false,
-                    "Show window with \"title\" with \"width\" and \"height\"."
+                    "Create window with \"title\" with \"width\" and \"height\"."
             );
         }
 
@@ -77,151 +91,223 @@ public class Graphics extends LibraryExpression {
             String title = (String)context.retrieve("title");
             int width = ((Long)context.retrieve("width")).intValue();
             int height = ((Long)context.retrieve("height")).intValue();
-            window = new GraphicsWindow(title, width, height);
-            return null;
+            GraphicsWindow window = new GraphicsWindow(title, width, height);
+            return window;
         }
     }
 
-    public static final class DrawLineFunction extends Function {
-
-        public DrawLineFunction() {
+    public static final class ShowWindowFunction extends Function {
+        public ShowWindowFunction() {
             super(
-                    List.of("draw | line from | to |"),
-                    List.of("colour", "start", "finish"),
-                    List.of(false, false, false),
-                    false,
-                    """
-                            Draw a line of "colour" from "start" to "finish".
-                            "colour" is a string or RGB list.
-                            "start" and "finish" are lists {x0, y0} or maps {x: x0, y: y0}."""
-            );
-        }
-
-        @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
-            Object colour = context.retrieve("colour");
-            Object start = context.retrieve("start");
-            Object finish = context.retrieve("finish");
-            window.drawPanel.setPenColour(colorFromRGBorString(colour));
-            double[] startPt = pointsFromMapOrList(start);
-            double[] finishPt = pointsFromMapOrList(finish);
-            window.drawPanel.drawLine(integerPoint(startPt), integerPoint(finishPt));
-            return null;
-        }
-    }
-
-    public static final class SetPenColourFunction extends Function {
-
-        public SetPenColourFunction() {
-            super(
-                    List.of("| pen colour"),
-                    List.of("colour"),
+                    List.of("show |"),
+                    List.of("window"),
                     List.of(false),
                     false,
-                    "Change the pen colour to \"colour\".\n" +
-                            "\"colour\" is a string or RGB list."
+                    "Show the \"window\"."
             );
         }
+
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            Object colour = context.retrieve("colour");
-            window.drawPanel.setPenColour(colorFromRGBorString(colour));
+            GraphicsWindow window = (GraphicsWindow) context.retrieve("window");
+            window.setVisible(true);
             return null;
         }
     }
-
-    public static final class SetPenSizeFunction extends Function {
-
-        public SetPenSizeFunction() {
+    public static final class RefreshWindowFunction extends Function {
+        public RefreshWindowFunction() {
             super(
-                    List.of("pen size |"),
-                    List.of("size"),
+                    List.of("refresh |"),
+                    List.of("window"),
                     List.of(false),
                     false,
-                    "Change the pen size to \"size\"."
+                    "Refresh the \"window\"."
             );
         }
+
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            Object remixSize = context.retrieve("size");
-            float size = ((Number) remixSize).floatValue();
-            window.drawPanel.setPenSize(size);
+            GraphicsWindow window = (GraphicsWindow) context.retrieve("window");
+            window.drawPanel.exchangeShapesAndRepaint();
             return null;
         }
     }
 
-//    public static final class CreatePolygonFunction extends Function {
+    public static final class ClearLayersFunction extends Function {
+        public ClearLayersFunction() {
+            super(
+                    List.of("clear all | layers", "clear | layer"),
+                    List.of("window"),
+                    List.of(false),
+                    false,
+                    "Remove current shapes from the \"window\"."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            GraphicsWindow window = (GraphicsWindow) context.retrieve("window");
+            window.drawPanel.removeShapes();
+            return null;
+        }
+    }
+
+//    public static final class DrawLineFunction extends Function {
 //
-//        public CreatePolygonFunction() {
+//        public DrawLineFunction() {
 //            super(
-//                    List.of("polygon from |"),
-//                    List.of("points"),
-//                    List.of(false),
+//                    List.of("draw | line from | to |"),
+//                    List.of("colour", "start", "finish"),
+//                    List.of(false, false, false),
 //                    false,
-//                    "Make a polygon from the list of \"points\".\n"
+//                    """
+//                            Draw a line of "colour" from "start" to "finish".
+//                            "colour" is a string or RGB list.
+//                            "start" and "finish" are lists {x0, y0} or maps {x: x0, y: y0}."""
 //            );
 //        }
+//
 //        @Override
-//        public Polygon execute(Context context) throws ReturnException, InterruptedException {
-//            Object points = context.retrieve("points");
-//            // could be ArrayList of ArrayLists or HashMaps
-//            // e.g. {{0, 1}, {2, 4}} or {{x: 0, y: 1}, {x: 2, y: 4}}
-//            return polygonFromPoints((ArrayList<?>) points);
+//        public Object execute(Context context) throws ReturnException, InterruptedException {
+//            Object colour = context.retrieve("colour");
+//            Object start = context.retrieve("start");
+//            Object finish = context.retrieve("finish");
+//            window.drawPanel.setPenColour(colorFromRGBorString(colour));
+//            double[] startPt = pointsFromMapOrList(start);
+//            double[] finishPt = pointsFromMapOrList(finish);
+//            window.drawPanel.drawLine(integerPoint(startPt), integerPoint(finishPt));
+//            return null;
 //        }
 //    }
 
-    private static Path2D.Double polygonFromPoints(ArrayList<?> pointsList) {
-        Path2D.Double polygon = new Path2D.Double();
-        pointsList.forEach(element -> {
-            double[] point = pointsFromMapOrList(element);
-            if (polygon.getCurrentPoint() == null)
-                polygon.moveTo(point[0], point[1]);
-            else
-                polygon.lineTo(point[0], point[1]);
-        });
-        polygon.closePath();
-        return polygon;
-    }
+//    public static final class SetPenColourFunction extends Function {
+//
+//        public SetPenColourFunction() {
+//            super(
+//                    List.of("| pen colour"),
+//                    List.of("colour"),
+//                    List.of(false),
+//                    false,
+//                    "Change the pen colour to \"colour\".\n" +
+//                            "\"colour\" is a string or RGB list."
+//            );
+//        }
+//        @Override
+//        public Object execute(Context context) throws ReturnException, InterruptedException {
+//            Object colour = context.retrieve("colour");
+//            window.drawPanel.setPenColour(colorFromRGBorString(colour));
+//            return null;
+//        }
+//    }
 
-    public static final class DrawPolygonFunction extends Function {
+//    public static final class SetPenSizeFunction extends Function {
+//
+//        public SetPenSizeFunction() {
+//            super(
+//                    List.of("pen size |"),
+//                    List.of("size"),
+//                    List.of(false),
+//                    false,
+//                    "Change the pen size to \"size\"."
+//            );
+//        }
+//        @Override
+//        public Object execute(Context context) throws ReturnException, InterruptedException {
+//            Object remixSize = context.retrieve("size");
+//            float size = ((Number) remixSize).floatValue();
+//            window.drawPanel.setPenSize(size);
+//            return null;
+//        }
+//    }
 
-        public DrawPolygonFunction() {
+    public static final class AddShapeFunction extends Function {
+
+        public AddShapeFunction() {
             super(
-                    List.of("draw | at | facing |"),
-                    List.of("polygon", "position", "heading"),
-                    List.of(false, false, false),
+                    List.of("add | to |"),
+                    List.of("shape", "window"),
+                    List.of(false, false),
                     false,
-                    "Draw the \"polygon\" at \"position\", facing \"heading\"."
+                    "Add the \"shape\" to the \"window\"."
             );
         }
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            Path2D.Double shape = polygonFromPoints((ArrayList<?>) context.retrieve("polygon"));
-            int[] position = integerPoint(pointsFromMapOrList(context.retrieve("position")));
-            double heading = doubleFromObject(context.retrieve("heading"));
-            window.drawPanel.drawShape(shape, position, heading);
+            RemixObject shape = (RemixObject) context.retrieve("shape");
+            GraphicsWindow window = (GraphicsWindow) context.retrieve("window");
+            Context shapeContext = shape.getContext();
+            // get the colour
+            Color shapeColour = colorFromRGBorString(shapeContext.retrieve("colour"));
+            // get the polygon
+            Path2D.Double shapePath = polygonFromPoints((ArrayList<?>) shapeContext.retrieve("polygon"));
+            // get the position
+            int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("position")));
+            // get the scale
+            double scale = ((Number) shapeContext.retrieve("size")).doubleValue();
+            AffineTransform scaledTransform = new AffineTransform();
+            scaledTransform.scale(scale, scale);
+            Path2D.Double scaledShapePath = new Path2D.Double(shapePath, scaledTransform);
+            // get the heading
+            double heading = doubleFromObject(shapeContext.retrieve("heading"));
+            // filled or outline
+            boolean filled = (boolean) shapeContext.retrieve("filled");
+            window.drawPanel.addShapeForDrawing(shapeColour, scaledShapePath, position, heading, filled);
             return null;
         }
     }
 
-    public static final class FillPolygonFunction extends Function {
+    public static final class AnimateFunction extends Function {
 
-        public FillPolygonFunction() {
+        Timer animationTimer;
+        public AnimateFunction() {
             super(
-                    List.of("fill | at | facing |"),
-                    List.of("polygon", "position", "heading"),
-                    List.of(false, false, false),
+                    List.of("animate | ticks per second | until |", "animate | tick per second | until |"),
+                    List.of("rate", "animation", "condition"),
+                    List.of(false, true, true),
                     false,
-                    "Fill the \"polygon\" at \"position\", facing \"heading\"."
+                    "Animate the \"animation\" \"rate\" times per second,\n" +
+                    "stopping when \"condition\" is true."
             );
         }
+
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            Path2D.Double shape = polygonFromPoints((ArrayList<?>) context.retrieve("polygon"));
-            int[] position = integerPoint(pointsFromMapOrList(context.retrieve("position")));
-            double heading = doubleFromObject(context.retrieve("heading"));
-            window.drawPanel.fillShape(shape, position, heading);
+            double rate = ((Number) context.retrieve("rate")).doubleValue();
+            Block animation = (Block) context.retrieve("animation");
+            Block condition = (Block) context.retrieve("condition");
+            AnimationBlock animationBlock = new AnimationBlock(context, animation, condition);
+            animationTimer = new Timer((int)(1000/rate), animationBlock);
+            animationTimer.start();
             return null;
+        }
+
+        private class AnimationBlock implements ActionListener {
+
+            private final Block animation;
+            private final Block condition;
+
+            AnimationBlock( Context context, Block animation, Block condition) {
+                this.animation = animation;
+                this.condition = condition;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    animation.evaluate(null);
+                } catch (ReturnException | InterruptedException ex) {
+                    System.err.println("Problem animating");
+                    throw new RuntimeException(ex);
+                }
+                try {
+                    if ((Boolean)condition.evaluate(null)) {
+                        animationTimer.stop();
+                    }
+                } catch (ReturnException | InterruptedException ex) {
+                    System.err.println("Problem evaluating animation stop");
+                    throw new RuntimeException(ex);
+                }
+            }
         }
     }
 

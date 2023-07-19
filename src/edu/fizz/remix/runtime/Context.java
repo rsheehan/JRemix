@@ -1,13 +1,14 @@
 package edu.fizz.remix.runtime;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Stack;
 
 public class Context {
     /* A context may be linked back to the parent to go searching for variables in scope. */
     protected Context parentContext = null;
 
     protected HashMap<String, Object> variables = new HashMap<>();
+    protected Stack<LibraryExpression> libraryStack = null;
     /*
      Most functions don't throw return values higher.
      Some builtins and transparent functions "::" do,
@@ -24,6 +25,10 @@ public class Context {
      */
     public Context(Context parent, Function function) {
         parentContext = parent;
+        if (parent != null) // hack
+            libraryStack = parent.libraryStack;
+//        if (libraryStack != null)
+//            System.out.println(libraryStack);
         contextFunction = function;
     }
 
@@ -34,7 +39,22 @@ public class Context {
         super();
         parentContext = original.parentContext;
         variables = new HashMap<>(original.variables);
+        libraryStack = original.libraryStack;
+        if (libraryStack != null)
+            System.out.println(libraryStack);
         contextFunction = original.contextFunction;
+    }
+
+    /*
+     * This is used when a block is to run on another thread after
+     * leaving a "using block".
+     */
+    public void setLibraryStack(Stack<LibraryExpression> libraryStack) {
+        this.libraryStack = libraryStack;
+    }
+
+    public Stack<LibraryExpression> getLibraryStack() {
+        return libraryStack;
     }
 
     /*
@@ -110,7 +130,11 @@ public class Context {
 
     public Context copy() {
         Context copy = new Context(parentContext, contextFunction);
-        copy.variables = (HashMap<String, Object>) Map.copyOf(variables);
+        try {
+            copy.variables = (HashMap)variables.clone();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
         return copy;
     }
 

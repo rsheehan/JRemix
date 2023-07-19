@@ -45,15 +45,15 @@ COMMENT				: (
 					) -> skip ;
 
 fragment COMMENT_LINE		: EOL [ \t]* '-' ~'\n'* ;
-fragment COMMENT_SECTION	: EOL '=' .*? EOL '=' ~'\n'* ;
+fragment COMMENT_SECTION	: EOL [ \t]* '=' .*? EOL [ \t]* '=' ~'\n'* ;
 fragment REMAINING_COMMENT	: ';' ~'\n'* ;
 
 NUMBER				: 'π' | '-'? DIGIT+ ('.' DIGIT+)? ;
-ADD					: ' + ' ;
-SUB					: ' - ' ;
-MUL					: ' * ' | ' × ' ;
-DIV					: ' / ' | ' ÷ ' ;
-MOD					: ' % ' ;
+ADD					: ' + ' | ' - ' ;
+//SUB					: ' - ' ;
+MUL					: ' * ' | ' × ' | ' / ' | ' ÷ ' | ' % ' ;
+//DIV					: ' / ' | ' ÷ ' ;
+//MOD					: ' % ' ;
 LESS				: ' < ' ;
 GREATER				: ' > ' ;
 LESSEQUAL			: ' <= ' | ' ≤ ' ;
@@ -61,6 +61,7 @@ GREATEREQUAL		: ' >= ' | ' ≥ ' ;
 EQUAL				: ' = ' ;
 NOTEQUAL			: ' != ' | ' ≠ ' ;
 CONCAT				: ' (+) ' | ' ⊕ ' ;
+MINUS				: '-' ;
 
 // Keywords - consider not using these to provide greater flexibility.
 BOOLEAN				: 'true' | 'false' ;
@@ -80,5 +81,5 @@ WORD				: FIRSTCHAR CHARACTER* ;
 STRING				: '"' ('\\"' | .)*? '"' ;
 
 // everything apart from white space, newline or special is a character
-fragment FIRSTCHAR	: ~[.()[\]{,}:—|…'’0-9" ~\t\n↲] ; // ⊕+\-*×÷%=≠<≤>≥
+fragment FIRSTCHAR	: ~[.()[\]{,}:—|…'’\-0-9" ~\t\n↲] ; // ⊕+\-*×÷%=≠<≤>≥
 fragment CHARACTER	: ~[.()[\]{,}:—|…'’" ~\t\n↲] ; // ⊕+*×÷%=≠<≤>≥

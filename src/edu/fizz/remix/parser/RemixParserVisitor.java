@@ -246,55 +246,6 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprNotEql(RemixParser.ExprNotEqlContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code exprVar}
-	 * labeled alternative in {@link RemixParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprVar(RemixParser.ExprVarContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code exprNumber}
-	 * labeled alternative in {@link RemixParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprNumber(RemixParser.ExprNumberContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code exprGreatEql}
-	 * labeled alternative in {@link RemixParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprGreatEql(RemixParser.ExprGreatEqlContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code exprListElement}
-	 * labeled alternative in {@link RemixParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprListElement(RemixParser.ExprListElementContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code exprConcat}
-	 * labeled alternative in {@link RemixParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprConcat(RemixParser.ExprConcatContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code exprAdd}
-	 * labeled alternative in {@link RemixParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprAdd(RemixParser.ExprAddContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code exprMap}
-	 * labeled alternative in {@link RemixParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprMap(RemixParser.ExprMapContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code exprLess}
 	 * labeled alternative in {@link RemixParser#expression}.
 	 * @param ctx the parse tree
@@ -302,12 +253,19 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprLess(RemixParser.ExprLessContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code exprDiv}
+	 * Visit a parse tree produced by the {@code exprMinus}
 	 * labeled alternative in {@link RemixParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExprDiv(RemixParser.ExprDivContext ctx);
+	T visitExprMinus(RemixParser.ExprMinusContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprVar}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprVar(RemixParser.ExprVarContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code exprObject}
 	 * labeled alternative in {@link RemixParser#expression}.
@@ -323,6 +281,20 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprLessEql(RemixParser.ExprLessEqlContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code exprNumber}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprNumber(RemixParser.ExprNumberContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprGreatEql}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprGreatEql(RemixParser.ExprGreatEqlContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code exprEqual}
 	 * labeled alternative in {@link RemixParser#expression}.
 	 * @param ctx the parse tree
@@ -337,12 +309,12 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprParen(RemixParser.ExprParenContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code exprSub}
+	 * Visit a parse tree produced by the {@code exprListElement}
 	 * labeled alternative in {@link RemixParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExprSub(RemixParser.ExprSubContext ctx);
+	T visitExprListElement(RemixParser.ExprListElementContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code exprMul}
 	 * labeled alternative in {@link RemixParser#expression}.
@@ -351,19 +323,26 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprMul(RemixParser.ExprMulContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code exprConcat}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprConcat(RemixParser.ExprConcatContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprAdd}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprAdd(RemixParser.ExprAddContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code exprString}
 	 * labeled alternative in {@link RemixParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitExprString(RemixParser.ExprStringContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code exprMod}
-	 * labeled alternative in {@link RemixParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprMod(RemixParser.ExprModContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code exprList}
 	 * labeled alternative in {@link RemixParser#expression}.
@@ -399,6 +378,13 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExprBlock(RemixParser.ExprBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprMap}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprMap(RemixParser.ExprMapContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code exprFncCall}
 	 * labeled alternative in {@link RemixParser#expression}.

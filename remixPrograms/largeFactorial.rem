@@ -17,4 +17,4 @@ real (number) with δ (δ) :
 		δ : δ
 
 		(other) equals (me) :
-			(absolute (number - other)) < δ
+			absolute (number - other) < δ

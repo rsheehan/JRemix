@@ -343,15 +343,25 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     public Expression visitExprAdd(RemixParser.ExprAddContext ctx) {
         Expression first = (Expression) visit(ctx.expression(0));
         Expression second = (Expression) visit(ctx.expression(1));
-        return new BinaryExpression(first, "+", second);
+        String operator = ctx.ADD().getText().trim();
+        return new BinaryExpression(first, operator, second);
     }
 
-    /** expression SUB expression */
+//    /** expression SUB expression */
+//    @Override
+//    public Expression visitExprSub(RemixParser.ExprSubContext ctx) {
+//        Expression first = (Expression) visit(ctx.expression(0));
+//        Expression second = (Expression) visit(ctx.expression(1));
+//        System.out.printf("subtract: %s%n", ctx.SUB().getText());
+//        return new BinaryExpression(first, "-", second);
+//    }
+
+    /** MINUS expression */
     @Override
-    public Expression visitExprSub(RemixParser.ExprSubContext ctx) {
-        Expression first = (Expression) visit(ctx.expression(0));
-        Expression second = (Expression) visit(ctx.expression(1));
-        return new BinaryExpression(first, "-", second);
+    public Expression visitExprMinus(RemixParser.ExprMinusContext ctx) {
+        Expression value = (Expression) visit(ctx.expression());
+        SimpleExpression<Long> minusOne = new SimpleExpression<Long>(-1L);
+        return new BinaryExpression(minusOne, "*", value);
     }
 
     /** expression MUL expression */
@@ -359,24 +369,25 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     public Expression visitExprMul(RemixParser.ExprMulContext ctx) {
         Expression first = (Expression) visit(ctx.expression(0));
         Expression second = (Expression) visit(ctx.expression(1));
-        return new BinaryExpression(first, "*", second);
+        String operator = ctx.MUL().getText().trim();
+        return new BinaryExpression(first, operator, second);
     }
 
-    /** expression DIV expression */
-    @Override
-    public Expression visitExprDiv(RemixParser.ExprDivContext ctx) {
-        Expression first = (Expression) visit(ctx.expression(0));
-        Expression second = (Expression) visit(ctx.expression(1));
-        return new BinaryExpression(first, "/", second);
-    }
+//    /** expression DIV expression */
+//    @Override
+//    public Expression visitExprDiv(RemixParser.ExprDivContext ctx) {
+//        Expression first = (Expression) visit(ctx.expression(0));
+//        Expression second = (Expression) visit(ctx.expression(1));
+//        return new BinaryExpression(first, "/", second);
+//    }
 
-    /** expression MOD expression */
-    @Override
-    public Expression visitExprMod(RemixParser.ExprModContext ctx) {
-        Expression first = (Expression) visit(ctx.expression(0));
-        Expression second = (Expression) visit(ctx.expression(1));
-        return new BinaryExpression(first, "%", second);
-    }
+//    /** expression MOD expression */
+//    @Override
+//    public Expression visitExprMod(RemixParser.ExprModContext ctx) {
+//        Expression first = (Expression) visit(ctx.expression(0));
+//        Expression second = (Expression) visit(ctx.expression(1));
+//        return new BinaryExpression(first, "%", second);
+//    }
 
     /** expression LESS expression */
     @Override

@@ -23,9 +23,9 @@ top half of (size) diamond and produce (#lines) :
 	#lines : {}
 	if (size ≥ 3)
 		for each (row) from 1 to (size ÷ 2) do
-			spaces : size - (row × 2)
-			stars : (row × 2) - 1
-			append (" " (spaces) times ⊕ " *" (stars) times) to (#lines)
+			num-spaces : size - row × 2
+			num-stars : row × 2 - 1
+			append (" " (num-spaces) times ⊕ " *" (num-stars) times) to (#lines)
 			#lines{row} ↲
 
 =-

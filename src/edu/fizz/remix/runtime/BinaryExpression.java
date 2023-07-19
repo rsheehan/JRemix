@@ -85,15 +85,15 @@ public class BinaryExpression implements Expression {
             return switch (operator) {
                 case "+" -> l1 + l2;
                 case "-" -> l1 - l2;
-                case "*" -> l1 * l2;
-                case "/" -> l1 / l2;
+                case "*", "×" -> l1 * l2;
+                case "/", "÷" -> l1 / l2;
                 case "%" -> l1 % l2;
                 case "<" -> l1 < l2;
                 case ">" -> l1 > l2;
-                case "<=" -> l1 <= l2;
-                case ">=" -> l1 >= l2;
+                case "<=", "≤" -> l1 <= l2;
+                case ">=", "≥" -> l1 >= l2;
                 case "=" -> l1 == l2;
-                case "!=" -> l1 != l2;
+                case "!=", "≠" -> l1 != l2;
                 default -> null;
             };
         } else {
@@ -103,15 +103,15 @@ public class BinaryExpression implements Expression {
             return switch (operator) {
                 case "+" -> d1 + d2;
                 case "-" -> d1 - d2;
-                case "*" -> d1 * d2;
-                case "/" -> d1 / d2;
+                case "*", "×" -> d1 * d2;
+                case "/", "÷" -> d1 / d2;
                 case "%" -> d1 % d2;
                 case "<" -> d1 < d2;
                 case ">" -> d1 > d2;
-                case "<=" -> d1 <= d2;
-                case ">=" -> d1 >= d2;
+                case "<=", "≤" -> d1 <= d2;
+                case ">=", "≥" -> d1 >= d2;
                 case "=" -> d1 == d2;
-                case "!=" -> d1 != d2;
+                case "!=", "≠" -> d1 != d2;
                 default -> false;
             };
         }

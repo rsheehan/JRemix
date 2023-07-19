@@ -2,8 +2,12 @@
 
 library "edu.fizz.remix.libraries.Graphics"
 
+	=====================
+	Dimensions and points
+	=====================
 	std width :
 		1000
+
 	std height :
 		800
 
@@ -13,14 +17,9 @@ library "edu.fizz.remix.libraries.Graphics"
 	random point :
 		{random (std width), random (std height)}
 
-	scale (polygon) by (scale) :
-		scaled-polygon : {}
-		for each (point) in (polygon) do
-			if ((point) is a "map")
-				append { point{x} × scale, point{y} × scale } to (scaled-polygon)
-			… otherwise
-				append { point{1} × scale, point{2} × scale } to (scaled-polygon)
-
+	=======
+	Colours
+	=======
 	white colour :
 		{255, 255, 255}
 	black colour :
@@ -35,41 +34,150 @@ library "edu.fizz.remix.libraries.Graphics"
 	random colour :
 		{random 255, random 255, random 255}
 
-	show drawing window :
-		show "Drawing" window of width (std width) and height (std height)
+	======
+	Shapes
+	======
 
-	draw random line :
-		draw (random colour) line from (random point) to (random point)
+	a triangle :
+		3 sided polygon
 
-	(colour) shape from (polygon) scaled by (scale) at (position) facing (heading) :
+	a square :
+		4 sided polygon
+
+	(n) sided polygon :
+		points : {}
+		for each (side) from 0 to (n - 1) do
+			append {
+				cosine (side × 2 × π ÷ n)
+				sine (side × 2 × π ÷ n)
+			} to (points)
+		shape from (points)
+
+	=-
+	Create a shape from the list of "points".
+	=-
+	shape from (points) :
+
 		create
-			colour : colour
-			polygon : polygon
-			position : position
-			heading : heading
-			scale : scale
+			colour   : red colour
+			polygon  : points
+			position : centre point
+			size    : 20.0
+			heading  : 0.0 ; radians
+			filled   : true
 
-			setter
-				colour, position, heading
+			getter/setter
+				colour, position, size, heading, filled
 
-			draw (me) :
-				(colour) pen colour
-				scaled-polygon : scale (polygon) by (scale)
-				draw (scaled-polygon) at (position) facing (heading)
+			set (my) heading (value) degrees :
+				heading : (value) degrees as radians
 
-			fill (me) :
-				(colour) pen colour
-				scaled-polygon : scale (polygon) by (scale)
-				fill (scaled-polygon) at (position) facing (heading)
+			(my) x-pos :
+				position{1}
 
-	shape from (polygon) :
-		(white colour) shape from (polygon) scaled by 1 at (centre point) facing 0
+			(my) y-pos :
+				position{2}
 
-	shape from (polygon) at (position) :
-		(white colour) shape from (polygon) scaled by 1 at (position) facing 0
+			change (my) x-pos by (δ) :
+				position{1} : position{1} + δ
 
-	shape from (polygon) scaled by (scale) at (position) :
-		(white colour) shape from (polygon) scaled by (scale) at (position) facing 0
+			change (my) heading by (δ) degrees :
+				heading : heading + (δ) degrees as radians
 
-	shape from (polygon) scaled by (scale) at (position) facing (heading) :
-		(white colour) shape from (polygon) scaled by (scale) at (position) facing (heading)
+	===============
+	Graphic Objects
+	===============
+
+	=-
+	Create and show a window with only one shape layer.
+	=-
+	simple window :
+
+		the-window : create
+			jwindow : "Drawing" window of width (std width) and height (std height)
+			layer : shape layer ; only a single layer for drawing
+
+			add (shape) to (me) :
+				add (shape) to (layer)
+
+			(my) shapes : ; can be called by "window's shapes"
+				layer's shapes
+
+			show (me) :
+				show (jwindow)
+
+			update (me) :
+				clear (jwindow) layer ; Java
+				prepare (layer) shapes for drawing on (jwindow)
+				refresh (jwindow)
+
+		show (the-window)
+		the-window
+
+	=-
+	Create and show a window with multiple shape layers.
+	=-
+	window with shape layers :
+
+		the-window : create
+			jwindow : "Drawing" window of width (std width) and height (std height)
+			layers : { shape layer } ; default bottom layer
+
+			getter
+				layers
+
+			(my) next layer :
+				new-layer : shape layer
+				append (new-layer) to (layers)
+				new-layer
+
+			(my) base layer :
+				layers {1}
+
+			show (me) :
+				show (jwindow)
+
+			update (me) :
+				clear all (jwindow) layers
+				for each (layer) in (layers) do
+					prepare (layer) shapes for drawing on (jwindow)
+				refresh (jwindow)
+
+		show (the-window)
+		the-window
+
+	=-
+	Create a shape layer.
+	Shapes get added to layers.
+	=-
+	shape layer :
+		create
+			shapes : {}
+
+			getter
+				shapes
+
+			add (shape) to (me) :
+				append (shape) to (shapes)
+
+			clear (my) shapes :
+				shapes : {}
+
+			prepare (my) shapes for drawing on (window) :
+				for each (shape) in (shapes) do
+					add (shape) to (window) ; Java
+
+	=========
+	Animation
+	=========
+	every (n) tick/ticks do [changes] :
+		create
+			ticks : n
+			counter : n
+			changes : changes
+
+			(my) animation :
+				dec (counter)
+				if (counter = 0)
+					counter : ticks
+					do (changes)

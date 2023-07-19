@@ -13,6 +13,6 @@ public class GraphicsWindow extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationByPlatform(true);
         pack();
-        setVisible(true);
     }
+
 }

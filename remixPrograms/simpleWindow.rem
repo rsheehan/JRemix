@@ -1,0 +1,24 @@
+graphics : include graphics
+
+using graphics
+	window : simple window
+
+	repeat
+		shape : a square
+		shape's colour   : random colour
+		shape's position : random point
+		shape's size     : random from 10 to 100
+		shape's heading  : random from 1 to 90
+		add (shape) to (window)
+	… 100 times
+
+	turn : 2
+	degree : 0
+	animate 60 ticks per second
+		for each (shape) in (window's shapes) do
+			change (shape) heading by (turn) degrees
+		update (window)
+		degree : degree + turn
+	… until [degree ≥ 360]
+
+"Finished" ↲

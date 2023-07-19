@@ -8,7 +8,7 @@ gap : 0
 repeat
 	biggest-prime : last in (primes)
 	start : biggest-prime + 1
-	finish : (biggest-prime × biggest-prime) + 1
+	finish : biggest-prime × biggest-prime + 1
 
 	more-primes : filter (x) from ((start) to (finish)) and show (gap) where
 		(x) is not divisible by any number in (primes) up to (√(x))
@@ -24,7 +24,7 @@ filter (#item) from (list) and show (#gap) where [condition-block] :
 	for each (#item) in (list) do
 		if (condition-block)
 			append (#item) to (new-list)
-			if ((#item - prev) > #gap)
+			if (#item - prev > #gap)
 				#gap : #item - prev
 				"gap: ", #gap, " between ", prev, " and ", #item ↲
 			prev : #item

@@ -184,16 +184,28 @@ public class PreProcessREPL {
     }
 
     private static void gobbleToEndOfCommentBlock(BufferedReader reader, PrintWriter writer) throws IOException {
+        // comes after a '='
         int ch = 0;
+        gobbleToEndOfLine(reader, writer); // first line
+        // if a "\t" then we will miss the "="
         do {
-            if (ch != '\n')
-                gobbleToEndOfLine(reader, writer);
             ch = reader.read();
             if (ch == -1)
                 return;
             writer.write((char)ch);
-        } while (ch != '=');
-        gobbleToEndOfLine(reader, writer);
+            while (ch == '\t') {
+                ch = reader.read();
+                if (ch == -1)
+                    return;
+                writer.write((char)ch);
+            }
+            if (ch == '=') {
+                break;
+            }
+            if (ch != '\n')
+                gobbleToEndOfLine(reader, writer);
+        } while (true);
+        gobbleToEndOfLine(reader, writer); // last line
     }
 
     static void scanToEndOfLine(BufferedReader reader) throws IOException {
@@ -212,9 +224,11 @@ public class PreProcessREPL {
         do {
             if (ch != '\n')
                 scanToEndOfLine(reader);
-            ch = reader.read();
-            if (ch == -1)
-                return;
+            do {
+                ch = reader.read();
+                if (ch == -1)
+                    return;
+            } while (ch == '\t'); // gobble any tabs before "="
         } while (ch != '=');
         scanToEndOfLine(reader);
     }

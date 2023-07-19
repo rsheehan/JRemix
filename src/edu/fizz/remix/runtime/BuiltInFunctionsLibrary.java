@@ -519,7 +519,6 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         @Override
         public Object execute(Context context) {
             Object value = context.retrieve("value");
-//            Object listOrString = context.retrieve("list");
             @SuppressWarnings ("unchecked")
             List<Object> list = (List<Object>)context.retrieve("list");
             list.add(value);

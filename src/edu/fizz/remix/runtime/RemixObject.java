@@ -11,8 +11,9 @@ public class RemixObject {
     public RemixObject() {
         // used by SelfReference
     }
-    public RemixObject (MethodTable methodTable) {
+    public RemixObject (Context definingContext, MethodTable methodTable) {
         this.methodTable = methodTable;
+        objectContext.libraryStack = definingContext.libraryStack;
     }
 
     /* Find the method matching the name. */

@@ -1,7 +1,9 @@
 graphics : include graphics
 
 using graphics
-	show drawing window
+	window : window with shape layers
+	show (window)
+	layer : (window) base layer
 
 	square-pts : {
 		{-1, -1}
@@ -10,13 +12,16 @@ using graphics
 		{-1,  1}
 	}
 
-	square : shape from (square-pts) scaled by 200 at (centre point)
+	square : shape from (square-pts)
+	square's size : 200
+	square's position : (centre point)
+	square's filled : true
 
 	for each (angle) from 0 to 80 in steps of 10 do
-
+		square : copy (square)
 		square's heading : (angle) degrees as radians
 		square's colour : random colour
-		draw (square)
+		add (square) to (layer)
 
 	arrow-pts : {
 		{ 0,  1}
@@ -25,9 +30,16 @@ using graphics
 		{ 2,  2}
 	}
 
-	arrow : (red colour) shape from (arrow-pts) scaled by 10 at {
+	arrow : shape from (arrow-pts)
+	arrow's size : 10
+	arrow's position : {
 		x : 800
 		y : std height ÷ 2
-	} facing (π × 1.5)
+	}
+	arrow's heading : π × 1.5
+	arrow's colour : red colour
 
-	draw (arrow)
+	add (arrow) to (layer)
+	update (window) layers
+
+"Finished" ↲

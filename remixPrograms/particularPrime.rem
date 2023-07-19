@@ -10,7 +10,7 @@ prime number (n) :
 	repeat
 		biggest-prime : last in (primes)
 		start : biggest-prime + 1
-		finish : (biggest-prime × biggest-prime) + 1
+		finish : biggest-prime × biggest-prime + 1
 		test-range : (start) to (finish)
 		more-primes : {}
 		result : (prime-count) stopping at (n) filter (x) from (test-range) producing (more-primes)

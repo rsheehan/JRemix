@@ -8,13 +8,18 @@ package edu.fizz.remix.runtime;
  */
 public class MethodContext extends Context {
 
-    private final RemixObject object; // a specific instance
+    final RemixObject object; // a specific instance
     private final Context localContext;
 
     public MethodContext(Context parent, RemixObject object) {
         variables = object.getContext().variables;
         this.object = object;
         localContext = new Context(parent, null); // ???
+        // the following line didn't fix the problem
+//        localContext.setLibraryStack(parent.getLibraryStack());
+        // or
+ //       localContext.libraryStack = object.getContext().libraryStack;
+        libraryStack = object.getContext().libraryStack;
         parentContext = parent; //new Context(parent, null);
     }
 

@@ -1,0 +1,37 @@
+graphics : include graphics
+
+using graphics
+	window : window with shape layers
+	base-layer : (window) base layer
+	next-layer : (window) next layer
+
+	repeat
+		shape : a square
+		shape's colour : random colour
+		shape's position : random point
+		shape's size : random from 10 to 100
+		shape's heading  : random from 1 to 90
+		add (shape) to (next-layer)
+	… 20 times
+
+	squares-rotate : every 1 tick do
+		for each (square) in (next-layer's shapes) do
+			change (square) heading by 2 degrees
+
+	box : a square
+	box's colour : red colour
+	box's size : 20
+	box's position : {0, std height ÷ 2}
+	change (box) heading by 45 degrees
+	add (box) to (base-layer)
+
+	box-move : every 2 ticks do
+		change (box) x-pos by 5
+
+	animate 60 ticks per second
+		(box-move) animation
+		(squares-rotate) animation
+		update (window)
+	… until [box's x-pos ≥ std width]
+
+"Finished" ↲

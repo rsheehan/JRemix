@@ -1,6 +1,7 @@
 package edu.fizz.remix.runtime;
 
 import java.util.ListIterator;
+import java.util.Stack;
 
 /*
  * With multiple function names I should really change this as the function call only
@@ -57,7 +58,12 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
 
         // fall through into a possible function call
 
-        Function function = Runtime.searchFunctionTables(routineName);
+        Function function;
+        Stack<LibraryExpression> libraryStack = context.getLibraryStack();
+        if (libraryStack != null)
+            function = Runtime.searchFunctionTables(libraryStack, routineName);
+        else
+            function = Runtime.searchFunctionTables(routineName);
         if (function == null) {
             String readable = routineName; //.replace("_", " ");
             readable = readable.replace("|", "()");
@@ -115,6 +121,8 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
                         value = new RefParameter(actualName, originalContext);
                     }
                 }
+            } else if (parameter instanceof SelfReference) { // passing a self reference of an object to a function
+                value = ((MethodContext) callingContext).object;
             } else { // a normal value parameter which isn't a block
                 value = parameter.evaluate(callingContext);
                 if (value == null) {

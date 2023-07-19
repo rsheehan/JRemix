@@ -166,7 +166,7 @@ public class RemixEdLexer {
             case ' ' -> {
                 return dealWithSpaces(pos);
             }
-            case '\t' -> err.println("Only use tabs at the start of a line.");
+//            case '\t' -> err.println("Only use tabs at the start of a line.");
             case '\n' -> mode = LexMode.startOfLine;
             case '\"' -> {
                 return dealWithString(pos);
@@ -211,6 +211,8 @@ public class RemixEdLexer {
         document.setCharacterAttributes(tabStart, pos - tabStart, defaultStyle, true);
         if (ch == '-') // can be single line comment after tabs
             return dealWithSingleLineComment(pos);
+        else if (ch == '=') // can be a multiline comment after tabs
+            return dealWithMultiLineComment(pos);
         return pos;
     }
 
@@ -240,14 +242,24 @@ public class RemixEdLexer {
 
     private static int dealWithMultiLineComment(int pos) throws BadLocationException {
         int commentPos;
-        boolean newline = false;
+        boolean tabbedStartOfLine = false;
+//        boolean newline = false;
         for (commentPos = pos + 1; commentPos < document.getLength(); commentPos++) {
             char ch = getChar(commentPos);
-            if (newline && ch == '=') {// finishing
+            if (tabbedStartOfLine && ch == '=') {// finishing
                 commentPos++;
                 break;
             }
-            newline = ch == '\n';
+//            newline = false;
+            if (ch == '\n') {
+//                newline = true;
+                tabbedStartOfLine = true;
+            } else {
+                if (tabbedStartOfLine) {
+                    tabbedStartOfLine = ch == '\t';
+                }
+            }
+//            newline = ch == '\n';
         }
         for (; commentPos < document.getLength(); commentPos++) { // mop up any remaining characters on the line
             char ch = getChar(commentPos);

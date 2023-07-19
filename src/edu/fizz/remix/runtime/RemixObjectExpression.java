@@ -32,7 +32,7 @@ public class RemixObjectExpression implements Expression {
      * in the object context. */
     @Override
     public RemixObject evaluate(Context definingContext) throws ReturnException, InterruptedException {
-        RemixObject remixObject = new RemixObject(methodTable);
+        RemixObject remixObject = new RemixObject(definingContext, methodTable);
         for (Expression statement : initBlock.statements) {
             FieldAssignmentStatement assStmnt = (FieldAssignmentStatement) statement;
             Object result = assStmnt.evaluate(definingContext);

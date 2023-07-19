@@ -22,11 +22,11 @@ sort (#list) with values from (start) to (finish) :
 	collect-counts : apply [0] (range) times
 
 	for each (value) in (#list) do
-		place : (value + 1) - start
+		place : value + 1 - start
 		collect-counts{place} : collect-counts{place} + 1
 
 	#list : {}
 	for each (item) in (collect-counts) keeping (index) do
 		while [item > 0] do
-			append ((index - 1) + start) to (#list)
-			(item) --
+			append (index - 1 + start) to (#list)
+			dec (item)

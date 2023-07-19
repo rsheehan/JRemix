@@ -46,32 +46,6 @@ public class Runtime {
         functionList = new ArrayList<>(originalFunctionList);
     }
 
-//    /** Set up the builtin functions. */
-//    public static void setUpBuiltIns() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-//        for (Class<?> declaredClass : BuiltInFunctionsLibrary.class.getDeclaredClasses()) {
-//            baseLibrary.addFunction((Function) declaredClass.getDeclaredConstructor().newInstance());
-//        }
-//        baseLibrary.addFunction(new BuiltInFunctions.QuitFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.IncludeFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.CopyFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.TypeOfFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.IsATypeFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.DoFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.PrintFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.IfFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.IfOtherwiseFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.StartFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.NextFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.EndFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.RangeFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.RandomFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.SquareRootFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.AppendFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.LengthFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.ConcatFunction());
-//        baseLibrary.addFunction(new BuiltInFunctions.ExtractFunction());
-//    }
-
     /** Print the names of all the functions. */
     public static void printFunctionNames() {
         for (String name : programLibrary.functionTable.keySet()) {
@@ -180,6 +154,10 @@ public class Runtime {
         return libraryStack.pop();
     }
 
+    public static Stack<LibraryExpression> copylibraryStack() {
+        return (Stack<LibraryExpression>) libraryStack.clone();
+    };
+
     public static Integer searchMethodTables(String methodName) {
         for (LibraryExpression library : libraryStack) {
             Integer refPos = library.methodTable.get(methodName);
@@ -191,6 +169,17 @@ public class Runtime {
     }
 
     public static Function searchFunctionTables(String functionName) {
+        // N.B. searches from the bottom of the stack
+        for (LibraryExpression library : libraryStack) {
+            Function function = library.functionTable.get(functionName);
+            if (function != null) {
+                return function;
+            }
+        }
+        return null;
+    }
+
+    public static Function searchFunctionTables(Stack<LibraryExpression> libraryStack, String functionName) {
         // N.B. searches from the bottom of the stack
         for (LibraryExpression library : libraryStack) {
             Function function = library.functionTable.get(functionName);

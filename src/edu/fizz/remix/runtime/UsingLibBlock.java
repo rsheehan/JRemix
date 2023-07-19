@@ -19,6 +19,7 @@ public class UsingLibBlock implements Expression {
             LibraryExpression library = (LibraryExpression) libraryName.evaluate(context);
             Runtime.pushLibrary(library);
         }
+        context.setLibraryStack(Runtime.copylibraryStack());
         Object result = usingStatements.evaluate(context);
         for (VarValueExpression ignored : libraryNames) {
             Runtime.popLibrary();

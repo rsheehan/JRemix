@@ -69,11 +69,12 @@ assignmentStatement	: WORD COLON expression 			# setVariable
 printStatement		: (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) # prntStatement
 					;
 
-expression			: expression ADD expression				# exprAdd
-					| expression SUB expression				# exprSub
+expression			: MINUS expression						# exprMinus
 					| expression MUL expression				# exprMul
-					| expression DIV expression				# exprDiv
-					| expression MOD expression				# exprMod
+//					| expression DIV expression				# exprDiv
+//					| expression MOD expression				# exprMod
+					| expression ADD expression				# exprAdd
+//					| expression SUB expression				# exprSub
 					| expression LESS expression			# exprLess
 					| expression GREATER expression			# exprGreater
 					| expression GREATEREQUAL expression	# exprGreatEql
