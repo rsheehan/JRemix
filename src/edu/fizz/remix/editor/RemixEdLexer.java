@@ -397,6 +397,14 @@ public class RemixEdLexer {
             if (two_after.equals("\n"))
                 return true;
         }
+        try {
+            Integer.parseInt(before);
+            if ( afterList.contains(after)) {
+                return true;
+            }
+        } catch (NumberFormatException e) {
+            // nothing
+        }
         if (openers.contains(before) && afterList.contains(after))
             return true;
         if (beforeList.contains(before) && closers.contains(after))

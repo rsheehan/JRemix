@@ -48,8 +48,8 @@ library "edu.fizz.remix.libraries.Graphics"
 		points : {}
 		for each (side) from 0 to (n - 1) do
 			append {
-				cosine (side × 2 × π ÷ n)
-				sine (side × 2 × π ÷ n)
+				cosine (2π × side ÷ n)
+				sine (2π × side ÷ n)
 			} to (points)
 		shape from (points)
 

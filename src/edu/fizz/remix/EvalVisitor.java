@@ -347,15 +347,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new BinaryExpression(first, operator, second);
     }
 
-//    /** expression SUB expression */
-//    @Override
-//    public Expression visitExprSub(RemixParser.ExprSubContext ctx) {
-//        Expression first = (Expression) visit(ctx.expression(0));
-//        Expression second = (Expression) visit(ctx.expression(1));
-//        System.out.printf("subtract: %s%n", ctx.SUB().getText());
-//        return new BinaryExpression(first, "-", second);
-//    }
-
     /** MINUS expression */
     @Override
     public Expression visitExprMinus(RemixParser.ExprMinusContext ctx) {
@@ -372,22 +363,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         String operator = ctx.MUL().getText().trim();
         return new BinaryExpression(first, operator, second);
     }
-
-//    /** expression DIV expression */
-//    @Override
-//    public Expression visitExprDiv(RemixParser.ExprDivContext ctx) {
-//        Expression first = (Expression) visit(ctx.expression(0));
-//        Expression second = (Expression) visit(ctx.expression(1));
-//        return new BinaryExpression(first, "/", second);
-//    }
-
-//    /** expression MOD expression */
-//    @Override
-//    public Expression visitExprMod(RemixParser.ExprModContext ctx) {
-//        Expression first = (Expression) visit(ctx.expression(0));
-//        Expression second = (Expression) visit(ctx.expression(1));
-//        return new BinaryExpression(first, "%", second);
-//    }
 
     /** expression LESS expression */
     @Override
@@ -472,6 +447,50 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             number = produceDoubleExpression(ctx.NUMBER().getText());
         }
         return number;
+    }
+
+    /** WORDPRODUCT (from expression) */
+    @Override
+    public Expression visitExprWordProduct(RemixParser.ExprWordProductContext ctx) {
+        String[] numberAndWord = splitNumberAndWord(ctx.getText());
+        Expression number;
+        Expression word;
+        try {
+            number = produceLongExpression(numberAndWord[0]);
+        } catch (NumberFormatException exception) {
+            number = produceDoubleExpression(numberAndWord[0]);
+        }
+        if (numberAndWord[1].equals("π") || numberAndWord[1].equals("pi")) {
+            word = produceDoubleExpression("π");
+        } else {
+            word = new VarValueExpression(numberAndWord[1]);
+        }
+        return new BinaryExpression(number, "*", word);
+    }
+
+    private String[] splitNumberAndWord(String productWord) {
+        String product, word;
+        product = "";
+        int i = 0;
+        char c = productWord.charAt(i);
+        if (c == '-') {
+            product += c;
+            c = productWord.charAt(++i);
+        }
+        while (Character.isDigit(c)) {
+            product += c;
+            c = productWord.charAt(++i);
+        }
+        if (c == '.') {
+            product += c;
+            c = productWord.charAt(++i);
+        }
+        while (Character.isDigit(c)) {
+            product += c;
+            c = productWord.charAt(++i);
+        }
+        word = productWord.substring(i, productWord.length());
+        return new String[] {product, word};
     }
 
     /** BOOLEAN (from expression) */

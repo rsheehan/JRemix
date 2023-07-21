@@ -48,12 +48,9 @@ fragment COMMENT_LINE		: EOL [ \t]* '-' ~'\n'* ;
 fragment COMMENT_SECTION	: EOL [ \t]* '=' .*? EOL [ \t]* '=' ~'\n'* ;
 fragment REMAINING_COMMENT	: ';' ~'\n'* ;
 
-NUMBER				: 'π' | '-'? DIGIT+ ('.' DIGIT+)? ;
+NUMBER				: '-'? ( 'π' | DIGIT+ ('.' DIGIT+)?) ;
 ADD					: ' + ' | ' - ' ;
-//SUB					: ' - ' ;
 MUL					: ' * ' | ' × ' | ' / ' | ' ÷ ' | ' % ' ;
-//DIV					: ' / ' | ' ÷ ' ;
-//MOD					: ' % ' ;
 LESS				: ' < ' ;
 GREATER				: ' > ' ;
 LESSEQUAL			: ' <= ' | ' ≤ ' ;
@@ -77,6 +74,7 @@ USING				: 'using' ; // using (library)
 SELFREF				: 'me' | 'my' ;
 POSSESSIVE			: '\'s' ; // used for field access e.g. Robert's age
 WORD				: FIRSTCHAR CHARACTER* ;
+WORDPRODUCT			: '-'? DIGIT+ ('.' DIGIT+)? (WORD | 'π');
 
 STRING				: '"' ('\\"' | .)*? '"' ;
 

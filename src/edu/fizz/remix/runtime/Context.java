@@ -27,8 +27,6 @@ public class Context {
         parentContext = parent;
         if (parent != null) // hack
             libraryStack = parent.libraryStack;
-//        if (libraryStack != null)
-//            System.out.println(libraryStack);
         contextFunction = function;
     }
 

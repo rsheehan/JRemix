@@ -86,6 +86,7 @@ expression			: MINUS expression						# exprMinus
 					| functionCall			# exprFncCall
 					| WORD					# exprVar
 					| NUMBER				# exprNumber
+					| WORDPRODUCT			# exprWordProduct
 					| BOOLEAN				# exprBoolean
 					| STRING				# exprString
 					| blockOfStatements		# exprBlock

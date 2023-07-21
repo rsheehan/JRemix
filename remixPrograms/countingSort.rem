@@ -18,15 +18,15 @@ random list of (size) numbers from (start) to (finish) :
 	… (size) times
 
 sort (#list) with values from (start) to (finish) :
-	range : finish + 1 - start
+	range : finish - start + 1
 	collect-counts : apply [0] (range) times
 
 	for each (value) in (#list) do
-		place : value + 1 - start
+		place : value - start + 1
 		collect-counts{place} : collect-counts{place} + 1
 
 	#list : {}
 	for each (item) in (collect-counts) keeping (index) do
 		while [item > 0] do
-			append (index - 1 + start) to (#list)
+			append (start + index - 1) to (#list)
 			dec (item)

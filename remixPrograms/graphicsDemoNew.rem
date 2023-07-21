@@ -12,26 +12,26 @@ using graphics
 		shape's size : random from 10 to 100
 		shape's heading  : random from 1 to 90
 		add (shape) to (next-layer)
-	… 20 times
+	… 50 times
+
+	for each (y-pos) from 40 to (std height - 20) in steps of 80 do
+		arrow : a triangle
+		arrow's size : 20
+		arrow's position : {0, y-pos}
+		add (arrow) to (base-layer)
 
 	squares-rotate : every 1 tick do
 		for each (square) in (next-layer's shapes) do
 			change (square) heading by 2 degrees
 
-	box : a square
-	box's colour : red colour
-	box's size : 20
-	box's position : {0, std height ÷ 2}
-	change (box) heading by 45 degrees
-	add (box) to (base-layer)
-
-	box-move : every 2 ticks do
-		change (box) x-pos by 5
+	arrows-move : every 2 ticks do
+		for each (arrow) in (base-layer's shapes) do
+			change (arrow) x-pos by 5
 
 	animate 60 ticks per second
-		(box-move) animation
 		(squares-rotate) animation
+		(arrows-move) animation
 		update (window)
-	… until [box's x-pos ≥ std width]
+	… until [arrow's x-pos ≥ std width]
 
 "Finished" ↲
