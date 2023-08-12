@@ -1,5 +1,7 @@
 package edu.fizz.remix.runtime;
 
+import java.util.Stack;
+
 /*
 The UsingLibBlock is a statement which executes its block of statements.
  */
@@ -19,11 +21,13 @@ public class UsingLibBlock implements Expression {
             LibraryExpression library = (LibraryExpression) libraryName.evaluate(context);
             Runtime.pushLibrary(library);
         }
-        context.setLibraryStack(Runtime.copylibraryStack());
+        Stack<LibraryExpression> savedContextLibStack = context.libraryStack;
+        context.libraryStack = Runtime.copylibraryStack();
         Object result = usingStatements.evaluate(context);
         for (VarValueExpression ignored : libraryNames) {
             Runtime.popLibrary();
         }
+//        context.setLibraryStack(savedContextLibStack); // cannot have if another thread
         return result;
     }
 }

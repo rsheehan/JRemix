@@ -17,7 +17,8 @@ public class LibraryExpression implements Expression {
     Context context = new Context();
     public Block block = new Block();
     HashMap<String, Function> functionTable = new HashMap<>();
-    HashMap<String, Integer> methodTable = new HashMap<>();
+    // static methodTable as only one?
+    static HashMap<String, Integer> methodTable = new HashMap<>();
 
     public LibraryExpression() {
         setUpBuiltIns();

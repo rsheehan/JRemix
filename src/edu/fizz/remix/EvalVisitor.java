@@ -115,7 +115,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         if (ctx.getChild(0) instanceof RemixParser.FunctionCommentContext) {
             funcComment = (String)visit(ctx.functionComment());
             colonPosition++; // because the comment existed
-//            System.out.println(funcComment);
         }
         @SuppressWarnings ("unchecked")
         FunctionName<String> funcSig = (FunctionName<String>)visit(ctx.functionSignature());
@@ -160,6 +159,16 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     @Override
     public RemixObjectExpression visitCreateObject(RemixParser.CreateObjectContext ctx) {
         return (RemixObjectExpression)visit(ctx.object());
+    }
+
+    /** EXTEND LPAREN expression RPAREN LBLOCK EOL* object RBLOCK */
+    @Override
+    public RemixObjectExpression visitExtendObject(RemixParser.ExtendObjectContext ctx) {
+//        String varName = ctx.WORD().getText();
+        Expression expression = (Expression) visit(ctx.expression());
+//        VarValueExpression originalObject = new VarValueExpression(varName);
+        RemixObjectExpression extendedObject = (RemixObjectExpression)visit(ctx.object());
+        return new RemixExtendedObjectExpression(expression, extendedObject);
     }
 
     /** field* (getterSetter? getter? setter?) methodDefinition* */

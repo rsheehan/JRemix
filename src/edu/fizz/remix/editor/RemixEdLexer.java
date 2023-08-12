@@ -33,7 +33,7 @@ public class RemixEdLexer {
     private static final List<String> keywords = Arrays.asList("return", "redo", "setter",
             "setters", "getter", "getters", "getter/setter", "getters/setters", "library", "using");
     // "create" is only a keyword if it is on a line by itself
-    // "using" should only be a keyword if is followed by parentheses
+    // "using" should only be a keyword if is by comma separated words
 
     private static final List<String> literalWords = Arrays.asList("true", "false");
 
@@ -340,6 +340,12 @@ public class RemixEdLexer {
             String after = getCharAfter(start + 5);
             if ((":\n\t".contains(before)) && // all strings contain the empty string
                     (after.equals("") || after.equals("\n")))
+                return true;
+        } else if (word.equals("extend")) {
+            String before = getCharBefore(start);
+            String after = getCharAfter(start + 5);
+            if ((":\n\t".contains(before)) && // all strings contain the empty string
+                    after.equals("("))
                 return true;
         } else if (word.equals("me") || word.equals("my"))
             if ((start > 1 && getChar(start - 1) == '(') &&

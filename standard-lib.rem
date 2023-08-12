@@ -436,7 +436,7 @@ random from (start) to (finish) :
 =-
 The square of "number".
 =-
-(number) squared/²:
+(number) squared/sqrd/²:
 	number × number
 
 =-
@@ -492,12 +492,12 @@ test (list-of-tests) :
 		failing : 0
 
 		assert test (number) (description) [code] produces (expected) :
-			result : do (code)
-
 			if (description ≠ "")
 				"\"", description, "\"" ↲
 			… otherwise
 				"Test #", number ↲
+
+			result : do (code)
 
 			if (result = expected)
 				inc (passing)
@@ -506,7 +506,7 @@ test (list-of-tests) :
 				inc (failing)
 				"  Failed: produces ", result, ", should be ", expected ↲
 
-		execute tests (me) :
+		execute (my) tests :
 			"Starting tests: " ↲
 			for each (test) in (tests) keeping (test-number) do
 				assert test (test-number) (test{"description"})
@@ -514,11 +514,11 @@ test (list-of-tests) :
 			↲
 			test-string : (tests) length ⊕ " Tests"
 			test-string ↲
-			repeat ["=" ~] ((test-string) length) times. ↲
+			"=" ((test-string) length) times ↲
 			"Passing : ", passing ↲
 			"Failing : ", failing ↲
 
-	execute tests (test-object)
+	execute (test-object) tests
 
 ==============================
  Common library functions

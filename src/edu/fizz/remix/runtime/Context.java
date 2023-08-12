@@ -9,13 +9,9 @@ public class Context {
 
     protected HashMap<String, Object> variables = new HashMap<>();
     protected Stack<LibraryExpression> libraryStack = null;
-    /*
-     Most functions don't throw return values higher.
-     Some builtins and transparent functions "::" do,
-     along with anonymous blocks.
-     TODO: Do we need to hold onto the function or can we just use its transparency value?
-    */
-    private Function contextFunction = null;
+//    private Function contextFunction = null;
+    /* When we make a function call we need the context to know if it should return higher. */
+    private boolean returnHigher = false;
 
     public Context() {
     }
@@ -23,11 +19,13 @@ public class Context {
     /* A context with an indication of whether nested returns
      * from blocks or functions end up here.
      */
-    public Context(Context parent, Function function) {
+    public Context(Context parent, boolean returnHigher) {
         parentContext = parent;
         if (parent != null) // hack
             libraryStack = parent.libraryStack;
-        contextFunction = function;
+//        contextFunction = function;
+//        if (returnHigher != null) // another hack
+        this.returnHigher = returnHigher;
     }
 
     /*
@@ -40,19 +38,30 @@ public class Context {
         libraryStack = original.libraryStack;
         if (libraryStack != null)
             System.out.println(libraryStack);
-        contextFunction = original.contextFunction;
+//        contextFunction = original.contextFunction;
+        returnHigher = original.returnHigher;
     }
 
-    /*
-     * This is used when a block is to run on another thread after
-     * leaving a "using block".
-     */
-    public void setLibraryStack(Stack<LibraryExpression> libraryStack) {
-        this.libraryStack = libraryStack;
+    public Integer searchMethodTables(String methodName) {
+        for (LibraryExpression library : libraryStack) {
+            Integer refPos = library.methodTable.get(methodName);
+            if (refPos != null) {
+                return refPos;
+            }
+        }
+        return null;
     }
 
-    public Stack<LibraryExpression> getLibraryStack() {
-        return libraryStack;
+    public Function searchFunctionTables(String functionName) {
+        // N.B. searches from the bottom of the stack
+        // I need to consider this.
+        for (LibraryExpression library : libraryStack) {
+            Function function = library.functionTable.get(functionName);
+            if (function != null) {
+                return function;
+            }
+        }
+        return null;
     }
 
     /*
@@ -104,10 +113,11 @@ public class Context {
     }
 
     public boolean returnHigher() {
-        if (contextFunction == null) // no function so just a transparent block
-            return true;
-        else
-            return contextFunction.isTransparent();
+        return returnHigher;
+//        if (contextFunction == null) // no function so just a transparent block
+//            return true;
+//        else
+//            return contextFunction.isTransparent();
     }
 
     /*
@@ -127,7 +137,7 @@ public class Context {
     }
 
     public Context copy() {
-        Context copy = new Context(parentContext, contextFunction);
+        Context copy = new Context(parentContext, returnHigher);
         try {
             copy.variables = (HashMap)variables.clone();
         } catch (Exception e) {

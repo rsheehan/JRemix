@@ -63,11 +63,11 @@ library "edu.fizz.remix.libraries.Graphics"[
 			colour   : red colour
 			polygon  : points
 			position : centre point
-			size    : 20.0
+			size     : 20.0
 			heading  : 0.0 ; radians
 			filled   : true
 
-			getter/setter[
+			getters/setters[
 				colour, position, size, heading, filled]
 
 			set (my) heading (value) degrees :[
@@ -88,32 +88,6 @@ library "edu.fizz.remix.libraries.Graphics"[
 	===============
 	Graphic Objects
 	===============
-
-	=-
-	Create and show a window with only one shape layer.
-	=-
-	simple window :[
-
-		the-window : create[
-			jwindow : "Drawing" window of width (std width) and height (std height)
-			layer : shape layer ; only a single layer for drawing
-
-			add (shape) to (me) :[
-				add (shape) to (layer)]
-
-			(my) shapes : [; can be called by "window's shapes"
-				layer's shapes]
-
-			show (me) :[
-				show (jwindow)]
-
-			update (me) :[
-				clear (jwindow) layer ; Java
-				prepare (layer) shapes for drawing on (jwindow)
-				refresh (jwindow)]]
-
-		show (the-window)
-		the-window]
 
 	=-
 	Create and show a window with multiple shape layers.
@@ -146,6 +120,19 @@ library "edu.fizz.remix.libraries.Graphics"[
 
 		show (the-window)
 		the-window]
+
+	=-
+	Create and show a window with only one shape layer.
+	=-
+	simple window :[
+
+		the-window : extend (window with shape layers)[
+
+			add (shape) to (me) :[
+				add (shape) to (layers{1})]
+
+			(my) shapes : [; can be called by "window's shapes"
+				layers{1}'s shapes]]]
 
 	=-
 	Create a shape layer.

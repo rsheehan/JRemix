@@ -1,0 +1,23 @@
+an adder :
+	create
+		a : 1
+		b : 2
+
+		add (my) values :
+			a + b
+
+x : an adder
+add (x) values ↲
+
+a subtractor based on (adder) :
+	extend (adder)
+		subtract (my) values :
+			a - b
+
+y : a subtractor based on (x)
+
+y = x ↲
+add (x) values ↲
+add (y) values ↲
+subtract (x) values ↲
+subtract (y) values ↲

@@ -7,13 +7,13 @@ public class RemixObjectExpression implements Expression {
      * values when the create is evaluated.
      * It should only be assignment statements.
      */
-    private final Block initBlock;
+    protected Block initBlock;
 
     /*
      * The methodTable is like the global functionTable.
      * The table is shared by all objects from the same create.
      */
-    private MethodTable methodTable;
+    protected MethodTable methodTable;
 
     public RemixObjectExpression() {
         initBlock = new Block();

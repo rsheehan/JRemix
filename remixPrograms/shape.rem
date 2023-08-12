@@ -24,4 +24,4 @@ update (window) ; N.B. can be outside the using block because it is a method cal
 	shape's colour : colour
 	shape's position : position
 	shape's heading : heading
-	shape's scale : scale
+	shape's size : scale

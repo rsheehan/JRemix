@@ -11,15 +11,15 @@ for each (size) from 1 to 41 in steps of 2 do
 Show a diamond of "size".
 =-
 diamond of (size) :
-	show top half of (size) diamond and fill in (lines)
-	show middle line of (size) diamond
-	show bottom half of (size) diamond with (lines)
+	top half of diamond of (size) and fill in (lines)
+	middle line of diamond of (size)
+	bottom half of diamond of (size) with (lines)
 
 =-
 Show the top half of the diamond of "size".
 Fill in the "lines" list at the same time.
 =-
-show top half of (size) diamond and fill in (#lines) :
+top half of diamond of (size) and fill in (#lines) :
 	#lines : {}
 	if (size ≥ 3)
 		for each (row) from 1 to (size ÷ 2) do
@@ -33,14 +33,14 @@ show top half of (size) diamond and fill in (#lines) :
 =-
 Show the middle line of the diamond of "size".
 =-
-show middle line of (size) diamond :
+middle line of diamond of (size) :
 	"* " (size) times ↲
 
 =-
 Show the bottom half of the diamond of "size".
 Uses the "lines" list.
 =-
-show bottom half of (size) diamond with (lines) :
+bottom half of diamond of (size) with (lines) :
 	if (size ≥ 3)
 		for each (row) from (size ÷ 2) to 1 do
 			lines{row} ↲

@@ -65,11 +65,12 @@ BOOLEAN				: 'true' | 'false' ;
 RETURN				: 'return' ;
 REDO				: 'redo' ;
 CREATE				: 'create' ;
+EXTEND				: 'extend' ;
 GETTERSETTER		: 'getter' 's'? '/setter' 's'? ;
 GETTER				: 'getter' 's'? ;
 SETTER				: 'setter' 's'? ;
 LIBRARY				: 'library' ;
-USING				: 'using' ; // using (library)
+USING				: 'using' ; // using library
 
 SELFREF				: 'me' | 'my' ;
 POSSESSIVE			: '\'s' ; // used for field access e.g. Robert's age

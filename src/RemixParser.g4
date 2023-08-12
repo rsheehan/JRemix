@@ -26,6 +26,7 @@ sigPart				: WORD					# sigWord
 					;
 
 createObject		: CREATE LBLOCK EOL* object RBLOCK ;
+extendObject		: EXTEND LPAREN expression RPAREN LBLOCK EOL* object RBLOCK ;
 
 object				: field* (getterSetter? getter? setter?) methodDefinition* ;
 
@@ -71,10 +72,7 @@ printStatement		: (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) # prntS
 
 expression			: MINUS expression						# exprMinus
 					| expression MUL expression				# exprMul
-//					| expression DIV expression				# exprDiv
-//					| expression MOD expression				# exprMod
 					| expression ADD expression				# exprAdd
-//					| expression SUB expression				# exprSub
 					| expression LESS expression			# exprLess
 					| expression GREATER expression			# exprGreater
 					| expression GREATEREQUAL expression	# exprGreatEql
@@ -94,6 +92,7 @@ expression			: MINUS expression						# exprMinus
 					| map					# exprMap
 					| library				# exprLibrary
 					| createObject			# exprObject
+					| extendObject			# exprExtend
 					| getterMethodCall		# exprGetterMethod
 					| setterMethodCall      # exprSetterMethod
 					| LPAREN EOL* expression EOL* RPAREN	# exprParen // after functionCall

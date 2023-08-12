@@ -24,6 +24,11 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
          If the parameter is "me/my" itself it must be being called from within the
          object context just like if it was a private method.
          In the case of a private method (no "me/my") use the object from the context.
+
+         There is a difference between Library functions and methods.
+         Since an object can be created in a using block it needs access to the library's functions
+         but the object can be used outside the using block. Thus its methods need to be in the
+         global (single) method table.
         */
 
         String routineName = singleName();
@@ -34,6 +39,8 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             if (refPos == 0) {
                 // a private method
                 // need to find the corresponding object using the context
+                // the context here must be from another method, in the same object
+                // or further back in the context stack see both MethodContext and Context.
                 remixObject = context.findObjectWithMethod(routineName);
             } else {
                 // a public method
@@ -59,7 +66,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         // fall through into a possible function call
 
         Function function;
-        Stack<LibraryExpression> libraryStack = context.getLibraryStack();
+        Stack<LibraryExpression> libraryStack = context.libraryStack;
         if (libraryStack != null)
             function = Runtime.searchFunctionTables(libraryStack, routineName);
         else
@@ -70,7 +77,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             System.err.format("\"%s\" does not exist.%n", readable);
             return null;
         }
-        Context functionContext = new Context(context, function);
+        Context functionContext = new Context(context, function.isTransparent());
         return executeFunctionOrMethod(function, functionContext);
     }
 

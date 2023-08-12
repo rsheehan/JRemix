@@ -6,7 +6,7 @@ public class RemixObject {
      * These variables are added to when the initBlock is evaluated in RemixObjectExpression
      */
     private Context objectContext = new Context();
-    private MethodTable methodTable;
+    protected MethodTable methodTable;
 
     public RemixObject() {
         // used by SelfReference

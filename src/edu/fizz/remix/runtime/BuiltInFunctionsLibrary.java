@@ -54,6 +54,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             String filename = context.retrieve("filename").toString();
             // assuming at the top level
             LibraryExpression originalLibrary = Runtime.getCurrentLibrary();
+//            LibraryExpression includeLibrary = originalLibrary.copyFunctionsMethods();
             LibraryExpression includeLibrary = originalLibrary.copyFunctionsMethods();
             Runtime.setCurrentLibrary(includeLibrary);
             try {

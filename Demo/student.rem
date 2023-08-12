@@ -1,0 +1,80 @@
+=
+Student record
+=
+
+students : {
+	"Martin Developer" age 22 knows {
+		Java   : "Expert"
+		python : "Advanced"
+		Remix  : "Expert"
+	}
+	"May Smith" age 25 knows {
+		C++ : "Expert"
+		C   : "Expert"
+		C#  : "Competent"
+	}
+	"Ray Oflight" age 19 knows {
+		python : "Novice"
+		Java   : "Expert"
+	}
+}
+
+"Student data" ↲
+"============" ↲
+for each (student) in (students) do
+	student's name ↲
+	student's age ↲
+	student's languages ↲
+	↲
+
+merge {BASIC : "Expert"} into (students{2}'s languages)
+
+"Expertise" ↲
+"=========" ↲
+for each (student) in (students) do
+	student ↲
+↲
+the "Java" experts amongst the (students)
+the "C++" experts amongst the (students)
+the "Remix" experts amongst the (students)
+
+----------------
+
+the (language) experts amongst the (group) :
+	"The ", language, " experts are: " ~
+	experts : {}
+	for each (programmer) in (group) do
+		if ((programmer) is an expert in (language))
+			append (programmer's name) to (experts)
+	experts ↲
+
+(name) age (age) knows (languages) :
+	create
+		name : name
+		age : age
+		languages : languages
+
+		getter
+			name, age
+			languages
+
+		(my) expert languages :
+			filter (languages) by (language) where
+				languages{language} = "Expert"
+
+		(me) is an expert in (language) :
+			languages{language} = "Expert"
+
+		(me) to string :
+			result : name ⊕ " age " ⊕ age ⊕ ", expert in "
+			expertise : (my) expert languages
+			if (no (expertise))
+				result ⊕ "nothing"
+			… otherwise
+				for each (language) in (expertise) keeping (count) do
+					when
+						[count = 1] do
+							result : result ⊕ language
+						[count < (expertise) length] do
+							result : result ⊕ ", " ⊕ language
+						result ⊕ " and " ⊕ language

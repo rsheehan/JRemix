@@ -91,8 +91,7 @@ public class Graphics extends LibraryExpression {
             String title = (String)context.retrieve("title");
             int width = ((Long)context.retrieve("width")).intValue();
             int height = ((Long)context.retrieve("height")).intValue();
-            GraphicsWindow window = new GraphicsWindow(title, width, height);
-            return window;
+            return new GraphicsWindow(title, width, height);
         }
     }
 
@@ -285,22 +284,24 @@ public class Graphics extends LibraryExpression {
 
             private final Block animation;
             private final Block condition;
+            private final Context context;
 
             AnimationBlock( Context context, Block animation, Block condition) {
                 this.animation = animation;
                 this.condition = condition;
+                this.context = context;
             }
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    animation.evaluate(null);
+                    animation.evaluate(context);
                 } catch (ReturnException | InterruptedException ex) {
                     System.err.println("Problem animating");
                     throw new RuntimeException(ex);
                 }
                 try {
-                    if ((Boolean)condition.evaluate(null)) {
+                    if ((Boolean)condition.evaluate(context)) {
                         animationTimer.stop();
                     }
                 } catch (ReturnException | InterruptedException ex) {

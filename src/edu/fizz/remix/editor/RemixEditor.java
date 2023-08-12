@@ -342,7 +342,7 @@ public class RemixEditor extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent event) {
-            JFileChooser chooser = new JFileChooser("remixPrograms");
+            JFileChooser chooser = new JFileChooser("Demo");
             FileNameExtensionFilter filter = new FileNameExtensionFilter(
                     "Remix programs", "rem");
             chooser.setFileFilter(filter);

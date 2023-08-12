@@ -14,7 +14,7 @@ public class MethodContext extends Context {
     public MethodContext(Context parent, RemixObject object) {
         variables = object.getContext().variables;
         this.object = object;
-        localContext = new Context(parent, null); // ???
+        localContext = new Context(parent, false); // methods can't be transparent
         // the following line didn't fix the problem
 //        localContext.setLibraryStack(parent.getLibraryStack());
         // or
