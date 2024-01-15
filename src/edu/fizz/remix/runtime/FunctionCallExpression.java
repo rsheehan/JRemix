@@ -1,6 +1,7 @@
 package edu.fizz.remix.runtime;
 
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.Stack;
 
 /*
@@ -32,7 +33,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         */
 
         String routineName = singleName();
-        Integer refPos = Runtime.searchMethodTables(routineName);
+        Integer refPos = LibraryExpression.searchMethodTable(routineName);
         if (refPos != null) {
             RemixObject remixObject = null;
             Method method = null;
@@ -65,12 +66,18 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
 
         // fall through into a possible function call
 
-        Function function;
+        Function function = null;
         Stack<LibraryExpression> libraryStack = context.libraryStack;
-        if (libraryStack != null)
-            function = Runtime.searchFunctionTables(libraryStack, routineName);
-        else
-            function = Runtime.searchFunctionTables(routineName);
+        ListIterator<LibraryExpression> stackIterator = context.libraryStack.listIterator(context.libraryStack.size());
+        try {
+            while (function == null) {
+                LibraryExpression library = stackIterator.previous();
+                function = library.searchFunctionTable(routineName);
+            }
+        } catch (NoSuchElementException ignored) {
+            ;
+        }
+
         if (function == null) {
             String readable = routineName; //.replace("_", " ");
             readable = readable.replace("|", "()");
@@ -105,6 +112,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             if (parameter instanceof Block block) {
                 block = block.copy(); // the block could be called recursively we need a copy
                 block.setContext(callingContext);
+
                 value = block;
             } else if (formal.startsWith("#")) {
                 /*

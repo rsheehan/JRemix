@@ -3,6 +3,7 @@
 
 a : "This should be printed after \"Doing the block.\""
 
+- block here is a variable with a block as the value not a function
 block :
 	1
 	"Doing the block." ↲
@@ -18,7 +19,24 @@ b : 5
 a, " is " ~
 if (test)
 	"less than " ~
-... otherwise
+… otherwise
 	"not less than " ~
 b ↲
 new line
+
+test :
+	"a:", a, ", " ~
+	"b:", b ↲
+
+fn (block) :
+	a : 5
+	b : 7
+	do (block)
+
+fn (test)
+"Should be \"a:7, b:5\"" ↲
+
+a : 3
+b : 1
+fn (test)
+"Should be \"a:3, b:1\"" ↲

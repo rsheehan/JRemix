@@ -96,7 +96,7 @@ public class BinaryExpression implements Expression {
                 case "!=", "≠" -> l1 != l2;
                 default -> null;
             };
-        } else {
+        } else try {
             double d1, d2;
             d1 = ((Number) val1).doubleValue();
             d2 = ((Number) val2).doubleValue();
@@ -114,6 +114,13 @@ public class BinaryExpression implements Expression {
                 case "!=", "≠" -> d1 != d2;
                 default -> false;
             };
+        } catch (RuntimeException e) {
+//            return switch (operator) {
+//                case "=" -> val1 = val2;
+//                case "!=", "≠" -> val1 != val2;
+//                default -> false;
+//            };
+            return false;
         }
     }
 

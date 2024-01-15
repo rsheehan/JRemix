@@ -78,7 +78,7 @@ public class Graphics extends LibraryExpression {
 
         public WindowFunction() {
             super(
-                    List.of("| window of width | and height |"),
+                    List.of("a | window of width | and height |"),
                     List.of("title", "width", "height"),
                     List.of(false, false, false),
                     false,
@@ -277,31 +277,32 @@ public class Graphics extends LibraryExpression {
             AnimationBlock animationBlock = new AnimationBlock(context, animation, condition);
             animationTimer = new Timer((int)(1000/rate), animationBlock);
             animationTimer.start();
-            return null;
+            return animationBlock;
         }
 
         private class AnimationBlock implements ActionListener {
 
             private final Block animation;
             private final Block condition;
-            private final Context context;
 
-            AnimationBlock( Context context, Block animation, Block condition) {
-                this.animation = animation;
-                this.condition = condition;
-                this.context = context;
+            AnimationBlock( Context context, Block animationBlock, Block conditionBlock) {
+                animation = animationBlock;
+                condition = conditionBlock;
+                Context animationContext = context.copyParentContext();
+                animation.setContext(animationContext);
+                condition.setContext(animationContext);
             }
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    animation.evaluate(context);
+                    animation.evaluate(null); // was "context" but uses the block context
                 } catch (ReturnException | InterruptedException ex) {
                     System.err.println("Problem animating");
                     throw new RuntimeException(ex);
                 }
                 try {
-                    if ((Boolean)condition.evaluate(context)) {
+                    if ((Boolean)condition.evaluate(null)) { // see above
                         animationTimer.stop();
                     }
                 } catch (ReturnException | InterruptedException ex) {

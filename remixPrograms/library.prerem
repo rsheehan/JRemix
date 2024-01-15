@@ -1,0 +1,97 @@
+
+"Playing with libraries\n" ↲
+- Playing with libraries -
+
+lib1 : library[
+
+	(x) plus (y) :[
+		x + y]
+
+	name (name) age (age) :[
+		create[
+			name : age
+			age : name
+
+			(me) to string :[
+				name ⊕ ", " ⊕ age ⊕ " years old"]]]]
+
+using lib1[
+	4 plus 6 ↲
+
+	4 plus 7 ↲]
+
+lib2 : library[
+
+	name (name) age (age) :[
+		create[
+			name : name
+			age : age
+
+			(me) to string :[
+				name ⊕ ", " ⊕ age ⊕ " years old"]]]]
+
+lib3 : library[
+
+	with (#refvar) reference :[
+		#refvar : #refvar + #refvar]]
+
+"N.B. This is a test inside library usage." ↲
+"----------------------------------------" ↲
+using lib1[
+	test {[
+		"Simple function from library"[
+			4 plus 3]
+		… expected 7]
+	}]
+↲
+
+"N.B. This is a test with library usage inside." ↲
+"----------------------------------------------" ↲
+test {[
+	"Simple function from library again"[
+		using lib1[
+			4 plus 5]]
+	… expected 9
+
+	"Method call from library"[
+		using lib1[
+			(name "Peter" age 50) to string]]
+	… expected "50, Peter years old"
+
+	"Method call same signature different library"[
+		using lib2[
+			(name "Peter" age 50) to string]]
+	… expected "Peter, 50 years old"]
+}
+↲
+
+"N.B. This is a test with reference parameter." ↲
+"---------------------------------------------" ↲
+using lib3[
+	test {[
+		"Simple reference call"[
+			x : 16
+			with (x) reference]
+		… expected 32
+
+		"Changed variable"[
+			x]
+		… expected 32]
+	}]
+
+↲. "Outside" ↲
+"x: ", x, " should be 32\n" ↲
+
+test {[
+	"Calling function out of scope."[
+		3 plus 8]
+	... expected "null"]
+}
+
+↲
+using lib1, lib2[
+	test {[
+		"Calling a method from a second library."[
+			(name "Robert" age 65) to string]
+		... expected "Robert, 65 years old"]
+	}]

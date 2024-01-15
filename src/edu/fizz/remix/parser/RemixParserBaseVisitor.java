@@ -1,4 +1,4 @@
-// Generated from /Users/robert/Library/CloudStorage/OneDrive-TheUniversityofAuckland/MyDrive/IdeaProjects/remix/src/RemixParser.g4 by ANTLR 4.12.0
+// Generated from /Users/robert/IdeaProjects/remix/src/RemixParser.g4 by ANTLR 4.13.1
 package edu.fizz.remix.parser;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -362,6 +362,13 @@ public class RemixParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitExprWordProduct(RemixParser.ExprWordProductContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitExprUsingLibrary(RemixParser.ExprUsingLibraryContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

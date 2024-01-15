@@ -1,7 +1,5 @@
-graphics : include graphics
-
-using graphics
-	window : window with shape layers
+using graphics lib
+	window : a window with shape layers
 
 	show (window)
 	layer : (window) base layer

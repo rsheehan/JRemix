@@ -14,11 +14,19 @@ import java.util.HashMap;
  */
 public class LibraryExpression implements Expression {
 
-    Context context = new Context();
+//    Context context = new Context();
     public Block block = new Block();
     HashMap<String, Function> functionTable = new HashMap<>();
     // static methodTable as only one?
     static HashMap<String, Integer> methodTable = new HashMap<>();
+
+    public static Integer searchMethodTable(String methodName) {
+        return methodTable.get(methodName);
+    }
+
+    public Function searchFunctionTable(String functionName) {
+        return functionTable.get(functionName);
+    }
 
     public LibraryExpression() {
         setUpBuiltIns();
@@ -45,7 +53,7 @@ public class LibraryExpression implements Expression {
     }
 
     /** Add a name of method and the reference parameter position. */
-    public void addMethodName(String name, int refPos) {
+    public static void addMethodName(String name, int refPos) {
         Integer pos;
         pos = methodTable.get(name);
         if (pos == null) { // new method name
@@ -65,12 +73,12 @@ public class LibraryExpression implements Expression {
 
     public void resetFunctionsMethods(LibraryExpression other) {
         functionTable = other.functionTable;
-        methodTable = other.methodTable;
+//        methodTable = other.methodTable;
     }
 
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
-        block.evaluate(context); // this is creating the functions for the library function table.
+        // The result of the expression is just itself.
         return this;
     }
 }

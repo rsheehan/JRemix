@@ -1,5 +1,6 @@
 package edu.fizz.remix.runtime;
 
+import edu.fizz.remix.Remix;
 import edu.fizz.remix.editor.RemixREPL;
 import edu.fizz.remix.editor.RemixSwingWorker;
 
@@ -37,6 +38,25 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
     }
 
+    /** A debug function. */
+    public static final class DebugFunction extends Function {
+        public DebugFunction() {
+            super(
+                    List.of("debug |"),
+                    List.of("object"),
+                    List.of(false),
+                    false,
+                    "Can be used to debug the Remix environment showing the \"object\" on the command line."
+            );
+        }
+
+        public Object execute(Context context) {
+            Object object = context.retrieve("object");
+            System.err.println(object);
+            return null;
+        }
+    }
+
     /** Include a Remix source file. */
     public static final class IncludeFunction extends Function {
 
@@ -53,25 +73,50 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public Object execute(Context context) throws ReturnException, InterruptedException {
             String filename = context.retrieve("filename").toString();
             // assuming at the top level
-            LibraryExpression originalLibrary = Runtime.getCurrentLibrary();
+//            LibraryExpression originalLibrary = context.libraryStack; //Runtime.getCurrentLibrary();
 //            LibraryExpression includeLibrary = originalLibrary.copyFunctionsMethods();
-            LibraryExpression includeLibrary = originalLibrary.copyFunctionsMethods();
-            Runtime.setCurrentLibrary(includeLibrary);
+//            LibraryExpression includeLibrary = originalLibrary.copyFunctionsMethods();
+//            Runtime.setCurrentLibrary(includeLibrary);
+            LibraryExpression included;
             try {
-                RemixREPL.loadPackage(filename);
+                // *** change below to Remix.loadPackage when not using the IDE ***
+                included = RemixREPL.loadPackage(filename);
+                /*
+                If the package finishes with a statement which is a "library" that
+                needs to be kept for evaluating with "using".
+                 */
             } catch (Exception e) {
                 System.err.println("Exception: " + e);
                 return null;
             }
             // put old and new functions/methods back into current library
-            Runtime.setCurrentLibrary(originalLibrary);
-            originalLibrary.resetFunctionsMethods(includeLibrary);
+//            Runtime.setCurrentLibrary(originalLibrary);
+//            originalLibrary.resetFunctionsMethods(includeLibrary);
+            /*
+            Can I just push the included library onto the libraryStack?
+            I need to evaluate the library first. In order to create the functions etc.
+             */
+            /* 21/11/23
+            The included library isn't a separate library, it is at the same level as the
+            context. Functions are added to the existing context.
+            If it contains a "library" block that is different.
+            That would add a library level to the stack in the context.
+             */
+//            includeLibrary = (LibraryExpression) includeLibrary.evaluate(context);
+            LibraryExpression topOfStackLibrary = (LibraryExpression)context.libraryStack.get(context.libraryStack.size()-1);
+            topOfStackLibrary.functionTable.putAll(included.functionTable);
+
+            //            includeLibrary = (LibraryExpression) includeLibrary.evaluate(context);
+//            context.libraryStack.push(includeLibrary);
+            /*
+            The previous 2 lines were added and the line above them commented out - 21/11/23
+             */
             Object result = null;
             try {
                 // in case the included file has some setup statements
                 RemixSwingWorker saved = remixRunner;
                 remixRunner = null; // send printed output to command line
-                result = includeLibrary.block.evaluate(originalLibrary.context);
+                result = included.block.evaluate(context);
                 remixRunner = saved;
             } catch (ReturnException exception) {
                 System.err.println("ReturnException caught in program.");
@@ -264,7 +309,10 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             if (remixRunner == null)
                 System.out.print(value);
             else {
-                remixRunner.publish(value.toString());
+                if (value != null)
+                    remixRunner.publish(value.toString());
+                else
+                    remixRunner.publish("NULL");
             }
         }
     }

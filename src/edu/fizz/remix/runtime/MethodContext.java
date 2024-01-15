@@ -32,10 +32,12 @@ public class MethodContext extends Context {
         Method method = object.findMethod(methodName);
         if (method != null)
             return object;
-        else if (parentContext != null)
-            return parentContext.findObjectWithMethod(methodName);
         else
-            return null;
+            return super.findObjectWithMethod(methodName);
+//        else if (parentContext != null)
+//            return parentContext.findObjectWithMethod(methodName);
+//        else
+//            return null;
     }
 
     /*

@@ -1,24 +1,20 @@
-lib : library
-	polynomial (a) (b) :
-		2a + 3b
+"Playing with libraries\n" ↲
+- Playing with libraries -
 
-=using lib
-=	polynomial 3 5 ↲
+lib1 : library
 
--polynomial 2 4 ↲
+	(x) plus (y) :
+		x + y
 
-an object :
-	create
-		x : 1
+	name (name) age (age) :
+		create
+			name : age
+			age : name
 
-		(me) what :
-			polynomial (x) 1
+			(me) to string :
+				name ⊕ ", " ⊕ age ⊕ " years old"
+"lib1: ", lib1 \n
+using lib1
+	4 plus 6 ↲
 
-=using lib
-	o : an object
-	(o) what ↲
-
-=(o) what ↲
-
-ob : an object
-(ob) what ↲
+	4 plus 7 ↲

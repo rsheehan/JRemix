@@ -3,17 +3,17 @@ Student record
 =
 
 students : {
-	"Martin Developer" age 22 knows {
+	a programmer "Martin Developer" age 22 knows {
 		Java   : "Expert"
 		python : "Advanced"
 		Remix  : "Expert"
 	}
-	"May Smith" age 25 knows {
+	a programmer "May Smith" age 25 knows {
 		C++ : "Expert"
 		C   : "Expert"
 		C#  : "Competent"
 	}
-	"Ray Oflight" age 19 knows {
+	a programmer "Ray Oflight" age 19 knows {
 		python : "Novice"
 		Java   : "Expert"
 	}
@@ -41,10 +41,11 @@ the "Remix" experts amongst the (students)
 ----------------
 
 the (language) experts amongst the (group) :
-	experts : {}
-	for each (programmer) in (group) do
-		if ((programmer) is an expert in (language))
-			append (programmer's name) to (experts)
+	experts : filter (group) by (programmer) where
+		(programmer) is an expert in (language)
+	… keeping
+		programmer's name
+
 	"The ", language, " expert", is or are ((experts) length) ," : " ~
 	experts ↲
 
@@ -53,10 +54,10 @@ is or are (number) :
 		[number = 1] do [" is"]
 		"s are"
 
-(name) age (age) knows (languages) :
+a programmer (name) age (years) knows (languages) :
 	create
 		name : name
-		age : age
+		age : years
 		languages : languages
 
 		getter

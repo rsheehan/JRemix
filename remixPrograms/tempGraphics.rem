@@ -1,36 +1,40 @@
-
 using graphics lib
 	window : a window with shape layers
 	base-layer : (window) base layer
 	next-layer : (window) next layer
 
-	repeat
+	repeat 2 times
 		shape : a square
 		shape's colour : random colour
 		shape's position : random point
 		shape's size : random from 10 to 100
 		shape's heading  : random from 1 to 90
 		add (shape) to (next-layer)
-	… 50 times
 
-	for each (y-pos) from 40 to (std height - 20) in steps of 80 do
+=	for each (y-pos) from 40 to (std height - 20) in steps of 80 do
 		arrow : a triangle
 		arrow's size : 20
 		arrow's position : {0, y-pos}
-		add (arrow) to (base-layer)
+=		add (arrow) to (base-layer)
 
-	squares-rotate : every 1 tick do
+	rotate-squares : every 1 tick
 		for each (square) in (next-layer's shapes) do
 			change (square) heading by 2 degrees
 
-	arrows-move : every 2 ticks do
+=	move-arrows : every 2 ticks
 		for each (arrow) in (base-layer's shapes) do
-			change (arrow) x-pos by 5
+=			change (arrow) x-pos by 5
 
-	animate 50 ticks per second
-		animate (squares-rotate)
-		animate (arrows-move)
+	animation-block : animate 2 ticks per second
+		animate (rotate-squares)
+		-animate (move-arrows)
 		update (window)
 	… until [arrow's x-pos ≥ std width]
+
+= at this point the context library stack is changed
+So calling 'animate 2 ticks per second [block] until [block]
+has done this.
+=
+	debug (animation-block)
 
 "Finished" ↲

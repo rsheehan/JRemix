@@ -2,7 +2,6 @@ package edu.fizz.remix;
 
 import edu.fizz.remix.parser.RemixParser;
 import edu.fizz.remix.parser.RemixParserBaseVisitor;
-import edu.fizz.remix.runtime.Runtime;
 import edu.fizz.remix.runtime.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -33,7 +32,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         /*
         The current library could be the baseLibrary, or the programLibrary
          */
-        LibraryExpression library = Runtime.getCurrentLibrary();
+
+        LibraryExpression library = new LibraryExpression();
+
+//        LibraryExpression library = Runtime.getCurrentLibrary();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -80,16 +82,22 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return library;
     }
 
-    /** USING WORD (COMMA WORD)* blockOfStatements */
+    /** USING expression (COMMA expression)* blockOfStatements */
     @Override
     public UsingLibBlock visitUsingLibrary(RemixParser.UsingLibraryContext ctx) {
-        ArrayList<VarValueExpression> libraryNames = new ArrayList<>();
+        ArrayList<Expression> libraryExpressions = new ArrayList<>();
         int n = ctx.getChildCount();
-        for (int i = 0; i < (n - 1) / 2; i++) {
-            libraryNames.add(new VarValueExpression(ctx.WORD(i).getText()));
+        for (int i = 1; i < n - 1; i++) { // first node = "using", last = "block"
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixParser.ExpressionContext) {
+                libraryExpressions.add((Expression) visit(node));
+            }
+//            } else if (!node.getText().equals(",")) {
+//                libraryExpressions.add(new VarValueExpression(node.getText()));
+//            }
         }
         Block usingLibBlock = (Block) visit(ctx.blockOfStatements());
-        return new UsingLibBlock(libraryNames.toArray(new VarValueExpression[1]), usingLibBlock);
+        return new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingLibBlock);
     }
 
     /** RETURN expression? */
@@ -176,7 +184,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     public RemixObjectExpression visitObject(RemixParser.ObjectContext ctx) {
         RemixObjectExpression objectExpr = new RemixObjectExpression();
         MethodTable methodTable = new MethodTable();
-        LibraryExpression library = Runtime.getCurrentLibrary();
+
+//        LibraryExpression library = Runtime.getCurrentLibrary();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -188,30 +197,30 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 List<String> getSetNames = (List<String>)visit(node);
                 for (String name : getSetNames) {
                     String getMethodName = methodTable.createGetter(name);
-                    library.addMethodName(getMethodName, 1);
+                    LibraryExpression.addMethodName(getMethodName, 1);
                     String setMethodName = methodTable.createSetter(name);
-                    library.addMethodName(setMethodName, 1);
+                    LibraryExpression.addMethodName(setMethodName, 1);
                 }
             } else if (node instanceof RemixParser.GetterContext) {
                 @SuppressWarnings("unchecked")
                 List<String> getterNames = (List<String>)visit(node);
                 for (String name : getterNames) {
                     String methodName = methodTable.createGetter(name);
-                    library.addMethodName(methodName, 1);
+                    LibraryExpression.addMethodName(methodName, 1);
                 }
             }else if (node instanceof RemixParser.SetterContext) {
                 @SuppressWarnings("unchecked")
                 List<String> setterNames = (List<String>)visit(node);
                 for (String name : setterNames) {
                     String methodName = methodTable.createSetter(name);
-                    library.addMethodName(methodName, 1);
+                    LibraryExpression.addMethodName(methodName, 1);
                 }
             } else if (node instanceof RemixParser.MethodDefinitionContext) {
                 Method method = (Method)visit(node);
                 // add it to the methodTable for the object
                 methodTable.addMethod(method);
                 // add it to the global table
-                library.addMethodName(method.getName(), method.getSelfRef());
+                LibraryExpression.addMethodName(method.getName(), method.getSelfRef());
             }
         }
         objectExpr.addMethodTable(methodTable);

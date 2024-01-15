@@ -28,7 +28,7 @@ public class GetElementExpression implements Expression {
         Object id = null;
         Object listOrMapPart = context.retrieve(listName);
         boolean listOrMapAccess = listOrMapPart instanceof Map<?,?> || listOrMapPart instanceof List<?>;
-        boolean possibleFunctionCall = functionCall();
+        boolean possibleFunctionCall = functionCall(context);
         boolean ambiguous = listOrMapAccess && possibleFunctionCall;
 //        if (ambiguous) {
 //            System.err.printf("Possibly ambiguous: %s%n", listName + "{...}");
@@ -71,13 +71,13 @@ public class GetElementExpression implements Expression {
     /*
         This checks to see if a function call of the name and parameter list exists.
      */
-    private boolean functionCall() {
+    private boolean functionCall(Context context) {
         StringBuilder params = new StringBuilder();
         for (Expression elementId : listElementIds) {
             params.append(" |");
         }
         String name = listName + params;
-        Function function = Runtime.searchFunctionTables(name);
+        Function function = context.libraryStack.peek().searchFunctionTable(name); //Runtime.searchFunctionTables(name);
         return (function != null && listElementIds.size() == 1);
     }
 

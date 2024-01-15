@@ -83,10 +83,8 @@ public class Block implements Expression {
 
     public Block copy() {
         Block copy = new Block();
-        copy.statements = new ArrayList<>(statements);
-        if (blockContext == null)
-            copy.blockContext = null;
-        else
+        copy.statements = statements; //new ArrayList<>(statements);
+        if (blockContext != null)
             copy.blockContext = blockContext.copy();
         return copy;
     }

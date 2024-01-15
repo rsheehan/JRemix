@@ -5,7 +5,6 @@ import edu.fizz.remix.editor.RemixREPL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Stack;
 
 /** A Runtime includes the current library which has
  *  the function table, object table and variable context. */
@@ -16,10 +15,7 @@ public class Runtime {
     /* The program library copies the base library and adds the current
        functions and statements.
      */
-    private static LibraryExpression programLibrary = new LibraryExpression();
-    private static LibraryExpression currentLibrary;
-
-    private static final Stack<LibraryExpression> libraryStack = new Stack<>();
+    private static LibraryExpression programLibrary; // = new LibraryExpression();
 
     // maps the completion name to the display name
     public static HashMap<String, CompletionNamesAndDoc> originalCompletionTable;
@@ -28,7 +24,7 @@ public class Runtime {
     public static ArrayList<String> originalFunctionList;
     public static ArrayList<String> functionList;
 
-    private static void initRuntime() {
+    private static void initFunctionsAndCompletions() {
         originalCompletionTable = new HashMap<>();
         originalFunctionList = new ArrayList<>();
     }
@@ -38,9 +34,6 @@ public class Runtime {
      */
     public static void resetToStandard() {
         programLibrary = baseLibrary.copyFunctionsMethods();
-        currentLibrary = programLibrary;
-        libraryStack.removeAllElements();
-        libraryStack.add(currentLibrary);
         completionTable = new HashMap<>(originalCompletionTable);
         // I don't use this yet see buildAdditionalCompletions()
         functionList = new ArrayList<>(originalFunctionList);
@@ -138,69 +131,18 @@ public class Runtime {
         return completions;
     }
 
-    public static LibraryExpression getCurrentLibrary() {
-        return currentLibrary;
-    }
-
-    public static void setCurrentLibrary(LibraryExpression library) {
-        currentLibrary = library;
-    }
-
-    public static void pushLibrary(LibraryExpression library) {
-        libraryStack.push(library);
-    }
-
-    public static LibraryExpression popLibrary() {
-        return libraryStack.pop();
-    }
-
-    public static Stack<LibraryExpression> copylibraryStack() {
-        return (Stack<LibraryExpression>) libraryStack.clone();
-    };
-
-    public static Integer searchMethodTables(String methodName) {
-        for (LibraryExpression library : libraryStack) {
-            Integer refPos = library.methodTable.get(methodName);
-            if (refPos != null) {
-                return refPos;
-            }
-        }
-        return null;
-    }
-
-    public static Function searchFunctionTables(String functionName) {
-        // N.B. searches from the bottom of the stack
-        for (LibraryExpression library : libraryStack) {
-            Function function = library.functionTable.get(functionName);
-            if (function != null) {
-                return function;
-            }
-        }
-        return null;
-    }
-
-    public static Function searchFunctionTables(Stack<LibraryExpression> libraryStack, String functionName) {
-        // N.B. searches from the bottom of the stack
-        for (LibraryExpression library : libraryStack) {
-            Function function = library.functionTable.get(functionName);
-            if (function != null) {
-                return function;
-            }
-        }
-        return null;
-    }
-
-    /** Run the standard library setting up functions, objects and global data */
+    /** Run the standard library setting up functions. No longer objects and global data */
     public static void prepareEnvironment() throws Exception {
-        initRuntime();
-//        baseLibrary.setUpBuiltIns();
-        currentLibrary = baseLibrary;
-        RemixREPL.loadPackage("standard-lib.rem");
+        initFunctionsAndCompletions();
+        LibraryExpression standardLibrary = RemixREPL.loadPackage("standard-lib.rem");
         //resetToStandard(); // so the libraries to use are reset to the originals
         // this also makes the currentLibrary the program one
+        // merge the standardLibrary into the baseLibrary
+        baseLibrary.functionTable.putAll(standardLibrary.functionTable);
         try {
-            // the only reason is in case the standard lib has some data values
-            currentLibrary.block.evaluate(currentLibrary.context);
+            // currently libraries no longer maintain state in contexts (variables)
+            // this means this is only useful for loading other libraries, printing etc.
+            standardLibrary.block.evaluate(new Context(baseLibrary));
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in program.");
         }
@@ -208,15 +150,15 @@ public class Runtime {
         // have an original which gets extended just like the function table.
         // when a new function is defined I should add it.
         // Completions should also include in scope variable names (a bit trickier)
-        currentLibrary = programLibrary; // now using the program to add things to
     }
 
     /**
      * Run the program.
      */
     public static void run(LibraryExpression program) {
+        programLibrary.functionTable.putAll(program.functionTable);
         try {
-            program.evaluate(program.context);
+            program.block.evaluate(new Context(programLibrary));
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in program.");
         } catch (InterruptedException exception) {

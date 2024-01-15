@@ -24,10 +24,10 @@ test {
 		count
 	… expected 7
 
-=	"leaks into function"
+	"leaks into function"
 		count : 4
 		leaking function2
-=	… expected 4
+	… expected "null"
 
 	"leaks from method"
 		count : 7
@@ -36,9 +36,9 @@ test {
 		count
 	… expected 7
 
-=	"leaks into method"
+	"leaks into method"
 		count : 4
 		x : leaking variable
 		(x) leaking method2
-=	… expected 4
+	… expected "null"
 }

@@ -1,4 +1,19 @@
-Cannot paste 𝛿 in to the editor.
-If I do the tabs go wonky and unrecoverable errors appear.
-It may be because this is an italic character and turning italics off
-goes badly.
+There is a problem with
+
+using graphics lib
+	window : a simple window
+
+	shape : a square
+	shape's size     : 100
+	add (shape) to (window)
+	update (window)
+
+	turn : 45
+	degree : 0
+	animate 2 ticks per second
+		degree ↲
+		"window: ", window \n
+		degree : degree + turn
+	… until [degree ≥ 90]
+
+Because the body of the animate routine is called in a separate thread

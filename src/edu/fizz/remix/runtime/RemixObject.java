@@ -1,5 +1,7 @@
 package edu.fizz.remix.runtime;
 
+import java.util.HashMap;
+
 public class RemixObject {
 
     /*
@@ -13,7 +15,7 @@ public class RemixObject {
     }
     public RemixObject (Context definingContext, MethodTable methodTable) {
         this.methodTable = methodTable;
-        objectContext.libraryStack = definingContext.libraryStack;
+        objectContext.libraryStack = definingContext.cloneLibraryStack();
     }
 
     /* Find the method matching the name. */
@@ -32,6 +34,7 @@ public class RemixObject {
     public RemixObject copy()  {
         RemixObject copy = new RemixObject();
         copy.objectContext = objectContext.copy();
+        copy.objectContext.variables = (HashMap) objectContext.variables.clone();
         copy.methodTable = methodTable;
         return copy;
     }

@@ -40,24 +40,24 @@ library "edu.fizz.remix.libraries.Graphics"[
 	======
 
 	a triangle :[
-		3 sided polygon]
+		a 3 sided polygon]
 
 	a square :[
-		4 sided polygon]
+		a 4 sided polygon]
 
-	(n) sided polygon :[
+	a/an (n) sided polygon :[
 		points : {}
 		for each (side) from 0 to (n - 1) do[
 			append {[
 				cosine (2π × side ÷ n)
 				sine (2π × side ÷ n)]
 			} to (points)]
-		shape from (points)]
+		a shape from (points)]
 
 	=-
 	Create a shape from the list of "points".
 	=-
-	shape from (points) :[
+	a shape from (points) :[
 
 		create[
 			colour   : red colour
@@ -70,9 +70,6 @@ library "edu.fizz.remix.libraries.Graphics"[
 			getters/setters[
 				colour, position, size, heading, filled]
 
-			set (my) heading (value) degrees :[
-				heading : (value) degrees as radians]
-
 			(my) x-pos :[
 				position{1}]
 
@@ -81,6 +78,9 @@ library "edu.fizz.remix.libraries.Graphics"[
 
 			change (my) x-pos by (δ) :[
 				position{1} : position{1} + δ]
+
+			change (my) y-pos by (δ) :[
+				position{2} : position{2} + δ]
 
 			change (my) heading by (δ) degrees :[
 				heading : heading + (δ) degrees as radians]]]
@@ -92,17 +92,17 @@ library "edu.fizz.remix.libraries.Graphics"[
 	=-
 	Create and show a window with multiple shape layers.
 	=-
-	window with shape layers :[
+	a window with shape layers :[
 
 		the-window : create[
-			jwindow : "Drawing" window of width (std width) and height (std height)
-			layers : { shape layer } ; default bottom layer
+			jwindow : a "Drawing" window of width (std width) and height (std height)
+			layers : { a shape layer } ; default bottom layer
 
 			getter[
 				layers]
 
 			(my) next layer :[
-				new-layer : shape layer
+				new-layer : a shape layer
 				append (new-layer) to (layers)
 				new-layer]
 
@@ -124,9 +124,9 @@ library "edu.fizz.remix.libraries.Graphics"[
 	=-
 	Create and show a window with only one shape layer.
 	=-
-	simple window :[
+	a simple window :[
 
-		the-window : extend (window with shape layers)[
+		the-window : extend (a window with shape layers)[
 
 			add (shape) to (me) :[
 				add (shape) to (layers{1})]
@@ -138,7 +138,7 @@ library "edu.fizz.remix.libraries.Graphics"[
 	Create a shape layer.
 	Shapes get added to layers.
 	=-
-	shape layer :[
+	a shape layer :[
 		create[
 			shapes : {}
 
@@ -158,13 +158,17 @@ library "edu.fizz.remix.libraries.Graphics"[
 	=========
 	Animation
 	=========
-	every (n) tick/ticks do [changes] :[
+
+	=-
+	Create an animation object which executes "changes" every "n" ticks.
+	=-
+	every (n) tick/ticks /do [changes] :[
 		create[
 			ticks : n
 			counter : n
 			changes : changes
 
-			(my) animation :[
+			animate (me) :[
 				dec (counter)
 				if (counter = 0)[
 					counter : ticks

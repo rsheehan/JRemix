@@ -4,16 +4,17 @@ import java.util.HashMap;
 import java.util.Stack;
 
 public class Context {
-    /* A context may be linked back to the parent to go searching for variables in scope. */
+    /* A context may be linked back to the parent to go searching for reference variables. */
     protected Context parentContext = null;
-
-    protected HashMap<String, Object> variables = new HashMap<>();
-    protected Stack<LibraryExpression> libraryStack = null;
-//    private Function contextFunction = null;
+    protected HashMap variables = new HashMap<>();
+    protected Stack<LibraryExpression> libraryStack = new Stack<>();
     /* When we make a function call we need the context to know if it should return higher. */
     private boolean returnHigher = false;
 
     public Context() {
+    }
+    public Context(LibraryExpression programLibrary) {
+        libraryStack.push(programLibrary);
     }
 
     /* A context with an indication of whether nested returns
@@ -23,8 +24,6 @@ public class Context {
         parentContext = parent;
         if (parent != null) // hack
             libraryStack = parent.libraryStack;
-//        contextFunction = function;
-//        if (returnHigher != null) // another hack
         this.returnHigher = returnHigher;
     }
 
@@ -38,30 +37,7 @@ public class Context {
         libraryStack = original.libraryStack;
         if (libraryStack != null)
             System.out.println(libraryStack);
-//        contextFunction = original.contextFunction;
         returnHigher = original.returnHigher;
-    }
-
-    public Integer searchMethodTables(String methodName) {
-        for (LibraryExpression library : libraryStack) {
-            Integer refPos = library.methodTable.get(methodName);
-            if (refPos != null) {
-                return refPos;
-            }
-        }
-        return null;
-    }
-
-    public Function searchFunctionTables(String functionName) {
-        // N.B. searches from the bottom of the stack
-        // I need to consider this.
-        for (LibraryExpression library : libraryStack) {
-            Function function = library.functionTable.get(functionName);
-            if (function != null) {
-                return function;
-            }
-        }
-        return null;
     }
 
     /*
@@ -114,10 +90,6 @@ public class Context {
 
     public boolean returnHigher() {
         return returnHigher;
-//        if (contextFunction == null) // no function so just a transparent block
-//            return true;
-//        else
-//            return contextFunction.isTransparent();
     }
 
     /*
@@ -138,12 +110,34 @@ public class Context {
 
     public Context copy() {
         Context copy = new Context(parentContext, returnHigher);
+        copy.variables = variables;
+        return copy;
+    }
+
+    // This is used for out of current thread execution.
+    // Such as animations (see AnimationBlock in Graphics.java).
+    public Context copyParentContext() {
+        Context copy = new Context(parentContext, returnHigher);
         try {
-            copy.variables = (HashMap)variables.clone();
+            // separate list of variables but the variables themselves are not copied
+            copy.variables = (HashMap)parentContext.variables.clone();
+            copy.libraryStack = parentContext.cloneLibraryStack(); //Stack<LibraryExpression>) libraryStack.clone();
         } catch (Exception e) {
             System.err.println(e);
         }
         return copy;
+    }
+
+    public Stack<LibraryExpression> cloneLibraryStack() {
+        return (Stack<LibraryExpression>)libraryStack.clone();
+    }
+
+    public void pushLibrary(LibraryExpression library) {
+        libraryStack.push(library);
+    }
+
+    public void popLibrary() {
+        libraryStack.pop();
     }
 
 }

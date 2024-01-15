@@ -1,22 +1,20 @@
-graphics : include graphics
-
-using graphics
-	window : simple window
+using graphics lib
+	window : a simple window
 
 	triangle : a triangle
 	triangle's size : 100
 	triangle's position : { 0, std height ÷ 2}
 	add (triangle) to (window)
 
-	rotate : every 1 tick do
+	rotation : every 1 tick do
 		change (triangle) heading by 2 degrees
 
-	move : every 1 tick do
+	movement : every 1 tick do
 		change (triangle) x-pos by 4
 
 	animate 60 ticks per second
-		(move) animation
-		(rotate) animation
+		animate (movement)
+		animate (rotation)
 		update (window)
 	… until
 		triangle's x-pos ≥ std width

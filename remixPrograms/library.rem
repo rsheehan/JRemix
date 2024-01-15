@@ -1,3 +1,4 @@
+"Playing with libraries\n" ↲
 - Playing with libraries -
 
 lib1 : library
@@ -13,6 +14,10 @@ lib1 : library
 			(me) to string :
 				name ⊕ ", " ⊕ age ⊕ " years old"
 
+using lib1
+	4 plus 6 ↲
+
+	4 plus 7 ↲
 
 lib2 : library
 
@@ -74,4 +79,18 @@ using lib3
 	}
 
 ↲. "Outside" ↲
-"x: ", x, " should be 32" ↲
+"x: ", x, " should be 32\n" ↲
+
+test {
+	"Calling function out of scope."
+		3 plus 8
+	... expected "null"
+}
+
+↲
+using lib1, lib2
+	test {
+		"Calling a method from a second library."
+			(name "Robert" age 65) to string
+		... expected "Robert, 65 years old"
+	}

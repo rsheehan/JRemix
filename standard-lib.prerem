@@ -66,7 +66,7 @@ Run "block" for each "item" in the "sequence".
 Return either the last statement value or whatever is returned from "block".
 A sequence is a list, range, map or string.
 =-
-for each (#item) in (sequence) do [block] :[
+for each (#item) in (sequence) /do [block] :[
 	pos : start (sequence)
 	do[
 		if (end (pos))[
@@ -79,13 +79,13 @@ for each (#item) in (sequence) do [block] :[
 =-
 Run "block" for each "number" from "start" to "finish".
 =-
-for each (#number) from (start) to (finish) do [block] :[
+for each (#number) from (start) to (finish) /do [block] :[
 	for each (#number) in ((start) to (finish)) do (block)]
 
 =-
 Run "block" for each "number" from "start" to "finish" in steps of "step".
 =-
-for each (#number) from (start) to (finish) in steps of (step) do [block]:[
+for each (#number) from (start) to (finish) in steps of (step) /do [block]:[
 	if (start < finish)[
 		test : [#number ≤ finish]]
 	… otherwise[
@@ -102,7 +102,7 @@ Run "block" for each "item" in the "sequence" at all positions from "start" to "
 "block" will usually use the variable passed as "item".
 A sequence here is a list, range or string.
 =-
-for each (#item) in (sequence) from position (start) to (finish) do [block] :[
+for each (#item) in (sequence) from position (start) to (finish) /do [block] :[
 	for each (pos) from (start) to (finish) do[
 		#item : (pos) in (sequence)
 		do (block)]]
@@ -111,7 +111,7 @@ for each (#item) in (sequence) from position (start) to (finish) do [block] :[
 Run "block" for each "item" in the "sequence" keeping count in "count".
 A sequence is a list, range, map or string.
 =-
-for each (#item) in (sequence) keeping (#count) do [block] :[
+for each (#item) in (sequence) keeping (#count) /do [block] :[
 	#count : 0
 	for each (#item) in (sequence) do[
 		inc (#count)
@@ -135,6 +135,12 @@ repeat [block] (count) times :[
 	redo]
 
 =-
+Repeat the "block" "count" number of times.
+=-
+repeat (count) times [block] :[
+	repeat (block) (count) times]
+
+=-
 Repeat the "block" until the "condition" is true.
 =-
 repeat [block] until [condition] :[
@@ -146,7 +152,7 @@ repeat [block] until [condition] :[
 =-
 While a "condition" is true keep doing "block".
 =-
-while [condition] do [block] :[
+while [condition] /do [block] :[
 	if (not (condition))[
 		return last]
 	last : do (block)
@@ -157,14 +163,20 @@ while [condition] do [block] :[
 ==============================
 
 =-
-Filter "list" using "condition-block" on each "item".
+Filter "list" using "condition-block" on each "item" keeping "keep-block".
 =-
-filter (list) by (#item) where [condition-block] :[
+filter (list) by (#item) where [condition-block] keeping [keep-block] :[
 	new-list : {}
 	for each (#item) in (list) do[
 		if (condition-block)[
-			append (#item) to (new-list)]]
+			append (do (keep-block)) to (new-list)]]
 	new-list]
+
+=-
+Filter "list" using "condition-block" on each "item".
+=-
+filter (list) by (#item) where [condition-block] :[
+	filter (list) by (#item) where (condition-block) keeping [#item]]
 
 =-
 Collect items from "list" until "condition" is true.
@@ -295,6 +307,15 @@ Concatenate the "string" "number" times.
 	… (number - 1) times
 	result]
 
+=-
+Adds an 's' to "word" if plural, "number" > 1.
+=-
+pluralize (word) for (number) :[
+	if (number > 1)[
+		word ⊕ "s"]
+	… otherwise[
+		word]]
+
 ==============================
  List string functions
 ==============================
@@ -328,6 +349,12 @@ The "list" as a string.
 ==============================
  List functions
 ==============================
+
+=-
+	Append "value" to the end of "list".
+=-
+to (list) append (value) :[
+	append (value) to (list)]
 
 =-
 The first value in the "list".
@@ -513,7 +540,7 @@ test (list-of-tests) :[
 				assert test (test-number) (test{"description"})
 				… (test{"code"}) produces (test{"expected"})]
 			↲
-			test-string : (tests) length ⊕ " Tests"
+			test-string : (tests) length ⊕ " " ⊕ (pluralize "Test" for ((tests) length))
 			test-string ↲
 			"=" ((test-string) length) times ↲
 			"Passing : ", passing ↲
@@ -524,5 +551,5 @@ test (list-of-tests) :[
 ==============================
  Common library functions
 ==============================
-include graphics :[
+graphics lib :[
 	include "remixPrograms/graphics.rem"]

@@ -1,184 +1,21 @@
 
-"Graphics library loaded." ↲
+"Playing with libraries\n" ↲
+- Playing with libraries -
 
-library "edu.fizz.remix.libraries.Graphics"[
+lib1 : library[
 
-	=====================
-	Dimensions and points
-	=====================
-	std width :[
-		1000]
+	(x) plus (y) :[
+		x + y]
 
-	std height :[
-		800]
-
-	centre point :[
-		{std width ÷ 2, std height ÷ 2}]
-
-	random point :[
-		{random (std width), random (std height)}]
-
-	=======
-	Colours
-	=======
-	white colour :[
-		{255, 255, 255}]
-	black colour :[
-		{0, 0, 0}]
-	red colour :[
-		{255, 0, 0}]
-	green colour :[
-		{0, 255, 0}]
-	blue colour :[
-		{0, 0, 255}]
-
-	random colour :[
-		{random 255, random 255, random 255}]
-
-	======
-	Shapes
-	======
-
-	a triangle :[
-		3 sided polygon]
-
-	a square :[
-		4 sided polygon]
-
-	(n) sided polygon :[
-		points : {}
-		for each (side) from 0 to (n - 1) do[
-			append {[
-				cosine (side × 2 × π ÷ n)
-				sine (side × 2 × π ÷ n)]
-			} to (points)]
-		shape from (points)]
-
-	=-
-	Create a shape from the list of "points".
-	=-
-	shape from (points) :[
-
+	name (name) age (age) :[
 		create[
-			colour   : red colour
-			polygon  : points
-			position : centre point
-			size    : 20.0
-			heading  : 0.0 ; radians
-			filled   : true
+			name : age
+			age : name
 
-			getter/setter[
-				colour, position, size, heading, filled]
+			(me) to string :[
+				name ⊕ ", " ⊕ age ⊕ " years old"]]]]
+"lib1: ", lib1 \n
+using lib1[
+	4 plus 6 ↲
 
-			set (my) heading (value) degrees :[
-				heading : (value) degrees as radians]
-
-			(my) x-pos :[
-				position{1}]
-
-			(my) y-pos :[
-				position{2}]
-
-			change (my) x-pos by (δ) :[
-				position{1} : position{1} + δ]
-
-			change (my) heading by (δ) degrees :[
-				heading : heading + (δ) degrees as radians]]]
-
-	===============
-	Graphic Objects
-	===============
-
-	=-
-	Create and show a window with only one shape layer.
-	=-
-	simple window :[
-
-		the-window : create[
-			jwindow : "Drawing" window of width (std width) and height (std height)
-			layer : shape layer ; only a single layer for drawing
-
-			add (shape) to (me) :[
-				add (shape) to (layer)]
-
-			(my) shapes : [; can be called by "window's shapes"
-				layer's shapes]
-
-			show (me) :[
-				show (jwindow)]
-
-			update (me) :[
-				clear (jwindow) layer ; Java
-				prepare (layer) shapes for drawing on (jwindow)
-				refresh (jwindow)]]
-
-		show (the-window)
-		the-window]
-
-	=-
-	Create and show a window with multiple shape layers.
-	=-
-	window with shape layers :[
-
-		the-window : create[
-			jwindow : "Drawing" window of width (std width) and height (std height)
-			layers : { shape layer } ; default bottom layer
-
-			getter[
-				layers]
-
-			(my) next layer :[
-				new-layer : shape layer
-				append (new-layer) to (layers)
-				new-layer]
-
-			(my) base layer :[
-				layers {1}]
-
-			show (me) :[
-				show (jwindow)]
-
-			update (me) :[
-				clear all (jwindow) layers
-				for each (layer) in (layers) do[
-					prepare (layer) shapes for drawing on (jwindow)]
-				refresh (jwindow)]]
-
-		show (the-window)
-		the-window]
-
-	=-
-	Create a shape layer.
-	Shapes get added to layers.
-	=-
-	shape layer :[
-		create[
-			shapes : {}
-
-			getter[
-				shapes]
-
-			add (shape) to (me) :[
-				append (shape) to (shapes)]
-
-			clear (my) shapes :[
-				shapes : {}]
-
-			prepare (my) shapes for drawing on (window) :[
-				for each (shape) in (shapes) do[
-					add (shape) to (window) ]]]]; Java
-
-	=========
-	Animation
-	=========
-	every (n) tick/ticks do [changes] :[
-		create[
-			ticks : n
-			counter : n
-			changes : changes
-
-			(my) animation :[
-				dec (counter)
-				if (counter = 0)[
-					counter : ticks
-					do (changes)]]]]]
+	4 plus 7 ↲]

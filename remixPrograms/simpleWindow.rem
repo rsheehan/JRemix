@@ -1,7 +1,5 @@
-graphics : include graphics
-
-using graphics
-	window : simple window
+using graphics lib
+	window : a simple window
 
 	repeat
 		shape : a square

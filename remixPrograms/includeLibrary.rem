@@ -1,0 +1,8 @@
+"Read includeLibrary.rem" \n
+
+(a) times (b) :
+	a * b
+
+library
+	(a) plus (b) :
+		a + b

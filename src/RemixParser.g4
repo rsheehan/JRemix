@@ -11,7 +11,7 @@ program				: ( functionDefinition | statement )* EOF ;
 
 library				: LIBRARY STRING? LBLOCK EOL* (functionDefinition EOL*)* RBLOCK ;
 
-usingLibrary		: USING WORD (COMMA WORD)* blockOfStatements ;
+usingLibrary		: USING expression (COMMA expression)* blockOfStatements ;
 
 functionDefinition	: functionComment? functionSignature COLON COLON? EOL? blockOfStatements ;
 

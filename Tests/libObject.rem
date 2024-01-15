@@ -1,0 +1,31 @@
+using (library
+	a function :
+		22
+
+	make an object :
+		create
+			x : 3
+			y : 4
+
+			(my) method one :
+				z : 3 + 4
+				z + a function
+)
+	o : make an object
+	test {
+		"Inside library use method with lib call"
+			(o) method one
+		… expected 29
+
+		"Inside library use lib call"
+			a function
+		… expected 22
+	}
+↲
+test {
+	"Outside lib use method with lib call"
+		(o) method one
+	… expected 29
+}
+a function ; this shouldn't work
+- Last error output line should be - "a function" does not exist.

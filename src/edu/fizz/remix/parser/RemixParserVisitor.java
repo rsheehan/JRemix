@@ -1,4 +1,4 @@
-// Generated from /Users/robert/Library/CloudStorage/OneDrive-TheUniversityofAuckland/MyDrive/IdeaProjects/remix/src/RemixParser.g4 by ANTLR 4.12.0
+// Generated from /Users/robert/IdeaProjects/remix/src/RemixParser.g4 by ANTLR 4.13.1
 package edu.fizz.remix.parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -342,6 +342,13 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExprWordProduct(RemixParser.ExprWordProductContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exprUsingLibrary}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprUsingLibrary(RemixParser.ExprUsingLibraryContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code exprEqual}
 	 * labeled alternative in {@link RemixParser#expression}.

@@ -3,8 +3,8 @@
     <output-path>$PROJECT_DIR$/out/artifacts/remix_jar</output-path>
     <root id="archive" name="remix.jar">
       <element id="module-output" name="remix" />
-      <element id="extracted-dir" path="$APPLICATION_PLUGINS_DIR$/antlr-intellij-plugin-v4/lib/antlr4-runtime-4.12.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$APPLICATION_PLUGINS_DIR$/antlr-intellij-plugin-v4/lib/antlr4-4.12.0.jar" path-in-jar="/" />
+      <element id="library" level="project" name="antlr4-4.13.1" />
+      <element id="library" level="project" name="antlr4-runtime-4.13.1" />
     </root>
   </artifact>
 </component>

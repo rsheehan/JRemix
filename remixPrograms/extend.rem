@@ -8,7 +8,7 @@ a person called (name) :
 		say hello to (me) :
 			"Hi ", name, ", pleased to meet you." ↲
 
-a person called (name) age (years):
+a person called (name) age (years) :
 	extend (a person called (name))
 		age : years
 

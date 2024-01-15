@@ -5,3 +5,4 @@ extra function :[
 	"This is the included function output."]
 
 included-var : "Robert"
+

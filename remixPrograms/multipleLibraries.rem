@@ -27,7 +27,7 @@ using lib1, lib2
 	test {
 		"2 libraries from first"
 			"a" with "b"
-		… expected "a from lib1 b"
+		… expected "a from lib2 b"
 
 		"2 libraries only first"
 			"a" alone
@@ -38,7 +38,7 @@ using lib2, lib1
 	test {
 		"2 libraries from first"
 			"a" with "b"
-		… expected "a from lib2 b"
+		… expected "a from lib1 b"
 
 		"2 libraries only second"
 			"a" alone
@@ -50,7 +50,7 @@ using lib1
 		test {
 			"2 nested libraries from first"
 				"a" with "b"
-			… expected "a from lib1 b"
+			… expected "a from lib2 b"
 
 			"2 nested libraries only first"
 				"a" alone
