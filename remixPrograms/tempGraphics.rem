@@ -11,7 +11,7 @@ using graphics lib
 		shape's heading  : random from 1 to 90
 		add (shape) to (next-layer)
 
-=	for each (y-pos) from 40 to (std height - 20) in steps of 80 do
+=	for each (y-pos) from 40 to (the std height - 20) in steps of 80 do
 		arrow : a triangle
 		arrow's size : 20
 		arrow's position : {0, y-pos}
@@ -29,7 +29,7 @@ using graphics lib
 		animate (rotate-squares)
 		-animate (move-arrows)
 		update (window)
-	… until [arrow's x-pos ≥ std width]
+	… until [arrow's x-pos ≥ the std width]
 
 = at this point the context library stack is changed
 So calling 'animate 2 ticks per second [block] until [block]

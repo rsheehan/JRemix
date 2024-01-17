@@ -14,7 +14,7 @@ using graphics
 
 	square : shape from (square-pts)
 	square's size : 200
-	square's position : (centre point)
+	square's position : (the centre point)
 	square's filled : true
 
 	for each (angle) from 0 to 80 in steps of 10 do
@@ -34,7 +34,7 @@ using graphics
 	arrow's size : 10
 	arrow's position : {
 		x : 800
-		y : std height ÷ 2
+		y : the std height ÷ 2
 	}
 	arrow's heading : π × 1.5
 	arrow's colour : red colour

@@ -1,8 +1,0 @@
-
-graphics : include "remixPrograms/graphics.rem"
-
-using graphics[
-	show drawing window
-	repeat[
-		draw random line]
-	… 100 times]

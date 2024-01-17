@@ -14,8 +14,6 @@ import java.util.List;
 
 public class Graphics extends LibraryExpression {
 
-//    static GraphicsWindow window;
-
     private static double[] pointsFromMapOrList(Object p) {
         double[] point = new double[2];
         if (p instanceof ArrayList<?> posList) {
@@ -78,7 +76,7 @@ public class Graphics extends LibraryExpression {
 
         public WindowFunction() {
             super(
-                    List.of("a | window of width | and height |"),
+                    List.of("a | window of | and |"),
                     List.of("title", "width", "height"),
                     List.of(false, false, false),
                     false,
@@ -151,74 +149,6 @@ public class Graphics extends LibraryExpression {
         }
     }
 
-//    public static final class DrawLineFunction extends Function {
-//
-//        public DrawLineFunction() {
-//            super(
-//                    List.of("draw | line from | to |"),
-//                    List.of("colour", "start", "finish"),
-//                    List.of(false, false, false),
-//                    false,
-//                    """
-//                            Draw a line of "colour" from "start" to "finish".
-//                            "colour" is a string or RGB list.
-//                            "start" and "finish" are lists {x0, y0} or maps {x: x0, y: y0}."""
-//            );
-//        }
-//
-//        @Override
-//        public Object execute(Context context) throws ReturnException, InterruptedException {
-//            Object colour = context.retrieve("colour");
-//            Object start = context.retrieve("start");
-//            Object finish = context.retrieve("finish");
-//            window.drawPanel.setPenColour(colorFromRGBorString(colour));
-//            double[] startPt = pointsFromMapOrList(start);
-//            double[] finishPt = pointsFromMapOrList(finish);
-//            window.drawPanel.drawLine(integerPoint(startPt), integerPoint(finishPt));
-//            return null;
-//        }
-//    }
-
-//    public static final class SetPenColourFunction extends Function {
-//
-//        public SetPenColourFunction() {
-//            super(
-//                    List.of("| pen colour"),
-//                    List.of("colour"),
-//                    List.of(false),
-//                    false,
-//                    "Change the pen colour to \"colour\".\n" +
-//                            "\"colour\" is a string or RGB list."
-//            );
-//        }
-//        @Override
-//        public Object execute(Context context) throws ReturnException, InterruptedException {
-//            Object colour = context.retrieve("colour");
-//            window.drawPanel.setPenColour(colorFromRGBorString(colour));
-//            return null;
-//        }
-//    }
-
-//    public static final class SetPenSizeFunction extends Function {
-//
-//        public SetPenSizeFunction() {
-//            super(
-//                    List.of("pen size |"),
-//                    List.of("size"),
-//                    List.of(false),
-//                    false,
-//                    "Change the pen size to \"size\"."
-//            );
-//        }
-//        @Override
-//        public Object execute(Context context) throws ReturnException, InterruptedException {
-//            Object remixSize = context.retrieve("size");
-//            float size = ((Number) remixSize).floatValue();
-//            window.drawPanel.setPenSize(size);
-//            return null;
-//        }
-//    }
-
     public static final class AddShapeFunction extends Function {
 
         public AddShapeFunction() {
@@ -237,20 +167,27 @@ public class Graphics extends LibraryExpression {
             Context shapeContext = shape.getContext();
             // get the colour
             Color shapeColour = colorFromRGBorString(shapeContext.retrieve("colour"));
-            // get the polygon
-            Path2D.Double shapePath = polygonFromPoints((ArrayList<?>) shapeContext.retrieve("polygon"));
-            // get the position
-            int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("position")));
-            // get the scale
-            double scale = ((Number) shapeContext.retrieve("size")).doubleValue();
-            AffineTransform scaledTransform = new AffineTransform();
-            scaledTransform.scale(scale, scale);
-            Path2D.Double scaledShapePath = new Path2D.Double(shapePath, scaledTransform);
-            // get the heading
-            double heading = doubleFromObject(shapeContext.retrieve("heading"));
-            // filled or outline
-            boolean filled = (boolean) shapeContext.retrieve("filled");
-            window.drawPanel.addShapeForDrawing(shapeColour, scaledShapePath, position, heading, filled);
+            if (shape.getContext().retrieve("polygon") != null) {
+                // get the polygon
+                Path2D.Double shapePath = polygonFromPoints((ArrayList<?>) shapeContext.retrieve("polygon"));
+                // get the position
+                int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("position")));
+                // get the scale
+                double scale = ((Number) shapeContext.retrieve("size")).doubleValue();
+                AffineTransform scaledTransform = new AffineTransform();
+                scaledTransform.scale(scale, scale);
+                Path2D.Double scaledShapePath = new Path2D.Double(shapePath, scaledTransform);
+                // get the heading
+                double heading = doubleFromObject(shapeContext.retrieve("heading"));
+                // filled or outline
+                boolean filled = (boolean) shapeContext.retrieve("filled");
+                window.drawPanel.addShapeForDrawing(shapeColour, scaledShapePath, position, heading, filled);
+            } else { // currently assuming this must be a line
+                int[] start = integerPoint(pointsFromMapOrList(shapeContext.retrieve("start")));
+                int[] finish = integerPoint(pointsFromMapOrList(shapeContext.retrieve("finish")));
+                double width = ((Number)shapeContext.retrieve("width")).doubleValue();
+                window.drawPanel.addLineForDrawing(shapeColour, start, finish, width);
+            }
             return null;
         }
     }

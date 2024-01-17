@@ -3,7 +3,7 @@ using graphics lib
 
 	triangle : a triangle
 	triangle's size : 100
-	triangle's position : { 0, std height ÷ 2}
+	triangle's position : { 0, the std height ÷ 2}
 	add (triangle) to (window)
 
 	rotation : every 1 tick do
@@ -17,6 +17,6 @@ using graphics lib
 		animate (rotation)
 		update (window)
 	… until
-		triangle's x-pos ≥ std width
+		triangle's x-pos ≥ the std width
 
 "Finished" ↲

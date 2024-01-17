@@ -8,7 +8,7 @@ using graphics lib
 		polygon : an (n) sided polygon
 		polygon's colour : random colour
 		polygon's size : 40
-		polygon's position : {x, std height ÷ 2}
+		polygon's position : {x, the std height ÷ 2}
 		add (polygon) to (window)
 		x : x + 100
 

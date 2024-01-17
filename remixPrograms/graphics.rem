@@ -5,17 +5,17 @@ library "edu.fizz.remix.libraries.Graphics"
 	=====================
 	Dimensions and points
 	=====================
-	std width :
+	the std width :
 		1000
 
-	std height :
+	the std height :
 		800
 
-	centre point :
-		{std width ÷ 2, std height ÷ 2}
+	the centre point :
+		{the std width ÷ 2, the std height ÷ 2}
 
-	random point :
-		{random (std width), random (std height)}
+	/a random point :
+		{random (the std width), random (the std height)}
 
 	=======
 	Colours
@@ -61,7 +61,7 @@ library "edu.fizz.remix.libraries.Graphics"
 		create
 			colour   : red colour
 			polygon  : points
-			position : centre point
+			position : the centre point
 			size     : 20.0
 			heading  : 0.0 ; radians
 			filled   : true
@@ -84,8 +84,28 @@ library "edu.fizz.remix.libraries.Graphics"
 			change (my) heading by (δ) degrees :
 				heading : heading + (δ) degrees as radians
 
+	=====
+	Lines
+	=====
+
+	a (colour) line from (start) to (finish) :
+		create
+			start : start
+			finish : finish
+			width : 3
+			colour : colour
+
+			getters/setters
+				start, finish, width, colour
+
+	a line from (start) to (finish) :
+		a (green colour) line from (start) to (finish)
+
+	a random line :
+		a (random colour) line from (random point) to (random point)
+
 	===============
-	Graphic Objects
+	Graphic Windows
 	===============
 
 	=-
@@ -94,7 +114,7 @@ library "edu.fizz.remix.libraries.Graphics"
 	a window with shape layers :
 
 		the-window : create
-			jwindow : a "Drawing" window of width (std width) and height (std height)
+			jwindow : a "Drawing" window of (the std width) and (the std height)
 			layers : { a shape layer } ; default bottom layer
 
 			getter

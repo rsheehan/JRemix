@@ -2,16 +2,16 @@
 
 library "edu.fizz.remix.libraries.Graphics"
 
-	std width :
+	the std width :
 		1000
-	std height :
+	the std height :
 		800
 
-	centre point :
-		{std width ÷ 2, std height ÷ 2}
+	the centre point :
+		{the std width ÷ 2, the std height ÷ 2}
 
 	random point :
-		{random (std width), random (std height)}
+		{random (the std width), random (the std height)}
 
 	scale (polygon) by (size) :
 		scaled-polygon : {}
@@ -36,7 +36,7 @@ library "edu.fizz.remix.libraries.Graphics"
 		{random 255, random 255, random 255}
 
 	show drawing window :
-		window : "Drawing" window of width (std width) and height (std height)
+		window : "Drawing" window of width (the std width) and height (the std height)
 		show window (window)
 
 	draw random line :
@@ -65,7 +65,7 @@ library "edu.fizz.remix.libraries.Graphics"
 				fill (scaled-polygon) at (position) facing (heading)
 
 	shape from (polygon) :
-		(white colour) shape from (polygon) scaled by 1 at (centre point) facing 0
+		(white colour) shape from (polygon) scaled by 1 at (the centre point) facing 0
 
 	shape from (polygon) at (position) :
 		(white colour) shape from (polygon) scaled by 1 at (position) facing 0
