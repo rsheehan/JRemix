@@ -32,7 +32,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             "\"", "\""
     );
     private CompletionInfo completionsHere = null;
-//    private String selectionText = "";
 
     private final Style defaultStyle = getStyle("default");
 

@@ -438,6 +438,31 @@ Return the previous value.
 (#x) dec :
 	#x : #x - 1
 	#x + 1
+
+=-
+Add "value" to variable "x".
+=-
+add (value) to (#x) :
+	#x : #x + value
+
+=-
+Subtract "value" from variable "x".
+=-
+subtract (value) from (#x) :
+	#x : #x - value
+
+=-
+Multiply variable "x" by "value".
+=-
+multiply (#x) by (value) :
+	#x : #x × value
+
+=-
+Divide variable "x" by "value".
+=-
+divide (#x) by (value) :
+	#x : #x ÷ value
+
 =-
 The absolute value of "number".
 =-

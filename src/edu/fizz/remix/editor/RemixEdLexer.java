@@ -53,11 +53,8 @@ public class RemixEdLexer {
     }
 
     public static void initStyles(RemixStyledDocument document) {
-//        textPane = txtPane;
-//        document = (RemixStyledDocument) textPane.getStyledDocument();
         RemixEdLexer.document = document;
 
-//        StyleContext remixContext = new StyleContext();
         // the style at the original position of the textPane
         defaultStyle = document.getStyle("default");
         // variables
@@ -335,22 +332,27 @@ public class RemixEdLexer {
     }
 
     private static boolean isKeyword(String word, int start) throws BadLocationException {
-        if (word.equals("create")) {
-            String before = getCharBefore(start);
-            String after = getCharAfter(start + 5);
-            if ((":\n\t".contains(before)) && // all strings contain the empty string
-                    (after.equals("") || after.equals("\n")))
-                return true;
-        } else if (word.equals("extend")) {
-            String before = getCharBefore(start);
-            String after = getCharAfter(start + 5);
-            if ((":\n\t".contains(before)) && // all strings contain the empty string
-                    after.equals("("))
-                return true;
-        } else if (word.equals("me") || word.equals("my"))
-            if ((start > 1 && getChar(start - 1) == '(') &&
-                    (document.getLength() > start + 2 && getChar(start + 2) == ')'))
-                return true;
+        switch (word) {
+            case "create" -> {
+                String before = getCharBefore(start);
+                String after = getCharAfter(start + 5);
+                if ((":\n\t".contains(before)) && // all strings contain the empty string
+                        (after.isEmpty() || after.equals("\n")))
+                    return true;
+            }
+            case "extend" -> {
+                String before = getCharBefore(start);
+                String after = getCharAfter(start + 5);
+                if ((":\n\t".contains(before)) && // all strings contain the empty string
+                        after.equals("("))
+                    return true;
+            }
+            case "me", "my" -> {
+                if ((start > 1 && getChar(start - 1) == '(') &&
+                        (document.getLength() > start + 2 && getChar(start + 2) == ')'))
+                    return true;
+            }
+        }
         return keywords.contains(word);
     }
 
