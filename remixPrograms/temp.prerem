@@ -1,0 +1,12 @@
+
+using graphics lib[
+
+	the-window : a simple window
+
+	current : random point
+	repeat[
+		new : random point
+		add (a (random colour) line from (current) to (new)) to (the-window)
+		current : new]
+	… 100 times
+	update (the-window)]

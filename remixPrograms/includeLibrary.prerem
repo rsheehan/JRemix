@@ -1,10 +1,11 @@
+
 "Read includeLibrary.rem" ↲
 
 - Accessible at the top-level. No need for "uses".
-(a) times (b) :
-	a * b
+(a) times (b) :[
+	a * b]
 
-library
+library[
 	- Only accessible via a "uses" block.
-	(a) plus (b) :
-		a + b
+	(a) plus (b) :[
+		a + b]]

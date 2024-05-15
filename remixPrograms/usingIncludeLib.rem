@@ -6,8 +6,8 @@ using include "remixPrograms/includeLibrary.rem"
 (a) minus (b) :
 	a - b
 
-4 minus 3 \n
-4 times 3 \n
-4 plus 3 \n
+4 minus 3 ↲
+4 times 3 ↲
+4 plus 3 ↲
 
 "Finished" ↲

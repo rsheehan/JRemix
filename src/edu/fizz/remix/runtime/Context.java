@@ -120,7 +120,7 @@ public class Context {
         Context copy = new Context(parentContext, returnHigher);
         try {
             // separate list of variables but the variables themselves are not copied
-            copy.variables = (HashMap)parentContext.variables.clone();
+            copy.variables = parentContext.variables; //(HashMap)parentContext.variables.clone();
             copy.libraryStack = parentContext.cloneLibraryStack(); //Stack<LibraryExpression>) libraryStack.clone();
         } catch (Exception e) {
             System.err.println(e);

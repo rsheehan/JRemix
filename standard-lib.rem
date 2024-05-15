@@ -362,7 +362,7 @@ first in (list) :
 	list{1}
 
 =-
-The last value in the "list"
+The last value in the "list".
 =-
 last in (list) :
 	list{(list) length}
@@ -373,6 +373,12 @@ A sequence is a list, range, map or string.
 =-
 no/empty (sequence) :
 	(sequence) length = 0
+
+=-
+Choose a random item from the "list".
+=-
+choose from (list) :
+	list{random ((list) length)}
 
 ==============================
  Map functions

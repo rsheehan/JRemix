@@ -19,7 +19,7 @@ public class MethodContext extends Context {
 //        localContext.setLibraryStack(parent.getLibraryStack());
         // or
  //       localContext.libraryStack = object.getContext().libraryStack;
-        libraryStack = object.getContext().libraryStack;
+        libraryStack = object.getContext().cloneLibraryStack(); //libraryStack; NOT THE PROBLEM
         parentContext = parent; //new Context(parent, null);
     }
 

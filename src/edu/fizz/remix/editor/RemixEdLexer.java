@@ -38,11 +38,11 @@ public class RemixEdLexer {
     private static final List<String> literalWords = Arrays.asList("true", "false");
 
     private static boolean firstWordChar(char c) {
-        return !".()[\\]{,}:;—|§@…'’⊕+-*×÷%=≠<≤>≥0123456789π\" \t\n".contains(Character.toString(c));
+        return !".()[\\]{,}:;—|…'’⊕+-*×÷%=≠<≤>≥0123456789π\" \t\n".contains(Character.toString(c));
     }
     // no longer allow "-" in
     private static boolean wordChar(char c) {
-        return !".()[\\]{,}:;—|§@…'’⊕+*×÷%=≠<≤>≥π\" \t\n".contains(Character.toString(c));
+        return !".()[\\]{,}:;—|…'’⊕+*×÷%=≠<≤>≥π\" \t\n".contains(Character.toString(c));
     }
     private static boolean isSeparator(char c) {
         return ".:,({[)}]".contains(Character.toString(c));

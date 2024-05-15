@@ -219,7 +219,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         if (offset >= targetLen) {
             String match = getText(offset - targetLen, targetLen) + input; // existing plus new char
             if (match.equals(target)) {
-                boolean fixCaret = false;
+//                boolean fixCaret = false;
                 String replacement = operators.get(target);
                 if ("π√²".contains(replacement)) {
                     // if the previous character is a word character don't do the replacement
@@ -239,8 +239,8 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 } else {
                     super.replace(offset - targetLen, targetLen, replacement, defaultStyle);
                 }
-                if (fixCaret)
-                    textPane.setCaretPosition(offset);
+//                if (fixCaret)
+//                    textPane.setCaretPosition(offset);
 //                spacesAroundBooleanOps(offset - targetLen);
                 return true;
             }
@@ -299,6 +299,11 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         return indentationHere <= indentationBefore; // no more than one extra level
     }
 
+    /**
+     * How many tabs deep is the start of the line?
+     * @param pos The position in the document.
+     * @return The number of starting tabs on this line.
+     */
     private int indentationOnThisLine(int pos) throws BadLocationException {
         String before;
         String after;
@@ -332,12 +337,12 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     // Called from keystroke event handler set up in RemixEditor.
     public String completionHandling(int offset) throws BadLocationException {
         Runtime.CompletionNamesAndDoc completion = null;
-        String completionText = null;
+        String completionText;
         if (completionsHere == null) {
             String seedWord = wordSoFar(offset);
             seedWord = seedWord.stripLeading();
             ArrayList<Runtime.CompletionNamesAndDoc> completions = Runtime.createCompletions(seedWord.replace(" ", ""));
-            if (seedWord.length() > 0 && completions.size() > 0) {
+            if (!seedWord.isEmpty() && !completions.isEmpty()) {
                 int seedLength = seedWord.length();
                 completions.add(new Runtime.CompletionNamesAndDoc(seedWord, "", "")); // so we can cycle back to the start
                 completionsHere = new CompletionInfo(completions, offset - seedLength);
@@ -464,6 +469,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         String before = "";
         String after = "";
         int pos = offset;
+        // go back until we find the first non-space character
         while (pos > 0) {
             pos--;
             before = getText(pos, 1);
@@ -473,7 +479,8 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
         boolean followsOpenBlock = false;
         boolean followsListStart = false;
-        if (before.equals(":"))
+        if (before.equals(":") || libraryHeader(offset)) // also need to check for a "using" line
+            // and create, extend, getter, setter
             tabbedReturn.append("\t");
         else if (before.equals("[")) {
             followsOpenBlock = true;
@@ -489,23 +496,26 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         int tabs = indentationOnThisLine(pos);
         String tabsOnLine = "\t".repeat(tabs);
         tabbedReturn.append(tabsOnLine);
+        // remove "[]" to make block implicit
         if (followsOpenBlock && precedesCloseBlock) {
-            super.remove(offset - 1, 2);
+            offset--; // removed opening [ as well
+            super.remove(offset, 2);
             tabbedReturn.append("\t");
             if (moreTextOnLine(offset)) {
                 tabbedReturn.append("\n");
                 tabbedReturn.append(tabsOnLine);
                 tabbedReturn.append("…");
             }
-            offset--; // removed opening [ as well
         } else if (followsOpenBlock) {
-            tabbedReturn.append("\t\n");
+            tabbedReturn.append("\t");
             tabbedReturn.append(tabsOnLine);
+        // between "{" and "}" so we are indenting a list
         } else if (followsListStart && precedesListEnd) {
             tabbedReturn.append("\t\n");
             tabbedReturn.append(tabsOnLine);
         } else if (followsListStart) { // next line indented one more tab
             tabbedReturn.append("\t");
+        // just before
         } else if (precedesListEnd) {
             // subtract a tab on the new line
             tabbedReturn.deleteCharAt(tabbedReturn.length() - 1);
@@ -516,6 +526,64 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         }
     }
 
+    /**
+     * Are we after a library header?
+     * A library header is either "library" or "library" followed by a Java class name as a String.
+     * @param pos The position.
+     * @return True iff we are at the end of a library header.
+     */
+    private boolean libraryHeader(int pos) throws BadLocationException {
+        boolean library = false;
+        pos = backupOverSpaces(pos);
+        pos =  backupOverString(pos);
+        pos = backupOverSpaces(pos);
+        pos = pos - 7;
+        if (pos >= 0 && getText(pos, 7).equals("library")) {
+            library = (pos == 0 || ": \n".contains(getText(pos - 1, 1)));
+        }
+        // is this a "library" expression?
+        return library;
+    }
+
+    /**
+     * Move back from the position until the position is not in a String.
+     * @param pos the current position
+     * @return The position before a preceding String (or zero).
+     */
+    private int backupOverString(int pos) throws BadLocationException {
+        if (pos == 0 || !getText(pos - 1, 1).equals("\"")) {
+            return pos;
+        }
+        pos--; // at the closing quotes
+        while (pos > 0) {
+            pos--;
+            if (getText(pos, 1).equals("\""))
+                break;
+        }
+        return pos;
+    }
+
+    /**
+     * Move back from the position until the position is not a space.
+     * @param pos the current position
+     * @return The position before immediately preceding spaces (or zero).
+     */
+    private int backupOverSpaces(int pos) throws BadLocationException {
+        while (pos > 0) {
+            pos--;
+            if (!getText(pos, 1).equals(" ")) {
+                pos++;
+                break;
+            }
+        }
+        return pos;
+    }
+
+    /**
+     * Is there text on the line after this point? Spaces do not count.
+     * @param pos The position in the document.
+     * @return True iff there is a non-space character on the remainder of the line.
+     */
     private boolean moreTextOnLine(int pos) throws BadLocationException {
         boolean more = false;
         while (pos < getLength()) {
@@ -526,6 +594,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 more = true;
                 break;
             }
+            pos++;
         }
         return more;
     }
