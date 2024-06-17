@@ -1,44 +1,44 @@
 - For loops and sequences -
 
-list : {1, 2, 4, 8}
-range : 5 to 10
-string : "abcdefg"
-map : {x : 2, y : 6, z: 10, a : 15}
+LIST : {1, 2, 4, 8}
+RANGE : 5 to 10
+STRING : "abcdefg"
+MAP : {x : 2, y : 6, z: 10, a : 15}
 
-list ↲
-range ↲
-string ↲
-map ↲
+LIST ↲
+RANGE ↲
+STRING ↲
+MAP ↲
 
-for each (item) in (list) do
-	(item) _
+for each ITEM in LIST do
+	ITEM _
 ↲
-for each (item) in (range) do
-	(item) _
+for each ITEM in RANGE do
+	ITEM _
 ↲
-for each (item) in (string) do
-	(item) _
+for each ITEM in STRING do
+	ITEM _
 ↲
-for each (item) in (map) do
-	item, ":", map{item}, " " ~
+for each ITEM in MAP do
+	ITEM, ":", MAP {ITEM}, " " ~
 ↲
-for each (item) in (list) from position 4 to 2 do
-	(item) _
+for each ITEM in LIST from position 4 to 2 do
+	ITEM _
 ↲
-for each (item) in (range) from position 4 to 2 do
-	(item) _
+for each ITEM in RANGE from position 4 to 2 do
+	ITEM _
 ↲
-for each (item) in (string) from position 4 to 2 do
-	(item) _
+for each ITEM in STRING from position 4 to 2 do
+	ITEM _
 ↲
-for each (item) in (list) keeping (count) do
-	count, ":", item, " " ~
+for each ITEM in LIST keeping COUNT do
+	COUNT, ":", ITEM, " " ~
 ↲
-for each (item) in (range) keeping (count) do
-	count, ":", item, " " ~
+for each ITEM in RANGE keeping COUNT do
+	COUNT, ":", ITEM, " " ~
 ↲
-for each (item) in (string) keeping (count) do
-	count, ":", item, " " ~
+for each ITEM in STRING keeping COUNT do
+	COUNT, ":", ITEM, " " ~
 ↲
-for each (item) in (map) keeping (count) do
-	count, ":", item, ":", map{item}, " " ~
+for each ITEM in MAP keeping COUNT do
+	COUNT, ":", ITEM, ":", MAP {ITEM}, " " ~

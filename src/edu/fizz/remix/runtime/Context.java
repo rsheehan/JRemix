@@ -33,8 +33,10 @@ public class Context {
     public Context(Context original) {
         super();
         parentContext = original.parentContext;
-        variables = new HashMap<>(original.variables);
-        libraryStack = original.libraryStack;
+        // Since primitive class types (e.g. Integer) are immutable we can make a new HashMap if we want to change such values
+//        variables = new HashMap<>(original.variables);
+        variables = original.variables;
+        libraryStack = original.cloneLibraryStack();
         if (libraryStack != null)
             System.out.println(libraryStack);
         returnHigher = original.returnHigher;
@@ -121,7 +123,7 @@ public class Context {
         try {
             // separate list of variables but the variables themselves are not copied
             copy.variables = parentContext.variables; //(HashMap)parentContext.variables.clone();
-            copy.libraryStack = parentContext.cloneLibraryStack(); //Stack<LibraryExpression>) libraryStack.clone();
+            copy.libraryStack = (Stack<LibraryExpression>) libraryStack.clone(); //parentContext.cloneLibraryStack(); //Stack<LibraryExpression>) libraryStack.clone();
         } catch (Exception e) {
             System.err.println(e);
         }
@@ -130,6 +132,10 @@ public class Context {
 
     public Stack<LibraryExpression> cloneLibraryStack() {
         return (Stack<LibraryExpression>)libraryStack.clone();
+    }
+
+    public void cloneLibraryStackInPlace() {
+        libraryStack = cloneLibraryStack();
     }
 
     public void pushLibrary(LibraryExpression library) {

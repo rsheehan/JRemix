@@ -1,22 +1,44 @@
 a b :
 	create
-		x : 1
-		y : 99
+		X : 1
+		Y : 99
 
 		getters/setters
-			x, y
+			X, Y
 
-z : a b
-z's x ↲
-z's y : 2
-z's y ↲
+Z : a b
 
-list : {
+
+LIST : {
 	a b
 	{3, a b}
 }
 
-list{1}'s x : 3
-list{1}'s x ↲
-list{2}{2}'s y : 4
-list{2}{2}'s y ↲
+test {
+	"Get simple possessive 1"
+		Z's X
+	… expected 1
+
+	"Get simple possessive 2"
+		Z's Y
+	… expected 99
+
+	"Set simple possessive"
+		Z's Y : 2
+		Z's Y
+	… expected 2
+
+	"Get list item possessive"
+		LIST {1}'s Y
+	… expected 99
+
+	"Set list item possessive"
+		LIST {1}'s X : 3
+		LIST {1}'s X
+	… expected 3
+
+	"Set list 2D item possessive"
+		LIST {2}{2}'s Y : 4
+		LIST {2}{2}'s Y
+	… expected 4
+}

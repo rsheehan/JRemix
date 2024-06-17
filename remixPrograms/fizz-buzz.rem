@@ -2,10 +2,9 @@
  Fizz-Buzz
 ===========
 
-for each (number) from 1 to 30 do
+for each NUMBER from 1 to 30 do
 	when
-		[(number) is divisible by 15] do ["fizz-buzz" _]
-		[(number) is divisible by 3]  do ["fizz" _]
-		[(number) is divisible by 5]  do ["buzz" _]
-		(number) _
-new line
+		[NUMBER is divisible by 15] do ["fizz-buzz" _]
+		[NUMBER is divisible by 3]  do ["fizz" _]
+		[NUMBER is divisible by 5]  do ["buzz" _]
+		NUMBER _

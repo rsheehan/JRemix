@@ -30,13 +30,16 @@ public class RemixEdLexer {
     // horrible global state variables
     private static LexMode mode;
 
-    private static final List<String> keywords = Arrays.asList("return", "redo", "setter",
-            "setters", "getter", "getters", "getter/setter", "getters/setters", "library", "using");
+    private static final List<String> keywords = Arrays.asList("return", "redo", "create", "extend", "ME", "MY",
+            "setter", "setters", "getter", "getters", "getter/setter", "getters/setters", "library", "using");
     // "create" is only a keyword if it is on a line by itself
     // "using" should only be a keyword if is by comma separated words
 
     private static final List<String> literalWords = Arrays.asList("true", "false");
 
+    private static boolean identifierChar(String c) {
+        return "ABCDEFGHIJKLMNOPQRSTUVWXYZ#".contains(c);
+    }
     private static boolean firstWordChar(char c) {
         return !".()[\\]{,}:;—|…'’⊕+-*×÷%=≠<≤>≥0123456789π\" \t\n".contains(Character.toString(c));
     }
@@ -57,18 +60,21 @@ public class RemixEdLexer {
 
         // the style at the original position of the textPane
         defaultStyle = document.getStyle("default");
+        SimpleAttributeSet attr = new SimpleAttributeSet();
+        StyleConstants.setForeground(attr, Color.white);
+        defaultStyle.addAttributes(attr);
         // variables
-        variable = makeStyle("variable", null, true, defaultStyle);
+        variable = makeStyle("variable", new Color(200,200,200), true, defaultStyle);
         // parentheses
-        parentheses = makeStyle("parentheses", new Color(200,200,200), false, defaultStyle );
+        parentheses = makeStyle("parentheses", new Color(150,150,250), false, defaultStyle );
         // comments, all sorts
         comment = makeStyle("comment",new Color(170,121,66), true, defaultStyle );
         // operator text
-        operator = makeStyle("operator", new Color(148,33,146), true, defaultStyle);
+        operator = makeStyle("operator", Color.green, true, defaultStyle);
         // literals
-        literal = makeStyle("literal", Color.blue, true, defaultStyle);
+        literal = makeStyle("literal", Color.cyan, true, defaultStyle);
         // string - just a version of literal for the RemixStyleDocument code
-        string = makeStyle("string", Color.blue, true, defaultStyle);
+        string = makeStyle("string", new Color(255,200,200), true, defaultStyle);
         // keywords
         keyword = makeStyle("keyword", Color.red, false, defaultStyle);
         // separator
@@ -361,73 +367,7 @@ public class RemixEdLexer {
     }
 
     private static boolean isVariable(int startWord, int endWord) throws BadLocationException {
-        List<String> beforeList = Arrays.asList("", ":", ".", "\n", "\t", ",", "{", "⊕", "+", "-", "*", "×", "/", "÷", "%", "=", "<", ">", "≠", "≤", "≥");
-        List<String> afterList = Arrays.asList("'", ":", ",", "}", ".", "↲", "\n", "⊕", "+", "-", "*", "×", "/", "÷", "%", "=", "<", ">", "≠", "≤", "≥");
-        Map<String, String> matchingPairs = Map.of(
-                "(", ")",
-                "[", "]",
-                "{", "}"
-        );
-        Set<String> openers = matchingPairs.keySet();
-        Collection<String> closers = matchingPairs.values();
-        /*
-        Variables are single words on lines,
-        between "," and ","
-        "," and "'" - e.g. , Robert's
-        "," and "~"
-        "," and "↲"
-        "{", and ","
-        "{" and "'"
-        "," and "}"
-        "," and "'"
-        "{" and "}"
-        "(" and ")"
-        "(" and "'"
-        "[" and "]"
-        "[" and "'"
-        line start and ":" - line start includes "." "\t" "\n"
-        line start and "'"
-        ":" and (line end includes ".", operator)
-        List element access
-        e.g. "list{accessId}" - these must occur in the same situations as single words
-         */
-        int tabsBefore = indentationBefore(startWord);
-        int tabsAfter = indentationAfter(endWord);
-        if (tabsBefore != -1 && tabsBefore + 1 == tabsAfter) // single word on line with indentation following
-            return false;
-        String before = getCharBefore(startWord);
-        String after = getCharAfter(endWord);
-        if (beforeList.contains(before) && afterList.contains(after))
-            return true;
-        if (beforeList.contains(before) && after.equals("~")) { // a "~" on the end of the line
-            // doesn't work if further things like comments on the line
-            String two_after = getCharAfter(endWord + 2);
-            if (two_after.equals("\n"))
-                return true;
-        }
-        try {
-            Integer.parseInt(before);
-            if ( afterList.contains(after)) {
-                return true;
-            }
-        } catch (NumberFormatException e) {
-            // nothing
-        }
-        if (openers.contains(before) && afterList.contains(after))
-            return true;
-        if (beforeList.contains(before) && closers.contains(after))
-            return true;
-        if (before.equals("n") && afterList.contains(after) && follows("return", startWord))
-            return true;
-        if (before.equals("g") && afterList.contains(after) && follows("using", startWord))
-            return true;
-//        try {
-        String beforePair = matchingPairs.get(before);
-        return beforePair != null && beforePair.equals(after);
-//        } catch (Exception e) {
-//            if (!(e instanceof NullPointerException))
-//                throw new RuntimeException(e);
-//        }
+        return identifierChar(document.getText(startWord, 1));
     }
 
     private static boolean follows(String wordBefore, int pos) throws BadLocationException {

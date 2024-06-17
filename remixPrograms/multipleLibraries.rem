@@ -1,58 +1,58 @@
 - Multiple libraries at once. -
 
-lib1 : library
-	(a) with (b) :
-		(a) ⊕ " from lib1 " ⊕ (b)
+LIB1 : library
+	A with B :
+		A ⊕ " from LIB1 " ⊕ B
 
-	(a) alone :
-		"from lib1"
+	A alone :
+		"from LIB1"
 
-lib2 : library
-	(a) with (b) :
-		(a) ⊕ " from lib2 " ⊕ (b)
+LIB2 : library
+	A with B :
+		A ⊕ " from LIB2 " ⊕ B
 
 test {
 	"single library"
-		using lib1
+		using LIB1
 			"a" with "b"
-	… expected "a from lib1 b"
+	… expected "a from LIB1 b"
 
 	"single library same name function"
-		using lib2
+		using LIB2
 			"a" with "b"
-	… expected "a from lib2 b"
+	… expected "a from LIB2 b"
 }
 ↲
-using lib1, lib2
+using LIB1, LIB2
 	test {
 		"2 libraries from first"
 			"a" with "b"
-		… expected "a from lib2 b"
+		… expected "a from LIB2 b"
 
 		"2 libraries only first"
 			"a" alone
-		… expected "from lib1"
+		… expected "from LIB1"
 	}
 ↲
-using lib2, lib1
+using LIB2, LIB1
 	test {
 		"2 libraries from first"
 			"a" with "b"
-		… expected "a from lib1 b"
+		… expected "a from LIB1 b"
 
 		"2 libraries only second"
 			"a" alone
-		… expected "from lib1"
+		… expected "from LIB1"
 	}
 ↲
-using lib1
-	using lib2
+using LIB1
+	using LIB2
 		test {
 			"2 nested libraries from first"
 				"a" with "b"
-			… expected "a from lib2 b"
+			… expected "a from LIB2 b"
 
 			"2 nested libraries only first"
 				"a" alone
-			… expected "from lib1"
+			… expected "from LIB1"
 		}

@@ -1,22 +1,22 @@
-person called (name) age (age) and sex (sex) :
+person called NAME age AGE and sex SEX :
 	create
-		name : name
-		age : age
-		sex : sex
+		NAME : NAME
+		AGE : AGE
+		SEX : SEX
 
-		(my) pronoun :
+		MY pronoun :
 			when
-				[sex = "male"] do ["he"]
-				[sex = "female"] do ["she"]
+				[SEX = "male"] do ["he"]
+				[SEX = "female"] do ["she"]
 				"they"
 
-		(me) to string :
-			name ⊕ " is " ⊕ age ⊕ " years old, " ⊕ (my) pronoun ⊕ " is " ⊕ sex ⊕ "."
+		ME to string :
+			NAME ⊕ " is " ⊕ AGE ⊕ " years old, " ⊕ MY pronoun ⊕ " is " ⊕ SEX ⊕ "."
 
-who : person called "Robert" age 64 and sex "male"
-wife : person called "Stephanie" age 62 and sex "female"
-other : person called "Zindy" age 20 and sex "indeterminate"
+WHO : person called "Robert" age 64 and sex "male"
+WIFE : person called "Stephanie" age 62 and sex "female"
+OTHER : person called "Zindy" age 20 and sex "indeterminate"
 
-who ↲
-wife ↲
-other ↲
+WHO ↲
+WIFE ↲
+OTHER ↲

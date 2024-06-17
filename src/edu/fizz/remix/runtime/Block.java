@@ -28,7 +28,8 @@ public class Block implements Expression {
     }
 
     public void setContext(Context context) { // could this push the context
-        blockContext = context;
+        blockContext = new Context(context);
+        // trying to solve the libStack problem on blocks in other threads
     }
 
     public void addStatement(Expression statement) {
@@ -39,6 +40,7 @@ public class Block implements Expression {
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         Object result = null;
         if (blockContext != null) { // anonymous block, use its blockContext
+            // this is where the problem is - the blockContext doesn't have the correct libStack
             context = blockContext;
         }
         Iterator<Expression> iterator = statements.iterator();

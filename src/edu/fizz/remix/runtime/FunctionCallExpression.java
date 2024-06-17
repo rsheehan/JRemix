@@ -75,7 +75,6 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
                 function = library.searchFunctionTable(routineName);
             }
         } catch (NoSuchElementException ignored) {
-            ;
         }
 
         if (function == null) {

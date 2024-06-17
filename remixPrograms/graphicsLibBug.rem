@@ -1,23 +1,27 @@
+=
+The bug is that the graphics lib context is not visible
+=
+
 using graphics lib
 
--	the-window : a simple window
+-	THE-WINDOW : a simple window
 
-	current : random point
-	count : 0
+	CURRENT : random point
+	COUNT : 0
 
-	add-line : every 1 tick do
-		add 1 to (count)
-		count ↲
-=		new : random point
-		add (a (random colour) line from (current) to (new)) to (the-window)
-		current : new
-=		update (the-window)
+	ADD-LINE : every 1 tick do
+		add 1 to COUNT
+		COUNT ↲
+-		NEW : random point
+=		add (a (random colour) line from CURRENT to NEW) to THE-WINDOW
+		CURRENT : NEW
+=		update THE-WINDOW
 	
 	"here" ↲
 
 	animate 10 ticks per second
-		animate (add-line)
-		count ↲
-	… until [count = 10]
+		animate ADD-LINE
+		COUNT ↲
+	… until [COUNT = 10]
 
 "there" ↲

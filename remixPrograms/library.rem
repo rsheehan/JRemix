@@ -1,42 +1,42 @@
 "Playing with libraries\n" ↲
 - Playing with libraries -
 
-lib1 : library
+LIB1 : library
 
-	(x) plus (y) :
-		x + y
+	X plus Y :
+		X + Y
 
-	name (name) age (age) :
+	name NAME age AGE :
 		create
-			name : age
-			age : name
+			NAME : AGE
+			AGE : NAME
 
-			(me) to string :
-				name ⊕ ", " ⊕ age ⊕ " years old"
+			ME to string :
+				NAME ⊕ ", " ⊕ AGE ⊕ " years old"
 
-using lib1
+using LIB1
 	4 plus 6 ↲
 
 	4 plus 7 ↲
 
-lib2 : library
+LIB2 : library
 
-	name (name) age (age) :
+	name NAME age AGE :
 		create
-			name : name
-			age : age
+			NAME : NAME
+			AGE : AGE
 
-			(me) to string :
-				name ⊕ ", " ⊕ age ⊕ " years old"
+			ME to string :
+				NAME ⊕ ", " ⊕ AGE ⊕ " years old"
 
-lib3 : library
+LIB3 : library
 
-	with (#refvar) reference :
-		#refvar : #refvar + #refvar
+	with #REFVAR reference :
+		#REFVAR : #REFVAR + #REFVAR
 
 "N.B. This is a test inside library usage." ↲
 "----------------------------------------" ↲
-using lib1
+using LIB1
 	test {
 		"Simple function from library"
 			4 plus 3
@@ -48,17 +48,17 @@ using lib1
 "----------------------------------------------" ↲
 test {
 	"Simple function from library again"
-		using lib1
+		using LIB1
 			4 plus 5
 	… expected 9
 
 	"Method call from library"
-		using lib1
+		using LIB1
 			(name "Peter" age 50) to string
 	… expected "50, Peter years old"
 
 	"Method call same signature different library"
-		using lib2
+		using LIB2
 			(name "Peter" age 50) to string
 	… expected "Peter, 50 years old"
 }
@@ -66,20 +66,20 @@ test {
 
 "N.B. This is a test with reference parameter." ↲
 "---------------------------------------------" ↲
-using lib3
+using LIB3
 	test {
 		"Simple reference call"
-			x : 16
-			with (x) reference
+			X : 16
+			with X reference
 		… expected 32
 
 		"Changed variable"
-			x
+			X
 		… expected 32
 	}
 
 ↲. "Outside" ↲
-"x: ", x, " should be 32\n" ↲
+"X: ", X, " should be 32\n" ↲
 
 test {
 	"Calling function out of scope."
@@ -88,7 +88,7 @@ test {
 }
 
 ↲
-using lib1, lib2
+using LIB1, LIB2
 	test {
 		"Calling a method from a second library."
 			(name "Robert" age 65) to string

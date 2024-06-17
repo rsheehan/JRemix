@@ -124,7 +124,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             funcComment = (String)visit(ctx.functionComment());
             colonPosition++; // because the comment existed
         }
-        @SuppressWarnings ("unchecked")
         FunctionName<String> funcSig = (FunctionName<String>)visit(ctx.functionSignature());
         boolean transparent = ctx.getChild(colonPosition).getText().equals(":");
         Block block = (Block)visit(ctx.blockOfStatements());
@@ -152,6 +151,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
+//            if (node instanceof RemixParser.SingleWordContext ||  // added single word functions
             if (node instanceof RemixParser.SigWordContext) {
                 funcSig.addToName(node.getText());
             } else if (node instanceof RemixParser.SigParamContext) {
@@ -193,7 +193,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 FieldAssignmentStatement initStmnt = (FieldAssignmentStatement)visit(node);
                 objectExpr.addVarInitialization(initStmnt);
             } else if (node instanceof RemixParser.GetterSetterContext) {
-                @SuppressWarnings("unchecked")
                 List<String> getSetNames = (List<String>)visit(node);
                 for (String name : getSetNames) {
                     String getMethodName = methodTable.createGetter(name);
@@ -202,14 +201,12 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                     LibraryExpression.addMethodName(setMethodName, 1);
                 }
             } else if (node instanceof RemixParser.GetterContext) {
-                @SuppressWarnings("unchecked")
                 List<String> getterNames = (List<String>)visit(node);
                 for (String name : getterNames) {
                     String methodName = methodTable.createGetter(name);
                     LibraryExpression.addMethodName(methodName, 1);
                 }
             }else if (node instanceof RemixParser.SetterContext) {
-                @SuppressWarnings("unchecked")
                 List<String> setterNames = (List<String>)visit(node);
                 for (String name : setterNames) {
                     String methodName = methodTable.createSetter(name);
@@ -227,10 +224,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return objectExpr;
     }
 
-    /** WORD COLON expression EOL+ */
+    /** IDENTIFIER COLON expression EOL+ */
     @Override
     public Expression visitField(RemixParser.FieldContext ctx) {
-        String varName = ctx.WORD().getText();
+        String varName = ctx.IDENTIFIER().getText();
         Expression expression = (Expression) visit(ctx.expression());
         return new FieldAssignmentStatement(varName, expression);
     }
@@ -267,10 +264,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return fieldList;
     }
 
-    /** WORD */
+    /** IDENTIFIER */
     @Override
     public String visitFieldId(RemixParser.FieldIdContext ctx) {
-        return ctx.WORD().getText();
+        return ctx.IDENTIFIER().getText();
     }
 
     /** methodSignature COLON EOL? blockOfStatements */
@@ -303,28 +300,28 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return methodSig;
     }
 
-    /** LPAREN WORD RPAREN */
+    /** LPAREN IDENTIFIER RPAREN */
     @Override
     public String visitMethSigParam(RemixParser.MethSigParamContext ctx) {
-        return ctx.WORD().getText();
+        return ctx.IDENTIFIER().getText();
     }
 
-    /** LBLOCK WORD RBLOCK */
+    /** LBLOCK IDENTIFIER RBLOCK */
     @Override
     public String visitMethSigBlock(RemixParser.MethSigBlockContext ctx) {
-        return ctx.WORD().getText();
+        return ctx.IDENTIFIER().getText();
     }
 
-    /** LPAREN WORD RPAREN */
+    /** IDENTIFIER | LPAREN IDENTIFIER RPAREN */
     @Override
     public String visitSigParam(RemixParser.SigParamContext ctx) {
-        return ctx.WORD().getText();
+        return ctx.IDENTIFIER().getText();
     }
 
-    /** LBLOCK WORD RBLOCK */
+    /** LBLOCK IDENTIFIER RBLOCK */
     @Override
     public String visitSigBlock(RemixParser.SigBlockContext ctx) {
-        return ctx.WORD().getText();
+        return ctx.IDENTIFIER().getText();
     }
 
     /** LBLOCK statement* RBLOCK */
@@ -333,10 +330,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return produceBlockExpression(ctx);
     }
 
-    /** WORD COLON expression EOL */
+    /** IDENTIFIER COLON expression EOL */
     @Override
     public AssignmentStatement visitSetVariable(RemixParser.SetVariableContext ctx) {
-        String varName = ctx.WORD().getText();
+        String varName = ctx.IDENTIFIER().getText();
         Expression expression = (Expression) visit(ctx.expression());
         return new AssignmentStatement(varName, expression);
     }
@@ -369,7 +366,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     @Override
     public Expression visitExprMinus(RemixParser.ExprMinusContext ctx) {
         Expression value = (Expression) visit(ctx.expression());
-        SimpleExpression<Long> minusOne = new SimpleExpression<Long>(-1L);
+        SimpleExpression<Long> minusOne = new SimpleExpression<>(-1L);
         return new BinaryExpression(minusOne, "*", value);
     }
 
@@ -448,10 +445,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return (Expression) visit(ctx.expression());
     }
 
-    /** WORD (from expression) */ // this should be a variable reference
+    /** IDENTIFIER (from expression) */ // this should be a variable reference
     @Override
     public Expression visitExprVar(RemixParser.ExprVarContext ctx) {
-        String varName = ctx.WORD().getText();
+        String varName = ctx.IDENTIFIER().getText();
         return new VarValueExpression(varName);
     }
 
@@ -487,28 +484,29 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     }
 
     private String[] splitNumberAndWord(String productWord) {
-        String product, word;
-        product = "";
+        StringBuilder product;
+        String word;
+        product = new StringBuilder();
         int i = 0;
         char c = productWord.charAt(i);
         if (c == '-') {
-            product += c;
+            product.append(c);
             c = productWord.charAt(++i);
         }
         while (Character.isDigit(c)) {
-            product += c;
+            product.append(c);
             c = productWord.charAt(++i);
         }
         if (c == '.') {
-            product += c;
+            product.append(c);
             c = productWord.charAt(++i);
         }
         while (Character.isDigit(c)) {
-            product += c;
+            product.append(c);
             c = productWord.charAt(++i);
         }
-        word = productWord.substring(i, productWord.length());
-        return new String[] {product, word};
+        word = productWord.substring(i);
+        return new String[] {product.toString(), word};
     }
 
     /** BOOLEAN (from expression) */
@@ -568,6 +566,13 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return setterCall;
     }
 
+    /** IDENTIFIER (from callPart) */
+    @Override
+    public Expression visitCallVar(RemixParser.CallVarContext ctx) {
+        String varName = ctx.IDENTIFIER().getText();
+        return new VarValueExpression(varName);
+    }
+
     /** callPart callPart+ */
     @Override
     public Expression visitFunctionCall(RemixParser.FunctionCallContext ctx) {
@@ -575,6 +580,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         int n = ctx.getChildCount();
         for (int i=0; i<n; i++) {
             ParseTree node = ctx.getChild(i);
+//            if (node instanceof RemixParser.SingleWordContext || // added single word functions
             if (node instanceof RemixParser.CallWordContext) {
                 funcCall.addToName(node.getText());
             } else if (node instanceof RemixParser.CallSelfContext) {
@@ -582,7 +588,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             } else if (node instanceof RemixParser.CallBlockContext) {
                 Expression expression = (Expression)visit(node);
                 funcCall.addBlockParam(expression);
-            } else if (node instanceof RemixParser.CallParamContext ||
+            } else if (node instanceof RemixParser.CallVarContext ||
+                    node instanceof RemixParser.CallParamContext ||
                     node instanceof RemixParser.CallNumberContext ||
                     node instanceof RemixParser.CallBooleanContext ||
                     node instanceof RemixParser.CallStringContext ||
@@ -686,40 +693,43 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return produceMapExpression(ctx);
     }
 
-    /** WORD listPart+
+    /** IDENTIFIER listPart+
      * Access to both list elements and map elements.
      * If there is only one listPart it could be a function call instead.
      * This is taken care of at runtime; see GetElementExpression.evaluate.
+     * TODO: Remove runtime check as should not be necessary anymore.
      */
     @Override
     public GetElementExpression visitListElement(RemixParser.ListElementContext ctx) {
-        String listName = ctx.WORD().getText();
+        String listName = ctx.IDENTIFIER().getText();
         // need to loop through possibly multiple listParts
         int n = ctx.getChildCount();
-        List<Expression> listParts = new ArrayList<>();
+        List listParts = new ArrayList<>();
         for (int i=0; i<n; i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.ListPartContext) {
-                Expression expression = (Expression)visit(node);
-                listParts.add(expression);
+                Object listPartID = visit(node);
+                listParts.add(listPartID);
             }
         }
         return new GetElementExpression(listName, listParts);
     }
 
-    /** WORD listPart+ COLON expression
+    /** IDENTIFIER listPart+ COLON expression
      * Set both list elements and map elements.
      */
     @Override
     public SetElementExpression visitSetListElement(RemixParser.SetListElementContext ctx) {
-        String listName = ctx.WORD().getText();
+        String listName = ctx.IDENTIFIER().getText();
         // need to loop through possibly multiple listParts
-        List<Expression> listParts = new ArrayList<>();
+        List listParts = new ArrayList<>();
         int i = 1;
         ParseTree node = ctx.getChild(i);
         while (node instanceof RemixParser.ListPartContext) {
-            Expression expression = (Expression)visit(node);
-            listParts.add(expression);
+//            Expression expression = (Expression)visit(node);
+//            listParts.add(expression);
+            Object listPartID = visit(node);
+            listParts.add(listPartID);
             node = ctx.getChild(++i);
         }
         Expression expression = (Expression) visit(ctx.expression());
@@ -728,8 +738,14 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
 
     /** LBRACE expression RBRACE */
     @Override
-    public Expression visitListPart(RemixParser.ListPartContext ctx) {
-        return (Expression)visit(ctx.expression());
+    public Object visitListPartExpr(RemixParser.ListPartExprContext ctx) {
+        return visit(ctx.expression());
+    }
+
+    /** LBRACE key RBRACE */
+    @Override
+    public Object visitListPartKey(RemixParser.ListPartKeyContext ctx) {
+        return visitKey(ctx.key());
     }
 
     @Override

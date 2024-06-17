@@ -66,6 +66,9 @@ public class RemixEditor extends JFrame {
         editorTextPane = new JTextPane();
         editorTextPane.addKeyListener(new CatchKeys());
         editorTextPane.setMargin(new Insets(5,10,5,10));
+        editorTextPane.setBackground(Color.black);
+        editorTextPane.setCaretColor(Color.white);
+        editorTextPane.setSelectionColor(new Color(100,80,80));
 
         // the base font
         editorTextPane.setFont(new Font("monospaced", Font.PLAIN, 13)); // previously "Monaco" on Mac
@@ -145,7 +148,7 @@ public class RemixEditor extends JFrame {
                 String docText = doc.completionHandling(editorTextPane.getCaretPosition());
                 if (docPopup != null)
                     docPopup.hide();
-                if (docText != null && docText.length() > 0) {
+                if (docText != null && !docText.isEmpty()) {
                     docArea.setText(docText);
                     Point location = getPopupScreenLocation();
                     docPopup = popupFactory.getPopup(editorTextPane, docPanel, location.x, location.y);
@@ -454,7 +457,8 @@ public class RemixEditor extends JFrame {
         });
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //Display the window.
-        frame.pack();
+//        frame.pack();
+        frame.setBounds(50, 50, 1700, 1050);
         frame.setVisible(true);
     }
 

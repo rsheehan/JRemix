@@ -18,10 +18,10 @@ new line :[
 	↲]
 
 =-
-Print the "value" followed by a space.
+Print the "VALUE" followed by a space.
 =-
-(value) _ :[
-	print (value)
+VALUE _ :[
+	print VALUE
 	print " "]
 
 ==============================
@@ -29,30 +29,30 @@ Print the "value" followed by a space.
 ==============================
 
 =-
-Negate the "value".
+Negate the "VALUE".
 =-
-not (value) :[
-	if (value)[
+not VALUE :[
+	if VALUE[
 		return false]
 	true]
 
 =-
 The boolean "and" operation.
 =-
-(valueA) and (valueB) :[
-	if (not (valueA))[
+VALUEA and VALUEB :[
+	if (not VALUEA)[
 		return false]
-	if (not (valueB))[
+	if (not VALUEB)[
 		return false]
 	true]
 
 =-
 The boolean "or" operation.
 =-
-(valueA) or (valueB) :[
-	if (valueA)[
+VALUEA or VALUEB :[
+	if VALUEA[
 		return true]
-	if (valueB)[
+	if VALUEB[
 		return true]
 	false]
 
@@ -61,442 +61,443 @@ The boolean "or" operation.
 ==============================
 
 =-
-Run "block" for each "item" in the "sequence".
-"block" will usually use the variable passed as "item".
-Return either the last statement value or whatever is returned from "block".
-A sequence is a list, range, map or string.
+Run "BLOCK" for each "ITEM" in the "SEQUENCE".
+"BLOCK" will usually use the variable passed as "ITEM".
+Return either the last statement VALUE or whatever is returned from "BLOCK".
+A sequence here is a list, range, map, string or sequence object.
 =-
-for each (#item) in (sequence) /do [block] :[
-	pos : start (sequence)
+for each #ITEM in SEQUENCE /do [BLOCK] :[
+	POS : start SEQUENCE
 	do[
-		if (end (pos))[
-			return last]
-		#item : next (pos)
-		- A return in the "block" following breaks out of the loop, with its result.
-		last : do (block)
+		if (end POS)[
+			return LAST]
+		#ITEM : next POS
+		- A return in the "BLOCK" following breaks out of the loop, with its result.
+		LAST : do BLOCK
 		redo]]
 
 =-
-Run "block" for each "number" from "start" to "finish".
+Run "BLOCK" for each "NUMBER" from "START" to "FINISH".
 =-
-for each (#number) from (start) to (finish) /do [block] :[
-	for each (#number) in ((start) to (finish)) do (block)]
+for each #NUMBER from START to FINISH /do [BLOCK] :[
+	for each #NUMBER in (START to FINISH) do BLOCK]
 
 =-
-Run "block" for each "number" from "start" to "finish" in steps of "step".
+Run "BLOCK" for each "NUMBER" from "START" to "FINISH" in steps of "STEP".
 =-
-for each (#number) from (start) to (finish) in steps of (step) /do [block]:[
-	if (start < finish)[
-		test : [#number ≤ finish]]
+for each #NUMBER from START to FINISH in steps of STEP /do [BLOCK]:[
+	if (START < FINISH)[
+		TEST : [#NUMBER ≤ FINISH]]
 	… otherwise[
-		test : [#number ≥ finish]]
-	#number : start
-	while (test) do[
-		last : do (block)
-		#number : #number + step]
-	last]
+		TEST : [#NUMBER ≥ FINISH]]
+	#NUMBER : START
+	while TEST do[
+		LAST : do BLOCK
+		#NUMBER : #NUMBER + STEP]
+	LAST]
 
 =-
-Run "block" for each "item" in the "sequence" at all positions from "start" to "finish".
-"start" to "finish" can go backwards.
-"block" will usually use the variable passed as "item".
+Run "BLOCK" for each "ITEM" in the "SEQUENCE" at all positions from "START" to "FINISH".
+"START" to "FINISH" can go backwards.
+"BLOCK" will usually use the variable passed as "ITEM".
 A sequence here is a list, range or string.
 =-
-for each (#item) in (sequence) from position (start) to (finish) /do [block] :[
-	for each (pos) from (start) to (finish) do[
-		#item : (pos) in (sequence)
-		do (block)]]
+for each #ITEM in SEQUENCE from position START to FINISH /do [BLOCK] :[
+	for each POS from START to FINISH do[
+		#ITEM : POS in SEQUENCE
+		do BLOCK]]
 
 =-
-Run "block" for each "item" in the "sequence" keeping count in "count".
-A sequence is a list, range, map or string.
+Run "BLOCK" for each "ITEM" in the "SEQUENCE" keeping count in "COUNT".
+A sequence here is a list, range, map, string or sequence object.
 =-
-for each (#item) in (sequence) keeping (#count) /do [block] :[
-	#count : 0
-	for each (#item) in (sequence) do[
-		inc (#count)
-		do (block)]]
+for each #ITEM in SEQUENCE keeping #COUNT /do [BLOCK] :[
+	#COUNT : 0
+	for each #ITEM in SEQUENCE do[
+		inc #COUNT
+		do BLOCK]]
 
 =-
-Repeat the "block" for ever.
+Repeat the "BLOCK" for ever.
 =-
-repeat [block] forever :[
-	do (block)
+repeat [BLOCK] forever :[
+	do BLOCK
 	redo]
 
 =-
-Repeat the "block" "count" number of times.
+Repeat the "BLOCK" "COUNT" number of times.
 =-
-repeat [block] (count) times :[
-	if (count ≤ 0)[
-		return last]
-	last : do (block)
-	count : count - 1
+repeat [BLOCK] COUNT times :[
+	if (COUNT ≤ 0)[
+		return LAST ]; none if unassigned
+	LAST : do BLOCK
+	COUNT : COUNT - 1
 	redo]
 
 =-
-Repeat the "block" "count" number of times.
+Repeat the "BLOCK" "COUNT" number of times.
 =-
-repeat (count) times [block] :[
-	repeat (block) (count) times]
+repeat COUNT times [BLOCK] :[
+	repeat BLOCK COUNT times]
 
 =-
-Repeat the "block" until the "condition" is true.
+Repeat the "BLOCK" until the "CONDITION" is true.
 =-
-repeat [block] until [condition] :[
-	last : do (block)
-	if (condition)[
-		return last]
+repeat [BLOCK] until [CONDITION] :[
+	LAST : do BLOCK
+	if CONDITION[
+		return LAST]
 	redo]
 
 =-
-While a "condition" is true keep doing "block".
+While a "CONDITION" is true keep doing "BLOCK".
 =-
-while [condition] /do [block] :[
-	if (not (condition))[
-		return last]
-	last : do (block)
+while [CONDITION] /do [BLOCK] :[
+	if (not CONDITION)[
+		return LAST]
+	LAST : do BLOCK
 	redo]
 
 ==============================
- List create functions
+ LIST create functions
 ==============================
 
 =-
-Filter "list" using "condition-block" on each "item" keeping "keep-block".
+Filter "LIST" using "CONDITION-BLOCK" on each "ITEM" keeping "KEEP-BLOCK".
+The blocks commonly refer to "ITEM".
 =-
-filter (list) by (#item) where [condition-block] keeping [keep-block] :[
-	new-list : {}
-	for each (#item) in (list) do[
-		if (condition-block)[
-			append (do (keep-block)) to (new-list)]]
-	new-list]
+filter LIST by #ITEM where [CONDITION-BLOCK] keeping [KEEP-BLOCK] :[
+	NEW-LIST : {}
+	for each #ITEM in LIST do[
+		if CONDITION-BLOCK[
+			append (do KEEP-BLOCK) to NEW-LIST]]
+	NEW-LIST]
 
 =-
-Filter "list" using "condition-block" on each "item".
+Filter "LIST" using "CONDITION-BLOCK" on each "ITEM".
+The block commonly refers to "ITEM".
 =-
-filter (list) by (#item) where [condition-block] :[
-	filter (list) by (#item) where (condition-block) keeping [#item]]
+filter LIST by #ITEM where [CONDITION-BLOCK] :[
+	filter LIST by #ITEM where CONDITION-BLOCK keeping [#ITEM]]
 
 =-
-Collect items from "list" until "condition" is true.
-The "condition" is checked before adding the "item".
+Collect items from "LIST" until "CONDITION" is true.
+The "CONDITION" is checked before adding the "ITEM".
 =-
-keep (#item) from (list) until [condition] :[
-	new-list : {}
-	for each (#item) in (list) do[
-		if (condition)[
+keep #ITEM from LIST until [CONDITION] :[
+	NEW-LIST : {}
+	for each #ITEM in LIST do[
+		if CONDITION[
 			return]
-		append (#item) to (new-list)]
-	new-list]
+		append #ITEM to NEW-LIST]
+	NEW-LIST]
 
 =-
-Collect items from "list" where "condition" is true,
-stopping when "termination" becomes true.
-The conditions are checked before adding the "item".
+Collect ITEMs from "LIST" where "CONDITION" is true,
+stopping when "TERMINATION" becomes true.
+The conditions are checked before adding the "ITEM".
 =-
-keep (#item) from (list) where [condition] until [termination] :[
-	result : {}
-	for each (#item) in (list) do[
-		if (termination)[
+keep #ITEM from LIST where [CONDITION] until [TERMINATION] :[
+	RESULT : {}
+	for each #ITEM in LIST do[
+		if TERMINATION[
 			return]
-		if (condition)[
-			append (#item) to (result)]]
-	result]
+		if CONDITION[
+			append #ITEM to RESULT]]
+	RESULT]
 
 =-
-Create a new list by applying "block" to each element of "list".
-"block" will usually use the variable passed as "item".
+Create a new LIST by applying "BLOCK" to each element of "LIST".
+"BLOCK" will usually use the variable passed as "ITEM".
 =-
-apply [block] to each (#item) from (list) :[
-	new-list : {}
-	for each (#item) in (list) do[
-		append (do (block)) to (new-list)]
-	new-list]
+apply [BLOCK] to each #ITEM from LIST :[
+	NEW-LIST : {}
+	for each #ITEM in LIST do[
+		append (do BLOCK) to NEW-LIST]
+	NEW-LIST]
 
 =-
-Create a new list by applying "block" "n" times.
+Create a new LIST by applying "BLOCK" "N" times.
 =-
-apply [block] (n) times :[
-	new-list : {}
+apply [BLOCK] N times :[
+	NEW-LIST : {}
 	repeat[
-		append (do (block)) to (new-list)]
-	… (n) times
-	new-list]
+		append (do BLOCK) to NEW-LIST]
+	… N times
+	NEW-LIST]
 
 ==============================
- List reduce functions
+ LIST reduce functions
 ==============================
 
 =-
-Can be used to construct list reduce functions.
-"initial" is executed first.
-Then each "item" in the "sequence" is executed in the "block".
-A sequence is a list, range, map or string.
+Can be used to construct LIST reduce functions.
+"INITIAL" is executed first.
+Then each "ITEM" in the "SEQUENCE" is executed in the "BLOCK".
+A sequence here is a list, range, map, string or sequence object.
 =-
-starting with [initial] apply [block] on each (#item) in (sequence) :[
-	do (initial)
-	for each (#item) in (sequence) do[
-		do (block)]]
+starting with [INITIAL] apply [BLOCK] on each #ITEM in SEQUENCE :[
+	do INITIAL
+	for each #ITEM in SEQUENCE do BLOCK]
 
 =-
-Sum the "list" values.
+Sum the "LIST" values.
 =-
-sum (list) :[
+sum LIST :[
 	starting with[
-		sum : 0]
+		SUM : 0]
 	… apply[
-		sum : sum + number]
-	… on each (number) in (list)]
+		SUM : SUM + NUMBER]
+	… on each NUMBER in LIST]
 
 =-
-Multiply the "list" values.
+Multiply the "LIST" values.
 =-
-product (list):[
+product LIST:[
 	starting with[
-		product : 1]
+		PRODUCT : 1]
 	… apply[
-		product : product × number]
-	… on each (number) in (list)]
+		PRODUCT : PRODUCT × NUMBER]
+	… on each NUMBER in LIST]
 
 =-
-Find the average of the elements in the "list".
+Find the average of the elements in the "LIST".
 =-
-average of (list) :[
+average of LIST :[
 	starting with[
-		sum : 0.0]
+		SUM : 0.0]
 	… apply[
-		sum : sum + item]
-	… on each (item) in (list)
-	sum ÷ ((list) length)]
+		SUM : SUM + ITEM]
+	… on each ITEM in LIST
+	SUM ÷ (LIST length)]
 
 =-
-Find the average of "key" elements in the "list-of-maps".
-The "key" should be passed as a string.
+Find the average of "KEY" elements in the "LIST-of-MAPS".
+The "KEY" should be passed as a string.
 =-
-average (key) of (list-of-maps) :[
+average KEY of LIST-of-MAPS :[
 	starting with[
-		sum : 0.0]
+		SUM : 0.0]
 	… apply[
-		sum : sum + map{key}]
-	… on each (map) in (list-of-maps)
-	sum ÷ ((list-of-maps) length)]
+		SUM : SUM + MAP {KEY}]
+	… on each MAP in LIST-of-MAPS
+	SUM ÷ (LIST-of-MAPS length)]
 
 =-
-Join the contents of "list1" and "list2".
+Join the contents of "LIST1" and "LIST2".
 The original lists remain unchanged.
 =-
-join (list1) and (list2):[
+join LIST1 and LIST2 :[
 	starting with[
-		list : copy (list1)]
+		LIST : copy LIST1]
 	… apply[
-		append (item) to (list)]
-	… on each (item) in (list2)]
+		append ITEM to LIST]
+	… on each ITEM in LIST2]
 
 ==============================
  String functions
 ==============================
 
 =-
-Concatenate the "string" "number" times.
+Concatenate the "STRING" "N" times.
 =-
-(string) (number) times :[
-	result : string
+STRING N times :[
+	RESULT : STRING
 	repeat[
-		result : result ⊕ string]
-	… (number - 1) times
-	result]
+		RESULT : RESULT ⊕ STRING]
+	… (N - 1) times
+	RESULT]
 
 =-
-Adds an 's' to "word" if plural, "number" > 1.
+Adds an 's' to "WORD" if plural, "NUMBER" > 1.
 =-
-pluralize (word) for (number) :[
-	if (number > 1)[
-		word ⊕ "s"]
+pluralize WORD for NUMBER :[
+	if (NUMBER > 1)[
+		WORD ⊕ "s"]
 	… otherwise[
-		word]]
+		WORD]]
 
 ==============================
- List string functions
-==============================
-
-=-
-Joins the string versions of the elements in "list".
-=-
-join (list) :[
-	string : ""
-	for each (item) in (list) do[
-		string : string ⊕ item]]
-
-=-
-Joins the "list" with "separator" between elements.
-=-
-join (list) with separator (separator) :[
-	string : ""
-	for each (item) in (list) keeping (count) do[
-		if (count = (list) length)[
-			return string ⊕ ((item) as string)]
-		string : string ⊕ ((item) as string) ⊕ separator]]
-
-=-
-The "list" as a string.
-=-
-(list) as string :[
-	if (not ((list) is a "list"))[
-		return list]
-	"{" ⊕ join (list) with separator ", " ⊕ "}"]
-
-==============================
- List functions
+ LIST string functions
 ==============================
 
 =-
-	Append "value" to the end of "list".
+Joins the string versions of the elements in "LIST".
 =-
-to (list) append (value) :[
-	append (value) to (list)]
+join LIST :[
+	STRING : ""
+	for each ITEM in LIST do[
+		STRING : STRING ⊕ ITEM]]
 
 =-
-The first value in the "list".
+Joins the "LIST" with "SEPARATOR" between elements.
 =-
-first in (list) :[
-	list{1}]
+join LIST with separator SEPARATOR :[
+	STRING : ""
+	for each ITEM in LIST keeping COUNT do[
+		if (COUNT = LIST length)[
+			return STRING ⊕ (ITEM as string)]
+		STRING : STRING ⊕ (ITEM as string) ⊕ SEPARATOR]]
 
 =-
-The last value in the "list".
+The "LIST" as a string.
 =-
-last in (list) :[
-	list{(list) length}]
+LIST as string :[
+	if (not (LIST is a "LIST"))[
+		return LIST]
+	"{" ⊕ join LIST with separator ", " ⊕ "}"]
+
+==============================
+ LIST functions
+==============================
 
 =-
-Is the "sequence" empty?
-A sequence is a list, range, map or string.
+	Append "VALUE" to the end of "LIST".
 =-
-no/empty (sequence) :[
-	(sequence) length = 0]
+to LIST append VALUE :[
+	append VALUE to LIST]
 
 =-
-Choose a random item from the "list".
+The first VALUE in the "LIST".
 =-
-choose from (list) :[
-	list{random ((list) length)}]
+first in LIST :[
+	LIST {1}]
+
+=-
+The last VALUE in the "LIST".
+=-
+last in LIST :[
+	LIST {LIST length}]
+
+=-
+Is the "SEQUENCE" empty?
+A sequence here is a list, range, map, string or sequence object.
+=-
+no/empty SEQUENCE :[
+	SEQUENCE length = 0]
+
+=-
+Choose a random ITEM from the "LIST".
+=-
+choose from LIST :[
+	LIST {random (LIST length)}]
 
 ==============================
  Map functions
 ==============================
 
 =-
-Merge the "extra" map into "map".
-"map" is modified.
+Merge the "EXTRA" map into "MAP".
+"MAP" is modified.
 =-
-merge (extra) into (map) :[
-	for each (item) in (extra) do[
-		map{item} : extra{item}]]
+merge EXTRA into MAP :[
+	for each ITEM in EXTRA do[
+		MAP {ITEM} : EXTRA {ITEM}]]
 
 ==============================
  Selection functions
 ==============================
 
 =-
-Executes statements in "block".
+Executes statements in "BLOCK".
 These statements are usually "[] do []"
 The difference between "when" and "do" - "when" is not transparent.
 =-
-when [block] :[
-	do (block)]
+when [BLOCK] :[
+	do BLOCK]
 
 =-
-If "option" block is true, return executed "result".
-Used in a "when" block.
+If "OPTION" BLOCK is true, return executed "RESULT".
+Used in a "when" BLOCK.
 The transparent return breaks out of the "when".
 =-
-/this [option] do [result] ::[
-	if (do (option))[
-		return do (result)]]
+/this [OPTION] do [RESULT] ::[
+	if (do OPTION)[
+		return do RESULT]]
 
 ==============================
  Numeric functions
 ==============================
 
 =-
-Increment numeric variable "x".
+Increment numeric variable "X".
 =-
-inc (#x) :[
-	#x : #x + 1]
+inc #X :[
+	#X : #X + 1]
 
 =-
-Decrement numeric variable "x".
+Decrement numeric variable "X".
 =-
-dec (#x) :[
-	#x : #x - 1]
+dec #X :[
+	#X : #X - 1]
 
 =-
-Increment numeric variable "x".
-Return the previous value.
+Increment numeric variable "X".
+Return the previous VALUE.
 =-
-(#x) inc :[
-	#x : #x + 1
-	#x - 1]
+#X inc :[
+	#X : #X + 1
+	#X - 1]
 
 =-
-Decrement numeric variable "x".
-Return the previous value.
+Decrement numeric variable "X".
+Return the previous VALUE.
 =-
-(#x) dec :[
-	#x : #x - 1
-	#x + 1]
+#X dec :[
+	#X : #X - 1
+	#X + 1]
 
 =-
-Add "value" to variable "x".
+Add "VALUE" to variable "X".
 =-
-add (value) to (#x) :[
-	#x : #x + value]
+add VALUE to #X :[
+	#X : #X + VALUE]
 
 =-
-Subtract "value" from variable "x".
+Subtract "VALUE" from variable "X".
 =-
-subtract (value) from (#x) :[
-	#x : #x - value]
+subtract VALUE from #X :[
+	#X : #X - VALUE]
 
 =-
-Multiply variable "x" by "value".
+Multiply variable "X" by "VALUE".
 =-
-multiply (#x) by (value) :[
-	#x : #x × value]
+multiply #X by VALUE :[
+	#X : #X × VALUE]
 
 =-
-Divide variable "x" by "value".
+Divide variable "X" by "VALUE".
 =-
-divide (#x) by (value) :[
-	#x : #x ÷ value]
+divide #X by VALUE :[
+	#X : #X ÷ VALUE]
 
 =-
-The absolute value of "number".
+The absolute value of "NUMBER".
 =-
-absolute (number) :[
-	if (number < 0)[
-		return -number]
-	number]
+absolute NUMBER :[
+	if (NUMBER < 0)[
+		return -NUMBER]
+	NUMBER]
 
 =-
-Is "number" divisible by "div"?
+Is "NUMBER" divisible by "DIV"?
 =-
-(number) is divisible by (div) :[
-	return number % div = 0]
+NUMBER is divisible by DIV :[
+	return NUMBER % DIV = 0]
 
 =-
-A random integer from "start" to "finish" inclusive.
+A random integer from "START" to "FINISH" inclusive.
 =-
-random from (start) to (finish) :[
-	if (start < finish)[
-		return random (finish - start + 1) + start - 1]
-	random (start - finish + 1) + finish - 1]
+random from START to FINISH :[
+	if (START < FINISH)[
+		return random (FINISH - START + 1) + START - 1]
+	random (START - FINISH + 1) + FINISH - 1]
 
 =-
-The square of "number".
+The square of "NUMBER".
 =-
-(number) squared/sqrd/²:[
-	number × number]
+NUMBER squared/sqrd/²:[
+	NUMBER × NUMBER]
 
 =-
 Return true 50% of the time.
@@ -505,79 +506,79 @@ coin toss :[
 	random 2 = 1]
 
 =-
-The Euclidean distance from "a" to "b".
-"a" and "b" are map values with keys "x" and "y".
+The Euclidean distance from "A" to "B".
+"A" and "B" are map values with keys "x" and "y".
 =-
-distance from (a) to (b) :[
-	δx : b{x} - a{x}
-	δy : b{y} - a{y}
-	√((δx)² + (δy)²)]
+distance from A to B :[
+	Xδ : B {x} - A {x}
+	Yδ : B {y} - A {y}
+	√(Xδ ² + Yδ ²)]
 
 =-
-Radian equivalent of "angle" degrees.
+Radian equivalent of "ANGLE" degrees.
 =-
-(angle) degrees as radians :[
-	angle ÷ 180.0 × π]
+ANGLE degrees as radians :[
+	ANGLE ÷ 180.0 × π]
 
 =-
-Degree equivalent of "angle" radians.
+Degree equivalent of "ANGLE" radians.
 =-
-(angle) radians as degrees :[
-	angle ÷ π × 180.0]
+ANGLE radians as degrees :[
+	ANGLE ÷ π × 180.0]
 
 ==============================
  Testing functions
 ==============================
 
 =-
-Create a test of "code" with expected "result" described by "description".
+Create a test of "CODE" with expected "RESULT" described by "DESCRIPTION".
 =-
-(description) [code] expected (result) :[
-	{ description : description, code : code, expected : result }]
+DESCRIPTION [CODE] expected RESULT :[
+	{ "description" : DESCRIPTION, "code" : CODE, "expected" : RESULT }]
 
 =-
-Create a test of "code" with expected "result".
+Create a test of "CODE" with expected "RESULT".
 =-
-[code] expected (result) :[
-	"" (code) expected (result)]
+[CODE] expected RESULT :[
+	"" CODE expected RESULT]
 
 =-
-Make a group of tests out of "list-of-tests" and run all tests.
+Make a group of tests out of "LIST-of-TESTS" and run all tests.
 =-
-test (list-of-tests) :[
-	test-object : create[
-		tests : list-of-tests
-		passing : 0
-		failing : 0
+test LIST-of-TESTS :[
+	TEST-OBJECT : create[
+		TESTS : LIST-of-TESTS
+		PASSING : 0
+		FAILING : 0
 
-		assert test (number) (description) [code] produces (expected) :[
-			if (description ≠ "")[
-				"\"", description, "\"" ↲]
+		assert test NUMBER DESCRIPTION [CODE] produces EXPECTED :[
+			if (DESCRIPTION ≠ "")[
+				"\"", DESCRIPTION, "\"" ↲]
 			… otherwise[
-				"Test #", number ↲]
+				"Test #", NUMBER ↲]
 
-			result : do (code)
+			RESULT : do CODE
 
-			if (result = expected)[
-				inc (passing)
+			if (RESULT = EXPECTED)[
+				inc PASSING
 				"  Passed" ↲]
 			… otherwise[
-				inc (failing)
-				"  Failed: produces ", result, ", should be ", expected ↲]]
+				inc FAILING
+				"  Failed: produces ", RESULT, ", should be ", EXPECTED ↲]]
 
-		execute (my) tests :[
+		execute MY tests :[
 			"Starting tests: " ↲
-			for each (test) in (tests) keeping (test-number) do[
-				assert test (test-number) (test{"description"})
-				… (test{"code"}) produces (test{"expected"})]
+			for each TEST in TESTS keeping TEST-NUMBER do[
+				assert test TEST-NUMBER (TEST {"description"})
+				… (TEST {"code"}) produces (TEST {"expected"})]
 			↲
-			test-string : (tests) length ⊕ " " ⊕ (pluralize "Test" for ((tests) length))
-			test-string ↲
-			"=" ((test-string) length) times ↲
-			"Passing : ", passing ↲
-			"Failing : ", failing ↲]]
+			TEST-STRING : TESTS length ⊕ " " ⊕ (pluralize "Test" for (TESTS length))
+			TEST-STRING ↲
+			"=" (TEST-STRING length) times ↲
+			"Passing : ", PASSING ↲
+			"Failing : ", FAILING ↲]]
 
-	execute (test-object) tests]
+	execute TEST-OBJECT tests]
 
 ==============================
  Common library functions

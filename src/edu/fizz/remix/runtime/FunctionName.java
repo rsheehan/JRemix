@@ -30,7 +30,7 @@ public class FunctionName<T> {
         List<String> newNames = new ArrayList<>();
         for (String part : nameParts) {
             for (String soFar : functionNames) {
-                if (soFar.length() > 0 && part.length() > 0)
+                if (!soFar.isEmpty() && !part.isEmpty())
                     soFar += " ";
                 soFar += part;
                 newNames.add(soFar);

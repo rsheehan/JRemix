@@ -72,10 +72,12 @@ SETTER				: 'setter' 's'? ;
 LIBRARY				: 'library' ;
 USING				: 'using' ; // using a-library
 
-SELFREF				: 'me' | 'my' ;
+SELFREF				: 'ME' | 'MY' ;
 POSSESSIVE			: '\'s' ; // used for field access e.g. Robert's age
+
+IDENTIFIER			: [#A-Z] CHARACTER* ;
 WORD				: FIRSTCHAR CHARACTER* ;
-WORDPRODUCT			: '-'? DIGIT+ ('.' DIGIT+)? (WORD | 'π');
+WORDPRODUCT			: '-'? DIGIT+ ('.' DIGIT+)? (IDENTIFIER | 'π');
 
 STRING				: '"' ('\\"' | .)*? '"' ;
 

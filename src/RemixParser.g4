@@ -17,20 +17,23 @@ functionDefinition	: functionComment? functionSignature COLON COLON? EOL? blockO
 
 functionComment		: DOC_COMMENT ;
 
-// Functions always have at least two parts, otherwise it will be an assignment statement.
-functionSignature	: sigPart sigPart+ ; // part of a signature
+functionSignature	: sigPart sigPart+
+//					| singleWord
+					;
 
-sigPart				: WORD					# sigWord
-					| LPAREN WORD RPAREN	# sigParam
-					| LBLOCK WORD RBLOCK	# sigBlock
+//singleWord			: WORD ;
+
+sigPart				: WORD						# sigWord
+ 					| (IDENTIFIER | LPAREN IDENTIFIER RPAREN )	# sigParam
+					| LBLOCK IDENTIFIER RBLOCK	# sigBlock
 					;
 
 createObject		: CREATE LBLOCK EOL* object RBLOCK ;
-extendObject		: EXTEND LPAREN expression RPAREN LBLOCK EOL* object RBLOCK ;
+extendObject		: EXTEND expression LBLOCK EOL* object RBLOCK ;
 
 object				: field* (getterSetter? getter? setter?) methodDefinition* ;
 
-field				: WORD COLON expression EOL*;
+field				: IDENTIFIER COLON expression EOL*;
 
 getterSetter		: GETTERSETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* ;
 
@@ -38,16 +41,18 @@ getter				: GETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* ;
 
 setter              : SETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* ;
 
-fieldId				: WORD ;
+fieldId				: IDENTIFIER ;
 
 methodDefinition	: methodSignature COLON EOL? blockOfStatements EOL* ;
 
 methodSignature		: methodSigPart methodSigPart+ ;
 
-methodSigPart		: WORD					# methSigWord
-					| LPAREN WORD RPAREN	# methSigParam
-					| LPAREN SELFREF RPAREN	# methSigSelf
-					| LBLOCK WORD RBLOCK	# methSigBlock
+methodSigPart		: WORD						# methSigWord
+					| IDENTIFIER				# methSigParam
+					| LPAREN IDENTIFIER RPAREN	# methSigParam
+					| SELFREF					# methSigSelf
+					| LPAREN SELFREF RPAREN		# methSigSelf
+					| LBLOCK IDENTIFIER RBLOCK	# methSigBlock
 					;
 
 blockOfStatements	: LBLOCK statement* RBLOCK ;
@@ -63,8 +68,8 @@ statement			: assignmentStatement	# assStatement	// label not used
 
 endOfStatement		: EOL | EOS ;
 
-assignmentStatement	: WORD COLON expression 			# setVariable
-					| WORD listPart+ COLON expression	# setListElement
+assignmentStatement	: IDENTIFIER COLON expression 			# setVariable
+					| IDENTIFIER listPart+ COLON expression	# setListElement
 					;
 
 printStatement		: (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) # prntStatement
@@ -82,7 +87,7 @@ expression			: MINUS expression						# exprMinus
 					| expression CONCAT expression			# exprConcat
 					| listElement			# exprListElement // before functionCall
 					| functionCall			# exprFncCall
-					| WORD					# exprVar
+					| IDENTIFIER			# exprVar
 					| NUMBER				# exprNumber
 					| WORDPRODUCT			# exprWordProduct
 					| BOOLEAN				# exprBoolean
@@ -98,18 +103,24 @@ expression			: MINUS expression						# exprMinus
 					| LPAREN EOL* expression EOL* RPAREN	# exprParen // after functionCall
 					;
 
-getterMethodCall	: (WORD | listElement) POSSESSIVE WORD; // e.g. Robert's name
+getterMethodCall	: (IDENTIFIER | listElement) POSSESSIVE IDENTIFIER; // e.g. Robert's name
 
-setterMethodCall    : (WORD | listElement) POSSESSIVE WORD COLON expression ; // e.g. Robert's name : "Rob"
+setterMethodCall    : (IDENTIFIER | listElement) POSSESSIVE IDENTIFIER COLON expression ; // e.g. Robert's name : "Rob"
 
-listElement			: WORD listPart+ ; // access a list element
+listElement			: IDENTIFIER listPart+ ; // access a list element
 
-listPart			: LBRACE expression RBRACE ; // { number or key } to access part of a list
+listPart			: LBRACE expression RBRACE	# listPartExpr // { number or key } to access part of a list
+					| LBRACE key RBRACE			# listPartKey
+					;
 
-functionCall		: callPart callPart+ ; // at least two call parts
+functionCall		: callPart callPart+
+//					| singleWord
+					;
 
 callPart			: WORD									# callWord
+					| IDENTIFIER							# callVar
 					| LPAREN EOL* expression EOL* RPAREN	# callParam
+					| SELFREF								# callSelf
 					| LPAREN SELFREF RPAREN					# callSelf
 					| NUMBER								# callNumber // leave out ()
 					| BOOLEAN								# callBoolean

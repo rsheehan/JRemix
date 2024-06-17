@@ -1,11 +1,12 @@
 using graphics lib
 
-	the-window : a simple window
+	THE-WINDOW : a simple window
 
-	current : random point
+	CURRENT : random point
 	repeat
-		new : random point
-		add (a (random colour) line from (current) to (new)) to (the-window)
-		current : new
-	… 100 times
-	update (the-window)
+		NEW : random point
+		COLOUR : random colour
+		add (a COLOUR line from CURRENT to NEW) to THE-WINDOW
+		CURRENT : NEW
+	… 5 times
+	update THE-WINDOW

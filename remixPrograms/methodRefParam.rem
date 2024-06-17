@@ -2,29 +2,29 @@
 
 an object :
 	create
-		x : 3
+		X : 3
 
 		getter
-			x
+			X
 
-		(me) add to (#a) :
-			#a : #a + x
+		ME add to #A :
+			#A : #A + X
 
-z : an object
-b : 0
+Z : an object
+B : 0
 
 test {
-	"original value" [b] expected 0
+	"original value" [B] expected 0
 
-	"instance get" [z's x] expected 3
+	"instance get" [Z's X] expected 3
 
 	"updated via method"
-		(z) add to (b)
-		b
+		Z add to B
+		B
 	… expected 3
 
 	"and again"
-		(z) add to (b)
-		b
+		Z add to B
+		B
 	… expected 6
 }

@@ -1,43 +1,43 @@
-list : apply [random 100] 400 times
+LIST : apply [random 100] 400 times
 
-"unsorted: ", list ↲
+"unsorted: ", LIST ↲
 
-check for missing values in (list)
-insertion sort (list)
+check for missing values in LIST
+insertion sort LIST
 
-"sorted: ", list ↲
+"sorted: ", LIST ↲
 
 ----------
 
-check for missing values in (list) :
-	count-of-values : apply [0] 100 times
-	count each item in (list) into (count-of-values)
-	for each (item) in (count-of-values) keeping (count) do
-		if (item = 0)
-			count, " is missing" ↲
+check for missing values in LIST :
+	COUNT-of-VALUES : apply [0] 100 times
+	count each item in LIST into COUNT-of-VALUES
+	for each ITEM in COUNT-of-VALUES keeping COUNT do
+		if (ITEM = 0)
+			COUNT, " is missing" ↲
 
-count each item in (list) into (tally) :
-	for each (item) in (list) do
-		tally{item} : tally{item} + 1
+count each item in LIST into TALLY :
+	for each ITEM in LIST do
+		TALLY {ITEM} : TALLY {ITEM} + 1
 
 ================
  Insertion Sort
 ================
 
-insertion sort (list) :
-	for each (position) from 2 to (length of (list)) do
-		for each (this) from (position) to 2 do
-			swap if element to the left is greater than (this) in (list)
+insertion sort LIST :
+	for each POSITION from 2 to (length of LIST) do
+		for each THIS from POSITION to 2 do
+			swap if element to the left is greater than THIS in LIST
 
-swap if element to the left is greater than (this) in (list) ::
+swap if element to the left is greater than THIS in LIST ::
 - N.B. transparent short circuit
-	left : this - 1
-	if (list{left} > list{this})
-		swap (list) element (this) with (left)
+	LEFT : THIS - 1
+	if (LIST {LEFT} > LIST {THIS})
+		swap LIST element THIS with LEFT
 	… otherwise
 		return
 
-swap (list) element (this) with (that) :
-	temp : list{this}
-	list{this} : list{that}
-	list{that} : temp
+swap LIST element THIS with THAT :
+	TEMP : LIST {THIS}
+	LIST {THIS} : LIST {THAT}
+	LIST {THAT} : TEMP

@@ -1,13 +1,13 @@
 - Test do function
 "** DO **" ↲
 
-block : ["Do is working 4." ↲]
+BLOCK : ["Do is working 4." ↲]
 
 do (["Do is working 1." ↲])
 do ["Do is working 2." ↲]
 do
 	"Do is working 3." ↲
-do (block)
+do (BLOCK)
 do
 	"Do is working 5." ↲
 	"Do is working 6." ↲

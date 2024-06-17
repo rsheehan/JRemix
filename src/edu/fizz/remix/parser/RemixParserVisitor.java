@@ -438,11 +438,19 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitListElement(RemixParser.ListElementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link RemixParser#listPart}.
+	 * Visit a parse tree produced by the {@code listPartExpr}
+	 * labeled alternative in {@link RemixParser#listPart}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitListPart(RemixParser.ListPartContext ctx);
+	T visitListPartExpr(RemixParser.ListPartExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code listPartKey}
+	 * labeled alternative in {@link RemixParser#listPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitListPartKey(RemixParser.ListPartKeyContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RemixParser#functionCall}.
 	 * @param ctx the parse tree
@@ -456,6 +464,13 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCallWord(RemixParser.CallWordContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code callVar}
+	 * labeled alternative in {@link RemixParser#callPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallVar(RemixParser.CallVarContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code callParam}
 	 * labeled alternative in {@link RemixParser#callPart}.

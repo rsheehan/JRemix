@@ -77,18 +77,18 @@ public class Graphics extends LibraryExpression {
         public WindowFunction() {
             super(
                     List.of("a | window of | and |"),
-                    List.of("title", "width", "height"),
+                    List.of("TITLE", "WIDTH", "HEIGHT"),
                     List.of(false, false, false),
                     false,
-                    "Create window with \"title\" with \"width\" and \"height\"."
+                    "Create window with \"TITLE\" with \"WIDTH\" and \"HEIGHT\"."
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            String title = (String)context.retrieve("title");
-            int width = ((Long)context.retrieve("width")).intValue();
-            int height = ((Long)context.retrieve("height")).intValue();
+            String title = (String)context.retrieve("TITLE");
+            int width = ((Long)context.retrieve("WIDTH")).intValue();
+            int height = ((Long)context.retrieve("HEIGHT")).intValue();
             return new GraphicsWindow(title, width, height);
         }
     }
@@ -97,16 +97,16 @@ public class Graphics extends LibraryExpression {
         public ShowWindowFunction() {
             super(
                     List.of("show |"),
-                    List.of("window"),
+                    List.of("WINDOW"),
                     List.of(false),
                     false,
-                    "Show the \"window\"."
+                    "Show the \"WINDOW\"."
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            GraphicsWindow window = (GraphicsWindow) context.retrieve("window");
+            GraphicsWindow window = (GraphicsWindow) context.retrieve("WINDOW");
             window.setVisible(true);
             return null;
         }
@@ -115,16 +115,16 @@ public class Graphics extends LibraryExpression {
         public RefreshWindowFunction() {
             super(
                     List.of("refresh |"),
-                    List.of("window"),
+                    List.of("WINDOW"),
                     List.of(false),
                     false,
-                    "Refresh the \"window\"."
+                    "Refresh the \"WINDOW\"."
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            GraphicsWindow window = (GraphicsWindow) context.retrieve("window");
+            GraphicsWindow window = (GraphicsWindow) context.retrieve("WINDOW");
             window.drawPanel.exchangeShapesAndRepaint();
             return null;
         }
@@ -134,16 +134,16 @@ public class Graphics extends LibraryExpression {
         public ClearLayersFunction() {
             super(
                     List.of("clear all | layers", "clear | layer"),
-                    List.of("window"),
+                    List.of("WINDOW"),
                     List.of(false),
                     false,
-                    "Remove current shapes from the \"window\"."
+                    "Remove current shapes from the \"WINDOW\"."
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            GraphicsWindow window = (GraphicsWindow) context.retrieve("window");
+            GraphicsWindow window = (GraphicsWindow) context.retrieve("WINDOW");
             window.drawPanel.removeShapes();
             return null;
         }
@@ -154,38 +154,38 @@ public class Graphics extends LibraryExpression {
         public AddShapeFunction() {
             super(
                     List.of("add | to |"),
-                    List.of("shape", "window"),
+                    List.of("SHAPE", "WINDOW"),
                     List.of(false, false),
                     false,
-                    "Add the \"shape\" to the \"window\"."
+                    "Add the \"SHAPE\" to \"WINDOW\"."
             );
         }
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            RemixObject shape = (RemixObject) context.retrieve("shape");
-            GraphicsWindow window = (GraphicsWindow) context.retrieve("window");
+            RemixObject shape = (RemixObject) context.retrieve("SHAPE");
+            GraphicsWindow window = (GraphicsWindow) context.retrieve("WINDOW");
             Context shapeContext = shape.getContext();
             // get the colour
-            Color shapeColour = colorFromRGBorString(shapeContext.retrieve("colour"));
-            if (shape.getContext().retrieve("polygon") != null) {
+            Color shapeColour = colorFromRGBorString(shapeContext.retrieve("COLOUR"));
+            if (shape.getContext().retrieve("POLYGON") != null) {
                 // get the polygon
-                Path2D.Double shapePath = polygonFromPoints((ArrayList<?>) shapeContext.retrieve("polygon"));
+                Path2D.Double shapePath = polygonFromPoints((ArrayList<?>) shapeContext.retrieve("POLYGON"));
                 // get the position
-                int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("position")));
+                int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("POSITION")));
                 // get the scale
-                double scale = ((Number) shapeContext.retrieve("size")).doubleValue();
+                double scale = ((Number) shapeContext.retrieve("SIZE")).doubleValue();
                 AffineTransform scaledTransform = new AffineTransform();
                 scaledTransform.scale(scale, scale);
                 Path2D.Double scaledShapePath = new Path2D.Double(shapePath, scaledTransform);
                 // get the heading
-                double heading = doubleFromObject(shapeContext.retrieve("heading"));
+                double heading = doubleFromObject(shapeContext.retrieve("HEADING"));
                 // filled or outline
-                boolean filled = (boolean) shapeContext.retrieve("filled");
+                boolean filled = (boolean) shapeContext.retrieve("FILLED");
                 window.drawPanel.addShapeForDrawing(shapeColour, scaledShapePath, position, heading, filled);
             } else { // currently assuming this must be a line
-                int[] start = integerPoint(pointsFromMapOrList(shapeContext.retrieve("start")));
-                int[] finish = integerPoint(pointsFromMapOrList(shapeContext.retrieve("finish")));
-                double width = ((Number)shapeContext.retrieve("width")).doubleValue();
+                int[] start = integerPoint(pointsFromMapOrList(shapeContext.retrieve("START")));
+                int[] finish = integerPoint(pointsFromMapOrList(shapeContext.retrieve("FINISH")));
+                double width = ((Number)shapeContext.retrieve("WIDTH")).doubleValue();
                 window.drawPanel.addLineForDrawing(shapeColour, start, finish, width);
             }
             return null;
@@ -198,19 +198,19 @@ public class Graphics extends LibraryExpression {
         public AnimateFunction() {
             super(
                     List.of("animate | ticks per second | until |", "animate | tick per second | until |"),
-                    List.of("rate", "animation", "condition"),
+                    List.of("RATE", "ANIMATION", "CONDITION"),
                     List.of(false, true, true),
                     false,
-                    "Animate the \"animation\" \"rate\" times per second,\n" +
-                    "stopping when \"condition\" is true."
+                    "Animate the \"ANIMATION\" \"RATE\" times per second,\n" +
+                    "stopping when \"CONDITION\" is true."
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            double rate = ((Number) context.retrieve("rate")).doubleValue();
-            Block animation = (Block) context.retrieve("animation");
-            Block condition = (Block) context.retrieve("condition");
+            double rate = ((Number) context.retrieve("RATE")).doubleValue();
+            Block animation = (Block) context.retrieve("ANIMATION");
+            Block condition = (Block) context.retrieve("CONDITION");
             AnimationBlock animationBlock = new AnimationBlock(context, animation, condition);
             animationTimer = new Timer((int)(1000/rate), animationBlock);
             animationTimer.start();
@@ -223,11 +223,16 @@ public class Graphics extends LibraryExpression {
             private final Block condition;
 
             AnimationBlock( Context context, Block animationBlock, Block conditionBlock) {
+//                animationBlock.setContext(new Context(animationBlock.getContext()));
                 animation = animationBlock;
+//                conditionBlock.setContext((new Context(conditionBlock.getContext())));
                 condition = conditionBlock;
-                Context animationContext = context.copyParentContext();
-                animation.setContext(animationContext);
-                condition.setContext(animationContext);
+//                Context animationContext = animationBlock.getContext();
+//                animationContext.cloneLibraryStackInPlace();
+
+//                Context animationContext = context.copyParentContext();
+//                animation.setContext(animationContext);
+//                condition.setContext(animationContext);
             }
 
             @Override

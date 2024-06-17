@@ -1,13 +1,13 @@
 - Bottles of Beer -
 
-for each (n) from 99 to 1 do
-	(n) bottles, " of beer on the wall, ", (n) bottles, " of beer." ↲
+for each N from 99 to 1 do
+	N bottles, " of beer on the wall, ", N bottles, " of beer." ↲
 	"Take one down, pass it around." ↲
-	(n - 1) bottles, " of beer on the wall!" ↲
+	(N - 1) bottles, " of beer on the wall!" ↲
 	↲
 
-(n) bottles :
+N bottles :
 	when
-		[n = 0] do ["No more bottles"]
-		[n = 1] do ["1 bottle"]
-		n ⊕ " bottles"
+		[N = 0] do ["No more bottles"]
+		[N = 1] do ["1 bottle"]
+		N ⊕ " bottles"

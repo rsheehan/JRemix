@@ -1,18 +1,18 @@
 using graphics lib
 
-	window : a simple window
+	WINDOW : a simple window
 
-	x : 50
-	y : 50
-	for each (n) from 3 to 82 do
-		polygon : an (n) sided polygon
-		polygon's colour : random colour
-		polygon's size : 40
-		polygon's position : {x, y}
-		add (polygon) to (window)
-		x : x + 100
-		if ((n - 2) is divisible by 10)
-			y : y + 100
-			x : 50
+	X : 50
+	Y : 50
+	for each N from 3 to 82 do
+		POLYGON : an N sided polygon
+		POLYGON's COLOUR : random colour
+		POLYGON's SIZE : 40
+		POLYGON's POSITION : {X, Y}
+		add POLYGON to WINDOW
+		X : X + 100
+		if ((N - 2) is divisible by 10)
+			Y : Y + 100
+			X : 50
 
-	update (window)
+	update WINDOW

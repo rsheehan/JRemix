@@ -1,20 +1,20 @@
-(n)! :
-	zero : real (0.0) with δ (0.001)
-	if ((n) equals (zero))
+N ! :
+	ZERO : real 0.0 with δ 0.001
+	if (N equals ZERO)
 		return 1
-	n × (n - 1)!
+	N × (N - 1)!
 
-for each (n) from 1 to 20 do
-	n, "! = ", (n)! ↲
+for each N from 1 to 20 do
+	N, "! = ", N ! ↲
 
 new line
-n : 170.0
-n, "! = ", (n)! ↲
+N : 170.0
+N, "! = ", N ! ↲
 
-real (number) with δ (δ) :
+real NUMBER with δ DELTA :
 	create
-		number : number
-		δ : δ
+		NUMBER : NUMBER
+		DELTA : DELTA
 
-		(other) equals (me) :
-			absolute (number - other) < δ
+		OTHER equals ME :
+			absolute (NUMBER - OTHER) < DELTA

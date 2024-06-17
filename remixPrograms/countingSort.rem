@@ -1,32 +1,32 @@
 - The Counting Sort -
 
-min : 0
-max : 100
-list : random list of 1000 numbers from (min) to (max)
+MIN : 0
+MAX : 100
+LIST : random list of 1000 numbers from MIN to MAX
 
-list ↲
+LIST ↲
 
-sort (list) with values from (min) to (max)
+sort LIST with values from MIN to MAX
 
-↲. list ↲
+↲ . LIST ↲
 
 ---------------------------------------------
 
-random list of (size) numbers from (start) to (finish) :
+random list of SIZE numbers from START to FINISH :
 	apply
-		random from (start) to (finish)
-	… (size) times
+		random from START to FINISH
+	… SIZE times
 
-sort (#list) with values from (start) to (finish) :
-	range : finish - start + 1
-	collect-counts : apply [0] (range) times
+sort #LIST with values from START to FINISH :
+	RANGE : FINISH - START + 1
+	COLLECT-COUNTS : apply [0] RANGE times
 
-	for each (value) in (#list) do
-		place : value - start + 1
-		collect-counts{place} : collect-counts{place} + 1
+	for each (VALUE) in (#LIST) do
+		PLACE : VALUE - START + 1
+		COLLECT-COUNTS {PLACE} : COLLECT-COUNTS {PLACE} + 1
 
-	#list : {}
-	for each (item) in (collect-counts) keeping (index) do
-		while [item > 0] do
-			append (start + index - 1) to (#list)
-			dec (item)
+	#LIST : {}
+	for each ITEM in COLLECT-COUNTS keeping INDEX do
+		repeat
+			append (START + INDEX - 1) to #LIST
+		… ITEM times

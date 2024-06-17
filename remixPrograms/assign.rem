@@ -3,25 +3,25 @@ Assignment example.
 =
 "** ASSIGNMENT **" ↲
 
-a : 1
-b :
+A : 1
+B :
 ... true.
-c : "word
+C : "word
 then more"
-d : 2 + (3 * 4)
-e : 3 = 4
+D : 2 + (3 * 4)
+E : 3 = 4
 
-c ↲
+C ↲
 "Should be - \"word then more\", over 2 lines.\n" ↲
 
-b ↲
+B ↲
 "Should be - \"true\".\n" ↲
 
-a ↲
+A ↲
 "Should be - \"1\".\n" ↲
 
-d ↲
+D ↲
 "Should be - \"14\".\n" ↲
 
-e ↲
+E ↲
 "Should be - \"false\".\n" ↲

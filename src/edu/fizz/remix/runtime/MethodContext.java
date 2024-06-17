@@ -12,6 +12,7 @@ public class MethodContext extends Context {
     private final Context localContext;
 
     public MethodContext(Context parent, RemixObject object) {
+        // TODO: what happens if the method has local variables are these added to the objects variables?
         variables = object.getContext().variables;
         this.object = object;
         localContext = new Context(parent, false); // methods can't be transparent
@@ -20,6 +21,7 @@ public class MethodContext extends Context {
         // or
  //       localContext.libraryStack = object.getContext().libraryStack;
         libraryStack = object.getContext().cloneLibraryStack(); //libraryStack; NOT THE PROBLEM
+        // could just assign object.getContext().libraryStack
         parentContext = parent; //new Context(parent, null);
     }
 

@@ -7,11 +7,11 @@ import java.util.Map;
 public class SetElementExpression implements Expression {
 
     private final String listName;
-    private final List<Expression> listElementIds;
+    private final List listElementIds;
     private final Expression expression;
 
     /* Works with multiple dimension lists. */
-    public SetElementExpression(String listName, List<Expression> ids, Expression expression) {
+    public SetElementExpression(String listName, List ids, Expression expression) {
         this.listName = listName;
         this.listElementIds = ids;
         this.expression = expression;
@@ -41,23 +41,26 @@ public class SetElementExpression implements Expression {
             listOrMapPart = context.retrieve(listName);
         }
 
-        Iterator<Expression> iter = listElementIds.iterator();
-        Expression elementId;
+        Iterator iter = listElementIds.iterator();
+        Object elementId;
         while (iter.hasNext()) {
             elementId = iter.next();
-            try {
-                id = elementId.evaluate(context);
+            if (elementId instanceof Expression) try {
+                id = ((Expression) elementId).evaluate(context);
                 if (id == null) { // wasn't a variable or String
-                    if (listOrMapPart instanceof Map<?,?>) {
-                        id = elementId.toString(); // convert the WORD to String
-                    } else {
+//                    if (listOrMapPart instanceof Map<?, ?>) {
+//                        id = elementId.toString(); // convert the WORD to String
+//                        System.err.println("element id converted to String from WORD.");
+//                    } else {
                         System.err.printf("element id: %s is null in list %s%n",
                                 elementId, listName);
                         return null;
-                    }
+//                    }
                 }
             } catch (ReturnException exception) {
                 System.err.println("ReturnException caught in get element expression.");
+            } else {
+                id = elementId;
             }
             if (listOrMapPart instanceof List<?> && id instanceof Number) {
                 int i = ((Number)id).intValue();
@@ -75,12 +78,10 @@ public class SetElementExpression implements Expression {
 
         if (listOrMapPart instanceof List && id instanceof Number) {
             int i = ((Number)id).intValue();
-            @SuppressWarnings("unchecked")
             List<Object> finalList = (List<Object>)listOrMapPart;
             finalList.set(i - 1, result); // java zero based, Remix one based
 
         } else if (listOrMapPart instanceof Map) {
-            @SuppressWarnings("unchecked")
             Map<String, Object> finalMap = (Map<String, Object>)listOrMapPart;
             finalMap.put((String)id, result);
         }

@@ -3,8 +3,8 @@ using include "remixPrograms/includeLibrary.rem"
 
 	4 plus 3 ↲
 
-(a) minus (b) :
-	a - b
+A minus B :
+	A - B
 
 4 minus 3 ↲
 4 times 3 ↲

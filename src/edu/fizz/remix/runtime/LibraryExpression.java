@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 /**
  * A library expression holds a function and a method table.
- * The context and block only make sense when a file is being loaded with
+ * The block only makes sense when a file is being loaded with
  * loadPackage or running the contents of the editor window.
  *
  * Internal libraries from the "library" expression don't use the block and context.
@@ -64,7 +64,7 @@ public class LibraryExpression implements Expression {
     }
 
     public LibraryExpression copyFunctionsMethods() {
-        // not really a clone, doesn't copy the block or context.
+        // not really a clone, doesn't copy the block.
         LibraryExpression copy = new LibraryExpression();
         copy.functionTable = new HashMap<>(functionTable);
         copy.methodTable = new HashMap<>(methodTable);

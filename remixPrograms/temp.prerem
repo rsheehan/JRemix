@@ -1,12 +1,28 @@
 
+=
+The bug is that the graphics lib context is not visible
+=
+
 using graphics lib[
 
-	the-window : a simple window
+-	THE-WINDOW : a simple window
 
-	current : random point
-	repeat[
-		new : random point
-		add (a (random colour) line from (current) to (new)) to (the-window)
-		current : new]
-	… 100 times
-	update (the-window)]
+	CURRENT : random point
+	COUNT : 0
+
+	ADD-LINE : every 1 tick do[
+		add 1 to COUNT
+		COUNT ↲]
+-		NEW : random point
+=		add (a (random colour) line from CURRENT to NEW) to THE-WINDOW
+		CURRENT : NEW
+=		update THE-WINDOW
+	
+	"here" ↲
+
+	animate 10 ticks per second[
+		animate ADD-LINE
+		COUNT ↲]
+	… until [COUNT = 10]]
+
+"there" ↲
