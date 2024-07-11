@@ -1,18 +1,17 @@
 - Lots of filled squares -
 
 a random square :
-	shape : a square
-	shape's colour   : random colour
-	shape's size     : random from 5 to 100
-	shape's position : random point
-	shape's heading  : (random 360) degrees as radians
-	shape
+	Shape : a square
+	Shape's Colour   : random colour
+	Shape's Size     : random from 5 to 100
+	Shape's Position : random point
+	Shape's Heading  : (random 360) degrees as radians
+	Shape
 
 using graphics lib ; can only have statements
-	window : a window with shape layers
-	show (window)
-	layer : (window) base layer
+	the-Window : a window with shape layers
+	Layer : the-Window base layer
 	repeat
-		add (a random square) to (layer)
+		add (a random square) to Layer
 	… 100 times
-	update (window)
+	update the-Window

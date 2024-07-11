@@ -5,6 +5,19 @@ A times B :
 	A * B
 
 library
-	- Only accessible via a "uses" block.
+	- Only accessible via a "using" block.
 	A plus B :
 		A + B
+
+	making object :
+		"making object" \n
+		create
+			OV1 : 2
+			OV2 : 4
+
+			getters/setters
+				OV1, OV2
+
+			print ME :
+				"OV1 + OV2 = ", OV1 plus OV2 \n
+

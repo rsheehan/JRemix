@@ -1,44 +1,90 @@
 - For loops and sequences -
 
-LIST : {1, 2, 4, 8}
-RANGE : 5 to 10
-STRING : "abcdefg"
-MAP : {x : 2, y : 6, z: 10, a : 15}
+List : {1, 2, 4, 8}
+Range : 5 to 10
+String : "abcdefg"
+Map : {"x" : 2, "y" : 6, "z": 10, "a" : 15}
+Sequence : make 4 star sequence
 
-LIST ↲
-RANGE ↲
-STRING ↲
-MAP ↲
+make N star sequence :
+	- the sequence object
+	- must include "start ME" and "MY length" methods
+	create
+		Count : N
 
-for each ITEM in LIST do
-	ITEM _
+		start ME :
+			Count star iterator
+
+		MY length :
+			Count
+
+		- this is optional for specific item access
+		Position in ME :
+			Iterator : Count star iterator
+			repeat Position times
+				next Iterator
+
+Count star iterator :
+	- the iterator object
+	- must include an "end ME" and a "next ME" method
+	- can refer to sequence instance variables e.g. "Count"
+	- but only in the instance variable assignment section
+	create
+		MAX : Count
+		Index : 0
+		Stars : ""
+
+		end ME :
+			Index = MAX
+
+		next ME :
+			inc Index
+			Stars : Stars ⊕ "*"
+
+List ↲
+Range ↲
+String ↲
+Map ↲
+Sequence ↲
+
+for each Item in List do
+	Item _
 ↲
-for each ITEM in RANGE do
-	ITEM _
+for each Item in Range do
+	Item _
 ↲
-for each ITEM in STRING do
-	ITEM _
+for each Item in String do
+	Item _
 ↲
-for each ITEM in MAP do
-	ITEM, ":", MAP {ITEM}, " " ~
+for each Item in Map do
+	Item, ":", Map {Item}, " " ~
 ↲
-for each ITEM in LIST from position 4 to 2 do
-	ITEM _
+for each Item in Sequence do
+	Item _
 ↲
-for each ITEM in RANGE from position 4 to 2 do
-	ITEM _
+for each Item in List from position 4 to 2 do
+	Item _
 ↲
-for each ITEM in STRING from position 4 to 2 do
-	ITEM _
+for each Item in Range from position 4 to 2 do
+	Item _
 ↲
-for each ITEM in LIST keeping COUNT do
-	COUNT, ":", ITEM, " " ~
+for each Item in String from position 4 to 2 do
+	Item _
 ↲
-for each ITEM in RANGE keeping COUNT do
-	COUNT, ":", ITEM, " " ~
+for each Item in Sequence from position 4 to 2 do
+	Item _
 ↲
-for each ITEM in STRING keeping COUNT do
-	COUNT, ":", ITEM, " " ~
+for each Item in List keeping Count do
+	Count, ":", Item, " " ~
 ↲
-for each ITEM in MAP keeping COUNT do
-	COUNT, ":", ITEM, ":", MAP {ITEM}, " " ~
+for each Item in Range keeping Count do
+	Count, ":", Item, " " ~
+↲
+for each Item in String keeping Count do
+	Count, ":", Item, " " ~
+↲
+for each Item in Map keeping Count do
+	Count, ":", Item, ":", Map {Item}, " " ~
+↲
+for each Item in Sequence keeping Count do
+	Count, ":", Item, " " ~

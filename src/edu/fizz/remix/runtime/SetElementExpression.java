@@ -1,6 +1,5 @@
 package edu.fizz.remix.runtime;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,45 +30,21 @@ public class SetElementExpression implements Expression {
         }
 
         Object id = null;
-        Object listOrMapPart;
+        Object listOrMapPart = context.retrieve(listName);
 
-        // then determine if assigning to a reference parameter.
-        if (listName.startsWith("#")) {
-            RefParameter refValue = (RefParameter)context.retrieve(listName);
-            listOrMapPart = refValue.getRefValue();
-        } else {
-            listOrMapPart = context.retrieve(listName);
-        }
-
-        Iterator iter = listElementIds.iterator();
-        Object elementId;
-        while (iter.hasNext()) {
-            elementId = iter.next();
-            if (elementId instanceof Expression) try {
+        for (int i = 0; i < listElementIds.size(); i++) {
+            Object elementId = listElementIds.get(i);
+            try {
                 id = ((Expression) elementId).evaluate(context);
-                if (id == null) { // wasn't a variable or String
-//                    if (listOrMapPart instanceof Map<?, ?>) {
-//                        id = elementId.toString(); // convert the WORD to String
-//                        System.err.println("element id converted to String from WORD.");
-//                    } else {
-                        System.err.printf("element id: %s is null in list %s%n",
-                                elementId, listName);
-                        return null;
-//                    }
-                }
             } catch (ReturnException exception) {
-                System.err.println("ReturnException caught in get element expression.");
-            } else {
-                id = elementId;
+                System.err.println("ReturnException caught in set element expression.");
             }
-            if (listOrMapPart instanceof List<?> && id instanceof Number) {
-                int i = ((Number)id).intValue();
-                if (iter.hasNext()) {
-                    listOrMapPart = ((List<?>)listOrMapPart).get(i - 1); // java zero based, Remix one based
-                }
-            } else if (listOrMapPart instanceof Map<?,?>) {
-                if (iter.hasNext()) {
-                    listOrMapPart = ((Map<?,?>)listOrMapPart).get(id);
+            if (i < listElementIds.size() - 1) { // leaving last one
+                if (id instanceof Number numId) {
+                    int index = numId.intValue();
+                    listOrMapPart = ((List<?>) listOrMapPart).get(index - 1); // java zero based, Remix one based
+                } else if (id instanceof String stringId) {
+                    listOrMapPart = ((Map<?, ?>) listOrMapPart).get(stringId);
                 }
             }
         }
@@ -79,11 +54,20 @@ public class SetElementExpression implements Expression {
         if (listOrMapPart instanceof List && id instanceof Number) {
             int i = ((Number)id).intValue();
             List<Object> finalList = (List<Object>)listOrMapPart;
+            // may need to grow finalList if not big enough
+            RemixNull empty = new RemixNull();
+            int j = finalList.size();
+            while (j < i) {
+                finalList.add(empty);
+                j++;
+            }
             finalList.set(i - 1, result); // java zero based, Remix one based
 
-        } else if (listOrMapPart instanceof Map) {
+        } else if (listOrMapPart instanceof Map && id instanceof String) {
             Map<String, Object> finalMap = (Map<String, Object>)listOrMapPart;
             finalMap.put((String)id, result);
+        } else {
+            System.err.printf("List or map \"%s\" incorrect index type %s%n", listName, id);
         }
         return result;
     }

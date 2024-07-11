@@ -1,28 +1,28 @@
 
 =
-The bug is that the graphics lib context is not visible
+Testing swaps
 =
 
-using graphics lib[
+test {[
+	"Swap simple variables"[
+		A : 7
+		B : 6
+		A swap B
+		A]
+	… expected 6
+	"and the other variable"[
+		B]
+	… expected 7
 
--	THE-WINDOW : a simple window
+	"Swap list items"[
+		List : {1, 2, 4, 8, 16}
+		swap List element 3 with 1
+		List]
+	… expected {4, 2, 1, 8, 16}
 
-	CURRENT : random point
-	COUNT : 0
-
-	ADD-LINE : every 1 tick do[
-		add 1 to COUNT
-		COUNT ↲]
--		NEW : random point
-=		add (a (random colour) line from CURRENT to NEW) to THE-WINDOW
-		CURRENT : NEW
-=		update THE-WINDOW
-	
-	"here" ↲
-
-	animate 10 ticks per second[
-		animate ADD-LINE
-		COUNT ↲]
-	… until [COUNT = 10]]
-
-"there" ↲
+	"Swap map items"[
+		Map : {"a" : 1, "b" : 3, "c" : 5, "d" : 7}
+		swap Map element "b" with "d"
+		Map]
+	… expected {"a" : 1, "b" : 7, "c" : 5, "d" : 3}]
+}

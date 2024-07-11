@@ -9,20 +9,28 @@ package edu.fizz.remix.runtime;
 public class MethodContext extends Context {
 
     final RemixObject object; // a specific instance
-    private final Context localContext;
+    private Context localContext;
 
     public MethodContext(Context parent, RemixObject object) {
-        // TODO: what happens if the method has local variables are these added to the objects variables?
-        variables = object.getContext().variables;
+        variables = object.getContext().variables; // instance variables
         this.object = object;
         localContext = new Context(parent, false); // methods can't be transparent
         // the following line didn't fix the problem
 //        localContext.setLibraryStack(parent.getLibraryStack());
         // or
  //       localContext.libraryStack = object.getContext().libraryStack;
-        libraryStack = object.getContext().cloneLibraryStack(); //libraryStack; NOT THE PROBLEM
+        libraryStack = object.getContext().libraryStack; //cloneLibraryStack(); //libraryStack; NOT THE PROBLEM
         // could just assign object.getContext().libraryStack
         parentContext = parent; //new Context(parent, null);
+    }
+
+    @Override
+    public MethodContext copy() {
+        MethodContext copy = new MethodContext(parentContext, object);
+        copy.variables = variables;
+        copy.localContext = localContext;
+        copy.libraryStack = cloneLibraryStack();
+        return copy;
     }
 
     /*
@@ -36,10 +44,6 @@ public class MethodContext extends Context {
             return object;
         else
             return super.findObjectWithMethod(methodName);
-//        else if (parentContext != null)
-//            return parentContext.findObjectWithMethod(methodName);
-//        else
-//            return null;
     }
 
     /*
@@ -56,8 +60,6 @@ public class MethodContext extends Context {
         // otherwise use the method local context
         if (variables.containsKey(varName)) {
             variables.put(varName, value);
-//        } else if (localContext.variables.containsKey((varName))) {
-//            localContext.assign(varName, value);
         } else {
             localContext.assign(varName, value);
         }
@@ -79,9 +81,9 @@ public class MethodContext extends Context {
                 System.err.printf("Can't find ref param %s%n", varName);
                 return null;
             }
-        } else if (variables.containsKey(varName)) {
+        } else if (variables.containsKey(varName)) { // instance variables
             return variables.get(varName);
-        } else if (localContext.variables.containsKey((varName))) {
+        } else if (localContext.variables.containsKey((varName))) { // method local variables
             return localContext.retrieve(varName);
         } else {
             return null;

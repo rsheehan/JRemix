@@ -1,5 +1,8 @@
 package edu.fizz.remix.runtime;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 public class BinaryExpression implements Expression {
 
     private final Expression first;
@@ -27,7 +30,22 @@ public class BinaryExpression implements Expression {
             System.err.println("ReturnException caught in binary expression.");
             return null;
         }
-        if (val1 instanceof RemixObject object1 && val2 instanceof RemixObject object2) {
+        if (val1 instanceof ArrayList list1 && val2 instanceof ArrayList list2) {
+            boolean result = false;
+            switch (operator) {
+                case "=" -> result = list1.equals(list2);
+                case "!=" -> result = !list1.equals(list2);
+            }
+            return result;
+        } else if (val1 instanceof Map map1 && val2 instanceof Map map2) {
+            boolean result = false;
+            switch (operator) {
+                case "=" -> result = map1.equals(map2);
+                case "!=" -> result = !map1.equals(map2);
+            }
+            return result;
+        } else if (val1 instanceof RemixObject object1 && val2 instanceof RemixObject object2) {
+//          To compare objects you need a (other) equals (me) method.
             Method method = object2.findMethod("| equals |");
             if (method != null) {
                 MethodContext methodContext = new MethodContext(null, object2);
@@ -39,7 +57,6 @@ public class BinaryExpression implements Expression {
                     throw new RuntimeException(e);
                 }
             } else {
-//                BuiltInFunctions.PrintFunction.publish("To compare objects you need a \"(other) equals (me)\" method.");
                 return object1.equals(object2);
             }
         } else if (val1 instanceof String || val2 instanceof String) {
@@ -76,6 +93,14 @@ public class BinaryExpression implements Expression {
             return switch (operator) {
                 case "=" -> val1 == val2;
                 case "!=" -> val1 != val2;
+                default -> null;
+            };
+        } else if ((val1 == null && val2 instanceof RemixNull) ||
+                (val1 instanceof RemixNull && val2 == null) ||
+                (val1 instanceof RemixNull && val2 instanceof RemixNull)) {
+            return switch (operator) {
+                case "=" -> true;
+                case "!=" -> false;
                 default -> null;
             };
         } else if (val1 instanceof Long && val2 instanceof Long) {

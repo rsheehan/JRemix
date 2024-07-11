@@ -18,10 +18,10 @@ functionDefinition	: functionComment? functionSignature COLON COLON? EOL? blockO
 functionComment		: DOC_COMMENT ;
 
 functionSignature	: sigPart sigPart+
-//					| singleWord
+					| singleWord
 					;
 
-//singleWord			: WORD ;
+singleWord			: WORD ;
 
 sigPart				: WORD						# sigWord
  					| (IDENTIFIER | LPAREN IDENTIFIER RPAREN )	# sigParam
@@ -43,9 +43,13 @@ setter              : SETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* ;
 
 fieldId				: IDENTIFIER ;
 
-methodDefinition	: methodSignature COLON EOL? blockOfStatements EOL* ;
+methodDefinition	: (setterSignature | getterSignature | methodSignature) COLON EOL? blockOfStatements EOL* ;
 
+// add getterSignature and setterSignature
+// to deal with user defined getters and setters
 methodSignature		: methodSigPart methodSigPart+ ;
+getterSignature		: SELFREF IDENTIFIER ;
+setterSignature		: SELFREF IDENTIFIER (IDENTIFIER | LPAREN IDENTIFIER RPAREN) ;
 
 methodSigPart		: WORD						# methSigWord
 					| IDENTIFIER				# methSigParam
@@ -90,6 +94,7 @@ expression			: MINUS expression						# exprMinus
 					| IDENTIFIER			# exprVar
 					| NUMBER				# exprNumber
 					| WORDPRODUCT			# exprWordProduct
+					| NULL					# exprNull
 					| BOOLEAN				# exprBoolean
 					| STRING				# exprString
 					| blockOfStatements		# exprBlock
@@ -103,18 +108,18 @@ expression			: MINUS expression						# exprMinus
 					| LPAREN EOL* expression EOL* RPAREN	# exprParen // after functionCall
 					;
 
-getterMethodCall	: (IDENTIFIER | listElement) POSSESSIVE IDENTIFIER; // e.g. Robert's name
+getterMethodCall	: (IDENTIFIER | listElement) POSSESSIVE IDENTIFIER; // e.g. Robert's Name
 
-setterMethodCall    : (IDENTIFIER | listElement) POSSESSIVE IDENTIFIER COLON expression ; // e.g. Robert's name : "Rob"
+setterMethodCall    : (IDENTIFIER | listElement) POSSESSIVE IDENTIFIER COLON expression ; // e.g. Robert's Name : "Rob"
 
 listElement			: IDENTIFIER listPart+ ; // access a list element
 
-listPart			: LBRACE expression RBRACE	# listPartExpr // { number or key } to access part of a list
-					| LBRACE key RBRACE			# listPartKey
+listPart			: LBRACE expression RBRACE	# listPartExpr // { number or string } to access part of a list or map
+//					| LBRACE key RBRACE			# listPartKey
 					;
 
 functionCall		: callPart callPart+
-//					| singleWord
+					| singleWord
 					;
 
 callPart			: WORD									# callWord
@@ -123,6 +128,7 @@ callPart			: WORD									# callWord
 					| SELFREF								# callSelf
 					| LPAREN SELFREF RPAREN					# callSelf
 					| NUMBER								# callNumber // leave out ()
+					| NULL									# callNull
 					| BOOLEAN								# callBoolean
 					| STRING								# callString
 					| blockOfStatements						# callBlock
@@ -144,7 +150,7 @@ listContents		: (expression (COMMA expression)*)?	# commaList
  					| LBLOCK EOL* keyValue (separator EOL* keyValue)* RBLOCK EOL? # blockMap
 					;
 
- keyValue			: key COLON value ;
+ keyValue			: STRING COLON value ;
 
- key				: WORD | STRING ;
+// key				: WORD | STRING ;
  value				: expression ;

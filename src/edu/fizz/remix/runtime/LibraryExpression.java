@@ -14,11 +14,9 @@ import java.util.HashMap;
  */
 public class LibraryExpression implements Expression {
 
-//    Context context = new Context();
     public Block block = new Block();
     HashMap<String, Function> functionTable = new HashMap<>();
-    // static methodTable as only one?
-    static HashMap<String, Integer> methodTable = new HashMap<>();
+    static HashMap<String, Integer> methodTable = new HashMap<>(); // one table used by all
 
     public static Integer searchMethodTable(String methodName) {
         return methodTable.get(methodName);

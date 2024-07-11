@@ -153,11 +153,11 @@ public class Graphics extends LibraryExpression {
 
         public AddShapeFunction() {
             super(
-                    List.of("add | to |"),
+                    List.of("add the | to the |"),
                     List.of("SHAPE", "WINDOW"),
                     List.of(false, false),
                     false,
-                    "Add the \"SHAPE\" to \"WINDOW\"."
+                    "Add the \"SHAPE\" to the \"WINDOW\"."
             );
         }
         @Override
@@ -166,26 +166,26 @@ public class Graphics extends LibraryExpression {
             GraphicsWindow window = (GraphicsWindow) context.retrieve("WINDOW");
             Context shapeContext = shape.getContext();
             // get the colour
-            Color shapeColour = colorFromRGBorString(shapeContext.retrieve("COLOUR"));
-            if (shape.getContext().retrieve("POLYGON") != null) {
+            Color shapeColour = colorFromRGBorString(shapeContext.retrieve("Colour"));
+            if (shape.getContext().retrieve("Polygon") != null) {
                 // get the polygon
-                Path2D.Double shapePath = polygonFromPoints((ArrayList<?>) shapeContext.retrieve("POLYGON"));
+                Path2D.Double shapePath = polygonFromPoints((ArrayList<?>) shapeContext.retrieve("Polygon"));
                 // get the position
-                int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("POSITION")));
+                int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Position")));
                 // get the scale
-                double scale = ((Number) shapeContext.retrieve("SIZE")).doubleValue();
+                double scale = ((Number) shapeContext.retrieve("Size")).doubleValue();
                 AffineTransform scaledTransform = new AffineTransform();
                 scaledTransform.scale(scale, scale);
                 Path2D.Double scaledShapePath = new Path2D.Double(shapePath, scaledTransform);
                 // get the heading
-                double heading = doubleFromObject(shapeContext.retrieve("HEADING"));
+                double heading = doubleFromObject(shapeContext.retrieve("Heading"));
                 // filled or outline
-                boolean filled = (boolean) shapeContext.retrieve("FILLED");
+                boolean filled = (boolean) shapeContext.retrieve("Filled");
                 window.drawPanel.addShapeForDrawing(shapeColour, scaledShapePath, position, heading, filled);
             } else { // currently assuming this must be a line
-                int[] start = integerPoint(pointsFromMapOrList(shapeContext.retrieve("START")));
-                int[] finish = integerPoint(pointsFromMapOrList(shapeContext.retrieve("FINISH")));
-                double width = ((Number)shapeContext.retrieve("WIDTH")).doubleValue();
+                int[] start = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Start")));
+                int[] finish = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Finish")));
+                double width = ((Number)shapeContext.retrieve("Width")).doubleValue();
                 window.drawPanel.addLineForDrawing(shapeColour, start, finish, width);
             }
             return null;

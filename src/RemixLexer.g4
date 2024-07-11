@@ -61,6 +61,7 @@ CONCAT				: ' (+) ' | ' ⊕ ' ;
 MINUS				: '-' ;
 
 // Keywords - consider not using these to provide greater flexibility.
+NULL				: 'null' ;
 BOOLEAN				: 'true' | 'false' ;
 RETURN				: 'return' ;
 REDO				: 'redo' ;
@@ -71,11 +72,11 @@ GETTER				: 'getter' 's'? ;
 SETTER				: 'setter' 's'? ;
 LIBRARY				: 'library' ;
 USING				: 'using' ; // using a-library
-
 SELFREF				: 'ME' | 'MY' ;
+
 POSSESSIVE			: '\'s' ; // used for field access e.g. Robert's age
 
-IDENTIFIER			: [#A-Z] CHARACTER* ;
+IDENTIFIER			: (FIRSTCHAR CHARACTER* CAPITAL | CAPITAL) CHARACTER*; // [#A-Zδ] CHARACTER* hack
 WORD				: FIRSTCHAR CHARACTER* ;
 WORDPRODUCT			: '-'? DIGIT+ ('.' DIGIT+)? (IDENTIFIER | 'π');
 
@@ -84,3 +85,5 @@ STRING				: '"' ('\\"' | .)*? '"' ;
 // everything apart from white space, newline or special is a character
 fragment FIRSTCHAR	: ~[.()[\]{,}:—|…'’\-0-9" ~\t\n↲] ; // ⊕+\-*×÷%=≠<≤>≥
 fragment CHARACTER	: ~[.()[\]{,}:—|…'’" ~\t\n↲] ; // ⊕+*×÷%=≠<≤>≥
+
+fragment CAPITAL 	: [A-Z\u0391-\u03A9] ;

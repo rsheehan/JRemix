@@ -1,8 +1,8 @@
 using graphics lib
-	the-window : a simple window
+	The-Window : a simple window
 
 	repeat
-		add (a random line) to (the-window)
+		add (a random line) to The-Window
 	… 100 times
 
-	update (the-window)
+	update The-Window

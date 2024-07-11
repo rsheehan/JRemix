@@ -38,7 +38,7 @@ public class RemixEdLexer {
     private static final List<String> literalWords = Arrays.asList("true", "false");
 
     private static boolean identifierChar(String c) {
-        return "ABCDEFGHIJKLMNOPQRSTUVWXYZ#".contains(c);
+        return "ABCDEFGHIJKLMNOPQRSTUVWXYZ#δ".contains(c);
     }
     private static boolean firstWordChar(char c) {
         return !".()[\\]{,}:;—|…'’⊕+-*×÷%=≠<≤>≥0123456789π\" \t\n".contains(Character.toString(c));
@@ -367,7 +367,12 @@ public class RemixEdLexer {
     }
 
     private static boolean isVariable(int startWord, int endWord) throws BadLocationException {
-        return identifierChar(document.getText(startWord, 1));
+        boolean capital = false;
+        for (int i = startWord; i <= endWord; i++) {
+            if (identifierChar(document.getText(i, 1)))
+                capital = true;
+        }
+        return capital; //identifierChar(document.getText(startWord, 1));
     }
 
     private static boolean follows(String wordBefore, int pos) throws BadLocationException {

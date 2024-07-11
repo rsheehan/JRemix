@@ -16,11 +16,9 @@ public class Remix {
     }
 
     public static LibraryExpression loadPackage(String libName) throws Exception {
-        String inputFile;
         String preRemFile;
-        inputFile = libName;
         // Preprocess the .rem file
-        preRemFile = PreProcess.processFile(inputFile);
+        preRemFile = PreProcess.processFile(libName);
         CharStream input = CharStreams.fromFileName(preRemFile);
         RemixLexer lexer = new RemixLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);

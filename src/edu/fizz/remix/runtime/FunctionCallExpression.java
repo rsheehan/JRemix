@@ -2,7 +2,6 @@ package edu.fizz.remix.runtime;
 
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-import java.util.Stack;
 
 /*
  * With multiple function names I should really change this as the function call only
@@ -67,7 +66,6 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         // fall through into a possible function call
 
         Function function = null;
-        Stack<LibraryExpression> libraryStack = context.libraryStack;
         ListIterator<LibraryExpression> stackIterator = context.libraryStack.listIterator(context.libraryStack.size());
         try {
             while (function == null) {
@@ -101,7 +99,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             String formal = routine.getArgument(i);
 
             // skip over the object reference
-            if (formal.equals("me"))
+            if (formal.equals("me")) // TODO: should this be "ME"?
                 continue;
 
             Expression parameter = parameters.get(i); // actual parameter expression
@@ -109,9 +107,10 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             // if the actual parameter is a block we don't evaluate it
             // that only happens after "do"
             if (parameter instanceof Block block) {
-                block = block.copy(); // the block could be called recursively we need a copy
-                block.setContext(callingContext);
-
+                if (block.getContext() == null) {
+                    block = block.copy(); // the block could be called recursively we need a copy
+                    block.setContext(callingContext);
+                }
                 value = block;
             } else if (formal.startsWith("#")) {
                 /*
@@ -123,9 +122,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
                     value = callingContext.getRefParameter(actualName);
                     // the value here is now a RefParameter
                 } else {
-                    /*
-                    We are accessing an ordinary variable in the callingContext.
-                     */
+                    // We are accessing an ordinary variable in the callingContext.
                     Object variable  = callingContext.retrieve(actualName);
                     if (variable == null) { // hasn't been given a value yet, give it Null
                         callingContext.assign(actualName, RemixNull.value());

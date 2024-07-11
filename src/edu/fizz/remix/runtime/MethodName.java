@@ -4,7 +4,7 @@ public class MethodName extends FunctionName<String> {
 
     private int selfRef = 0;
 
-    /* Called when "me/my" is being added as a parameter. */
+    /* Called when "ME/MY" is being added as a parameter. */
     public void setSelfRefNow() {
         if (selfRef != 0) {
             System.err.format("Method %s has more than one self reference.%n", singleName());

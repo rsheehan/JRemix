@@ -1,36 +1,36 @@
 
 using graphics lib
-	WINDOW : a window with shape layers
-	BASE-LAYER : WINDOW base layer
-	NEXT-LAYER : WINDOW next layer
+	Window : a window with shape layers
+	base-Layer : Window base layer
+	next-Layer : Window next layer
 
 	repeat
-		SHAPE : a square
-		SHAPE's COLOUR   : random colour
-		SHAPE's POSITION : random point
-		SHAPE's SIZE     : random from 10 to 100
-		SHAPE's HEADING  : random from 1 to 90
-		add SHAPE to NEXT-LAYER
+		Shape : a square
+		Shape's Colour   : random colour
+		Shape's Position : random point
+		Shape's Size     : random from 10 to 100
+		Shape's Heading  : random from 1 to 90
+		add Shape to next-Layer
 	… 50 times
 
-	for each Y-POS from 40 to (the std height - 20) in steps of 80 do
-		ARROW : a triangle
-		ARROW's SIZE : 20
-		ARROW's POSITION : {0, Y-POS}
-		add ARROW to BASE-LAYER
+	for each y-Pos from 40 to (the std height - 20) in steps of 80 do
+		Arrow : a triangle
+		Arrow's Size : 20
+		Arrow's Position : {0, y-Pos}
+		add Arrow to base-Layer
 
-	SQUARES-ROTATION : every 1 tick do
-		for each SQUARE in (NEXT-LAYER's SHAPES) do
-			change SQUARE heading by 2 degrees
+	Squares-Rotation : every 1 tick do
+		for each Square in (next-Layer's Shapes) do
+			change Square heading by 2 degrees
 
-	ARROWS-MOVEMENT : every 2 ticks do
-		for each ARROW in (BASE-LAYER's SHAPES) do
-			change ARROW x-pos by 5
+	Arrows-Movement : every 2 ticks do
+		for each Arrow in (base-Layer's Shapes) do
+			change Arrow x-pos by 5
 
 	animate 50 ticks per second
-		animate SQUARES-ROTATION
-		animate ARROWS-MOVEMENT
-		update WINDOW
-	… until [ARROW x-pos ≥ the std width]
+		animate Squares-Rotation
+		animate Arrows-Movement
+		update Window
+	… until [Arrow x-pos ≥ the std width]
 
 "Finished" ↲

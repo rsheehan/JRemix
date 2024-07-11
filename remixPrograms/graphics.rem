@@ -1,4 +1,4 @@
-"Graphics library loaded." ↲
+"Graphics library loading." ↲
 
 library "edu.fizz.remix.libraries.Graphics"
 
@@ -20,18 +20,18 @@ library "edu.fizz.remix.libraries.Graphics"
 	=======
 	Colours
 	=======
-	white colour :
+	white :
 		{255, 255, 255}
-	black colour :
+	black :
 		{0, 0, 0}
-	red colour :
+	red :
 		{255, 0, 0}
-	green colour :
+	green :
 		{0, 255, 0}
-	blue colour :
+	blue :
 		{0, 0, 255}
 
-	random colour :
+	/a random colour :
 		{random 255, random 255, random 255}
 
 	======
@@ -45,61 +45,61 @@ library "edu.fizz.remix.libraries.Graphics"
 		a 4 sided polygon
 
 	a/an N sided polygon :
-		POINTS : {}
-		for each SIDE from 0 to (N - 1) do
+		Points : {}
+		for each Side from 0 to (N - 1) do
 			append {
-				cosine (2π × SIDE ÷ N)
-				sine (2π × SIDE ÷ N)
-			} to POINTS
-		a shape from POINTS
+				cosine (2π × Side ÷ N)
+				sine (2π × Side ÷ N)
+			} to Points
+		a shape from Points
 
 	=-
 	Create a shape from the list of "points".
 	=-
-	a shape from POINTS :
+	a shape from Points :
 
 		create
-			COLOUR   : red colour
-			POLYGON  : POINTS
-			POSITION : the centre point
-			SIZE     : 20.0
-			HEADING  : 0.0 ; radians
-			FILLED   : true
+			Colour   : red
+			Polygon  : Points
+			Position : the centre point
+			Size     : 20.0
+			Heading  : 0.0 ; radians
+			Filled   : true
 
 			getters/setters
-				COLOUR, POSITION, SIZE, HEADING, FILLED
+				Colour, Position, Size, Heading, Filled
 
 			MY x-pos :
-				POSITION {1}
+				Position {1}
 
 			MY y-pos :
-				POSITION {2}
+				Position {2}
 
-			change MY x-pos by DX :
-				POSITION {1} : POSITION {1} + DX
+			change MY x-pos by Δx :
+				Position {1} : Position {1} + Δx
 
-			change MY y-pos by DY :
-				POSITION {2} : POSITION {2} + DY
+			change MY y-pos by Δy :
+				Position {2} : Position {2} + Δy
 
-			change MY heading by D degrees :
-				HEADING : HEADING + D degrees as radians
+			change MY heading by Δd degrees :
+				Heading : Heading + Δd degrees as radians
 
 	=====
 	Lines
 	=====
 
-	a COLOUR line from START to FINISH :
+	a Colour line from Start to Finish :
 		create
-			START : START
-			FINISH : FINISH
-			WIDTH : 3
-			COLOUR : COLOUR
+			Start : Start
+			Finish : Finish
+			Width : 3
+			Colour : Colour
 
 			getters/setters
-				START, FINISH, WIDTH, COLOUR
+				Start, Finish, Width, Colour
 
-	a line from START to FINISH :
-		a (green colour) line from START to FINISH
+	a line from Start to Finish :
+		a (green) line from Start to Finish
 
 	a random line :
 		a (random colour) line from (random point) to (random point)
@@ -113,45 +113,45 @@ library "edu.fizz.remix.libraries.Graphics"
 	=-
 	a window with shape layers :
 
-		THE-WINDOW : create
-			JWINDOW : a "Drawing" window of (the std width) and (the std height)
-			LAYERS : { a shape layer } ; default bottom layer
+		the-Window : create
+			JWindow : a "Drawing" window of (the std width) and (the std height)
+			Layers : { a shape layer } ; default bottom layer
 
 			getter
-				LAYERS
+				Layers
 
 			MY next layer :
-				NEW-LAYER : a shape layer
-				append NEW-LAYER to LAYERS
-				NEW-LAYER
+				New-Layer : a shape layer
+				append New-Layer to Layers
+				New-Layer
 
 			MY base layer :
-				LAYERS {1}
+				Layers {1}
 
 			show ME :
-				show JWINDOW
+				show JWindow
 
 			update ME :
-				clear all JWINDOW layers
-				for each LAYER in LAYERS do
-					prepare LAYER shapes for drawing on JWINDOW
-				refresh JWINDOW
+				clear all JWindow layers
+				for each Layer in Layers do
+					prepare Layer shapes for drawing on JWindow
+				refresh JWindow
 
-		show THE-WINDOW
-		THE-WINDOW
+		show the-Window
+		the-Window
 
 	=-
 	Create and show a window with only one shape layer.
 	=-
 	a simple window :
 
-		THE-WINDOW : extend (a window with shape layers)
+		extend (a window with shape layers)
 
-			add SHAPE to ME :
-				add SHAPE to (LAYERS {1})
+			add Shape to ME :
+				add Shape to (Layers {1})
 
-			MY shapes : ; can be called by "WINDOW's SHAPES"
-				LAYERS {1}'s SHAPES
+			MY shapes :
+				Layers {1}'s Shapes
 
 	=-
 	Create a shape layer.
@@ -159,36 +159,36 @@ library "edu.fizz.remix.libraries.Graphics"
 	=-
 	a shape layer :
 		create
-			SHAPES : {}
+			Shapes : {}
 
 			getter
-				SHAPES
+				Shapes
 
-			add SHAPE to ME :
-				append SHAPE to SHAPES
+			add Shape to ME :
+				append Shape to Shapes
 
 			clear MY shapes :
-				SHAPES : {}
+				Shapes : {}
 
-			prepare MY shapes for drawing on WINDOW :
-				for each SHAPE in SHAPES do
-					add SHAPE to the WINDOW ; Java
+			prepare MY shapes for drawing on Window :
+				for each Shape in Shapes do
+					add the Shape to the Window ; Java
 
 	=========
 	Animation
 	=========
 
 	=-
-	Create an animation object which executes "CHANGES" every "N" ticks.
+	Create an animation object which executes "Changes" every "N" ticks.
 	=-
-	every N tick/ticks /do [CHANGES] :
+	every N tick/ticks /do [Changes] :
 		create
-			TICKS : N
-			COUNTER : N
-			CHANGES : CHANGES
+			Ticks : N
+			Counter : N
+			Changes : Changes
 
 			animate ME :
-				dec COUNTER
-				if (COUNTER = 0)
-					COUNTER : TICKS
-					do CHANGES
+				dec Counter
+				if (Counter = 0)
+					Counter : Ticks
+					do Changes

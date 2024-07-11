@@ -1,0 +1,54 @@
+L : {}
+M : {"x" : 5}
+ML : {"a" : {1, 2, 3}, "b" : {4, 5, 6}}
+LM : {
+	{"a" : 2, "b" : 4, "c" : 6}
+	{"a" : 3, "b" : 5, "c" : 7}
+	{"a" : 1, "b" : 6, "c" : 8}
+}
+
+test {
+	"Appending to empty list"
+		append 2 to L
+		L {1}
+	... expected 2
+
+	"Changing element"
+		append 4 to L
+		L {2} : 5
+		L {2}
+	... expected 5
+
+	"List and map element via variable"
+		Vl : 1
+		Vm : "x"
+		L {Vl} × M {Vm}
+	... expected (2 × 5)
+
+	"Adding to map with key"
+		M {"y"} : 3
+		M {"y"}
+	... expected 3
+
+	"Map element via variable"
+		N : "x"
+		M {N}
+	... expected 5
+
+	"Nested map"
+		M {"n"} : {"x":6}
+		M {"n"}{"x"}
+	... expected 6
+
+	"Mixed map list"
+		ML {"b"}{2}
+	... expected 5
+
+	"Mixed list map"
+		LM {2}{"c"}
+	... expected 7
+}
+=
+Test a nested assignment to non-existing key when only the last index is not allocated.
+
+=}

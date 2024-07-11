@@ -2,63 +2,63 @@
 Student record
 =
 
-students : {
+Students : {
 	"Martin Developer" age 22 knows {
-		Java : "Expert"
-		python : "Advanced"
-		Remix : "Expert"
+		"Java" : "Expert"
+		"python" : "Advanced"
+		"Remix" : "Expert"
 	}
 	"May Smith" age 25 knows {
-		C++ : "Advanced"
-		C : "Expert"
-		C# : "Competent"
+		"C++" : "Advanced"
+		"C" : "Expert"
+		"C#" : "Competent"
 	}
 	"Ray Oflight" age 19 knows {
-		python : "Novice"
+		"python" : "Novice"
 	}
 }
 
 "Student data" ↲
 "============" ↲
-for each (student) in (students) do
-	student's name ↲
-	student's age ↲
-	student's languages ↲
+for each Student in Students do
+	Student's Name ↲
+	Student's Age ↲
+	Student's Languages ↲
 	↲
 
-merge {BASIC : "Expert"} into (students{2}'s languages)
+merge {"BASIC" : "Expert"} into (Students {2}'s Languages)
 
 "Expertise" ↲
 "=========" ↲
-for each (student) in (students) do
-	student ↲
+for each Student in Students do
+	Student ↲
 
 ----------------
 
-(name) age (age) knows (languages) :
+Name age Age knows Languages :
 	create
-		name : name
-		age : age
-		languages : languages
+		Name : Name
+		Age : Age
+		Languages : Languages
 
 		getter
-			name, age
-			languages
+			Name, Age
+			Languages
 
-		(my) expert languages :
-			filter (languages) by (language) where
-				languages{language} = "Expert"
+		MY expert languages :
+			filter Languages by Language where
+				Languages {Language} = "Expert"
 
-		(me) to string :
-			result : name ⊕ " age " ⊕ age ⊕ ", expert in "
-			expertise : (my) expert languages
-			if (no (expertise))
-				result ⊕ "nothing"
+		ME to string :
+			Result : Name ⊕ " age " ⊕ Age ⊕ ", expert in "
+			Expertise : MY expert languages
+			if (no Expertise)
+				Result ⊕ "nothing"
 			… otherwise
-				for each (language) in (expertise) keeping (count) do
+				for each Language in Expertise keeping Count do
 					when
-						[count = 1] do
-							result : result ⊕ language
-						[count < (expertise) length] do
-							result : result ⊕ ", " ⊕ language
-						result ⊕ " and " ⊕ language
+						[Count = 1] do
+							Result : Result ⊕ Language
+						[Count < Expertise length] do
+							Result : Result ⊕ ", " ⊕ Language
+						Result ⊕ " and " ⊕ Language

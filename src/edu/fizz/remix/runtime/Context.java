@@ -23,23 +23,8 @@ public class Context {
     public Context(Context parent, boolean returnHigher) {
         parentContext = parent;
         if (parent != null) // hack
-            libraryStack = parent.libraryStack;
+            libraryStack = parent.libraryStack; // TODO: should this clone?
         this.returnHigher = returnHigher;
-    }
-
-    /*
-     * Copy the original to the new Context.
-     */
-    public Context(Context original) {
-        super();
-        parentContext = original.parentContext;
-        // Since primitive class types (e.g. Integer) are immutable we can make a new HashMap if we want to change such values
-//        variables = new HashMap<>(original.variables);
-        variables = original.variables;
-        libraryStack = original.cloneLibraryStack();
-        if (libraryStack != null)
-            System.out.println(libraryStack);
-        returnHigher = original.returnHigher;
     }
 
     /*
@@ -113,6 +98,7 @@ public class Context {
     public Context copy() {
         Context copy = new Context(parentContext, returnHigher);
         copy.variables = variables;
+        copy.libraryStack = cloneLibraryStack();
         return copy;
     }
 

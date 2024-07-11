@@ -4,29 +4,29 @@ make N stars :
 	- the sequence object
 	- must include "start ME" and "MY length" methods
 	create
-		COUNT : N
+		Count : N
 
 		start ME :
 			- the iterator object
 			- must include an "end ME" and a "next ME" method
-			- can refer to sequence instance variables e.g. "COUNT"
+			- can refer to sequence instance variables e.g. "Count"
 			- but only in the instance variable assignment section
 			create
-				MAX : COUNT
-				INDEX : 0
-				STARS : ""
+				MAX : Count
+				Index : 0
+				Stars : ""
 
 				end ME :
-					INDEX = MAX
+					Index = MAX
 
 				next ME :
-					INDEX : INDEX + 1
-					STARS : STARS ⊕ "*"
+					Index : Index + 1
+					Stars : Stars ⊕ "*"
 
 		MY length :
-			COUNT
+			Count
 
 S : make 8 stars
 
-for each LINE in S do
-	LINE ↲
+for each Line in S do
+	Line ↲

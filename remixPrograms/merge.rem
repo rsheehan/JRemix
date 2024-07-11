@@ -1,42 +1,42 @@
-MY-LIST : apply [random 100] 80 times
-MY-LIST ↲
+my-List : apply [random 100] 80 times
+my-List ↲
 
-merge-sort MY-LIST
-MY-LIST ↲
+merge-sort my-List
+my-List ↲
 
 ============
  Merge sort
 ============
 
-merge-sort LIST :
-	sort LIST from 1 to (length of LIST)
+merge-sort List :
+	sort List from 1 to (length of List)
 
-sort LIST from START to FINISH :
-	if (START ≥ FINISH)
+sort List from Start to Finish :
+	if (Start ≥ Finish)
 		return
-	MIDDLE : START + (FINISH - START) ÷ 2
-	sort LIST from START to MIDDLE
-	sort LIST from (MIDDLE + 1) to FINISH
-	merge LIST from START to MIDDLE to FINISH
+	Middle : Start + (Finish - Start) ÷ 2
+	sort List from Start to Middle
+	sort List from (Middle + 1) to Finish
+	merge List from Start to Middle to Finish
 
-merge LIST from START to MIDDLE to FINISH :
-	LEFT : START
-	RIGHT : MIDDLE + 1
-	WORKING-LIST : {}
+merge List from Start to Middle to Finish :
+	Left : Start
+	Right : Middle + 1
+	working-List : {}
 	- while values on both sides
-	while [(LEFT ≤ MIDDLE) and (RIGHT ≤ FINISH)] do
-		if (LIST {LEFT} ≤ LIST {RIGHT})
-			append (LIST {LEFT inc}) to WORKING-LIST
+	while [(Left ≤ Middle) and (Right ≤ Finish)] do
+		if (List {Left} ≤ List {Right})
+			append (List {Left inc}) to working-List
 		… otherwise
-			append (LIST {RIGHT inc}) to WORKING-LIST
-	- remaining values on the LEFT
-	if (LEFT ≤ MIDDLE)
-		for each ITEM in LIST from position LEFT to MIDDLE do
-			append ITEM to WORKING-LIST
-	- remaining values on the RIGHT
-	if (RIGHT ≤ FINISH)
-		for each ITEM in LIST from position RIGHT to FINISH do
-			append ITEM to WORKING-LIST
-	- put back in original LIST
-	for each ITEM from START to FINISH do
-		LIST {ITEM} : WORKING-LIST {ITEM - START + 1}
+			append (List {Right inc}) to working-List
+	- remaining values on the Left
+	if (Left ≤ Middle)
+		for each Item in List from position Left to Middle do
+			append Item to working-List
+	- remaining values on the Right
+	if (Right ≤ Finish)
+		for each Item in List from position Right to Finish do
+			append Item to working-List
+	- put back in original List
+	for each Item from Start to Finish do
+		List {Item} : working-List {Item - Start + 1}

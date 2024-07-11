@@ -6,13 +6,13 @@ LIB1 : library
 	X plus Y :
 		X + Y
 
-	name NAME age AGE :
+	name Name age Age :
 		create
-			NAME : AGE
-			AGE : NAME
+			Name : Age
+			Age : Name
 
 			ME to string :
-				NAME ⊕ ", " ⊕ AGE ⊕ " years old"
+				Name ⊕ ", " ⊕ Age ⊕ " years old"
 
 using LIB1
 	4 plus 6 ↲
@@ -21,13 +21,13 @@ using LIB1
 
 LIB2 : library
 
-	name NAME age AGE :
+	name Name age Age :
 		create
-			NAME : NAME
-			AGE : AGE
+			Name : Name
+			Age : Age
 
 			ME to string :
-				NAME ⊕ ", " ⊕ AGE ⊕ " years old"
+				Name ⊕ ", " ⊕ Age ⊕ " years old"
 
 LIB3 : library
 

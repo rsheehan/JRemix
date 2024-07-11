@@ -1,45 +1,44 @@
-graphics : include graphics
+Graphics : graphics lib
 
-using graphics
-	window : window with shape layers
-	show (window)
-	layer : (window) base layer
+using Graphics
+	the-Window : a window with shape layers
+	show the-Window
+	Layer : the-Window base layer
 
-	square-pts : {
+	Square-Pts : {
 		{-1, -1}
 		{ 1, -1}
 		{ 1,  1}
 		{-1,  1}
 	}
 
-	square : shape from (square-pts)
-	square's size : 200
-	square's position : (the centre point)
-	square's filled : true
+	Square : a shape from Square-Pts
+	Square's Size : 200
+	Square's Position : the centre point
 
-	for each (angle) from 0 to 80 in steps of 10 do
-		square : copy (square)
-		square's heading : (angle) degrees as radians
-		square's colour : random colour
-		add (square) to (layer)
+	for each Angle from 0 to 80 in steps of 10 do
+		S : copy Square
+		S's Heading : Angle degrees as radians
+		S's Colour : random colour
+		add S to Layer
 
-	arrow-pts : {
+	Arrow-Pts : {
 		{ 0,  1}
 		{-2,  2}
 		{ 0, -2}
 		{ 2,  2}
 	}
 
-	arrow : shape from (arrow-pts)
-	arrow's size : 10
-	arrow's position : {
-		x : 800
-		y : the std height ÷ 2
+	Arrow : a shape from Arrow-Pts
+	Arrow's Size : 10
+	Arrow's Position : {
+		"x" : 800
+		"y" : the std height ÷ 2
 	}
-	arrow's heading : π × 1.5
-	arrow's colour : red colour
+	Arrow's Heading : π × 1.5
+	Arrow's Colour : red
 
-	add (arrow) to (layer)
-	update (window) layers
+	add Arrow to Layer
+	update the-Window
 
 "Finished" ↲

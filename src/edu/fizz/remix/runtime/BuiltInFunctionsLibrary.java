@@ -74,7 +74,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             String filename = context.retrieve("FILENAME").toString();
             LibraryExpression included;
             try {
-                // *** change below to Remix.loadPackage when not using the IDE ***
+                // *** could change below to Remix.loadPackage from RemixREPL.loadPackage when not using the IDE ***
                 included = RemixREPL.loadPackage(filename);
                 /*
                 If the package finishes with a statement which is a "library" that
@@ -85,11 +85,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 return null;
             }
             /*
-            Can I just push the included library onto the libraryStack?
-            I need to evaluate the library first. In order to create the functions etc.
-             */
-            /* 21/11/23
-            The included library isn't a separate library, it is at the same level as the
+            The included file is at the same level as the
             context. Functions are added to the existing context.
             If it contains a "library" block that is different.
             That would add a library level to the stack in the context.
@@ -102,7 +98,12 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 // in case the included file has some setup statements
                 RemixSwingWorker saved = remixRunner;
                 remixRunner = null; // send printed output to command line
-                result = included.block.evaluate(context);
+                /*
+                Even though "include" is a function when its block is evaluated this is done in the
+                context which called the function, so that variables in the included file are
+                available in the calling file.
+                 */
+                result = included.block.evaluate(context.parentContext);
                 remixRunner = saved;
             } catch (ReturnException exception) {
                 System.err.println("ReturnException caught in program.");

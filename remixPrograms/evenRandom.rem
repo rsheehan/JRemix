@@ -2,13 +2,13 @@
  Generate a list of 100 random integers and count the even values.
 ===================================================================
 
-LIST-of-NUMBERS : apply [random 1000] 100 times
+list-of-Numbers : apply [random 1000] 100 times
 
-"There are ", even values in LIST-of-NUMBERS, " even values in the list." ↲
+"There are ", even values in list-of-Numbers, " even values in the list." ↲
 
-even values in THE-LIST :
-	EVEN : 0
-	for each ITEM in THE-LIST do
-		if (ITEM is divisible by 2)
-			EVEN inc
-	return EVEN
+even values in the-List :
+	Even : 0
+	for each Item in the-List do
+		if (Item is divisible by 2)
+			Even inc
+	return Even

@@ -3,6 +3,6 @@
 extra function :
 	"This is the included function output."
 
-INCLUDED-VAR : "Robert"
-INCLUDED-VAR \n
+included-Var : "Robert"
+included-Var ↲
 

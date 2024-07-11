@@ -9,26 +9,26 @@ repeat [] 1000000 times
 
 print "Goodbye world!" ↲
 
-"not true is ", not (true) ↲
+"not true is ", not true ↲
 
-a : 1
-if (a = 1)
-	"a is equal to 1" ↲
+A : 1
+if (A = 1)
+	"A is equal to 1" ↲
 
-b : true
+B : true
 
-"a is ", a, ", b is ", b ↲
-if ((a != 1) or (b))
-	"a is not 1 or b is true" ↲
+"A is ", A, ", B is ", B ↲
+if ((A != 1) or (B))
+	"A is not 1 or B is true" ↲
 
-(for each (value) in {1, 2, 3, 4} do
-	(value) _
-	if (value = 2)
+(for each Value in {1, 2, 3, 4} do
+	Value _
+	if (Value = 2)
 		return "Wow!"
 ) _
 
-for each (count) from 5 to 10 do
-	(count) _
+for each Count from 5 to 10 do
+	Count _
 new line
 
 repeat
@@ -36,143 +36,143 @@ repeat
 ... 10 times
 new line
 
-x : 1
-(repeat [(x) _. x : x + 1] until [x = 10]) ↲
+X : 1
+(repeat [X _. X : X + 1] until [X = 10]) ↲
 
-while [x > 0] do
-	(x × x) _
-	x : x - 1
+while [X > 0] do
+	(X × X) _
+	X : X - 1
 new line
 
-evens : filter (1 to 10) by (value) where [(value) is divisible by 2]
-length of (evens) ↲
-evens ↲
-for each (i) in (evens) do [(i) _]
+Evens : filter (1 to 10) by Value where [Value is divisible by 2]
+length of Evens ↲
+Evens ↲
+for each I in Evens do [I _]
 new line
 
-keep (x) from (1 to 100) until [x = 20] ↲
+keep X from (1 to 100) until [X = 20] ↲
 
-cubes : apply
-	i × i × i
-... to each (i) from (1 to 20)
+Cubes : apply
+	I × I × I
+... to each I from (1 to 20)
 
-for each (value) in (cubes) do
-	(value) _
+for each Value in Cubes do
+	Value _
 new line
 
-x : 1
-ten : apply
-	inc (x)
+X : 1
+Ten : apply
+	inc X
 ... 10 times
-(type of (ten)) ↲
-for each (i) in (ten) do
-	(i) _
+(type of Ten) ↲
+for each I in Ten do
+	I _
 new line
 
-for each (i) from 1 to 10 do
-	(i × i × i) _
+for each I from 1 to 10 do
+	(I × I × I) _
 new line
 
-for each (i) from 1 to 10 do
-	if (i > 5)
+for each I from 1 to 10 do
+	if (I > 5)
 		return
-	(i) _
+	I _
 new line
 
-nested : {
+Nested : {
 	1 to 4
 	{2, 4, 6, 8}
 	{3, 6, 9, 12}
 }
 
-for each (row) in (nested) do
-	for each (item) in (row) do
-		(item × item) _
+for each Row in Nested do
+	for each Item in Row do
+		(Item × Item) _
 	new line
 new line
 
 - A person class
-make person called (name) of age (age) with (colour) hair :
+make person called Name of age Age with Colour hair :
 	"making a person object" ↲
 	create
-		name : name
-		age : age
-		hair : colour
+		Name : Name
+		Age : Age
+		Hair : Colour
 
 		getter/setter
-			age
+			Age
 
 		getter
-			name
+			Name
 
 		setter
-			hair
+			Hair
 
-		(me) age : ; overwrites the age getter
-			age × 2
+		MY Age : ; overwrites the Age getter
+			Age × 2
 
-		(me) age (years) : ; overwrites the age setter
-			age : years + 100
+		MY Age Years : ; overwrites the Age setter
+			Age : Years + 100
 
-		print person (me) :
-			name,", age ",age,", hair ",hair ↲
-			private add to age
+		print person ME :
+			Name,", age ",Age,", hair ",Hair ↲
+			private add to Age
 
-		private add to age :
-			age : age + 1
+		private add to Age :
+			Age : Age + 1
 
 - Another class
 another class with same method name :
 	create
-		print person (me) :
+		print person ME :
 			"I am anonymous." ~
 
-		call (me) :
-			print person (me)
+		call ME :
+			print person ME
 			" From another method." ↲
 
 Robert : make person called "Robert" of age 64 with "grey" hair
-{Robert's name, " ", Robert's age} ↲
-print person (Robert)
+{Robert's Name, " ", Robert's Age} ↲
+print person Robert
 Stephanie : make person called "Stephanie" of age 61 with "brown" hair
-print person (Stephanie)
-print person (Robert)
-print person (Stephanie)
-Stephanie's name, " ", Stephanie's age ↲
+print person Stephanie
+print person Robert
+print person Stephanie
+Stephanie's Name, " ", Stephanie's Age ↲
 
 print person (another class with same method name). new line
-Robert's age : 11. Robert's hair : "blue"
-print person (Robert)
-Robert's name, " ", Robert's age ↲ ; possessives are syntactic sugar
-(Robert) name, " ", (Robert) age ↲ ; so these two lines are the same
+Robert's Age : 11. Robert's Hair : "blue"
+print person Robert
+Robert's Name, " ", Robert's Age ↲ ; possessives are no longer syntactic sugar
+-Robert Name, " ", Robert Age ↲ ; so these two lines are the same
 
-copy : another class with same method name
-call (copy)
+Copy : another class with same method name
+call Copy
 
 repeat
 	"hi" _
 ... 5 times. new line
 
-i : 1
-repeat [(i) _. i : i + 1] until [i = 10]
-result : while
-	i ≥ 0
+I : 1
+repeat [I _. I : I + 1] until [I = 10]
+Result : while
+	I ≥ 0
 … do
-	(i) _. i : i - 1
+	I _. I : I - 1
 
-result ↲ ; this prints -1
+Result ↲ ; this prints -1
 
-a : {
+A : {
 	1
 	2
 	3
 	4
 }
 
-for each (item) in (a) do
-	(item) _
+for each Item in A do
+	Item _
 
-person : {name : "Robert", age : 65}
-person ↲
-person{name} : "blah"
-person ↲
+Person : {"Name" : "Robert", "Age" : 65}
+Person ↲
+Person {"Name"} : "blah"
+Person ↲

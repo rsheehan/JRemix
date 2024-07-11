@@ -1,23 +1,23 @@
-FAMILY : {
-	{name : "Robert", age : 65}
-	{name : "Stephanie", age : 63}
-	{name : "Emily", age : 36}
-	{name : "Christian", age : 34}
-	{name : "Dominic", age : 32}
-	{name : "Benedict", age : 22}
+Family : {
+	{"name" : "Robert", "age" : 65}
+	{"name" : "Stephanie", "age" : 63}
+	{"name" : "Emily", "age" : 36}
+	{"name" : "Christian", "age" : 34}
+	{"name" : "Dominic", "age" : 32}
+	{"name" : "Benedict", "age" : 22}
 }
-FAMILY ↲
+Family ↲
 
-NAMES : apply
-	PERSON {"name"}
-… to each PERSON from FAMILY
+Names : apply
+	Person {"name"}
+… to each Person from Family
 
-"The people in the family are ", join NAMES with separator ", ", "." ↲
+"The people in the family are ", join Names with separator ", ", "." ↲
 
-"The average age of the family is ", average "age" of FAMILY, "." ↲
+"The average age of the family is ", average "age" of Family, "." ↲
 
-AGES : apply
-	PERSON {"age"}
-… to each PERSON from FAMILY
+Ages : apply
+	Person {"age"}
+… to each Person from Family
 
-AGES, " has average ", average of AGES ↲
+Ages, " has average ", average of Ages ↲

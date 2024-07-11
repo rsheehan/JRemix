@@ -2,45 +2,46 @@
 "=================" ↲
 ↲
 
-for each SIZE from 1 to 41 in steps of 2 do
-	SIZE, "." ↲
-	diamond of SIZE
+for each Size from 1 to 41 in steps of 2 do
+	Size, "." ↲
+	diamond of Size
 	↲
 
 =-
-Show a diamond of "SIZE".
+Show a diamond of "Size".
 =-
-diamond of SIZE :
-	show top half of SIZE diamond and fill in LINES
-	show middle line of SIZE diamond
-	show bottom half of SIZE diamond with LINES
+diamond of Size :
+	show top half of Size diamond and fill in Lines
+	show middle line of Size diamond
+	show bottom half of Size diamond with Lines
 
 =-
-Show the top half of the diamond of "SIZE".
-Fill in the "LINES" list at the same time.
+Show the top half of the diamond of "Size".
+Fill in the "Lines" list at the same time.
 =-
-show top half of SIZE diamond and fill in #LINES :
-	#LINES : {}
-	if (SIZE ≥ 3)
-		for each ROW from 1 to (SIZE ÷ 2) do
-			NUM-SPACES : SIZE - ROW × 2
-			NUM-STARS : ROW × 2 - 1
-			SPACES : " " NUM-SPACES times
-			STARS : " *" NUM-STARS times
-			append (SPACES ⊕ STARS) to #LINES
-			#LINES {ROW} ↲
+show top half of Size diamond and fill in #Lines :
+	#Lines : {}
+	if (Size ≥ 3)
+		for each Row from 1 to (Size ÷ 2) do
+			num-Spaces : Size - Row × 2
+			num-Stars : Row × 2 - 1
+			Spaces : " " num-Spaces times
+			Stars : " *" num-Stars times
+			append (Spaces ⊕ Stars) to #Lines
+			- #Lines {Row} : Spaces ⊕ Stars
+			#Lines {Row} ↲
 
 =-
-Show the middle line of the diamond of "SIZE".
+Show the middle line of the diamond of "Size".
 =-
-show middle line of SIZE diamond :
-	"* " SIZE times ↲
+show middle line of Size diamond :
+	"* " Size times ↲
 
 =-
-Show the bottom half of the diamond of "SIZE".
-Uses the "LINES" list.
+Show the bottom half of the diamond of "Size".
+Uses the "Lines" list.
 =-
-show bottom half of SIZE diamond with LINES :
-	if (SIZE ≥ 3)
-		for each ROW from (SIZE ÷ 2) to 1 do
-			LINES {ROW} ↲
+show bottom half of Size diamond with Lines :
+	if (Size ≥ 3)
+		for each Row from (Size ÷ 2) to 1 do
+			Lines {Row} ↲

@@ -28,7 +28,10 @@ public class Block implements Expression {
     }
 
     public void setContext(Context context) { // could this push the context
-        blockContext = new Context(context);
+//        blockContext = new Context(context);
+        blockContext = context.copy();
+        // the context could be a method context, this requires local and object variables so
+        // the new Context above doesn't work
         // trying to solve the libStack problem on blocks in other threads
     }
 

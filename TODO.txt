@@ -1,14 +1,34 @@
-Tabbing in the editor needs to be looked at after the "when" in student.rem.
+Changing map keys from double quoted strings to single quoted ones.
 
-The whole LibraryStack design needs to be thought through carefully.
-Should be able to remove the stack from Runtime and just have it as part of the contexts.
+Added a "null" keyword. Currently sort of works but something like:
+Abc = null
+evaluates to false when Abc hasn't been given a value. Should it?
 
-Current bug - after an include block the library functions are still in scope.
-It should pop off the stack.
+Fixing "#List {Row} : something"
+e.g. from alternate line in asterix.rem
+The RefVar is not handled properly.
 
-Do I need setLibraryStack and getLibraryStack, since the Context libraryStack is protected?
+Can I allow a line like:
+	M {"a"}{3}
+where M is a map and the value at "a" is a list?
+and
+	L {2}{"x"}
+i.e. Have mixed multi-index ListMaps. An index of a string for a map and an index of
+a number for a list.
 
-AnimationBlock currently doesn't use its Context parameter. It should.
+Currently an empty listMap {} is an empty list. It should be either until first given a value.
 
-"create", "extends" and "using" should only be keywords if in the correct syntax.
+The "white" falls through all the way to the blue colour
+
+AnimationBlock currently doesn't use its Context parameter. It should.??
+
+"create", "extend" and "using" should only be keywords if in the correct syntax.
 They should be usable as ordinary words in other places.
+
+When a library function shadows a previous library level function this should really be
+pointed out to the programmer.
+
+Error messages required
+=======================
+Dealing with null (NULL?) returned values e.g.
+distance from {0, 3} to {4, 0} ↲ ; should be {"x":0, "y":3} etc

@@ -9,7 +9,7 @@ a b :
 Z : a b
 
 
-LIST : {
+List : {
 	a b
 	{3, a b}
 }
@@ -29,16 +29,16 @@ test {
 	… expected 2
 
 	"Get list item possessive"
-		LIST {1}'s Y
+		List {1}'s Y
 	… expected 99
 
 	"Set list item possessive"
-		LIST {1}'s X : 3
-		LIST {1}'s X
+		List {1}'s X : 3
+		List {1}'s X
 	… expected 3
 
 	"Set list 2D item possessive"
-		LIST {2}{2}'s Y : 4
-		LIST {2}{2}'s Y
+		List {2}{2}'s Y : 4
+		List {2}{2}'s Y
 	… expected 4
 }

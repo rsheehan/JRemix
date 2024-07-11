@@ -144,15 +144,15 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return comment.substring(4,comment.length()-4);
     }
 
-    /** sigPart sigPart+ */
+    /** sigPart sigPart+ | singleWord */
     @Override
     public FunctionName<String> visitFunctionSignature(RemixParser.FunctionSignatureContext ctx) {
         FunctionName<String> funcSig = new FunctionName<>();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
-//            if (node instanceof RemixParser.SingleWordContext ||  // added single word functions
-            if (node instanceof RemixParser.SigWordContext) {
+            if (node instanceof RemixParser.SingleWordContext ||  // added single word functions
+                    node instanceof RemixParser.SigWordContext) {
                 funcSig.addToName(node.getText());
             } else if (node instanceof RemixParser.SigParamContext) {
                 funcSig.addParam((String)visit(node));
@@ -185,7 +185,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         RemixObjectExpression objectExpr = new RemixObjectExpression();
         MethodTable methodTable = new MethodTable();
 
-//        LibraryExpression library = Runtime.getCurrentLibrary();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -238,13 +237,13 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return getFieldNames(ctx);
     }
 
-    /** GETTER LBLOCK (EOL* fieldId EOL*)+ RBLOCK EOL* */
+    /** GETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* */
     @Override
     public List<String> visitGetter(RemixParser.GetterContext ctx) {
         return getFieldNames(ctx);
     }
 
-    /** SETTER LBLOCK (EOL* fieldId EOL*)+ RBLOCK EOL* */
+    /** SETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* */
     @Override
     public List<String> visitSetter(RemixParser.SetterContext ctx) {
         return getFieldNames(ctx);
@@ -270,12 +269,14 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return ctx.IDENTIFIER().getText();
     }
 
-    /** methodSignature COLON EOL? blockOfStatements */
+    /** (setterSignature | getterSignature | methodSignature) COLON EOL? blockOfStatements */
     @Override
     public Method visitMethodDefinition(RemixParser.MethodDefinitionContext ctx) {
         // doesn't deal with pass through "::" methods yet
         // I don't see a need for transparent methods
-        MethodName methSig = (MethodName)visit(ctx.methodSignature());
+        MethodName methSig;
+        ParseTree node = ctx.getChild(0);
+        methSig = (MethodName)visit(node);
         Block block = (Block)visit(ctx.blockOfStatements());
         return new Method(methSig.getAllNames(), block, methSig.getParameters(), methSig.getBlockParams(), methSig.getSelfRef());
     }
@@ -297,6 +298,25 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 methodSig.addBlockParam((String)visit(node));
             }
         }
+        return methodSig;
+    }
+
+    /** SELFREF IDENTIFIER */
+    @Override
+    public MethodName visitGetterSignature(RemixParser.GetterSignatureContext ctx) {
+        MethodName methodSig = new MethodName();
+        methodSig.setSelfRefNow();
+        methodSig.addToName(ctx.IDENTIFIER().getText());
+        return methodSig;
+    }
+
+    /** SELFREF IDENTIFIER IDENTIFIER */
+    @Override
+    public MethodName visitSetterSignature(RemixParser.SetterSignatureContext ctx) {
+        MethodName methodSig = new MethodName();
+        methodSig.setSelfRefNow();
+        methodSig.addToName(ctx.IDENTIFIER(0).getText());
+        methodSig.addParam(ctx.IDENTIFIER(1).getText());
         return methodSig;
     }
 
@@ -509,6 +529,12 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new String[] {product.toString(), word};
     }
 
+    /** NULL (from expression) */
+    @Override
+    public Expression visitExprNull(RemixParser.ExprNullContext ctx) {
+        return new RemixNull();
+    }
+
     /** BOOLEAN (from expression) */
     @Override
     public Expression visitExprBoolean(RemixParser.ExprBooleanContext ctx) {
@@ -573,15 +599,15 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new VarValueExpression(varName);
     }
 
-    /** callPart callPart+ */
+    /** callPart callPart+ | singleWord */
     @Override
     public Expression visitFunctionCall(RemixParser.FunctionCallContext ctx) {
         FunctionCallExpression funcCall = new FunctionCallExpression();
         int n = ctx.getChildCount();
         for (int i=0; i<n; i++) {
             ParseTree node = ctx.getChild(i);
-//            if (node instanceof RemixParser.SingleWordContext || // added single word functions
-            if (node instanceof RemixParser.CallWordContext) {
+            if (node instanceof RemixParser.SingleWordContext || // added single word functions
+                    node instanceof RemixParser.CallWordContext) {
                 funcCall.addToName(node.getText());
             } else if (node instanceof RemixParser.CallSelfContext) {
                 funcCall.addParam(new SelfReference());
@@ -618,6 +644,12 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             number = produceDoubleExpression(ctx.NUMBER().getText());
         }
         return number;
+    }
+
+    /** NULL (from callPart) */
+    @Override
+    public Expression visitCallNull(RemixParser.CallNullContext ctx) {
+        return new RemixNull();
     }
 
     /** BOOLEAN (from callPart) */
@@ -726,8 +758,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         int i = 1;
         ParseTree node = ctx.getChild(i);
         while (node instanceof RemixParser.ListPartContext) {
-//            Expression expression = (Expression)visit(node);
-//            listParts.add(expression);
             Object listPartID = visit(node);
             listParts.add(listPartID);
             node = ctx.getChild(++i);
@@ -742,20 +772,20 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return visit(ctx.expression());
     }
 
-    /** LBRACE key RBRACE */
-    @Override
-    public Object visitListPartKey(RemixParser.ListPartKeyContext ctx) {
-        return visitKey(ctx.key());
-    }
+//    /** LBRACE key RBRACE */
+//    @Override
+//    public Object visitListPartKey(RemixParser.ListPartKeyContext ctx) {
+//        return visitKey(ctx.key());
+//    }
 
-    @Override
-    public String visitKey(RemixParser.KeyContext ctx) {
-        String keyName = ctx.getText();
-        if (keyName.startsWith("\"") && keyName.endsWith("\"")) {
-            keyName = keyName.substring(1, keyName.length() - 1);
-        }
-        return keyName;
-    }
+//    @Override
+//    public String visitKey(RemixParser.KeyContext ctx) {
+//        String keyName = ctx.getText();
+//        if (keyName.startsWith("\"") && keyName.endsWith("\"")) {
+//            keyName = keyName.substring(1, keyName.length() - 1);
+//        }
+//        return keyName;
+//    }
 
     /* Helper methods */
 
@@ -812,7 +842,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.KeyValueContext keyValue) {
-                String key = (String)visit(keyValue.key());
+                String key = keyValue.STRING().getText(); // key());
+                key = key.substring(1,key.length() - 1); // chop off "s at both ends
                 Expression value = (Expression)visit(keyValue.value());
                 map.put(key, value);
             }
