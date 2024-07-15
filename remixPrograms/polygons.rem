@@ -1,15 +1,15 @@
 
 using graphics lib
 
-	WINDOW : a simple window
+	the-Window : a simple window
 
 	X : 50
 	for each N from 3 to 12 do
-		POLYGON : an N sided polygon
-		POLYGON's COLOUR : random colour
-		POLYGON's SIZE : 40
-		POLYGON's POSITION : {X, the std height ÷ 2}
-		add POLYGON to WINDOW
+		Polygon : an N sided polygon
+		Polygon's Colour : random colour
+		Polygon's Size : 40
+		Polygon's Position : {X, the std height ÷ 2}
+		add Polygon to the-Window
 		X : X + 100
 
-	update WINDOW
+	update the-Window

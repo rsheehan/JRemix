@@ -23,15 +23,15 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public QuitFunction() {
             super(
                     List.of("quit |"),
-                    List.of("MESSAGE"),
+                    List.of("Message"),
                     List.of(false),
                     false,
-                    "Quit the Remix environment showing the \"MESSAGE\" on the command line."
+                    "Quit the Remix environment showing the \"Message\" on the command line."
             );
         }
 
         public Object execute(Context context) {
-            String message = context.retrieve("MESSAGE").toString();
+            String message = context.retrieve("Message").toString();
             System.err.println(message);
             System.exit(1);
             return null;
@@ -43,15 +43,15 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public DebugFunction() {
             super(
                     List.of("debug |"),
-                    List.of("OBJECT"),
+                    List.of("Object"),
                     List.of(false),
                     false,
-                    "Can be used to debug the Remix environment showing the \"OBJECT\" on the command line."
+                    "Can be used to debug the Remix environment showing the \"Object\" on the command line."
             );
         }
 
         public Object execute(Context context) {
-            Object object = context.retrieve("OBJECT");
+            Object object = context.retrieve("Object");
             System.err.println(object);
             return null;
         }
@@ -63,15 +63,15 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public IncludeFunction() {
             super(
                     List.of("include |"),
-                    List.of("FILENAME"),
+                    List.of("File-Name"),
                     List.of(false),
                     false,
-                    "Include the file called \"FILENAME\"."
+                    "Include the file called \"File-Name\"."
             );
         }
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            String filename = context.retrieve("FILENAME").toString();
+            String filename = context.retrieve("File-Name").toString();
             LibraryExpression included;
             try {
                 // *** could change below to Remix.loadPackage from RemixREPL.loadPackage when not using the IDE ***
@@ -103,7 +103,12 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 context which called the function, so that variables in the included file are
                 available in the calling file.
                  */
-                result = included.block.evaluate(context.parentContext);
+                /*
+                Now trying with its own local context.
+                This means variables assigned in the included file are not visible in the
+                including program.
+                 */
+                result = included.block.evaluate(context); //.parentContext);
                 remixRunner = saved;
             } catch (ReturnException exception) {
                 System.err.println("ReturnException caught in program.");
@@ -117,16 +122,16 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public CopyFunction() {
             super(
                 List.of("copy |"),
-                List.of("ORIGINAL"),
+                List.of("Original"),
                 List.of(false),
                 false,
-                "Create a copy of \"ORIGINAL\"."
+                "Create a copy of \"Original\"."
             );
         }
 
         @Override
         public Object execute(Context context) {
-            Object original = context.retrieve("ORIGINAL");
+            Object original = context.retrieve("Original");
             return copy(original);
         }
 
@@ -159,15 +164,15 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public TypeOfFunction() {
             super(
                     List.of("type of |"),
-                    List.of("VALUE"),
+                    List.of("Value"),
                     List.of(false),
                     false,
-                    "The type of \"VALUE\"."
+                    "The type of \"Value\"."
             );
         }
 
         public Object execute(Context context) {
-            Object value = context.retrieve("VALUE");
+            Object value = context.retrieve("Value");
             return value.getClass().toString();
         }
     }
@@ -177,17 +182,17 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public IsATypeFunction() {
             super(
                     List.of("| is a |"),
-                    List.of("VALUE", "TYPESTRING"),
+                    List.of("Value", "Type-String"),
                     List.of(false, false),
                     false,
-                    "Is \"VALUE\" of type \"TYPESTRING\"?"
+                    "Is \"Value\" of type \"Type-String\"?"
             );
         }
 
         @Override
         public Object execute(Context context) {
-            Object value = context.retrieve("VALUE");
-            String typeString = (String)context.retrieve("TYPESTRING");
+            Object value = context.retrieve("Value");
+            String typeString = (String)context.retrieve("Type-String");
             if ((value instanceof Long || value instanceof Double) && typeString.equals("number"))
                 return true;
             if (value instanceof Boolean && typeString.equals("boolean"))
@@ -211,15 +216,15 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public DoFunction() {
             super(
                     List.of("do |"),
-                    List.of("BLOCK"),
+                    List.of("Block"),
                     List.of(true),
                     true,
-                    "Execute the \"BLOCK\"."
+                    "Execute the \"Block\"."
             );
         }
 
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            Block block = (Block)context.retrieve("BLOCK");
+            Block block = (Block)context.retrieve("Block");
             return block.evaluate(context);
         }
     }
@@ -231,15 +236,15 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public PrintFunction() {
             super(
                     List.of("print |"),
-                    List.of("VALUE"),
+                    List.of("Value"),
                     List.of(false),
                     false,
-                    "Print the \"VALUE\"."
+                    "Print the \"Value\"."
             );
         }
 
         public Object execute(Context context) {
-            Object value = context.retrieve("VALUE");
+            Object value = context.retrieve("Value");
             printValue(value);
             return RemixNull.value();
         }
@@ -299,7 +304,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 if (value != null)
                     remixRunner.publish(value.toString());
                 else
-                    remixRunner.publish("NULL");
+                    remixRunner.publish("null");
             }
         }
     }
@@ -309,22 +314,22 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public IfFunction() {
             super(
                     List.of("if | |"),
-                    Arrays.asList("CONDITION", "CONSEQUENCE"),
+                    Arrays.asList("Condition", "Consequence"),
                     List.of(false, true),
                     true,
-                    "If \"CONDITION\" is true then execute the \"CONSEQUENCE\"."
+                    "If \"Condition\" is true then execute the \"Consequence\"."
             );
         }
 
         /* The condition can be either a boolean expression or a block which returns one. */
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            Object condition = context.retrieve("CONDITION");
+            Object condition = context.retrieve("Condition");
             if (condition instanceof Block) {
                 condition = ((Block)condition).evaluate(context);
             }
             if ((Boolean)condition) {
                 // this is when the block is evaluated
-                Expression consequence = (Expression) context.retrieve("CONSEQUENCE");
+                Expression consequence = (Expression) context.retrieve("Consequence");
                 return consequence.evaluate(context);
             }
             return RemixNull.value();
@@ -336,25 +341,25 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public IfOtherwiseFunction() {
             super(
                     List.of("if | | otherwise |"),
-                    Arrays.asList("CONDITION", "CONSEQUENCE", "ALTERNATIVE"),
+                    Arrays.asList("Condition", "Consequence", "Alternative"),
                     List.of(false, true, true),
                     true,
-                    "If \"CONDITION\" is true execute \"CONSEQUENCE\", otherwise execute \"ALTERNATIVE\"."
+                    "If \"Condition\" is true execute \"Consequence\", otherwise execute \"Alternative\"."
             );
         }
 
         /* The condition can be either a boolean expression or a block which returns one. */
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            Object condition = context.retrieve("CONDITION");
+            Object condition = context.retrieve("Condition");
             if (condition instanceof Block) {
                 condition = ((Block)condition).evaluate(context);
             }
             if ((Boolean)condition) {
                 // this is when the block is evaluated
-                Expression consequence = (Expression) context.retrieve("CONSEQUENCE");
+                Expression consequence = (Expression) context.retrieve("Consequence");
                 return consequence.evaluate(context);
             } else {
-                Expression alternative = (Expression) context.retrieve("ALTERNATIVE");
+                Expression alternative = (Expression) context.retrieve("Alternative");
                 return alternative.evaluate(context);
             }
         }
@@ -366,7 +371,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public StartFunction() {
             super(
                     Arrays.asList("start |", "start of |"),
-                    List.of("LIST"),
+                    List.of("List"),
                     List.of(false),
                     false,
                     "Create an iterator from a list, range, map or string."
@@ -376,7 +381,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         @Override
         public Iterator<?> execute(Context context) {
             Iterator<?> iterator = null;
-            Object listMapOrString = context.retrieve("LIST");
+            Object listMapOrString = context.retrieve("List");
             if (listMapOrString instanceof List)
                 iterator = ((List<?>)listMapOrString).iterator();
             else if (listMapOrString instanceof Map)
@@ -411,16 +416,16 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public NextFunction() {
             super(
                     List.of("next |"),
-                    List.of("POSITION"),
+                    List.of("Position"),
                     List.of(false),
                     false,
-                    "Extract the next value from \"POSITION\" and move on."
+                    "Extract the next value from \"Position\" and move on."
             );
         }
 
         @Override
         public Object execute(Context context) {
-            Iterator<?> iterator = (Iterator<?>)context.retrieve("POSITION");
+            Iterator<?> iterator = (Iterator<?>)context.retrieve("Position");
             return iterator.next();
         }
     }
@@ -431,16 +436,16 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public EndFunction() {
             super(
                     Arrays.asList("| at end", "end |"),
-                    List.of("POSITION"),
+                    List.of("Position"),
                     List.of(false),
                     false,
-                    "True if \"POSITION\" iterator is at the end."
+                    "True if \"Position\" iterator is at the end."
             );
         }
 
         @Override
         public Boolean execute(Context context) {
-            Iterator<?> iterator = (Iterator<?>)context.retrieve("POSITION");
+            Iterator<?> iterator = (Iterator<?>)context.retrieve("Position");
             return !iterator.hasNext();
         }
     }
@@ -451,18 +456,18 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public RangeFunction() {
             super(
                     List.of("| to |"),
-                    Arrays.asList("START", "FINISH"),
+                    Arrays.asList("Start", "Finish"),
                     List.of(false, false),
                     false,
-                    "Create a range from \"START\" to \"FINISH\".\n" +
+                    "Create a range from \"Start\" to \"Finish\".\n" +
                             "Ranges can go up or down."
             );
         }
 
         @Override
         public RangeExpression execute(Context context) {
-            long start = ((Number)context.retrieve("START")).longValue();
-            long finish = ((Number)context.retrieve("FINISH")).longValue();
+            long start = ((Number)context.retrieve("Start")).longValue();
+            long finish = ((Number)context.retrieve("Finish")).longValue();
             return new RangeExpression(start, finish);
         }
     }
@@ -473,17 +478,17 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public ConcatFunction() {
             super(
                     List.of("| ⊕ |", "| (+) |"),
-                    Arrays.asList("FIRST", "SECOND"),
+                    Arrays.asList("First", "Second"),
                     List.of(false, false),
                     false,
-                    "Concatenate \"FIRST\" and \"SECOND\" as a string."
+                    "Concatenate \"First\" and \"Second\" as a string."
             );
         }
 
         @Override
         public String execute(Context context) {
-            Object first = context.retrieve("FIRST");
-            Object second = context.retrieve("SECOND");
+            Object first = context.retrieve("First");
+            Object second = context.retrieve("Second");
             String s1; String s2;
             if (!(first instanceof String))
                 first = first.toString();
@@ -502,18 +507,18 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public ExtractFunction() {
             super(
                     List.of("| in |"),
-                    Arrays.asList("INDEX", "SEQUENCE"),
+                    Arrays.asList("Index", "Sequence"),
                     List.of(false, false),
                     false,
-                    "Extract a character from \"SEQUENCE\" at \"INDEX\"\n" +
+                    "Extract an item from \"Sequence\" at \"Index\"\n" +
                             "A sequence is a list, range or string."
             );
         }
 
         @Override
         public Object execute(Context context) {
-            Object object = context.retrieve("SEQUENCE");
-            int index = ((Long) context.retrieve("INDEX")).intValue();
+            Object object = context.retrieve("Sequence");
+            int index = ((Long) context.retrieve("Index")).intValue();
             //noinspection rawtypes
             if (object instanceof ArrayList list) { // includes RangeExpressions
                 if (index < 1 || index > list.size()) {
@@ -545,18 +550,18 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public AppendFunction() {
             super(
                     List.of("append | to |"),
-                    Arrays.asList("VALUE", "LIST"),
+                    Arrays.asList("Value", "List"),
                     List.of(false, false),
                     false,
-                    "Append \"VALUE\" to the end of \"LIST\"."
+                    "Append \"Value\" to the end of \"List\"."
             );
         }
 
         @Override
         public Object execute(Context context) {
-            Object value = context.retrieve("VALUE");
+            Object value = context.retrieve("Value");
             @SuppressWarnings ("unchecked")
-            List<Object> list = (List<Object>)context.retrieve("LIST");
+            List<Object> list = (List<Object>)context.retrieve("List");
             list.add(value);
             return list;
         }
@@ -568,7 +573,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public LengthFunction() {
             super(
                     List.of("| length", "length of |"),
-                    List.of("LIST"),
+                    List.of("List"),
                     List.of(false),
                     false,
                     "Return the length of a list, range, map or string."
@@ -578,7 +583,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         @Override
         public Long execute(Context context) {
             long length = 0;
-            Object object = context.retrieve("LIST");
+            Object object = context.retrieve("List");
             if (object instanceof List<?> list) { // includes RangeExpressions
                 length = list.size();
             } else if (object instanceof String string) {
@@ -613,17 +618,17 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public SquareRootFunction() {
             super(
                     List.of("sqrt |", "√ |"),
-                    List.of("NUMBER"),
+                    List.of("Number"),
                     List.of(false),
                     false,
-                    "The square root of \"NUMBER\"."
+                    "The square root of \"Number\"."
             );
         }
 
         @Override
         public Double execute(Context context) {
             double d = 0;
-            Object value = context.retrieve("NUMBER");
+            Object value = context.retrieve("Number");
             if (value instanceof Double)
                     d = (Double)value;
             else if (value instanceof Long)
@@ -637,17 +642,17 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public SineFunction() {
             super(
                     List.of("sine |"),
-                    List.of("NUMBER"),
+                    List.of("Number"),
                     List.of(false),
                     false,
-                    "The sine of \"NUMBER\"."
+                    "The sine of \"Number\"."
             );
         }
 
         @Override
         public Double execute(Context context) {
             double d = 0;
-            Object value = context.retrieve("NUMBER");
+            Object value = context.retrieve("Number");
             if (value instanceof Double)
                 d = (Double)value;
             else if (value instanceof Long)
@@ -660,17 +665,17 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public CosineFunction() {
             super(
                     List.of("cosine |"),
-                    List.of("NUMBER"),
+                    List.of("Number"),
                     List.of(false),
                     false,
-                    "The cosine of \"NUMBER\"."
+                    "The cosine of \"Number\"."
             );
         }
 
         @Override
         public Double execute(Context context) {
             double d = 0;
-            Object value = context.retrieve("NUMBER");
+            Object value = context.retrieve("Number");
             if (value instanceof Double)
                 d = (Double)value;
             else if (value instanceof Long)
@@ -683,10 +688,10 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public ArcTangentFunction() {
             super(
                     List.of("arc tangent | over |"),
-                    List.of("CHANGE-Y", "CHANGE-X"),
+                    List.of("change-Y", "change-X"),
                     List.of(false, false),
                     false,
-                    "The arc tangent of \"CHANGE-Y\"/\"CHANGE-X\"."
+                    "The arc tangent of \"change-Y\"/\"change-X\"."
             );
         }
 
@@ -694,12 +699,12 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public Double execute(Context context) {
             double y = 0;
             double x = 0;
-            Object value = context.retrieve("CHANGE-Y");
+            Object value = context.retrieve("change-Y");
             if (value instanceof Double)
                 y = (Double)value;
             else if (value instanceof Long)
                 y = ((Long)value).doubleValue();
-            value = context.retrieve("CHANGE-X");
+            value = context.retrieve("change-X");
             if (value instanceof Double)
                 y = (Double)value;
             else if (value instanceof Long)

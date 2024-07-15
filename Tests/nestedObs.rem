@@ -1,0 +1,41 @@
+add three to Value :
+	Caller : create
+		Value : Value
+		Caller : create
+			Value : Value
+
+			getter
+				Value
+
+			add two to Value:
+				Value + 2
+
+			exec ME :
+				Value : add two to Value
+
+		getter
+			Value
+
+		add one to Value:
+			inc Value
+
+		MY inner value :
+			Caller's Value
+
+		exec ME :
+			exec Caller
+			add one to Value
+
+	exec Caller
+	Caller
+
+test {
+	"Outer instance variable"
+		Object : add three to 2
+		Object's Value
+	… expected 3
+
+	"Inner instance variable"
+		Object inner value
+	… expected 4
+}

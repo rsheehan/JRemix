@@ -31,6 +31,6 @@ using graphics lib
 		animate Squares-Rotation
 		animate Arrows-Movement
 		update Window
-	… until [Arrow x-pos ≥ the std width]
+	… until [ Arrow's x-Pos ≥ the std width ]
 
 "Finished" ↲

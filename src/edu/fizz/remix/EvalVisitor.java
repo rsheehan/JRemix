@@ -51,7 +51,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return library;
     }
 
-    /** LIBRARY STRING? LBLOCK EOL* functionDefinition* RBLOCK */
+    /** LIBRARY STRING? LBLOCK EOL* (functionDefinition EOL*)* RBLOCK */
     @Override
     public Object visitLibrary(RemixParser.LibraryContext ctx) {
         LibraryExpression library;
@@ -74,7 +74,11 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
-            if (node instanceof RemixParser.FunctionDefinitionContext) {
+            if (node instanceof RemixParser.StatementContext) {
+                Expression statement = (Expression)visit(node);
+                if (statement != null) // can be blank statements
+                    library.block.addStatement(statement);
+            } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 library.addFunction(function);
             }
@@ -92,9 +96,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             if (node instanceof RemixParser.ExpressionContext) {
                 libraryExpressions.add((Expression) visit(node));
             }
-//            } else if (!node.getText().equals(",")) {
-//                libraryExpressions.add(new VarValueExpression(node.getText()));
-//            }
         }
         Block usingLibBlock = (Block) visit(ctx.blockOfStatements());
         return new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingLibBlock);
@@ -350,7 +351,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return produceBlockExpression(ctx);
     }
 
-    /** IDENTIFIER COLON expression EOL */
+    /** IDENTIFIER COLON expression */
     @Override
     public AssignmentStatement visitSetVariable(RemixParser.SetVariableContext ctx) {
         String varName = ctx.IDENTIFIER().getText();
@@ -358,7 +359,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new AssignmentStatement(varName, expression);
     }
 
-    /** (expression (COMMA expression)*)? PRINTLN */
+    /** (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) */
     public PrintStatement visitPrntStatement(RemixParser.PrntStatementContext ctx) {
         List<Expression> expressionList = new ArrayList<>();
         int n = ctx.getChildCount();

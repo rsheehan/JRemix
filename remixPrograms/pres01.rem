@@ -1,25 +1,25 @@
 make a cloud :
 	create
-		base : random 600
-		across : random 800
+		Base : random 600
+		Across : random 800
 
 		getter
-			base
+			Base
 
-		move (me) :
-			base : base + 1
+		move ME :
+			Base : Base + 1
 
-		(me) to string :
-			"a cloud - " ⊕
-			… "base: " ⊕ base
-			… ⊕ " across: " ⊕ across
+		ME to string :
+			"a Cloud - " ⊕
+			… "Base: " ⊕ Base
+			… ⊕ " Across: " ⊕ Across
 
-cloud : make a cloud
-"The cloud's base is ", cloud's base ↲
-move (cloud)
-"The cloud's base is now ", cloud's base ↲
+Cloud : make a cloud
+"The cloud's base is ", Cloud's Base ↲
+move Cloud
+"The cloud's base is now ", Cloud's Base ↲
 
-another : make a cloud
+Another-Cloud : make a cloud
 
-cloud ↲
-another ↲
+Cloud ↲
+Another-Cloud ↲

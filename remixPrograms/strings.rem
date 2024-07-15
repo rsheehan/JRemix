@@ -1,31 +1,31 @@
 - Some string manipulation -
 
-sentence : "the quick brown fox jumps over the lazy dog"
+Sentence : "the quick brown fox jumps over the lazy dog"
 
-sentence ↲
+Sentence ↲
 
-for each (char) in (sentence) do
-	(char) _
+for each Char in Sentence do
+	Char _
 ↲
 
-for each (char) in (sentence) do
-	if (char = "z")
+for each Char in Sentence do
+	if (Char = "z")
 		return
-	(char) _
+	Char _
 ↲
 
-(string) backwards :
-	result : ""
-	for each (char) in (string) from position ((string) length) to 1 do
-		result : result ⊕ char
-	result
+String backwards :
+	Result : ""
+	for each Char in String from position (String length) to 1 do
+		Result : Result ⊕ Char
+	Result
 
-reverse (#string) :
-	#string : (#string) backwards
+reverse #String :
+	#String : #String backwards
 
-reverse (sentence)
-sentence ↲
+reverse Sentence
+Sentence ↲
 
-(sentence) backwards ↲
+Sentence backwards ↲
 
-sentence ↲
+Sentence ↲

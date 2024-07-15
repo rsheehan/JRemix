@@ -1,20 +1,23 @@
 - Print objects -
 
-shape (points) :
+shape Points :
 	create
-		points : points
+		Points : Points
 
-		(me) to string :
-			(points) as string
+		ME to string :
+			Points as string
 
 no string :
 	create
-		(me) as string :
+		ME as string :
 			"I have an \"as string\" method."
 
-box : shape {{0, 0}, {3, 0}, {0, 4}}
-box ↲
+		ME to string :
+			"no String"
 
-no : no string
-no ↲
-(no) as string ↲
+Box : shape { { 0, 0 }, { 3, 0 }, { 0, 4 } }
+Box ↲
+
+No : no string
+No ↲
+No as string ↲

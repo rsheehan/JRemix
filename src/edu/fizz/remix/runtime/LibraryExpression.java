@@ -4,7 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 /**
- * A library expression holds a function and a method table.
+ * A library expression holds a function table.
+ * The method table is shared by all libraries including the main program.
  * The block only makes sense when a file is being loaded with
  * loadPackage or running the contents of the editor window.
  *
@@ -14,6 +15,7 @@ import java.util.HashMap;
  */
 public class LibraryExpression implements Expression {
 
+    boolean loaded = false; // set to true when first evaluated
     public Block block = new Block();
     HashMap<String, Function> functionTable = new HashMap<>();
     static HashMap<String, Integer> methodTable = new HashMap<>(); // one table used by all
@@ -69,14 +71,17 @@ public class LibraryExpression implements Expression {
         return copy;
     }
 
-    public void resetFunctionsMethods(LibraryExpression other) {
-        functionTable = other.functionTable;
-//        methodTable = other.methodTable;
-    }
-
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         // The result of the expression is just itself.
+        // Now that libraries can include statements they must be executed here
+        // when first loaded.
+        if (!loaded) {
+            context.pushLibrary(this);
+            block.evaluate(context);
+            context.popLibrary();
+            loaded = true;
+        }
         return this;
     }
 }

@@ -1,22 +1,22 @@
 using graphics lib
-	window : a simple window
+	the-Window : a simple window
 
 	repeat
-		shape : a square
-		shape's colour   : random colour
-		shape's position : random point
-		shape's size     : random from 10 to 100
-		shape's heading  : random from 1 to 90
-		add (shape) to (window)
+		Shape : a square
+		Shape's Colour   : random colour
+		Shape's Position : random point
+		Shape's Size     : random from 10 to 100
+		Shape's Heading  : random from 1 to 90
+		add Shape to the-Window
 	… 100 times
 
-	turn : 2
-	degree : 0
+	Turn : 2
+	Degree : 0
 	animate 60 ticks per second
-		for each (shape) in (window's shapes) do
-			change (shape) heading by (turn) degrees
-		update (window)
-		degree : degree + turn
-	… until [degree ≥ 360]
+		for each Shape in (the-Window's Shapes) do
+			change Shape heading by Turn degrees
+		update the-Window
+		Degree : Degree + Turn
+	… until [Degree ≥ 360]
 
 "Finished" ↲

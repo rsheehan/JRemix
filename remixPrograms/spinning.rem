@@ -1,22 +1,22 @@
 using graphics lib
-	window : a simple window
+	the-Window : a simple window
 
-	triangle : a triangle
-	triangle's size : 100
-	triangle's position : { 0, the std height ÷ 2}
-	add (triangle) to (window)
+	Triangle : a triangle
+	Triangle's Size : 100
+	Triangle's Position : { 0, the std height ÷ 2}
+	add Triangle to the-Window
 
-	rotation : every 1 tick do
-		change (triangle) heading by 2 degrees
+	Rotation : every 1 tick do
+		change Triangle heading by 2 degrees
 
-	movement : every 1 tick do
-		change (triangle) x-pos by 4
+	Movement : every 1 tick do
+		change Triangle x-pos by 4
 
 	animate 60 ticks per second
-		animate (movement)
-		animate (rotation)
-		update (window)
+		animate Movement
+		animate Rotation
+		update the-Window
 	… until
-		triangle's x-pos ≥ the std width
+		(Triangle's x-Pos) ≥ the std width
 
 "Finished" ↲

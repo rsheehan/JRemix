@@ -1,25 +1,24 @@
 using graphics lib
-	window : a window with shape layers
+	the-Window : a window with shape layers
 
-	show (window)
-	layer : (window) base layer
+	Layer : the-Window base layer
 
-	triangle : a triangle
-	(red colour) (triangle) at {500, 400} facing 0 scaled by 100
-	add (triangle) to (layer)
+	Triangle : a triangle
+	(red) Triangle at { 500, 400 } facing 0 scaled by 100
+	add Triangle to Layer
 
-	triangle : copy (triangle)
-	(blue colour) (triangle) at {500, 400} facing (π ÷ 3) scaled by 100
-	add (triangle) to (layer)
+	Triangle : copy Triangle
+	(blue) Triangle at { 500, 400 } facing (π ÷ 3) scaled by 100
+	add Triangle to Layer
 
-	triangle : copy (triangle)
-	(green colour) (triangle) at {200, 100} facing π scaled by 50
-	add (triangle) to (layer)
+	Triangle : copy Triangle
+	(green) Triangle at { 200, 100 } facing π scaled by 50
+	add Triangle to Layer
 
-update (window) ; N.B. can be outside the using block because it is a method call
+update the-Window ; N.B. can be outside the using block because it is a method call
 
-(colour) (shape) at (position) facing (heading) scaled by (scale) :
-	shape's colour : colour
-	shape's position : position
-	shape's heading : heading
-	shape's size : scale
+Colour Shape at Position facing Heading scaled by Scale :
+	Shape's Colour : Colour
+	Shape's Position : Position
+	Shape's Heading : Heading
+	Shape's Size : Scale

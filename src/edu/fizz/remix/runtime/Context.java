@@ -13,6 +13,7 @@ public class Context {
 
     public Context() {
     }
+
     public Context(LibraryExpression programLibrary) {
         libraryStack.push(programLibrary);
     }

@@ -1,6 +1,6 @@
 "Graphics library loading." ↲
 
-library "edu.fizz.remix.libraries.Graphics"
+Graphics : library "edu.fizz.remix.libraries.Graphics"
 
 	=====================
 	Dimensions and points
@@ -69,10 +69,10 @@ library "edu.fizz.remix.libraries.Graphics"
 			getters/setters
 				Colour, Position, Size, Heading, Filled
 
-			MY x-pos :
+			MY x-Pos :
 				Position {1}
 
-			MY y-pos :
+			MY y-Pos :
 				Position {2}
 
 			change MY x-pos by Δx :
@@ -150,7 +150,7 @@ library "edu.fizz.remix.libraries.Graphics"
 			add Shape to ME :
 				add Shape to (Layers {1})
 
-			MY shapes :
+			MY Shapes :
 				Layers {1}'s Shapes
 
 	=-
@@ -192,3 +192,6 @@ library "edu.fizz.remix.libraries.Graphics"
 				if (Counter = 0)
 					Counter : Ticks
 					do Changes
+
+"Graphics library loaded." ↲
+Graphics

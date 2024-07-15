@@ -1,4 +1,8 @@
 Changing map keys from double quoted strings to single quoted ones.
+Did this temporarily by making strings double or single quoted.
+Convention - single quoted to be used as map keys only.
+NO doesn't work because of apostrophe s possessives. Requires a new 'key' type without spaces
+if I want this to work.
 
 Added a "null" keyword. Currently sort of works but something like:
 Abc = null
@@ -27,6 +31,8 @@ They should be usable as ordinary words in other places.
 
 When a library function shadows a previous library level function this should really be
 pointed out to the programmer.
+
+Add reference parameters to methods.
 
 Error messages required
 =======================

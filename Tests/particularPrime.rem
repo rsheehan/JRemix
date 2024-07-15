@@ -1,0 +1,73 @@
+=================
+Calculate a prime
+=================
+
+prime number N :
+	if (N = 1)
+		return 2
+	Prime-Count : 1
+	Primes : {2}
+	repeat
+		Biggest-Prime : last in Primes
+		Start : Biggest-Prime + 1
+		Finish : Biggest-Prime × Biggest-Prime + 1
+		Test-Range : Start to Finish
+		More-Primes : {}
+		Result : Prime-Count stopping at N filter X from Test-Range producing More-Primes
+			X is not divisible by any number in Primes up to (√ X)
+		if (Result = 0)
+			Primes : join Primes and More-Primes
+		… otherwise
+			return Result
+	… forever
+
+-----------
+
+#Count stopping at N filter #Item from List producing #More-Primes [Condition-Block] :
+	for each #Item in List do
+		if Condition-Block
+			inc #Count
+			if (#Count = N)
+				return #Item
+			append #Item to #More-Primes
+		0
+
+X is not divisible by any number in List up to Limit :
+	for each Number in List do
+		if (X is divisible by Number)
+			return false
+		if (Number > Limit)
+			return true
+		true
+
+-----------
+
+test {
+	"prime 1"
+		prime number 1
+	… expected 2
+
+	"prime 10"
+		prime number 10
+	… expected 29
+
+	"prime 100"
+		prime number 100
+	… expected 541
+
+	"prime 1000"
+		prime number 1000
+	… expected 7919
+
+	"prime 10000"
+		prime number 10000
+	… expected 104729
+
+	"prime 100000"
+		prime number 100000
+	… expected 1299709
+
+=	"prime 1000000"
+		prime number 1000000
+=	… expected 15485863
+}
