@@ -1,63 +1,112 @@
 
-"LIBRARY" \n
-Lib : library[
-	a :[
-		"function"]
+using graphics lib[
+	the-Window : make a (sky blue) window
+	draw the landscape in the-Window
+	add Clouds to the-Window
 
-	A : "variable"
+	Cloud-Movement : every 1 tick do[
+		for each Cloud in Clouds do[
+			move Cloud]]
 
-	test {[
-		"function call in named library block"[
-			a]
-		... expected "function"
+	do[
+		animate Cloud-Movement
+		update the-Window]
+	… 1000 times at 30 ticks per second]
 
-		"variable in named library block"[
-			A]
-		... expected "variable"]
-	}]
-↲
-"USING" \n
-using Lib[
-	test {[
-		"function call in named library using block"[
-			a]
-		... expected "function"
+make a Background window :[
+	Window : a window with shape layers
+	Window's Background : Background
+	Window]
 
-		"variable in named library using block"[
-			A]
-		... expected "variable"]
-	}]
-\n
-"TOP-LEVEL" \n
-test {[
-	"function call at top-level"[
-		a]
-	... expected "null"
+draw the landscape in the-Window :[
+	add the back mountains on (the-Window next layer)
+	add the front mountains on (the-Window next layer)]
 
-	"variable at top-level"[
-		A]
-	... expected "variable"]
-}
-\n
-using library[
-	A : 1
+add the back mountains on the-Back-Layer :[
+	repeat 20 times[
+		Mountain : a (dark grey) mountain with (black) of 200 based at 600
+		add Mountain to the-Back-Layer]
+	Box : a (dark blue) box of (the std width) x 200
+	… at { the std width / 2, the std height - 100 }
+	add Box to the-Back-Layer]
 
-	function X :[
-		X + 2]
-	test {[
-		"function inside library"[
-			function 4]
-		... expected 6]
-	}]
-…[
-	test {[
-		"function inside using"[
-			function 3]
-		... expected 5]
-	}]
-\n
-test {[
-	"variable modified in library"[
-		A]
-	... expected 1]
-}
+add the front mountains on the-Front-Layer :[
+	repeat 10 times[
+		Mountain : a (grey) mountain with (white) of 150 based at 650
+		add Mountain to the-Front-Layer]]
+
+a Colour mountain with outline-Colour of max-Height based at Level :[
+	Centre : random (the std width)
+	Height : random max-Height
+	Width : random 100 + 250
+	Mountain : a Colour shape from {[
+		{ 0, -Height }
+		{ Width ÷ 2, 0 }
+		{ -Width ÷ 2, 0 }]
+	} scaled by 1 at { Centre, Level }
+	-if (coin toss)
+	Mountain's outline-Colour : outline-Colour
+	Mountain]
+
+add #Clouds to the-Window :[
+	#Clouds : apply[
+		Cloud : a cloud
+		add (Cloud parts) to (the-Window base layer)
+		Cloud]
+	… 10 times]
+
+a cloud :[
+	Base : random (the std height - 200)
+	Across : random (the std width)
+	R1 : random 10 + 30
+	R2 : random 10 + 20
+	Distance : 10
+	if (R1 > R2)[
+		R1 swap R2]
+
+	Cloud : create[
+		A-radius : R1
+		B-radius : R2
+		X1 : (Across - R1) + Distance
+		X2 : (Across + R2) - Distance
+		Y1 : Base - R1
+		Y2 : Base - R2
+		A : null
+		B : null
+		Box : null
+		Line : null
+
+		MY parts :[
+			{ A, B, Box, Line }]
+
+		move ME :[
+			inc X1
+			inc X2
+			if ((X1 - A-radius) > the std width)[
+				Back : 0 - B-radius
+				X1 : Back - (X2 - X1)
+				X2 : Back]
+			A's Position : { X1, Y1 }
+			B's Position : { X2, Y2 }
+			Box's Position : { (X1 + X2) ÷ 2, (Y1 + A-radius + Y2 + 1) ÷ 2 }
+			Line's Start : { X1, Y1 + A-radius }
+			Line's Finish : { X2, Y1 + A-radius }]
+
+		set MY parts :[
+			A : a (white) circle of radius A-radius at { X1, Y1 }
+			A's outline-Colour : black
+			B : a (white) circle of radius B-radius at { X2, Y2 }
+			B's outline-Colour : black
+			Position : { (X1 + X2) ÷ 2, (Y1 + A-radius + Y2 + 1) ÷ 2 }
+			Width : X2 - X1
+			Height : Y1 - Y2 + A-radius
+			Box : a (white) box of Width x Height at Position
+			Line : a (black) line from {[
+				X1, Y1 + A-radius]
+			} to {[
+				X2, Y1 + A-radius]
+			}
+			Line's Width : 2]]
+
+	set Cloud parts
+	Cloud]

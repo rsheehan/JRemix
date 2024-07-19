@@ -4,8 +4,6 @@
 ==============================
 	-====================-
 
-"Standard library loading." ↲
-
 ==============================
  Simple print functions
 ==============================
@@ -502,7 +500,9 @@ Number squared/sqrd/²:
 Return true 50% of the time.
 =-
 coin toss :
-	random 2 = 1
+	if (random 2 = 1)
+		return true
+	false
 
 =-
 The Euclidean distance from "A" to "B".
@@ -604,5 +604,10 @@ test List-of-Tests :
 ==============================
  Common library functions
 ==============================
+
 graphics lib :
 	include "remixPrograms/graphics.rem"
+
+-==============================-
+
+"Standard library loaded." ↲

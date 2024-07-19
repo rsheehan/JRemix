@@ -1,6 +1,7 @@
 package edu.fizz.remix.libraries;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class GraphicsWindow extends JFrame {
 
@@ -13,6 +14,10 @@ public class GraphicsWindow extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationByPlatform(true);
         pack();
+    }
+
+    public void setWindowBackground(Color colour) {
+        drawPanel.setBackground(colour);
     }
 
 }

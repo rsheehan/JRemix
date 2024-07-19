@@ -15,16 +15,12 @@ public class GraphicsPanel extends JPanel {
     private final int height;
     List<DrawObject> drawObjects = new ArrayList<>();
     List<DrawObject> nextDrawObjects = new ArrayList<>();
-//    private final ArrayList<GraphicsLayer> layers;
-//    private final int currentLayer = 0;
 
     public GraphicsPanel(int width, int height) {
         super();
         this.width = width;
         this.height = height;
         setBackground(new Color(0, 0, 50));
-//        layers = new ArrayList<>();
-//        layers.add(new GraphicsLayer(width * IMAGE_SCALE, height * IMAGE_SCALE));
     }
 
     public Dimension getPreferredSize() {
@@ -50,46 +46,35 @@ public class GraphicsPanel extends JPanel {
 //      g.drawImage(layer, 0, 0, width, height, 0, 0, width * IMAGE_SCALE, height * IMAGE_SCALE, null);
     }
 
-//    private void drawShape(java.awt.Graphics g, DrawShape shape) {
-//        Graphics2D g2d = (Graphics2D) g;
-//        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//        g2d.setColor(shape.colour);
-//        g2d.setStroke(stroke);
-//        AffineTransform transform = new AffineTransform();
-//        int[] position = (shape.position);
-//        transform.translate(position[0], position[1]);
-//        transform.rotate(shape.heading);
-//        Shape positionedShape = transform.createTransformedShape(shape.path);
-//        if (shape.filled)
-//            g2d.fill(positionedShape);
-//        else
-//            g2d.draw(positionedShape);
-//    }
-
     private interface DrawObject {
         void draw(Graphics g);
     }
 
     private record DrawShape(
-        Color colour,
-        Path2D.Double path,
-        int[] position,
-        double heading,
-        boolean filled
+            Color fillColour,
+            Color outlineColour,
+            Path2D.Double path,
+            int[] position,
+            double heading,
+            boolean filled,
+            boolean outlined
     ) implements DrawObject {
         public void draw(java.awt.Graphics g) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.setColor(colour);
             g2d.setStroke(basicStroke);
             AffineTransform transform = new AffineTransform();
             transform.translate(position[0], position[1]);
             transform.rotate(heading);
             Shape positionedShape = transform.createTransformedShape(path);
-            if (filled)
+            if (filled) {
+                g2d.setColor(fillColour);
                 g2d.fill(positionedShape);
-            else
+            };
+            if (outlined) {
+                g2d.setColor(outlineColour);
                 g2d.draw(positionedShape);
+            }
         }
     }
 
@@ -109,6 +94,32 @@ public class GraphicsPanel extends JPanel {
         }
     }
 
+    private record DrawCircle(
+            Color fillColour,
+            Color outlineColour,
+            int [] position,
+            double radius,
+            boolean filled,
+            boolean outlined
+    ) implements DrawObject {
+        public void draw(java.awt.Graphics g) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setStroke(basicStroke);
+            int diameter = (int) radius * 2;
+            int centreX = position[0] - (int) radius;
+            int centreY = position[1] - (int) radius;
+            if (filled) {
+                g2d.setColor(fillColour);
+                g2d.fillOval(centreX, centreY, diameter, diameter);
+            };
+            if (outlined) {
+                g2d.setColor(outlineColour);
+                g2d.drawOval(centreX, centreY, diameter, diameter);
+            }
+        }
+    }
+
     void setPenColour(Color colour) {
 //        layers.get(currentLayer).setPenColour(colour);
     }
@@ -122,14 +133,19 @@ public class GraphicsPanel extends JPanel {
         repaint();
     }
 
-    public void addShapeForDrawing(Color shapeColour, Path2D.Double scaledShapePath, int[] position, double heading, boolean filled) {
-        DrawShape shape = new DrawShape(shapeColour, scaledShapePath, position, heading, filled);
+    public void addShapeForDrawing(Color fillColour, Color outlineColour, Path2D.Double scaledShapePath, int[] position, double heading, boolean filled, Boolean outlined) {
+        DrawShape shape = new DrawShape(fillColour, outlineColour, scaledShapePath, position, heading, filled, outlined);
         nextDrawObjects.add(shape);
     }
 
     public void addLineForDrawing(Color lineColour, int[] start, int[] finish, double width) {
         DrawLine line = new DrawLine(lineColour, start, finish, width);
         nextDrawObjects.add(line);
+    }
+
+    public void addCircleForDrawing(Color fillColour, Color outlineColour, double radius, int[] centre, boolean filled, Boolean outlined) {
+        DrawCircle circle = new DrawCircle(fillColour, outlineColour, centre, radius, filled, outlined);
+        nextDrawObjects.add(circle);
     }
 
 }

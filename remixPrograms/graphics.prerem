@@ -1,6 +1,4 @@
 
-"Graphics library loading." ↲
-
 Graphics : library "edu.fizz.remix.libraries.Graphics"[
 
 	=====================
@@ -22,18 +20,26 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"[
 	Colours
 	=======
 	white :[
-		{255, 255, 255}]
+		{ 255, 255, 255 }]
 	black :[
-		{0, 0, 0}]
+		{ 0, 0, 0 }]
 	red :[
-		{255, 0, 0}]
+		{ 255, 0, 0 }]
 	green :[
-		{0, 255, 0}]
+		{ 0, 255, 0 }]
 	blue :[
-		{0, 0, 255}]
+		{ 0, 0, 255 }]
+	dark blue :[
+		{ 0, 0, 50 }]
+	sky blue :[
+		{ 180, 230, 255 }]
+	grey :[
+		{ 128, 128, 128 }]
+	dark grey :[
+		{ 64, 64, 64 }]
 
 	/a random colour :[
-		{random 255, random 255, random 255}]
+		{ random 255, random 255, random 255 }]
 
 	======
 	Shapes
@@ -52,23 +58,41 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"[
 				cosine (2π × Side ÷ N)
 				sine (2π × Side ÷ N)]
 			} to Points]
-		a shape from Points]
+		a shape from Points scaled by 20]
+
+	a Colour box of Width x Height at Position :[
+		Left : -Width ÷ 2
+		Right : Width ÷ 2
+		Top : -Height ÷ 2
+		Bottom : Height ÷ 2
+		a Colour shape from {[
+			{ Left, Top }
+			{ Right, Top }
+			{ Right, Bottom }
+			{ Left, Bottom }]
+		} scaled by 1 at Position]
+
+	a shape from Points scaled by Size :[
+		a (red) shape from Points scaled by Size at (the centre point)]
 
 	=-
-	Create a shape from the list of "points".
+	Create a shape of "Colour" from the list of "Points" scaled by "Size"
+	at "Position".
+	Shapes can be filled or just outlines.
 	=-
-	a shape from Points :[
+	a Colour shape from Points scaled by Size at Position:[
 
 		create[
-			Colour   : red
-			Polygon  : Points
-			Position : the centre point
-			Size     : 20.0
-			Heading  : 0.0 ; radians
-			Filled   : true
+			Colour         : Colour
+			outline-Colour : null ; no outline
+			Polygon        : Points
+			Position       : Position
+			Size           : Size
+			Heading        : 0.0 ; radians
 
 			getters/setters[
-				Colour, Position, Size, Heading, Filled]
+				Colour, outline-Colour,
+				Position, Size, Heading]
 
 			MY x-Pos :[
 				Position {1}]
@@ -89,6 +113,10 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"[
 	Lines
 	=====
 
+	=-
+	Create a "Colour" line from "Start" to "Finish".
+	The width is 3 pixels by default.
+	=-
 	a Colour line from Start to Finish :[
 		create[
 			Start : Start
@@ -105,6 +133,28 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"[
 	a random line :[
 		a (random colour) line from (random point) to (random point)]
 
+	=======
+	Circles
+	=======
+
+	=-
+	Create a "Colour" circle of radius "Radius" at "Position".
+	=-
+	a Colour circle of radius Radius at Position :[
+		create[
+			Colour : Colour
+			outline-Colour : null ; no outline
+			Radius : Radius
+			Position : Position
+
+			getters/setters[
+				Colour, outline-Colour,
+				Radius, Position]]]
+
+	a random circle :[
+		Size : random (the std height ÷ 8) + 10
+		a (random colour) circle of radius Size at (random point)]
+
 	===============
 	Graphic Windows
 	===============
@@ -113,13 +163,16 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"[
 	Create and show a window with multiple shape layers.
 	=-
 	a window with shape layers :[
-
 		the-Window : create[
-			JWindow : a "Drawing" window of (the std width) and (the std height)
+			JWindow : a "Drawing" window of (the std width) by (the std height)
 			Layers : { a shape layer } ; default bottom layer
+			Background : dark blue
 
-			getter[
-				Layers]
+			getters[
+				Layers, Background]
+
+			MY Background Colour : [; this is a manual setter
+				make the JWindow background Colour]
 
 			MY next layer :[
 				New-Layer : a shape layer
@@ -155,6 +208,14 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"[
 				Layers {1}'s Shapes]]]
 
 	=-
+	Create a layered window with a "Background" colour.
+	=-
+	make a Background window :[
+		Window : a window with shape layers
+		Window's Background : Background
+		Window]
+
+	=-
 	Create a shape layer.
 	Shapes get added to layers.
 	=-
@@ -166,14 +227,18 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"[
 				Shapes]
 
 			add Shape to ME :[
-				append Shape to Shapes]
+				if (Shape is a "list")[
+					for each Part in Shape do[
+						append Part to Shapes]]
+				… otherwise[
+					append Shape to Shapes]]
 
 			clear MY shapes :[
 				Shapes : {}]
 
-			prepare MY shapes for drawing on Window :[
+			prepare MY shapes for drawing on JWindow :[
 				for each Shape in Shapes do[
-					add the Shape to the Window ]]]]; Java
+					add the Shape to the JWindow ]]]]; Java
 
 	=========
 	Animation
@@ -192,7 +257,20 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"[
 				dec Counter
 				if (Counter = 0)[
 					Counter : Ticks
-					do Changes]]]]]
+					do Changes]]]]
+
+	=
+	The Java animation function is
+	animate at N ticks per second [Animation-Block] until [Condition-Block]
+	=
+
+	on the-Window [Block] Number times at N ticks per second :[
+		Animation-Block : [[
+			do Block
+			update the-Window
+			dec Number]
+		]
+		animate at N ticks per second Animation-Block until [Number < 1]]]
 
 "Graphics library loaded." ↲
 Graphics

@@ -76,11 +76,11 @@ public class Graphics extends LibraryExpression {
 
         public WindowFunction() {
             super(
-                    List.of("a | window of | and |"),
+                    List.of("a | window of | by |", "an | window of | by |"),
                     List.of("TITLE", "WIDTH", "HEIGHT"),
                     List.of(false, false, false),
                     false,
-                    "Create window with \"TITLE\" with \"WIDTH\" and \"HEIGHT\"."
+                    "Create window with \"TITLE\" of size \"WIDTH\" by \"HEIGHT\"."
             );
         }
 
@@ -90,6 +90,27 @@ public class Graphics extends LibraryExpression {
             int width = ((Long)context.retrieve("WIDTH")).intValue();
             int height = ((Long)context.retrieve("HEIGHT")).intValue();
             return new GraphicsWindow(title, width, height);
+        }
+    }
+
+    public static final class SetWindowBackgroundFunction extends Function {
+
+        public SetWindowBackgroundFunction() {
+            super(
+                    List.of("make the | background |"),
+                    List.of("JWindow", "Colour"),
+                    List.of(false, false),
+                    false,
+                    "Make the background of \"JWindow\" \"Colour\"."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            GraphicsWindow window = (GraphicsWindow) context.retrieve("JWindow");
+            Color backgroundColour = colorFromRGBorString(context.retrieve("Colour"));
+            window.setWindowBackground(backgroundColour);
+            return null;
         }
     }
 
@@ -111,6 +132,7 @@ public class Graphics extends LibraryExpression {
             return null;
         }
     }
+
     public static final class RefreshWindowFunction extends Function {
         public RefreshWindowFunction() {
             super(
@@ -165,8 +187,14 @@ public class Graphics extends LibraryExpression {
             RemixObject shape = (RemixObject) context.retrieve("SHAPE");
             GraphicsWindow window = (GraphicsWindow) context.retrieve("WINDOW");
             Context shapeContext = shape.getContext();
-            // get the colour
-            Color shapeColour = colorFromRGBorString(shapeContext.retrieve("Colour"));
+            // get the fill colour
+            boolean filled = true;
+            Color fillColour = null;
+            Object fill = shapeContext.retrieve("Colour");
+            if (fill instanceof RemixNull)
+                filled = false;
+            else
+                fillColour = colorFromRGBorString(fill);
             if (shape.getContext().retrieve("Polygon") != null) {
                 // get the polygon
                 Path2D.Double shapePath = polygonFromPoints((ArrayList<?>) shapeContext.retrieve("Polygon"));
@@ -179,14 +207,34 @@ public class Graphics extends LibraryExpression {
                 Path2D.Double scaledShapePath = new Path2D.Double(shapePath, scaledTransform);
                 // get the heading
                 double heading = doubleFromObject(shapeContext.retrieve("Heading"));
-                // filled or outline
-                boolean filled = (boolean) shapeContext.retrieve("Filled");
-                window.drawPanel.addShapeForDrawing(shapeColour, scaledShapePath, position, heading, filled);
+                // get the outline colour
+                boolean outlined = true;
+                Color outlineColour = null;
+                Object outline = shapeContext.retrieve("outline-Colour");
+                if (outline instanceof RemixNull)
+                    outlined = false;
+                else
+                    outlineColour = colorFromRGBorString(outline);
+                window.drawPanel.addShapeForDrawing(fillColour, outlineColour,
+                        scaledShapePath, position, heading, filled, outlined);
+            } else if (shape.getContext().retrieve("Radius") != null) {
+                double radius = ((Number) shapeContext.retrieve("Radius")).doubleValue();
+                int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Position")));
+                // get the outline colour
+                boolean outlined = true;
+                Color outlineColour = null;
+                Object outline = shapeContext.retrieve("outline-Colour");
+                if (outline instanceof RemixNull)
+                    outlined = false;
+                else
+                    outlineColour = colorFromRGBorString(outline);
+                window.drawPanel.addCircleForDrawing(fillColour, outlineColour,
+                        radius, position, filled, outlined);
             } else { // currently assuming this must be a line
                 int[] start = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Start")));
                 int[] finish = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Finish")));
                 double width = ((Number)shapeContext.retrieve("Width")).doubleValue();
-                window.drawPanel.addLineForDrawing(shapeColour, start, finish, width);
+                window.drawPanel.addLineForDrawing(fillColour, start, finish, width);
             }
             return null;
         }
@@ -197,7 +245,7 @@ public class Graphics extends LibraryExpression {
         Timer animationTimer;
         public AnimateFunction() {
             super(
-                    List.of("animate | ticks per second | until |", "animate | tick per second | until |"),
+                    List.of("animate at | ticks per second | until |", "animate at | tick per second | until |"),
                     List.of("RATE", "ANIMATION", "CONDITION"),
                     List.of(false, true, true),
                     false,
@@ -223,16 +271,8 @@ public class Graphics extends LibraryExpression {
             private final Block condition;
 
             AnimationBlock( Context context, Block animationBlock, Block conditionBlock) {
-//                animationBlock.setContext(new Context(animationBlock.getContext()));
                 animation = animationBlock;
-//                conditionBlock.setContext((new Context(conditionBlock.getContext())));
                 condition = conditionBlock;
-//                Context animationContext = animationBlock.getContext();
-//                animationContext.cloneLibraryStackInPlace();
-
-//                Context animationContext = context.copyParentContext();
-//                animation.setContext(animationContext);
-//                condition.setContext(animationContext);
             }
 
             @Override
