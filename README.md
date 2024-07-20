@@ -46,13 +46,9 @@ Here is an animated random landscape program in Remix.
         draw the landscape in the-Window
         add Clouds to the-Window
 
-        Cloud-Movement : every 1 tick do
+        animate the-Window 1000 times at 30 ticks per second
             for each Cloud in Clouds
                 move Cloud
-
-        on the-Window
-            animate Cloud-Movement
-        … 1000 times at 30 ticks per second
     
     ----------------------------------------
     

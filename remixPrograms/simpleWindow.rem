@@ -12,7 +12,7 @@ using graphics lib
 
 	Turn : 2
 	Degree : 0
-	animate 60 ticks per second
+	animate at 60 ticks per second
 		for each Shape in (the-Window's Shapes) do
 			change Shape heading by Turn degrees
 		update the-Window

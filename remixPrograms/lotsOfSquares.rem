@@ -1,9 +1,7 @@
 Graphics : graphics lib
 
 using Graphics
-	the-Window : a window with shape layers
-	show the-Window
-	Layer : the-Window base layer
+	the-Window : a simple window
 
 	Square-Pts : {
 		{-1, -1}
@@ -12,15 +10,13 @@ using Graphics
 		{-1,  1}
 	}
 
-	Square : a shape from Square-Pts
-	Square's Size : 200
-	Square's Position : the centre point
+	Square : a (random colour) shape from Square-Pts scaled by 200 at (the centre point)
 
 	for each Angle from 0 to 80 in steps of 10 do
 		S : copy Square
 		S's Heading : Angle degrees as radians
 		S's Colour : random colour
-		add S to Layer
+		add S to the-Window
 
 	Arrow-Pts : {
 		{ 0,  1}
@@ -29,16 +25,13 @@ using Graphics
 		{ 2,  2}
 	}
 
-	Arrow : a shape from Arrow-Pts
-	Arrow's Size : 10
-	Arrow's Position : {
+	Arrow : a (red) shape from Arrow-Pts scaled by 10 at {
 		"x" : 800
 		"y" : the std height ÷ 2
 	}
-	Arrow's Heading : π × 1.5
-	Arrow's Colour : red
+	Arrow's Heading : 1.5π
 
-	add Arrow to Layer
+	add Arrow to the-Window
 	update the-Window
 
 "Finished" ↲

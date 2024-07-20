@@ -27,7 +27,7 @@ using graphics lib
 		for each Arrow in (base-Layer's Shapes) do
 			change Arrow x-pos by 5
 
-	animate 50 ticks per second
+	animate at 50 ticks per second
 		animate Squares-Rotation
 		animate Arrows-Movement
 		update Window

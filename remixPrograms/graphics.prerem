@@ -264,7 +264,7 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"[
 	animate at N ticks per second [Animation-Block] until [Condition-Block]
 	=
 
-	on the-Window [Block] Number times at N ticks per second :[
+	animate the-Window Number times at N ticks per second [Block] :[
 		Animation-Block : [[
 			do Block
 			update the-Window

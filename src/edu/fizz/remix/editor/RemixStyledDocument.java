@@ -351,8 +351,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 // couldn't call super.replace as that calls back into this class
                 super.remove(completionsHere.offset, seedLength);
                 super.insertString(completionsHere.offset, completionText, defaultStyle);
-                // show the popup of documentation here
-
                 if (completionText.contains("(") || completionText.contains("[")) // don't move on otherwise
                     moveCursorToNextParam(completionsHere.offset);
             }

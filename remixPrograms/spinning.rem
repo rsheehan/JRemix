@@ -6,13 +6,13 @@ using graphics lib
 	Triangle's Position : { 0, the std height ÷ 2}
 	add Triangle to the-Window
 
-	Rotation : every 1 tick do
+	Rotation : every 2 ticks do
 		change Triangle heading by 2 degrees
 
 	Movement : every 1 tick do
 		change Triangle x-pos by 4
 
-	animate 60 ticks per second
+	animate at 60 ticks per second
 		animate Movement
 		animate Rotation
 		update the-Window

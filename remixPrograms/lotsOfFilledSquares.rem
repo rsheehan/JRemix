@@ -8,10 +8,9 @@ a random square :
 	Shape's Heading  : (random 360) degrees as radians
 	Shape
 
-using graphics lib ; can only have statements
-	the-Window : a window with shape layers
-	Layer : the-Window base layer
+using graphics lib
+	the-Window : a simple window
 	repeat
-		add (a random square) to Layer
+		add (a random square) to the-Window
 	… 100 times
 	update the-Window

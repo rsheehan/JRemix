@@ -1,52 +1,39 @@
 
 using graphics lib[
+
 	the-Window : make a (sky blue) window
 	draw the landscape in the-Window
 	add Clouds to the-Window
 
 	Cloud-Movement : every 1 tick do[
-		for each Cloud in Clouds do[
+		for each Cloud in Clouds[
 			move Cloud]]
 
-	do[
-		animate Cloud-Movement
-		update the-Window]
+	on the-Window[
+		animate Cloud-Movement]
 	… 1000 times at 30 ticks per second]
 
-make a Background window :[
-	Window : a window with shape layers
-	Window's Background : Background
-	Window]
+----------------------------------------
 
 draw the landscape in the-Window :[
 	add the back mountains on (the-Window next layer)
+	add the sea on (the-Window next layer)
 	add the front mountains on (the-Window next layer)]
 
 add the back mountains on the-Back-Layer :[
 	repeat 20 times[
-		Mountain : a (dark grey) mountain with (black) of 200 based at 600
-		add Mountain to the-Back-Layer]
+		Mountain : a (dark grey) mountain with (black) outline of 200 based at 600
+		add Mountain to the-Back-Layer]]
+
+add the sea on the-Middle-Layer :[
 	Box : a (dark blue) box of (the std width) x 200
-	… at { the std width / 2, the std height - 100 }
-	add Box to the-Back-Layer]
+	…     at { the std width ÷ 2, the std height - 100 }
+	add Box to the-Middle-Layer]
 
 add the front mountains on the-Front-Layer :[
-	repeat 10 times[
-		Mountain : a (grey) mountain with (white) of 150 based at 650
+	for each (Location) from 650 to 680 in steps of 3 do[
+		Mountain : a (grey) mountain with (white) outline of 150 based at Location
 		add Mountain to the-Front-Layer]]
-
-a Colour mountain with outline-Colour of max-Height based at Level :[
-	Centre : random (the std width)
-	Height : random max-Height
-	Width : random 100 + 250
-	Mountain : a Colour shape from {[
-		{ 0, -Height }
-		{ Width ÷ 2, 0 }
-		{ -Width ÷ 2, 0 }]
-	} scaled by 1 at { Centre, Level }
-	-if (coin toss)
-	Mountain's outline-Colour : outline-Colour
-	Mountain]
 
 add #Clouds to the-Window :[
 	#Clouds : apply[
@@ -54,6 +41,32 @@ add #Clouds to the-Window :[
 		add (Cloud parts) to (the-Window base layer)
 		Cloud]
 	… 10 times]
+
+=
+A mountain is a polygon shape object of 3 points.
+=
+
+a Colour mountain with outline-Colour outline of max-Height based at Level :[
+	Centre : random (the std width)
+	Height : random max-Height + 20
+	Width : random 100 + 250
+	Mountain : a Colour shape from {[
+		{ 0, -Height }
+		{ Width ÷ 2, 0 }
+		{ -Width ÷ 2, 0 }]
+	} scaled by 1 at { Centre, Level }
+	Mountain's outline-Colour : outline-Colour
+	return Mountain]
+
+=
+A cloud is a composite object comprising of two circles, a rectangle and a line.
+
+Each part is added separately to the same window layer using the list returned from
+"MY parts".
+
+When animated the "move ME" method changes the positions of all the parts.
+The "move ME" also wraps the cloud around when it passes off the window.
+=
 
 a cloud :[
 	Base : random (the std height - 200)
@@ -65,19 +78,24 @@ a cloud :[
 		R1 swap R2]
 
 	Cloud : create[
-		A-radius : R1
-		B-radius : R2
+
+		- these are fields
+
 		X1 : (Across - R1) + Distance
 		X2 : (Across + R2) - Distance
 		Y1 : Base - R1
 		Y2 : Base - R2
-		A : null
-		B : null
+		A-radius : R1
+		B-radius : R2
+		A-circle : null
+		B-circle : null
 		Box : null
 		Line : null
 
+		- these are methods
+
 		MY parts :[
-			{ A, B, Box, Line }]
+			{ A-circle, B-circle, Box, Line }]
 
 		move ME :[
 			inc X1
@@ -86,17 +104,17 @@ a cloud :[
 				Back : 0 - B-radius
 				X1 : Back - (X2 - X1)
 				X2 : Back]
-			A's Position : { X1, Y1 }
-			B's Position : { X2, Y2 }
+			A-circle's Position : { X1, Y1 }
+			B-circle's Position : { X2, Y2 }
 			Box's Position : { (X1 + X2) ÷ 2, (Y1 + A-radius + Y2 + 1) ÷ 2 }
 			Line's Start : { X1, Y1 + A-radius }
 			Line's Finish : { X2, Y1 + A-radius }]
 
-		set MY parts :[
-			A : a (white) circle of radius A-radius at { X1, Y1 }
-			A's outline-Colour : black
-			B : a (white) circle of radius B-radius at { X2, Y2 }
-			B's outline-Colour : black
+		setup MY parts :[
+			A-circle : a (white) circle of radius A-radius at { X1, Y1 }
+			A-circle's outline-Colour : black
+			B-circle : a (white) circle of radius B-radius at { X2, Y2 }
+			B-circle's outline-Colour : black
 			Position : { (X1 + X2) ÷ 2, (Y1 + A-radius + Y2 + 1) ÷ 2 }
 			Width : X2 - X1
 			Height : Y1 - Y2 + A-radius
@@ -108,5 +126,5 @@ a cloud :[
 			}
 			Line's Width : 2]]
 
-	set Cloud parts
-	Cloud]
+	setup Cloud parts
+	return Cloud]

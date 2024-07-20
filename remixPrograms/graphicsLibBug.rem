@@ -18,7 +18,7 @@ using graphics lib
 
 	"here" ↲
 
-	animate 2 ticks per second
+	animate at 2 ticks per second
 		animate Add-Line
 	… until [Count = 10]
 
