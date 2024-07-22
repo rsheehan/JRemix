@@ -59,7 +59,7 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 			} to Points
 		a shape from Points scaled by 20
 
-	a Colour box of Width x Height at Position :
+	a/an Colour box of Width x Height at Position :
 		Left : -Width ÷ 2
 		Right : Width ÷ 2
 		Top : -Height ÷ 2
@@ -79,7 +79,7 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 	at "Position".
 	Shapes can be filled or just outlines.
 	=-
-	a Colour shape from Points scaled by Size at Position:
+	a/an Colour shape from Points scaled by Size at Position:
 
 		create
 			Colour         : Colour
@@ -116,7 +116,7 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 	Create a "Colour" line from "Start" to "Finish".
 	The width is 3 pixels by default.
 	=-
-	a Colour line from Start to Finish :
+	a/an Colour line from Start to Finish :
 		create
 			Start : Start
 			Finish : Finish
@@ -139,7 +139,7 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 	=-
 	Create a "Colour" circle of radius "Radius" at "Position".
 	=-
-	a Colour circle of radius Radius at Position :
+	a/an Colour circle of radius Radius at Position :
 		create
 			Colour : Colour
 			outline-Colour : null ; no outline
@@ -155,23 +155,28 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 		a (random colour) circle of radius Size at (random point)
 
 	===============
-	Graphic Windows
+	Graphics Panels
 	===============
 
 	=-
-	Create and show a window with multiple shape layers.
+	Open the graphic panel with multiple layers.
+	Return the graphics panel.
 	=-
-	a window with shape layers :
-		the-Window : create
-			JWindow : a "Drawing" window of (the std width) by (the std height)
+	the graphics panel with layers :
+		a (graphics panel) with layers
+
+	a JGraphics-Panel with layers :
+		Panel : create
+			JGraphics : JGraphics-Panel
 			Layers : { a shape layer } ; default bottom layer
-			Background : dark blue
+			Background : null
 
 			getters
 				Layers, Background
 
-			MY Background Colour : ; this is a manual setter
-				make the JWindow background Colour
+			MY Background Colour : ; this is a setter
+				make the JGraphics background Colour ; Java
+				Background : Colour
 
 			MY next layer :
 				New-Layer : a shape layer
@@ -181,24 +186,23 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 			MY base layer :
 				Layers {1}
 
-			show ME :
-				show JWindow
-
 			update ME :
-				clear all JWindow layers
+				clear all JGraphics layers ; Java
 				for each Layer in Layers do
-					prepare Layer shapes for drawing on JWindow
-				refresh JWindow
+					prepare Layer shapes for drawing on JGraphics
+				refresh JGraphics ; Java
 
-		show the-Window
-		the-Window
+		Panel's Background : dark blue
+		return Panel
 
 	=-
-	Create and show a window with only one shape layer.
+	Open the graphics panel with one layer.
 	=-
-	a simple window :
+	the graphics panel :
+		a graphics panel from (graphics panel)
 
-		extend (a window with shape layers)
+	a graphics panel from JGraphics-Panel :
+		extend (a JGraphics-Panel with layers)
 
 			add Shape to ME :
 				add Shape to (Layers {1})
@@ -207,9 +211,45 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 				Layers {1}'s Shapes
 
 	=-
+	Create a layered graphics panel with a "Background" colour.
+	=-
+	make a Background graphics panel :
+		Panel : a graphics panel with shape layers
+		Panel's Background : Background
+		Panel
+
+	================
+	Graphics Windows
+	================
+
+	=-
+	Open a graphics window and return the graphics panel.
+	=-
+	open a graphics window :
+		JWindow : a "Drawing" window of (the std width) by (the std height)
+		show JWindow ; Java
+		JGraphics-Panel : the JWindow graphics panel ; Java
+
+	=-
+	Open a graphics window with multiple layers.
+	Return the graphics panel.
+	=-
+	a graphics window with layers :
+		JGraphics-Panel : open a graphics window
+		a JGraphics-Panel with layers
+
+	=-
+	Open a graphics window with only one layer.
+	Return the graphics panel.
+	=-
+	a graphics window :
+		JGraphics-Panel : open a graphics window
+		a graphics panel from JGraphics-Panel
+
+	=-
 	Create a layered window with a "Background" colour.
 	=-
-	make a Background window :
+	make a/an Background window :
 		Window : a window with shape layers
 		Window's Background : Background
 		Window
@@ -235,9 +275,9 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 			clear MY shapes :
 				Shapes : {}
 
-			prepare MY shapes for drawing on JWindow :
+			prepare MY shapes for drawing on JGraphics :
 				for each Shape in Shapes do
-					add the Shape to the JWindow ; Java
+					add the Shape to the JGraphics ; Java
 
 	=========
 	Animation
@@ -264,12 +304,11 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 	=
 
 	animate the-Window Number times at N ticks per second [Block] :
-		Animation-Block : [
+		animate at N ticks per second
 			do Block
 			update the-Window
 			dec Number
-		]
-		animate at N ticks per second Animation-Block until [Number < 1]
+		… until [Number < 1]
 
 "Graphics library loaded." ↲
 Graphics

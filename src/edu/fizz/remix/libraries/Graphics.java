@@ -1,5 +1,6 @@
 package edu.fizz.remix.libraries;
 
+import edu.fizz.remix.editor.RemixEditor;
 import edu.fizz.remix.runtime.*;
 
 import javax.swing.*;
@@ -72,6 +73,26 @@ public class Graphics extends LibraryExpression {
         return 0d;
     }
 
+    public static final class GraphicsPanelFunction extends Function {
+
+        public GraphicsPanelFunction() {
+            super(
+                    List.of("graphics panel"),
+                    List.of(),
+                    List.of(),
+                    false,
+                    "Expand the graphics panel in the IDE and return it."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            // need to expand the panel
+            RemixEditor.expandGraphicsPanel();
+            return RemixEditor.getGraphicsPanel();
+        }
+    }
+
     public static final class WindowFunction extends Function {
 
         public WindowFunction() {
@@ -93,23 +114,42 @@ public class Graphics extends LibraryExpression {
         }
     }
 
-    public static final class SetWindowBackgroundFunction extends Function {
+    public static final class WindowGraphicsPanelFunction extends Function {
 
-        public SetWindowBackgroundFunction() {
+        public WindowGraphicsPanelFunction() {
             super(
-                    List.of("make the | background |"),
-                    List.of("JWindow", "Colour"),
-                    List.of(false, false),
+                    List.of("the | graphics panel"),
+                    List.of("JWindow"),
+                    List.of(false),
                     false,
-                    "Make the background of \"JWindow\" \"Colour\"."
+                    "The \"JWindow\" graphics panel"
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            GraphicsWindow window = (GraphicsWindow) context.retrieve("JWindow");
+            GraphicsWindow window = (GraphicsWindow)context.retrieve("JWindow");
+            return window.drawPanel;
+        }
+    }
+
+    public static final class SetGraphicsBackgroundFunction extends Function {
+
+        public SetGraphicsBackgroundFunction() {
+            super(
+                    List.of("make the | background |"),
+                    List.of("Graphics-Panel", "Colour"),
+                    List.of(false, false),
+                    false,
+                    "Make the background of \"Graphics-Panel\" \"Colour\"."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            GraphicsPanel panel = (GraphicsPanel) context.retrieve("Graphics-Panel");
             Color backgroundColour = colorFromRGBorString(context.retrieve("Colour"));
-            window.setWindowBackground(backgroundColour);
+            panel.setBackground(backgroundColour);
             return null;
         }
     }
@@ -133,21 +173,21 @@ public class Graphics extends LibraryExpression {
         }
     }
 
-    public static final class RefreshWindowFunction extends Function {
-        public RefreshWindowFunction() {
+    public static final class RefreshGraphicsFunction extends Function {
+        public RefreshGraphicsFunction() {
             super(
                     List.of("refresh |"),
-                    List.of("WINDOW"),
+                    List.of("Graphics-Panel"),
                     List.of(false),
                     false,
-                    "Refresh the \"WINDOW\"."
+                    "Refresh the \"Graphics-Panel\"."
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            GraphicsWindow window = (GraphicsWindow) context.retrieve("WINDOW");
-            window.drawPanel.exchangeShapesAndRepaint();
+            GraphicsPanel panel = (GraphicsPanel) context.retrieve("Graphics-Panel");
+            panel.exchangeShapesAndRepaint();
             return null;
         }
     }
@@ -156,17 +196,17 @@ public class Graphics extends LibraryExpression {
         public ClearLayersFunction() {
             super(
                     List.of("clear all | layers", "clear | layer"),
-                    List.of("WINDOW"),
+                    List.of("Graphics-Panel"),
                     List.of(false),
                     false,
-                    "Remove current shapes from the \"WINDOW\"."
+                    "Remove current shapes from the \"Graphics-Panel\"."
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            GraphicsWindow window = (GraphicsWindow) context.retrieve("WINDOW");
-            window.drawPanel.removeShapes();
+            GraphicsPanel panel = (GraphicsPanel) context.retrieve("Graphics-Panel");
+            panel.removeShapes();
             return null;
         }
     }
@@ -176,16 +216,16 @@ public class Graphics extends LibraryExpression {
         public AddShapeFunction() {
             super(
                     List.of("add the | to the |"),
-                    List.of("SHAPE", "WINDOW"),
+                    List.of("Shape", "Graphics-Panel"),
                     List.of(false, false),
                     false,
-                    "Add the \"SHAPE\" to the \"WINDOW\"."
+                    "Add the \"Shape\" to the \"Graphics-Panel\"."
             );
         }
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            RemixObject shape = (RemixObject) context.retrieve("SHAPE");
-            GraphicsWindow window = (GraphicsWindow) context.retrieve("WINDOW");
+            RemixObject shape = (RemixObject) context.retrieve("Shape");
+            GraphicsPanel panel = (GraphicsPanel) context.retrieve("Graphics-Panel");
             Context shapeContext = shape.getContext();
             // get the fill colour
             boolean filled = true;
@@ -215,7 +255,7 @@ public class Graphics extends LibraryExpression {
                     outlined = false;
                 else
                     outlineColour = colorFromRGBorString(outline);
-                window.drawPanel.addShapeForDrawing(fillColour, outlineColour,
+                panel.addShapeForDrawing(fillColour, outlineColour,
                         scaledShapePath, position, heading, filled, outlined);
             } else if (shape.getContext().retrieve("Radius") != null) {
                 double radius = ((Number) shapeContext.retrieve("Radius")).doubleValue();
@@ -228,13 +268,13 @@ public class Graphics extends LibraryExpression {
                     outlined = false;
                 else
                     outlineColour = colorFromRGBorString(outline);
-                window.drawPanel.addCircleForDrawing(fillColour, outlineColour,
+                panel.addCircleForDrawing(fillColour, outlineColour,
                         radius, position, filled, outlined);
             } else { // currently assuming this must be a line
                 int[] start = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Start")));
                 int[] finish = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Finish")));
                 double width = ((Number)shapeContext.retrieve("Width")).doubleValue();
-                window.drawPanel.addLineForDrawing(fillColour, start, finish, width);
+                panel.addLineForDrawing(fillColour, start, finish, width);
             }
             return null;
         }
@@ -246,19 +286,19 @@ public class Graphics extends LibraryExpression {
         public AnimateFunction() {
             super(
                     List.of("animate at | ticks per second | until |", "animate at | tick per second | until |"),
-                    List.of("RATE", "ANIMATION", "CONDITION"),
+                    List.of("Rate", "Animation", "Condition"),
                     List.of(false, true, true),
                     false,
-                    "Animate the \"ANIMATION\" \"RATE\" times per second,\n" +
-                    "stopping when \"CONDITION\" is true."
+                    "Animate the \"Animation\" \"Rate\" times per second,\n" +
+                    "stopping when \"Condition\" is true."
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            double rate = ((Number) context.retrieve("RATE")).doubleValue();
-            Block animation = (Block) context.retrieve("ANIMATION");
-            Block condition = (Block) context.retrieve("CONDITION");
+            double rate = ((Number) context.retrieve("Rate")).doubleValue();
+            Block animation = (Block) context.retrieve("Animation");
+            Block condition = (Block) context.retrieve("Condition");
             AnimationBlock animationBlock = new AnimationBlock(context, animation, condition);
             animationTimer = new Timer((int)(1000/rate), animationBlock);
             animationTimer.start();

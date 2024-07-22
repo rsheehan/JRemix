@@ -38,7 +38,7 @@ public class RemixEdLexer {
     private static final List<String> literalWords = Arrays.asList("true", "false");
 
     private static boolean identifierChar(String c) {
-        return "ABCDEFGHIJKLMNOPQRSTUVWXYZ#δ".contains(c);
+        return "ABCDEFGHIJKLMNOPQRSTUVWXYZ#ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ".contains(c);
     }
     private static boolean firstWordChar(char c) {
         return !".()[\\]{,}:;—|…'’⊕+-*×÷%=≠<≤>≥0123456789π\" \t\n".contains(Character.toString(c));

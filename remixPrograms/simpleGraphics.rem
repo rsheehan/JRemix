@@ -1,6 +1,6 @@
 using graphics lib
 
-	the-Window : a simple window
+	the-Window : the graphics panel
 
 	Current : random point
 	repeat

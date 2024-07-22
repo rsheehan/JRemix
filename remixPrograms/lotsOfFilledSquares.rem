@@ -9,7 +9,7 @@ a random square :
 	Shape
 
 using graphics lib
-	the-Window : a simple window
+	the-Window : the graphics panel
 	repeat
 		add (a random square) to the-Window
 	… 100 times

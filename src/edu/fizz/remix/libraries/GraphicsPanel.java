@@ -1,8 +1,10 @@
 package edu.fizz.remix.libraries;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.Graphics;
+import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
@@ -11,20 +13,20 @@ import java.util.List;
 public class GraphicsPanel extends JPanel {
     public static final int IMAGE_SCALE = 1;
     private static final Stroke basicStroke = new BasicStroke(2 * IMAGE_SCALE);
-    private final int width;
-    private final int height;
+    private final Dimension graphicsDimension;
     List<DrawObject> drawObjects = new ArrayList<>();
     List<DrawObject> nextDrawObjects = new ArrayList<>();
 
-    public GraphicsPanel(int width, int height) {
+    public GraphicsPanel(Dimension size) {
         super();
-        this.width = width;
-        this.height = height;
+        graphicsDimension = size;
+        setPreferredSize(graphicsDimension);
         setBackground(new Color(0, 0, 50));
+        addComponentListener(new ResizeListener());
     }
 
     public Dimension getPreferredSize() {
-        return new Dimension(width, height);
+        return graphicsDimension;
     }
 
     void removeShapes() {
@@ -44,6 +46,12 @@ public class GraphicsPanel extends JPanel {
             drawObject.draw(g);
         }
 //      g.drawImage(layer, 0, 0, width, height, 0, 0, width * IMAGE_SCALE, height * IMAGE_SCALE, null);
+    }
+
+    static class ResizeListener extends ComponentAdapter {
+        public void componentResized(ComponentEvent e) {
+//            System.out.println(e.getComponent().getSize());
+        }
     }
 
     private interface DrawObject {

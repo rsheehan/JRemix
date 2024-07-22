@@ -4,6 +4,7 @@ package edu.fizz.remix.editor;
  *   DocumentSizeFilter.java
  */
 
+import edu.fizz.remix.libraries.GraphicsPanel;
 import edu.fizz.remix.runtime.Runtime;
 
 import javax.swing.*;
@@ -28,9 +29,11 @@ public class RemixEditor extends JFrame {
     private final JTextPane editorTextPane;
     private Point caretPoint; // the point of the top left of the caret within the document pane
     // this is always set when a caret update occurs
-    private final JSplitPane splitPane;
+    private static JSplitPane splitPane;
+    private static JSplitPane outputSplitPane;
     private static RemixStyledDocument doc;
-    protected final JTextArea remixOutput;
+    protected static JTextArea remixOutput;
+    protected static GraphicsPanel graphicOutput;
     private final PopupFactory popupFactory = new PopupFactory();
     private Popup docPopup;
     private final JPanel docPanel = new JPanel();
@@ -88,18 +91,28 @@ public class RemixEditor extends JFrame {
         editorTextPane.setParagraphAttributes(paraSet, false);
 
         JScrollPane scrollPane = new JScrollPane(editorTextPane);
-        scrollPane.setPreferredSize(new Dimension(800, 800));
+        scrollPane.setMinimumSize(new Dimension(711, 800));
 
         //Create the text area for the output and configure it.
-        remixOutput = new JTextArea();
+        remixOutput = new JTextArea(); // 50, 100);
+        remixOutput.setBackground(Color.darkGray);
         remixOutput.setFont(new Font("Courier New", Font.PLAIN, 14));
+        remixOutput.setForeground(Color.white);
         remixOutput.setEditable(false);
         remixOutput.setLineWrap( true );
         remixOutput.setWrapStyleWord( true );
         JScrollPane scrollPaneForOutput = new JScrollPane(remixOutput);
-        scrollPaneForOutput.setPreferredSize(new Dimension(800, 800));
+
+        Dimension graphicsDimension = new Dimension(1000,800);
+        graphicOutput = new GraphicsPanel(graphicsDimension);
+        graphicOutput.setMinimumSize(graphicsDimension);
+
+        //Create a split pane for the graphics and text output.
+        outputSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, graphicOutput, scrollPaneForOutput);
+        outputSplitPane.setOneTouchExpandable(true);
+
         //Create a split pane for the output and the text area.
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, scrollPaneForOutput);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, outputSplitPane);
         splitPane.setOneTouchExpandable(true);
 
         //Create the status area.
@@ -137,6 +150,18 @@ public class RemixEditor extends JFrame {
         docArea = new JTextArea("Document goes here.");
         docArea.setForeground(Color.red);
         docPanel.add(docArea);
+    }
+
+    public static GraphicsPanel getGraphicsPanel() {
+        return graphicOutput;
+    }
+
+    public static void expandGraphicsPanel() {
+        outputSplitPane.setDividerLocation(802); // kludge of 800
+    }
+
+    public static void hideGraphicsPanel() {
+        outputSplitPane.setDividerLocation(0);
     }
 
     private void addKeystrokeActions() {
@@ -217,6 +242,7 @@ public class RemixEditor extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
+//                hideGraphicsPanel(); // uncomment if you want the graphics panel hidden
                 remixOutput.setText("");
                 remixRunner = new RemixSwingWorker(
                         RemixEditor.this,
@@ -451,14 +477,12 @@ public class RemixEditor extends JFrame {
             @Override
             public void windowOpened(WindowEvent event) {
                 super.windowOpened(event);
-                frame.splitPane.setDividerLocation(0.5);
-//                BuiltInFunctions.setOutputArea(frame.remixOutput);
+                outputSplitPane.setDividerLocation(0);
             }
         });
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //Display the window.
-//        frame.pack();
-        frame.setBounds(50, 50, 1700, 1050);
+        frame.setBounds(100, 100, 1728, 1080); // for my Mac. Was 50, 50, 1700, 1050
         frame.setVisible(true);
     }
 

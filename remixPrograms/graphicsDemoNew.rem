@@ -1,6 +1,6 @@
 
 using graphics lib
-	Window : a window with shape layers
+	Window : a graphics window with layers
 	base-Layer : Window base layer
 	next-Layer : Window next layer
 

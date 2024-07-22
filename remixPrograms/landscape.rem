@@ -1,6 +1,7 @@
 using graphics lib
 
-	the-Window : make a (sky blue) window
+	the-Window : the graphics panel with layers
+	the-Window's Background : sky blue
 	draw the landscape in the-Window
 	add Clouds to the-Window
 
@@ -13,22 +14,25 @@ using graphics lib
 draw the landscape in the-Window :
 	add the back mountains on (the-Window next layer)
 	add the sea on (the-Window next layer)
-	add the front mountains on (the-Window next layer)
+	add the front islands on (the-Window next layer)
 
 add the back mountains on the-Back-Layer :
+	"back mountains" ↲
 	repeat 20 times
 		Mountain : a (dark grey) mountain with (black) outline of 200 based at 600
 		add Mountain to the-Back-Layer
 
 add the sea on the-Middle-Layer :
+	"sea" ↲
 	Box : a (dark blue) box of (the std width) x 200
 	…     at { the std width ÷ 2, the std height - 100 }
 	add Box to the-Middle-Layer
 
-add the front mountains on the-Front-Layer :
+add the front islands on the-Front-Layer :
+	"front islands" ↲
 	for each (Location) from 650 to 680 in steps of 3 do
-		Mountain : a (grey) mountain with (white) outline of 150 based at Location
-		add Mountain to the-Front-Layer
+		Island : a (grey) mountain with (white) outline of 150 based at Location
+		add Island to the-Front-Layer
 
 add #Clouds to the-Window :
 	#Clouds : apply

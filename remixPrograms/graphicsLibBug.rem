@@ -1,10 +1,13 @@
 =
-The bug was that the graphics lib context was not visible
+The bug was that the graphics lib context was not visible.
+Now works.
+If the animate block is moved to a function at the top level all variables must be
+passed to it. Count has to be a reference variable.
 =
 
 using graphics lib
 
-	the-Window : a simple window
+	the-Window : the graphics panel
 
 	Current : random point
 	Count : 0

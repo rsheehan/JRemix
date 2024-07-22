@@ -9,7 +9,7 @@ public class GraphicsWindow extends JFrame {
 
     public GraphicsWindow(String title, int width, int height) {
         super(title);
-        drawPanel =  new GraphicsPanel(width, height);
+        drawPanel =  new GraphicsPanel(new Dimension(width, height));
         add(drawPanel);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationByPlatform(true);

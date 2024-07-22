@@ -4,15 +4,17 @@ using graphics lib
 
 	X : 50
 	Y : 50
-	for each N from 3 to 82 do
+	N : 3
+
+	animate Window 80 times at 2 ticks per second
 		Polygon : an N sided polygon
 		Polygon's Colour : random colour
 		Polygon's Size : 40
 		Polygon's Position : {X, Y}
 		add Polygon to Window
+		N, " sided polygon" ↲
 		add 100 to X
 		if ((N - 2) is divisible by 10)
 			add 100 to Y
 			X : 50
-
-	update Window
+		add 1 to N

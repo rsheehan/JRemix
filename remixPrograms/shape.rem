@@ -1,5 +1,5 @@
 using graphics lib
-	the-Window : a window with shape layers
+	the-Window : the graphics panel with layers
 
 	Layer : the-Window base layer
 

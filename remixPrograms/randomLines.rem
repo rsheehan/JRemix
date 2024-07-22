@@ -1,5 +1,5 @@
 using graphics lib
-	the-Window : a simple window
+	the-Window : the graphics panel
 
 	repeat
 		add (a random line) to the-Window
