@@ -511,6 +511,13 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCallNumber(RemixParser.CallNumberContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code callWordProduct}
+	 * labeled alternative in {@link RemixParser#callPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallWordProduct(RemixParser.CallWordProductContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code callNull}
 	 * labeled alternative in {@link RemixParser#callPart}.
 	 * @param ctx the parse tree

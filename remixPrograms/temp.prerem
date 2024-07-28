@@ -1,45 +1,4 @@
 
-test {[
-	"Auto list expansion"[
-		L {4} : 1
-		length of (L)]
-	… expected 4
-
-	"Value in list expansion"[
-		L {4}]
-	… expected 1
-
-	"Nested list expansion"[
-		L {2}{5} : 2
-		length of (L {2})]
-	… expected 5
-
-	"Value in nested list expansion"[
-		L {2}{5}]
-	… expected 2
-
-	"Null values in list expansion"[
-		L {2}{4}]
-	… expected null]
-}
-↲
-test {[
-	"Auto map creation"[
-		M {"x"} : "zero"
-		length of (M)]
-	… expected 1
-
-	"Nested map expansion"[
-		M {"A"}{"A"} : "one"
-		M {"A"}{"B"} : "two"
-		length of (M {"A"})]
-	… expected 2
-
-	"Value in map expansion"[
-		M {"A"}{"B"}]
-	… expected "two"]
-
-}
-↲
-L ↲
-M ↲
+X : 1
+add 2π to (X)
+X↲

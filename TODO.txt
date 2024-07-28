@@ -1,15 +1,11 @@
 Need to allow the editor to control (i.e. stop) animation or other background threads.
-
-Following doesn't work
-X : 0
-add 2π to (X)
-X↲
-
 "create", "extend" and "using" should only be keywords if in the correct syntax.
 They should be usable as ordinary words in other places.
 
 When a library function shadows a previous library level function this should really be
 pointed out to the programmer.
+
+Tidy up EvalVisitor to remove duplicate code in CallParts and Expressions.
 
 Add reference parameters to methods.
 

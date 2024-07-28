@@ -128,6 +128,7 @@ callPart			: WORD									# callWord
 					| SELFREF								# callSelf
 					| LPAREN SELFREF RPAREN					# callSelf
 					| NUMBER								# callNumber // leave out ()
+					| WORDPRODUCT							# callWordProduct
 					| NULL									# callNull
 					| BOOLEAN								# callBoolean
 					| STRING								# callString

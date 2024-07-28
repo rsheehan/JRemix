@@ -618,6 +618,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             } else if (node instanceof RemixParser.CallVarContext ||
                     node instanceof RemixParser.CallParamContext ||
                     node instanceof RemixParser.CallNumberContext ||
+                    node instanceof RemixParser.CallWordProductContext ||
                     node instanceof RemixParser.CallNullContext ||
                     node instanceof RemixParser.CallBooleanContext ||
                     node instanceof RemixParser.CallStringContext ||
@@ -646,6 +647,25 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             number = produceDoubleExpression(ctx.NUMBER().getText());
         }
         return number;
+    }
+
+    /** WORDPRODUCT (from callPart) */
+    @Override
+    public Expression visitCallWordProduct(RemixParser.CallWordProductContext ctx) {
+        String[] numberAndWord = splitNumberAndWord(ctx.getText());
+        Expression number;
+        Expression word;
+        try {
+            number = produceLongExpression(numberAndWord[0]);
+        } catch (NumberFormatException exception) {
+            number = produceDoubleExpression(numberAndWord[0]);
+        }
+        if (numberAndWord[1].equals("π") || numberAndWord[1].equals("pi")) {
+            word = produceDoubleExpression("π");
+        } else {
+            word = new VarValueExpression(numberAndWord[1]);
+        }
+        return new BinaryExpression(number, "*", word);
     }
 
     /** NULL (from callPart) */
