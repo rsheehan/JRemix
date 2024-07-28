@@ -1,26 +1,9 @@
 Need to allow the editor to control (i.e. stop) animation or other background threads.
 
-"null" doesn't seem to act as a keyword/literal. Needs to be in parentheses.
-
 Following doesn't work
 X : 0
 add 2π to (X)
 X↲
-
-Can I allow a line like:
-	M {"a"}{3}
-where M is a map and the value at "a" is a list?
-and
-	L {2}{"x"}
-i.e. Have mixed multi-index ListMaps. An index of a string for a map and an index of
-a number for a list. Yes this all works but need to allocate automatically when assigning
-to a ListMap.
-
-Currently an empty listMap {} is an empty list. So can't make an empty map.
-
-The "white" falls through all the way to the blue colour
-
-AnimationBlock currently doesn't use its Context parameter. It should.??
 
 "create", "extend" and "using" should only be keywords if in the correct syntax.
 They should be usable as ordinary words in other places.

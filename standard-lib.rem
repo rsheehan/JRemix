@@ -509,9 +509,19 @@ The Euclidean distance from "A" to "B".
 "A" and "B" are map values with keys "x" and "y".
 =-
 distance from A to B :
+	if (A is a "list")
+		A : xy map from A
+	if (B is a "list")
+		B : xy map from B
 	Δx : B {"x"} - A {"x"}
 	Δy : B {"y"} - A {"y"}
 	√(Δx ² + Δy ²)
+
+=-
+Return xy map from 2 element "List"
+=-
+xy map from List:
+	{"x" : List{1}, "y" : List{2}}
 
 =-
 Radian equivalent of "Angle" degrees.
