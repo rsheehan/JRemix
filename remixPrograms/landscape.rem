@@ -9,7 +9,7 @@ using graphics lib
 		for each Cloud in Clouds
 			move Cloud
 
-----------------------------------------
+-==============================================================================-
 
 draw the landscape in the-Window :
 	add the back mountains on (the-Window next layer)
@@ -24,8 +24,10 @@ add the back mountains on the-Back-Layer :
 
 add the sea on the-Middle-Layer :
 	"sea" ↲
-	Box : a (dark blue) box of (the std width) x 200
-	…     at { the std width ÷ 2, the std height - 100 }
+	Box : a (dark blue) box of (the std width) x 200 at {
+		the std width ÷ 2
+		the std height - 100
+	}
 	add Box to the-Middle-Layer
 
 add the front islands on the-Front-Layer :
@@ -44,7 +46,6 @@ add #Clouds to the-Window :
 =
 A mountain is a polygon shape object of 3 points.
 =
-
 a Colour mountain with outline-Colour outline of max-Height based at Level :
 	Centre : random (the std width)
 	Height : random max-Height + 20
@@ -66,7 +67,6 @@ Each part is added separately to the same window layer using the list returned f
 When animated the "move ME" method changes the positions of all the parts.
 The "move ME" also wraps the cloud around when it passes off the window.
 =
-
 a cloud :
 	Base : random (the std height - 200)
 	Across : random (the std width)

@@ -35,7 +35,7 @@ public class RemixEdLexer {
     // "create" is only a keyword if it is on a line by itself
     // "using" should only be a keyword if is by comma separated words
 
-    private static final List<String> literalWords = Arrays.asList("true", "false");
+    private static final List<String> literalWords = Arrays.asList("true", "false", "null");
 
     private static boolean identifierChar(String c) {
         return "ABCDEFGHIJKLMNOPQRSTUVWXYZ#ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ".contains(c);
@@ -200,7 +200,7 @@ public class RemixEdLexer {
     The next two functions dealWithTabs and dealWithSpaces currently
     use "pos" as the moving pointer into the text.
     The rest of the methods use the local variable and keep pos as the
-    starting location. Just a style consistency things which needs correcting.
+    starting location. Just style consistency things which needs correcting.
      */
     private static int dealWithTabs(int pos) throws BadLocationException {
 //        String prevStyle = pos > 0 ? getStyleName(pos - 1) : "default"; // should just get Style

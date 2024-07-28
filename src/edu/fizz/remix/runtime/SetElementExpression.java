@@ -1,7 +1,6 @@
 package edu.fizz.remix.runtime;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SetElementExpression implements Expression {
 
@@ -18,58 +17,153 @@ public class SetElementExpression implements Expression {
 
     @Override
     public Object evaluate(Context context) throws InterruptedException {
-        Object result = null;
+        Object value = null;
 
         // don't evaluate the expression if it is a block
         if (expression instanceof Block) {
-            result = expression;
+            value = expression;
         } else try {
-            result = expression.evaluate(context);
+            value = expression.evaluate(context);
         } catch (ReturnException exception) {
-            System.err.println("ReturnException caught in set element statement.");
+            System.err.println("ReturnException caught in result of set element statement.");
         }
 
+        ArrayList indexes = (ArrayList) ((ArrayList)listElementIds).clone();
+        Object elementId = indexes.remove(0);
         Object id = null;
-        Object listOrMapPart = context.retrieve(listName);
+        try {
+            id = ((Expression) elementId).evaluate(context); // 2
+        } catch (ReturnException exception) {
+            System.err.println("ReturnException caught in element of set element statement.");
+        }
+        Object listMap = context.retrieve(listName);
+        try {
+            if (listMap == null || // nothing stored in the ListMap yet
+                    listMap instanceof RemixNull ||
+                    listMap instanceof Map map && map.isEmpty() ||
+                    listMap instanceof List list && list.isEmpty()) {
 
-        for (int i = 0; i < listElementIds.size(); i++) {
-            Object elementId = listElementIds.get(i);
-            try {
-                id = ((Expression) elementId).evaluate(context);
-            } catch (ReturnException exception) {
-                System.err.println("ReturnException caught in set element expression.");
-            }
-            if (i < listElementIds.size() - 1) { // leaving last one
-                if (id instanceof Number numId) {
-                    int index = numId.intValue();
-                    listOrMapPart = ((List<?>) listOrMapPart).get(index - 1); // java zero based, Remix one based
-                } else if (id instanceof String stringId) {
-                    listOrMapPart = ((Map<?, ?>) listOrMapPart).get(stringId);
+                if (id instanceof Number numIndex) { // so a List
+                    int index = numIndex.intValue();
+                    context.assign(listName, makeList(context, index, indexes, value));
+                } else { // a Map
+                    String key = (String) id;
+                    context.assign(listName, makeMap(context, key, indexes, value));
                 }
+            } else {
+                if (listMap instanceof ArrayList nextList)
+                    setListComponentValue(context, nextList, ((Number) id).intValue(), indexes, value);
+                else
+                    setMapComponentValue(context, (HashMap) listMap, (String) id, indexes, value);
+            }
+        } catch (ReturnException e) {
+            System.err.println("ReturnException caught in makeList/makeMap of set element statement.");
+        }
+        return value;
+    }
+
+    /*
+     Makes a list from this point on for all of the listIndexes and eventually assigns the value.
+     */
+    private ArrayList makeList(Context context, int index, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException {
+        ArrayList list = new ArrayList(Collections.nCopies(index, null));
+        if (listIndexes.isEmpty()) { // end of indexes so store the value
+            list.set(index - 1, value);
+        } else { // more indexes to go
+            ArrayList indexes = (ArrayList) listIndexes.clone();
+            Object elementId = indexes.remove(0);
+            Object id = ((Expression) elementId).evaluate(context);
+            if (id instanceof Number numIndex) { // the next part is a list
+                int nextIndex = numIndex.intValue();
+                list.set(index - 1, makeList(context, nextIndex, indexes, value));
+            } else { // the next part is a map
+                String key = (String) id;
+                list.set(index - 1, makeMap(context, key, indexes, value));
             }
         }
-        // by this location listOrMapPart is the final list or map
-        // and id is the key or element number to set in the list or map
+        return list;
+    }
 
-        if (listOrMapPart instanceof List && id instanceof Number) {
-            int i = ((Number)id).intValue();
-            List<Object> finalList = (List<Object>)listOrMapPart;
-            // may need to grow finalList if not big enough
-            RemixNull empty = new RemixNull();
-            int j = finalList.size();
-            while (j < i) {
-                finalList.add(empty);
-                j++;
+    /*
+     Makes a map from this point on for all of the listIndexes and eventually assigns the value.
+    */
+    private HashMap makeMap(Context context, String key, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException {
+        HashMap map = new HashMap<>();
+        if (listIndexes.isEmpty()) { // end of indexes so store the value
+            map.put(key, value);
+        } else { // more indexes to go
+            ArrayList indexes = (ArrayList) listIndexes.clone();
+            Object elementId = indexes.remove(0);
+            Object id = ((Expression) elementId).evaluate(context);
+            if (id instanceof Number numIndex) { // the next part is a list
+                int nextIndex = numIndex.intValue();
+                map.put(key, makeList(context, nextIndex, indexes, value));
+            } else { // the next part is a map
+                String newKey = (String) id;
+                map.put(key, makeMap(context, newKey, indexes, value));
             }
-            finalList.set(i - 1, result); // java zero based, Remix one based
-
-        } else if (listOrMapPart instanceof Map && id instanceof String) {
-            Map<String, Object> finalMap = (Map<String, Object>)listOrMapPart;
-            finalMap.put((String)id, result);
-        } else {
-            System.err.printf("List or map \"%s\" incorrect index type %s%n", listName, id);
         }
-        return result;
+        return map;
+    }
+
+    private void setListComponentValue(Context context, ArrayList list, int index, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException {
+        while (list.size() < index)
+            list.add(null);
+        if (listIndexes.isEmpty()) { // end of indexes so store the value
+            list.set(index - 1, value);
+            return;
+        } else { // more indexes to go
+            Object listMap = list.get(index - 1);
+            ArrayList indexes = (ArrayList) listIndexes.clone();
+            Object elementId = indexes.remove(0);
+            Object id = ((Expression) elementId).evaluate(context);
+            if (listMap == null || // nothing stored in the ListMap yet
+                    listMap instanceof RemixNull ||
+                    listMap instanceof Map tMap && tMap.isEmpty() ||
+                    listMap instanceof List tList && tList.isEmpty()) {
+                if (id instanceof Number numIndex) { // the next part is a list
+                    int nextIndex = numIndex.intValue();
+                    list.set(index - 1, makeList(context, nextIndex, indexes, value));
+                } else { // the next part is a map
+                    String key = (String) id;
+                    list.set(index - 1, makeMap(context, key, indexes, value));
+                }
+            } else {
+                if (listMap instanceof ArrayList nextList)
+                    setListComponentValue(context, nextList, ((Number)id).intValue(), indexes, value);
+                else
+                    setMapComponentValue(context, (HashMap)listMap, (String)id, indexes, value);
+            }
+        }
+    }
+
+    private void setMapComponentValue(Context context, HashMap map, String key, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException {
+        if (listIndexes.isEmpty()) {
+            map.put(key, value);
+            return;
+        } else { // more indexes to go
+            Object listMap = map.get(key);
+            ArrayList indexes = (ArrayList) listIndexes.clone();
+            Object elementId = indexes.remove(0);
+            Object id = ((Expression) elementId).evaluate(context);
+            if (listMap == null || // nothing stored in the ListMap yet
+                    listMap instanceof RemixNull ||
+                    listMap instanceof Map tMap && tMap.isEmpty() ||
+                    listMap instanceof List tList && tList.isEmpty()) {
+                if (id instanceof Number numIndex) { // the next part is a list
+                    int nextIndex = numIndex.intValue();
+                    map.put(key, makeList(context, nextIndex, indexes, value));
+                } else { // the next part is a map
+                    String nextKey = (String) id;
+                    map.put(key, makeMap(context, nextKey, indexes, value));
+                }
+            } else {
+                if (listMap instanceof ArrayList nextList)
+                    setListComponentValue(context, nextList, ((Number)id).intValue(), indexes, value);
+                else
+                    setMapComponentValue(context, (HashMap)listMap, (String)id, indexes, value);
+            }
+        }
     }
 
 }

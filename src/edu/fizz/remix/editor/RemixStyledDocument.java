@@ -121,7 +121,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
     private boolean notTransformed(int offset, String input) throws BadLocationException {
         if (input.length() > 1) {
-            //System.out.format("The string pasted was: %s%n", input);
             return true;
         }
         // magic replace some operators
@@ -170,11 +169,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     private boolean removeParens(int offset, String opening) throws BadLocationException {
         if ("{[\"".contains(opening))
             return surroundedByParens(offset);
-//            if (offset > 0 && offset < getLength()) {
-//                String before = getText(offset - 1, 1);
-//                String after = getText(offset, 1);
-//                return before.equals("(") && after.equals(")");
-//            }
         return false;
     }
 

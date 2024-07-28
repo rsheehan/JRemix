@@ -114,6 +114,7 @@ public class RemixEditor extends JFrame {
         //Create a split pane for the output and the text area.
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, outputSplitPane);
         splitPane.setOneTouchExpandable(true);
+        splitPane.setResizeWeight(1);
 
         //Create the status area.
         JPanel statusPane = new JPanel();

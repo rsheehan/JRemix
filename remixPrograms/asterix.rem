@@ -4,13 +4,15 @@
 
 for each Size from 1 to 41 in steps of 2 do
 	Size, "." ↲
-	diamond of Size
+	print a diamond of Size
 	↲
+
+-==============================================================================-
 
 =-
 Show a diamond of "Size".
 =-
-diamond of Size :
+print a diamond of Size :
 	show top half of Size diamond and fill in Lines
 	show middle line of Size diamond
 	show bottom half of Size diamond with Lines
@@ -27,8 +29,7 @@ show top half of Size diamond and fill in #Lines :
 			num-Stars : Row × 2 - 1
 			Spaces : " " num-Spaces times
 			Stars : " *" num-Stars times
-			append (Spaces ⊕ Stars) to #Lines
-			- #Lines {Row} : Spaces ⊕ Stars
+			#Lines {Row} : Spaces ⊕ Stars
 			#Lines {Row} ↲
 
 =-

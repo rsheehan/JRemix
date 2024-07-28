@@ -1,11 +1,13 @@
 using graphics lib
-
 	Window : the graphics panel
+	animate Window
 
+-==============================================================================-
+
+animate Window :
 	X : 50
 	Y : 50
 	N : 3
-
 	animate Window 80 times at 2 ticks per second
 		Polygon : an N sided polygon
 		Polygon's Colour : random colour

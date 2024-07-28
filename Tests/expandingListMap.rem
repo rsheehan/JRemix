@@ -40,5 +40,22 @@ test {
 
 }
 ↲
+test {
+	"Auto mixed expansion"
+		MX {3}{"i"} : 7
+		length of (MX)
+	… expected 3
+
+	"Value in mixed expansion"
+		MX {3}{"i"}
+	… expected 7
+
+	"Extend map in mixed expansion"
+		MX {3}{"j"} : 9
+		length of (MX {3})
+	… expected 2
+}
+↲
 L ↲
 M ↲
+MX ↲

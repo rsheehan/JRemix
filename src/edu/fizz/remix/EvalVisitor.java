@@ -618,6 +618,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             } else if (node instanceof RemixParser.CallVarContext ||
                     node instanceof RemixParser.CallParamContext ||
                     node instanceof RemixParser.CallNumberContext ||
+                    node instanceof RemixParser.CallNullContext ||
                     node instanceof RemixParser.CallBooleanContext ||
                     node instanceof RemixParser.CallStringContext ||
                     node instanceof RemixParser.CallListContext ||
@@ -772,21 +773,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     public Object visitListPartExpr(RemixParser.ListPartExprContext ctx) {
         return visit(ctx.expression());
     }
-
-//    /** LBRACE key RBRACE */
-//    @Override
-//    public Object visitListPartKey(RemixParser.ListPartKeyContext ctx) {
-//        return visitKey(ctx.key());
-//    }
-
-//    @Override
-//    public String visitKey(RemixParser.KeyContext ctx) {
-//        String keyName = ctx.getText();
-//        if (keyName.startsWith("\"") && keyName.endsWith("\"")) {
-//            keyName = keyName.substring(1, keyName.length() - 1);
-//        }
-//        return keyName;
-//    }
 
     /* Helper methods */
 

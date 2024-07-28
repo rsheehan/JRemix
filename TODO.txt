@@ -1,16 +1,11 @@
-Changing map keys from double quoted strings to single quoted ones.
-Did this temporarily by making strings double or single quoted.
-Convention - single quoted to be used as map keys only.
-NO doesn't work because of apostrophe s possessives. Requires a new 'key' type without spaces
-if I want this to work.
+Need to allow the editor to control (i.e. stop) animation or other background threads.
 
-Added a "null" keyword. Currently sort of works but something like:
-Abc = null
-evaluates to false when Abc hasn't been given a value. Should it?
+"null" doesn't seem to act as a keyword/literal. Needs to be in parentheses.
 
-Fixing "#List {Row} : something"
-e.g. from alternate line in asterix.rem
-The RefVar is not handled properly.
+Following doesn't work
+X : 0
+add 2π to (X)
+X↲
 
 Can I allow a line like:
 	M {"a"}{3}
@@ -18,9 +13,10 @@ where M is a map and the value at "a" is a list?
 and
 	L {2}{"x"}
 i.e. Have mixed multi-index ListMaps. An index of a string for a map and an index of
-a number for a list.
+a number for a list. Yes this all works but need to allocate automatically when assigning
+to a ListMap.
 
-Currently an empty listMap {} is an empty list. It should be either until first given a value.
+Currently an empty listMap {} is an empty list. So can't make an empty map.
 
 The "white" falls through all the way to the blue colour
 
