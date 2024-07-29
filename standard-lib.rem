@@ -616,7 +616,7 @@ test List-of-Tests :
 ==============================
 
 graphics lib :
-	include "remixPrograms/graphics.rem"
+	include "remixLibraries/graphics.rem"
 
 -==============================-
 

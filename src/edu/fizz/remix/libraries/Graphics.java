@@ -307,12 +307,17 @@ public class Graphics extends LibraryExpression {
 
         private class AnimationBlock implements ActionListener {
 
+            private volatile static boolean timeToStop;
             private final Block animation;
             private final Block condition;
 
             AnimationBlock( Context context, Block animationBlock, Block conditionBlock) {
                 animation = animationBlock;
                 condition = conditionBlock;
+            }
+
+            public void stopAnimations() {
+                timeToStop = true;
             }
 
             @Override

@@ -39,7 +39,7 @@ public class RemixSwingWorker extends SwingWorker<Boolean, String> {
     @Override
     protected void process(List<String> chunks) {
         for (String value : chunks) {
-            editor.remixOutput.append(value);
+            RemixEditor.remixOutput.append(value);
         }
     }
 }
