@@ -7,16 +7,6 @@ import edu.fizz.remix.editor.RemixSwingWorker;
 import java.util.*;
 
 public class BuiltInFunctionsLibrary extends LibraryExpression {
-    /** So we know if running in the editor environment or the command line. */
-    static RemixSwingWorker remixRunner = null;
-
-    public static void setRemixRunner(RemixSwingWorker worker) {
-        remixRunner = worker;
-    }
-
-    public static RemixSwingWorker getRemixRunner() {
-        return remixRunner;
-    }
 
     /** A terminating quit function. */
     public static final class QuitFunction extends Function {
@@ -74,7 +64,6 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             String filename = context.retrieve("File-Name").toString();
             LibraryExpression included;
             try {
-                // *** could change below to Remix.loadPackage from RemixREPL.loadPackage when not using the IDE ***
                 included = RemixREPL.loadPackage(filename);
                 /*
                 If the package finishes with a statement which is a "library" that
@@ -95,21 +84,12 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
             Object result = null;
             try {
-                // in case the included file has some setup statements
-                RemixSwingWorker saved = remixRunner;
-                remixRunner = null; // send printed output to command line
                 /*
-                Even though "include" is a function when its block is evaluated this is done in the
-                context which called the function, so that variables in the included file are
-                available in the calling file.
-                 */
-                /*
-                Now trying with its own local context.
+                Now with its own local context.
                 This means variables assigned in the included file are not visible in the
                 including program.
                  */
-                result = included.block.evaluate(context); //.parentContext);
-                remixRunner = saved;
+                result = included.block.evaluate(context);
             } catch (ReturnException exception) {
                 System.err.println("ReturnException caught in program.");
             }
@@ -298,14 +278,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         static void publish(Object value) {
-            if (remixRunner == null)
-                System.out.print(value);
-            else {
-                if (value != null)
-                    remixRunner.publish(value.toString());
-                else
-                    remixRunner.publish("null");
-            }
+            System.out.print(value);
         }
     }
 

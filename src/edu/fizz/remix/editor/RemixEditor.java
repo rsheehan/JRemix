@@ -19,6 +19,7 @@ import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +31,10 @@ public class RemixEditor extends JFrame {
     private Point caretPoint; // the point of the top left of the caret within the document pane
     // this is always set when a caret update occurs
     private static JSplitPane splitPane;
+    private static JSplitPane systemSplitPane;
     private static JSplitPane outputSplitPane;
     private static RemixStyledDocument doc;
+    private static JTextArea systemOutput;
     protected static JTextArea remixOutput;
     protected static GraphicsPanel graphicOutput;
     private final PopupFactory popupFactory = new PopupFactory();
@@ -93,6 +96,15 @@ public class RemixEditor extends JFrame {
         JScrollPane scrollPane = new JScrollPane(editorTextPane);
         scrollPane.setMinimumSize(new Dimension(711, 800));
 
+        //Create the text area for the system/error output.
+        systemOutput = new JTextArea();
+        systemOutput.setBackground(Color.black);
+        systemOutput.setFont(new Font("Courier New", Font.PLAIN, 14));
+        systemOutput.setForeground(Color.red);
+        systemOutput.setEditable(false);
+        systemOutput.setWrapStyleWord(true);
+        JScrollPane scrollPaneForSystem = new JScrollPane(systemOutput);
+
         //Create the text area for the output and configure it.
         remixOutput = new JTextArea(); // 50, 100);
         remixOutput.setBackground(Color.darkGray);
@@ -107,12 +119,15 @@ public class RemixEditor extends JFrame {
         graphicOutput = new GraphicsPanel(graphicsDimension);
         graphicOutput.setMinimumSize(graphicsDimension);
 
+        //Create a split pane for the program editor and system/error output.
+        systemSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, scrollPaneForSystem);
+
         //Create a split pane for the graphics and text output.
         outputSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, graphicOutput, scrollPaneForOutput);
         outputSplitPane.setOneTouchExpandable(true);
 
         //Create a split pane for the output and the text area.
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, outputSplitPane);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, systemSplitPane, outputSplitPane);
         splitPane.setOneTouchExpandable(true);
         splitPane.setResizeWeight(1);
 
@@ -147,6 +162,10 @@ public class RemixEditor extends JFrame {
         //Start watching for undoable edits and caret changes.
         doc.addUndoableEditListener(new MyUndoableEditListener());
         editorTextPane.addCaretListener(caretListenerLabel);
+
+        //Setup System.out and System.err to the corresponding panels
+        System.setOut(new PrintStream(new TextAreaOutputStream(remixOutput)));
+        System.setErr(new PrintStream(new TextAreaOutputStream(systemOutput)));
 
         docArea = new JTextArea("Document goes here.");
         docArea.setForeground(Color.red);
@@ -244,6 +263,7 @@ public class RemixEditor extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
 //                hideGraphicsPanel(); // uncomment if you want the graphics panel hidden
+                systemOutput.setText("");
                 remixOutput.setText("");
                 remixRunner = new RemixSwingWorker(
                         RemixEditor.this,

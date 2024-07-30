@@ -1,6 +1,5 @@
 package edu.fizz.remix.editor;
 
-import edu.fizz.remix.runtime.BuiltInFunctionsLibrary;
 import edu.fizz.remix.runtime.Runtime;
 
 import javax.swing.*;
@@ -19,7 +18,6 @@ public class RemixSwingWorker extends SwingWorker<Boolean, String> {
     @Override
     protected Boolean doInBackground() throws Exception {
         Runtime.resetToStandard();
-        BuiltInFunctionsLibrary.setRemixRunner(this);
         RemixREPL.runEditorText(programText, this);
         return true; // can make it false on an error in the program
     }
