@@ -34,7 +34,7 @@ public class RemixEditor extends JFrame {
     private static JSplitPane systemSplitPane;
     private static JSplitPane outputSplitPane;
     private static RemixStyledDocument doc;
-    private static JTextArea systemOutput;
+    static JTextArea systemOutput;
     protected static JTextArea remixOutput;
     protected static GraphicsPanel graphicOutput;
     private final PopupFactory popupFactory = new PopupFactory();
@@ -93,14 +93,16 @@ public class RemixEditor extends JFrame {
         AttributeSet paraSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.TabSet, tabs);
         editorTextPane.setParagraphAttributes(paraSet, false);
 
-        JScrollPane scrollPane = new JScrollPane(editorTextPane);
-        scrollPane.setMinimumSize(new Dimension(711, 800));
+        JScrollPane editorScrollPane = new JScrollPane(editorTextPane);
+        editorScrollPane.setMinimumSize(new Dimension(711, 800));
+        TextLineNumber lineNumbers = new TextLineNumber(editorTextPane);
+        editorScrollPane.setRowHeaderView(lineNumbers);
 
         //Create the text area for the system/error output.
         systemOutput = new JTextArea();
         systemOutput.setBackground(Color.black);
         systemOutput.setFont(new Font("Courier New", Font.PLAIN, 14));
-        systemOutput.setForeground(Color.red);
+        systemOutput.setForeground(Color.orange);
         systemOutput.setEditable(false);
         systemOutput.setWrapStyleWord(true);
         JScrollPane scrollPaneForSystem = new JScrollPane(systemOutput);
@@ -120,7 +122,9 @@ public class RemixEditor extends JFrame {
         graphicOutput.setMinimumSize(graphicsDimension);
 
         //Create a split pane for the program editor and system/error output.
-        systemSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, scrollPaneForSystem);
+        systemSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, editorScrollPane, scrollPaneForSystem);
+        systemSplitPane.setOneTouchExpandable(true);
+
 
         //Create a split pane for the graphics and text output.
         outputSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, graphicOutput, scrollPaneForOutput);
@@ -178,6 +182,10 @@ public class RemixEditor extends JFrame {
 
     public static void expandGraphicsPanel() {
         outputSplitPane.setDividerLocation(802); // kludge of 800
+    }
+
+    public static void expandSystemOutputPanel() {
+        systemSplitPane.setDividerLocation(802);
     }
 
     public static void hideGraphicsPanel() {
@@ -411,6 +419,7 @@ public class RemixEditor extends JFrame {
                         doc.insertLine(line + "\n");
                     }
                     myReader.close();
+                    editorTextPane.setCaretPosition(0);
                 } catch (FileNotFoundException | BadLocationException e) {
                     throw new RuntimeException(e);
                 }
@@ -498,6 +507,7 @@ public class RemixEditor extends JFrame {
             @Override
             public void windowOpened(WindowEvent event) {
                 super.windowOpened(event);
+                systemSplitPane.setDividerLocation(1000); // kludge
                 outputSplitPane.setDividerLocation(0);
             }
         });

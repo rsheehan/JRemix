@@ -140,11 +140,7 @@ public class BinaryExpression implements Expression {
                 default -> false;
             };
         } catch (RuntimeException e) {
-//            return switch (operator) {
-//                case "=" -> val1 = val2;
-//                case "!=", "≠" -> val1 != val2;
-//                default -> false;
-//            };
+            System.err.printf ("Error in binary expression, %s %s %s.%n", val1, operator, val2);
             return false;
         }
     }

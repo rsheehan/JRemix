@@ -14,6 +14,8 @@ Tidy up EvalVisitor to remove duplicate code in CallParts and Expressions.
 
 Add reference parameters to methods.
 
+Think about ranges being used in multidimensional ListMaps. See GetElementExpression.
+
 Allow operations to modify blocks. e.g. concatenation
 Thus moving blocks into more first class object status.
 

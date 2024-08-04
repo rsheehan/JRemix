@@ -23,7 +23,9 @@ public class GetElementExpression implements Expression {
     public Object evaluate(Context context) throws InterruptedException, ReturnException {
         Object id;
         Object listOrMapPart = context.retrieve(listName);
-        if (listOrMapPart instanceof ArrayList<?> || listOrMapPart instanceof HashMap<?,?>)
+        if (listOrMapPart instanceof ArrayList<?> ||
+                listOrMapPart instanceof HashMap<?,?> ||
+                listOrMapPart instanceof RangeExpression)
             for (Object elementId : listElementIds) {
                 // TODO: could be errors at any position
                 id = ((Expression)elementId).evaluate(context);

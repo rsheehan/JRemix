@@ -19,6 +19,8 @@ public class TextAreaOutputStream extends OutputStream {
                 @Override
                 public void run()
                 {
+                    if (destination == RemixEditor.systemOutput)
+                        RemixEditor.expandSystemOutputPanel();
                     destination.append (text);
                 }
             });

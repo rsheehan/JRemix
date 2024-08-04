@@ -9,7 +9,7 @@ using graphics lib
 		for each Cloud in Clouds
 			move Cloud
 
--==============================================================================-
+-============================================================================-
 
 draw the landscape in the-Window :
 	add the back mountains on (the-Window next layer)
@@ -19,7 +19,8 @@ draw the landscape in the-Window :
 add the back mountains on the-Back-Layer :
 	"back mountains" ↲
 	repeat 20 times
-		Mountain : a (dark grey) mountain with (black) outline of 200 based at 600
+		Mountain : a (dark grey) mountain with (black) outline of 200
+		… based at 600
 		add Mountain to the-Back-Layer
 
 add the sea on the-Middle-Layer :
@@ -33,7 +34,8 @@ add the sea on the-Middle-Layer :
 add the front islands on the-Front-Layer :
 	"front islands" ↲
 	for each (Location) from 650 to 680 in steps of 3 do
-		Island : a (grey) mountain with (white) outline of 150 based at Location
+		Island : a (grey) mountain with (white) outline of 150
+		… based at Location
 		add Island to the-Front-Layer
 
 add #Clouds to the-Window :
@@ -61,8 +63,7 @@ a Colour mountain with outline-Colour outline of max-Height based at Level :
 =
 A cloud is a composite object comprising of two circles, a rectangle and a line.
 
-Each part is added separately to the same window layer using the list returned from
-"MY parts".
+Each part is added separately to the same window layer using the list returned from "MY parts".
 
 When animated the "move ME" method changes the positions of all the parts.
 The "move ME" also wraps the cloud around when it passes off the window.
@@ -105,7 +106,10 @@ a cloud :
 				X2 : Back
 			A-circle's Position : { X1, Y1 }
 			B-circle's Position : { X2, Y2 }
-			Box's Position : { (X1 + X2) ÷ 2, (Y1 + A-radius + Y2 + 1) ÷ 2 }
+			Box's Position : {
+				(X1 + X2) ÷ 2
+				(Y1 + A-radius + Y2 + 1) ÷ 2
+			}
 			Line's Start : { X1, Y1 + A-radius }
 			Line's Finish : { X2, Y1 + A-radius }
 
