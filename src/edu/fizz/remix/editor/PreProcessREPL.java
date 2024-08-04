@@ -92,7 +92,7 @@ public class PreProcessREPL {
         }
     }
 
-    private static boolean finishFile(int lineDepth, String restOfLine, PrintWriter writer) throws IOException {
+    private static boolean finishFile(int lineDepth, String restOfLine, PrintWriter writer) {
         closeBlocks(0, lineDepth, writer);
         writer.write(restOfLine);
         return false;
@@ -185,20 +185,16 @@ public class PreProcessREPL {
 
     private static void gobbleToEndOfCommentBlock(BufferedReader reader, PrintWriter writer) throws IOException {
         // comes after a '='
-        int ch = 0;
+        int ch;
         gobbleToEndOfLine(reader, writer); // first line
         // if a "\t" then we will miss the "="
         do {
-            ch = reader.read();
-            if (ch == -1)
-                return;
-            writer.write((char)ch);
-            while (ch == '\t') {
+            do {
                 ch = reader.read();
                 if (ch == -1)
                     return;
-                writer.write((char)ch);
-            }
+                writer.write((char) ch);
+            } while (ch == '\t');
             if (ch == '=') {
                 break;
             }
@@ -233,7 +229,7 @@ public class PreProcessREPL {
         scanToEndOfLine(reader);
     }
 
-    static void closeBlocks(int tabCount, int depth, PrintWriter writer) throws IOException{
+    static void closeBlocks(int tabCount, int depth, PrintWriter writer) {
         while (tabCount < depth) {
             writer.write(']');
             depth--;
