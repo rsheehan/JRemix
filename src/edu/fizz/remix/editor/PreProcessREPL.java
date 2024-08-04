@@ -111,8 +111,8 @@ public class PreProcessREPL {
         while ((ch = reader.read()) != -1) {
             // need to ignore comment lines and sections
             // a comment line starts possible tabs then "-"
-            // a comment block starts with "=" in column zero
-            // and continues until another line with "=" in column zero
+            // a comment block possible tabs then "="
+            // and continues until another line with "="
             switch (ch) {
                 case ' ' -> {
                     System.out.println("No spaces allowed at the start of a line.");
