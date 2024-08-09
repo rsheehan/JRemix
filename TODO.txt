@@ -1,3 +1,6 @@
+Adding list/map elements as actual parameters for reference formal parameters.
+Check that the same sort of thing works when the parameters are object fields.
+
 Need to allow the editor to control (i.e. stop) animation or other background threads.
 "create", "extend" and "using" should only be keywords if in the correct syntax.
 They should be usable as ordinary words in other places.
@@ -11,8 +14,6 @@ When a library function shadows a previous library level function this should re
 pointed out to the programmer.
 
 Tidy up EvalVisitor to remove duplicate code in CallParts and Expressions.
-
-Add reference parameters to methods.
 
 Think about ranges being used in multidimensional ListMaps. See GetElementExpression.
 

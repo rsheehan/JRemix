@@ -51,8 +51,21 @@ public class Context {
      */
     public void assign(String varName, Object value) {
         if (varName.startsWith("#")) {
-            RefParameter refValue = (RefParameter) variables.get(varName);
-            refValue.assignRefValue(value);
+            /*
+            This is where I need to deal with a listMap element reference.
+             */
+            Object refObject = variables.get(varName);
+            if (refObject instanceof GetElementExpression getElementExpression) {
+                SetElementExpression setElementExpression = new SetElementExpression(getElementExpression, new ValueExpression(value));
+                try {
+                    setElementExpression.evaluate(getElementExpression.getOriginalContext());
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                RefParameter refValue = (RefParameter) refObject;
+                refValue.assignRefValue(value);
+            }
         } else {
             variables.put(varName, value);
         }
@@ -60,8 +73,20 @@ public class Context {
 
     public Object retrieve(String varName) {
         if (varName.startsWith("#")) {
-            RefParameter refValue = (RefParameter) variables.get(varName);
-            return refValue.getRefValue();
+            /*
+            This is where I need to deal with a listMap element reference.
+             */
+            Object value = variables.get(varName);
+            if (value instanceof GetElementExpression getElementExpression) {
+                try {
+                    return getElementExpression.evaluate(null);
+                } catch (InterruptedException | ReturnException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                RefParameter refValue = (RefParameter) value;
+                return refValue.getRefValue();
+            }
         } else {
             return variables.get(varName);
         }

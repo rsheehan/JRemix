@@ -15,6 +15,13 @@ public class SetElementExpression implements Expression {
         this.expression = expression;
     }
 
+    /* Added to enable listMap element expressions to be reference parameters. */
+    public SetElementExpression(GetElementExpression getElementExpression, Expression expression) {
+        listName = getElementExpression.listName;
+        listElementIds = getElementExpression.listElementIds;
+        this.expression = expression;
+    }
+
     @Override
     public Object evaluate(Context context) throws InterruptedException {
         Object value = null;

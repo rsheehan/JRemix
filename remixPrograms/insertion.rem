@@ -18,7 +18,7 @@ check for missing values in List :
 
 count each item in List into Tally :
 	for each Item in List do
-		Tally {Item} : Tally {Item} + 1
+		inc (Tally {Item})
 
 ================
  Insertion Sort
@@ -33,6 +33,6 @@ swap if element to the left is greater than This in List ::
 - N.B. transparent short circuit
 	Left : This - 1
 	if (List {Left} > List {This})
-		swap List element This with Left
+		(List {Left}) swap (List {This})
 	… otherwise
 		return

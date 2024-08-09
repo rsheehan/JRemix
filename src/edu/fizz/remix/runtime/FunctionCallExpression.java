@@ -113,23 +113,29 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
                 }
                 value = block;
             } else if (formal.startsWith("#")) {
+                if (parameter instanceof GetElementExpression getElementExpression) {
+                    getElementExpression.setOriginalContext(callingContext);
+                    value = getElementExpression;
+                } else {
                 /*
                     Careful here: the actual parameter could be a reference
                     parameter from a previous function.
                  */
-                String actualName = ((VarValueExpression)parameter).getName();
-                if (actualName.startsWith("#")) {
-                    value = callingContext.getRefParameter(actualName);
-                    // the value here is now a RefParameter
-                } else {
-                    // We are accessing an ordinary variable in the callingContext.
-                    Object variable  = callingContext.retrieve(actualName);
-                    if (variable == null) { // hasn't been given a value yet, give it Null
-                        callingContext.assign(actualName, RemixNull.value());
-                        value = new RefParameter(actualName, callingContext);
+                    assert parameter instanceof VarValueExpression;
+                    String actualName = ((VarValueExpression) parameter).getName();
+                    if (actualName.startsWith("#")) {
+                        value = callingContext.getRefParameter(actualName);
+                        // the value here is now a RefParameter
                     } else {
-                        Context originalContext = callingContext.originalContext(actualName);
-                        value = new RefParameter(actualName, originalContext);
+                        // We are accessing an ordinary variable in the callingContext.
+                        Object variable = callingContext.retrieve(actualName);
+                        if (variable == null) { // hasn't been given a value yet, give it Null
+                            callingContext.assign(actualName, RemixNull.value());
+                            value = new RefParameter(actualName, callingContext);
+                        } else {
+                            Context originalContext = callingContext.originalContext(actualName);
+                            value = new RefParameter(actualName, originalContext);
+                        }
                     }
                 }
             } else if (parameter instanceof SelfReference) { // passing a self reference of an object to a function
@@ -137,7 +143,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             } else { // a normal value parameter which isn't a block
                 value = parameter.evaluate(callingContext);
                 if (value == null) {
-                    System.out.printf("parameter: \"%s\" has no value in function call \"%s\".%n", parameter, this);
+                    System.err.printf("parameter: \"%s\" has no value in function call \"%s\".%n", parameter, this);
                     return null;
                 }
             }

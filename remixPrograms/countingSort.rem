@@ -23,7 +23,7 @@ sort #List with values from Start to Finish :
 
 	for each Value in #List do
 		Place : Value - Start + 1
-		collect-Counts {Place} : collect-Counts {Place} + 1
+		inc (collect-Counts {Place})
 
 	#List : {}
 	for each Item in collect-Counts keeping Index do

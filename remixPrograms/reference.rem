@@ -1,0 +1,33 @@
+a #I :
+	b #I
+	#I : #I + 1
+
+b #I :
+	c #I
+	#I : #I + 2
+
+c #J :
+	d #J
+	#J : #J + 3
+
+d #I :
+	#I : #I + 4
+
+B : 5
+a B
+B \n
+
+L : {7}
+a (L {1})
+L \n
+
+
+X : create
+	I : 8
+
+	add MY i to #Outside :
+		#Outside : #Outside + I
+
+X \n
+add X i to B
+B \n

@@ -11,16 +11,27 @@ import java.util.Map;
  */
 public class GetElementExpression implements Expression {
 
-    private final String listName;
-    private final List listElementIds;
+    final String listName;
+    final List listElementIds;
+    private Context originalContext = null; // used if the expression is passed as a reference parameter
 
     public GetElementExpression(String listName, List ids) {
         this.listName = listName;
         listElementIds = ids;
     }
 
+    public void setOriginalContext(Context originalContext) {
+        this.originalContext = originalContext;
+    }
+
+    public Context getOriginalContext() {
+        return originalContext;
+    }
+
     @Override
     public Object evaluate(Context context) throws InterruptedException, ReturnException {
+        if (originalContext != null)
+            context = originalContext; // must be passed as a reference parameter
         Object id;
         Object listOrMapPart = context.retrieve(listName);
         if (listOrMapPart instanceof ArrayList<?> ||
