@@ -40,8 +40,8 @@ public class Context {
      * Called when a refParam has the value of a refParam in
      * FunctionCallExpression.
      */
-    public RefParameter getRefParameter(String varName) {
-        return (RefParameter) variables.get(varName);
+    public Object getRefParameter(String varName) {
+        return variables.get(varName);
     }
 
     /* No longer resolves the context except for refvars. */
@@ -128,26 +128,8 @@ public class Context {
         return copy;
     }
 
-    // This is used for out of current thread execution.
-    // Such as animations (see AnimationBlock in Graphics.java).
-    public Context copyParentContext() {
-        Context copy = new Context(parentContext, returnHigher);
-        try {
-            // separate list of variables but the variables themselves are not copied
-            copy.variables = parentContext.variables; //(HashMap)parentContext.variables.clone();
-            copy.libraryStack = (Stack<LibraryExpression>) libraryStack.clone(); //parentContext.cloneLibraryStack(); //Stack<LibraryExpression>) libraryStack.clone();
-        } catch (Exception e) {
-            System.err.println(e);
-        }
-        return copy;
-    }
-
     public Stack<LibraryExpression> cloneLibraryStack() {
         return (Stack<LibraryExpression>)libraryStack.clone();
-    }
-
-    public void cloneLibraryStackInPlace() {
-        libraryStack = cloneLibraryStack();
     }
 
     public void pushLibrary(LibraryExpression library) {

@@ -125,7 +125,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
                     String actualName = ((VarValueExpression) parameter).getName();
                     if (actualName.startsWith("#")) {
                         value = callingContext.getRefParameter(actualName);
-                        // the value here is now a RefParameter
+                        // the value here is now a RefParameter or GetElementExpression
                     } else {
                         // We are accessing an ordinary variable in the callingContext.
                         Object variable = callingContext.retrieve(actualName);
