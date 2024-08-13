@@ -16,7 +16,7 @@ public class RemixSwingWorker extends SwingWorker<Boolean, String> {
     }
 
     @Override
-    protected Boolean doInBackground() throws Exception {
+    protected Boolean doInBackground() {
         Runtime.resetToStandard();
         RemixREPL.runEditorText(programText, this);
         return true; // can make it false on an error in the program
@@ -39,5 +39,9 @@ public class RemixSwingWorker extends SwingWorker<Boolean, String> {
         for (String value : chunks) {
             RemixEditor.remixOutput.append(value);
         }
+    }
+
+    public JTextPane getTextPane() {
+        return editor.getEditorTextPane();
     }
 }

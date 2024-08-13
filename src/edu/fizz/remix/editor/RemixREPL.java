@@ -52,7 +52,9 @@ public class RemixREPL {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         RemixParser parser = new RemixParser(tokens);
         parser.removeErrorListeners();
-        parser.addErrorListener(new RemixErrorListener());
+        final RemixErrorListener listener = new RemixErrorListener();
+        listener.setEditorTextPane(remixSwingWorker.getTextPane());
+        parser.addErrorListener(listener);
         ParseTree tree = parser.program(); // parse
         EvalVisitor eval = new EvalVisitor();
 

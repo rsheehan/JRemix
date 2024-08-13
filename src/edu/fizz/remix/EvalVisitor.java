@@ -32,10 +32,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         /*
         The current library could be the baseLibrary, or the programLibrary
          */
-
         LibraryExpression library = new LibraryExpression();
 
-//        LibraryExpression library = Runtime.getCurrentLibrary();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);

@@ -213,7 +213,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         if (offset >= targetLen) {
             String match = getText(offset - targetLen, targetLen) + input; // existing plus new char
             if (match.equals(target)) {
-//                boolean fixCaret = false;
                 String replacement = operators.get(target);
                 if ("π√²".contains(replacement)) {
                     // if the previous character is a word character don't do the replacement
@@ -224,18 +223,11 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                             return false; // don't replace as pi is part of word
                     }
                 }
-//                if (replacement.equals("↲") && lineStart(offset - 1)) {
-//                    replacement = "() ↲";
-//                    fixCaret = true;
-//                }
                 if (replacement.equals(" ⊕") && getText(offset, 1).equals(")")) {
                     super.replace(offset - targetLen, targetLen + 1, replacement, defaultStyle);
                 } else {
                     super.replace(offset - targetLen, targetLen, replacement, defaultStyle);
                 }
-//                if (fixCaret)
-//                    textPane.setCaretPosition(offset);
-//                spacesAroundBooleanOps(offset - targetLen);
                 return true;
             }
         }
@@ -249,9 +241,9 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     /* The start of line position before the given position. */
     private int lineStartPos(int pos) throws BadLocationException {
         // assumes pos is
-        pos--;
-        while (!lineStart(pos))
+        do
             pos--;
+        while (!lineStart(pos));
         return pos;
     }
 

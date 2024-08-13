@@ -137,7 +137,7 @@ public class RemixEditor extends JFrame {
 
         //Create the status area.
         JPanel statusPane = new JPanel();
-        CaretListenerLabel caretListenerLabel = new CaretListenerLabel("text position: 0, style: default");
+        CaretListenerLabel caretListenerLabel = new CaretListenerLabel("line: 1, offset: 0, style: default");
         statusPane.add(caretListenerLabel);
 
         //Add the components.
@@ -240,8 +240,13 @@ public class RemixEditor extends JFrame {
         }
 
         protected void displayPositionInfo(final int mark) {
+            Element root = doc.getDefaultRootElement();
+            int lineNumber = root.getElementIndex(mark) + 1;
+            int startOfLine = root.getElement(lineNumber - 1).getStartOffset();
             SwingUtilities.invokeLater(() ->
-                    setText("text position: " + mark + ", style: " + RemixEdLexer.getStyleName(mark)));
+                    setText("line: " + lineNumber +
+                            ", offset: " + (mark - startOfLine) +
+                            ", style: " + RemixEdLexer.getStyleName(mark)));
         }
     }
 
@@ -515,6 +520,10 @@ public class RemixEditor extends JFrame {
         //Display the window.
         frame.setBounds(100, 100, 1728, 1080); // for my Mac. Was 50, 50, 1700, 1050
         frame.setVisible(true);
+    }
+
+    public JTextPane getEditorTextPane() {
+        return editorTextPane;
     }
 
     //The standard main method.
