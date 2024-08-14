@@ -69,3 +69,33 @@ test {
 		VL {1}
 	… expected 12
 }
+
+↲
+
+B : create
+	X : 3
+
+	getter
+		X
+
+	add two to MY x :
+		add two to X
+
+	add four to MY x :
+		add four to X
+
+test {
+	"Simple getter access"
+		B's X
+	… expected 3
+
+	"Object field as ref variable two level change"
+		add two to B x
+		B's X
+	… expected 5
+
+	"Object field as ref variable three level change"
+		add four to B x
+		B's X
+	… expected 9
+}

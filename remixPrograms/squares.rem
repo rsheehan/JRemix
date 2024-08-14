@@ -1,0 +1,13 @@
+using graphics lib
+	the-Window : the graphics panel
+
+	Square : a square
+	Square's Size : 200
+	Square's Heading : π ÷ 4
+	Square's Colour : green
+	add Square to the-Window
+
+	Rectangle : a (blue) box of 200 x 200 at (the centre point)
+	add Rectangle to the-Window
+
+update the-Window

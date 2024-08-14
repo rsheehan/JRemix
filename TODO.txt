@@ -1,8 +1,6 @@
-Adding list/map elements as actual parameters for reference formal parameters.
-Check that the same sort of thing works when the parameters are object fields.
-
 Need to allow the editor to control (i.e. stop) animation or other background threads.
-"create", "extend" and "using" should only be keywords if in the correct syntax.
+
+"create", "extend", "using" and "library" should only be keywords if in the correct syntax.
 They should be usable as ordinary words in other places.
 
 If X is not allocated a value (or is null) then
