@@ -1,19 +1,5 @@
 
-a #I :[
-	#I : #I + #I]
-
-B : create[
-	X : 3
-
-	getter[
-		X]
-		
-	double ME :[
-		a X]]
-
-V {4} : 3
-a (V {4}) \n
-V {4} \n
-
-double B \n
-B's X \n
+A : B + 1
+A ↲
+B ↲
+A = B \n

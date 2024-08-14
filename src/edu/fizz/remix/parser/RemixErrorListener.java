@@ -11,6 +11,7 @@ import javax.swing.text.Element;
 public class RemixErrorListener extends BaseErrorListener {
 
     private JTextPane editorTextPane;
+    private boolean firstError = true;
 
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer,
@@ -21,11 +22,13 @@ public class RemixErrorListener extends BaseErrorListener {
         //System.err.printf(offendingSymbol.toString());
         System.err.printf("at line %d character %d%n", line - 1, charPositionInLine);
         RemixStyledDocument doc = (RemixStyledDocument) editorTextPane.getStyledDocument();
-        Element lineElement = doc.getDefaultRootElement().getElement(line - 2);
-        // - 2 because extra line added in preprocess and offset 0 not 1
-        int linePosition = lineElement.getStartOffset();
-        System.err.println("linePosition: " + linePosition);
-        editorTextPane.setCaretPosition(linePosition + charPositionInLine);
+        if (firstError) {
+            Element lineElement = doc.getDefaultRootElement().getElement(line - 2);
+            // - 2 because extra line added in preprocess and offset 0 not 1
+            int linePosition = lineElement.getStartOffset();
+            editorTextPane.setCaretPosition(linePosition + charPositionInLine);
+            firstError = false;
+        }
     }
 
     public void setEditorTextPane(JTextPane editorTextPane) {
