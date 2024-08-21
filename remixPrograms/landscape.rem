@@ -21,7 +21,7 @@ add the back mountains on the-Back-Layer :
 	repeat 20 times
 		Mountain : a (dark grey) mountain with (black) outline of 200
 		… based at 600
-		add Mountain to the-Back-Layer
+		place Mountain in the-Back-Layer
 
 add the sea on the-Middle-Layer :
 	"sea" ↲
@@ -29,19 +29,19 @@ add the sea on the-Middle-Layer :
 		the std width ÷ 2
 		the std height - 100
 	}
-	add Box to the-Middle-Layer
+	place Box in the-Middle-Layer
 
 add the front islands on the-Front-Layer :
 	"front islands" ↲
 	for each (Location) from 650 to 680 in steps of 3 do
 		Island : a (grey) mountain with (white) outline of 150
 		… based at Location
-		add Island to the-Front-Layer
+		place Island in the-Front-Layer
 
 add #Clouds to the-Window :
 	#Clouds : apply
 		Cloud : a cloud
-		add (Cloud parts) to (the-Window base layer)
+		place (Cloud parts) in (the-Window base layer)
 		Cloud
 	… 10 times
 

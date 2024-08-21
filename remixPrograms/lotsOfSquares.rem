@@ -16,7 +16,7 @@ using Graphics
 		S : copy Square
 		S's Heading : Angle degrees as radians
 		S's Colour : random colour
-		add S to the-Window
+		place S in the-Window
 
 	Arrow-Pts : {
 		{ 0,  1}
@@ -31,7 +31,7 @@ using Graphics
 	}
 	Arrow's Heading : 1.5π
 
-	add Arrow to the-Window
+	place Arrow in the-Window
 	update the-Window
 
 "Finished" ↲

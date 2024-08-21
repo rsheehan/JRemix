@@ -1,0 +1,19 @@
+using graphics lib, turtle lib
+
+	the-Window : the graphics panel with layers
+	Turtle-Space : turtle space in the-Window
+
+	Turtle : a turtle
+	Turtle's Speed : 20
+	place Turtle in Turtle-Space
+	repeat 8 times
+		Turtle's Colour : random colour
+		Turtle square of size 200
+		turn Turtle 45 degrees
+	hide Turtle
+
+
+Turtle square of size Size :
+	repeat 4 times
+		move Turtle Size steps
+		turn Turtle 90 degrees

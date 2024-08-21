@@ -24,6 +24,10 @@ public class MethodContext extends Context {
         parentContext = parent; //new Context(parent, null);
     }
 
+    public RemixObject getObject() {
+        return object;
+    }
+
     @Override
     public MethodContext copy() {
         MethodContext copy = new MethodContext(parentContext, object);

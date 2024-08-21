@@ -39,6 +39,10 @@ public class Block implements Expression {
         statements.add(statement);
     }
 
+    public void clearContext() {
+        blockContext = null;
+    }
+
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         Object result = null;

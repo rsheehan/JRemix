@@ -1,0 +1,7 @@
+"Read includeLibrary2.rem" ↲
+
+library
+	- Only accessible via a "using" block.
+	two A plus B :
+		2A + B
+

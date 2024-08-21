@@ -99,7 +99,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             String formal = routine.getArgument(i);
 
             // skip over the object reference
-            if (formal.equals("me")) // TODO: should this be "ME"?
+            if (formal.equals("ME"))
                 continue;
 
             Expression parameter = parameters.get(i); // actual parameter expression

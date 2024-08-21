@@ -48,7 +48,7 @@ fragment COMMENT_LINE		: EOL [ \t]* '-' ~'\n'* ;
 fragment COMMENT_SECTION	: EOL [ \t]* '=' .*? EOL [ \t]* '=' ~'\n'* ;
 fragment REMAINING_COMMENT	: ';' ~'\n'* ;
 
-NUMBER				: '-'? ( 'π' | DIGIT+ ('.' DIGIT+)?) ;
+NUMBER				: '-'? ( 'pi' | 'π' | DIGIT+ ('.' DIGIT+)?) ;
 ADD					: ' + ' | ' - ' ;
 MUL					: ' * ' | ' × ' | ' / ' | ' ÷ ' | ' % ' ;
 LESS				: ' < ' ;

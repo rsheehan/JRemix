@@ -7,7 +7,7 @@ using graphics lib
 		Shape's Position : random point
 		Shape's Size     : random from 10 to 100
 		Shape's Heading  : random from 1 to 90
-		add Shape to the-Window
+		place Shape in the-Window
 	… 100 times
 
 	Turn : 2

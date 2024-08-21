@@ -5,7 +5,7 @@ using graphics lib
 	Current : random point
 	repeat
 		New : random point
-		add (a (random colour) line from Current to New) to the-Window
+		place (a (random colour) line from Current to New) in the-Window
 		Current : New
 	… 100 times
 	update the-Window

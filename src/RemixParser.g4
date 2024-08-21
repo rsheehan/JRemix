@@ -92,6 +92,7 @@ expression			: MINUS expression						# exprMinus
 					| listElement			# exprListElement // before functionCall
 					| functionCall			# exprFncCall
 					| IDENTIFIER			# exprVar
+					| SELFREF				# exprSelf
 					| NUMBER				# exprNumber
 					| WORDPRODUCT			# exprWordProduct
 					| NULL					# exprNull

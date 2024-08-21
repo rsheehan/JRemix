@@ -1,3 +1,9 @@
+There is an inconsistency in the naming of some standard functions.
+e.g.
+for each #Item in Sequence /do [Block] :
+apply [Block] to each #Item from List :
+the "in" and "from"
+
 Need to allow the editor to control (i.e. stop) animation or other background threads.
 
 "create", "extend", "using" and "library" should only be keywords if in the correct syntax.

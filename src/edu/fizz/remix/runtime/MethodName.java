@@ -10,7 +10,7 @@ public class MethodName extends FunctionName<String> {
             System.err.format("Method %s has more than one self reference.%n", singleName());
             return;
         }
-        addParam("me"); // just "me" not "my"
+        addParam("ME"); // just "ME" not "MY"
         selfRef = parameters.size();
     }
 

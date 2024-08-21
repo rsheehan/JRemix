@@ -9,7 +9,7 @@ using graphics lib
 		Polygon's Colour : random colour
 		Polygon's Size : 40
 		Polygon's Position : {X, Y}
-		add Polygon to Window
+		place Polygon in Window
 		add 100 to X
 		if ((N - 2) is divisible by 10)
 			add 100 to Y

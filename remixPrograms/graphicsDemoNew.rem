@@ -10,14 +10,14 @@ using graphics lib
 		Shape's Position : random point
 		Shape's Size     : random from 10 to 100
 		Shape's Heading  : random from 1 to 90
-		add Shape to next-Layer
+		place Shape in next-Layer
 	… 50 times
 
 	for each y-Pos from 40 to (the std height - 20) in steps of 80 do
 		Arrow : a triangle
 		Arrow's Size : 20
 		Arrow's Position : {0, y-Pos}
-		add Arrow to base-Layer
+		place Arrow in base-Layer
 
 	Squares-Rotation : every 1 tick do
 		for each Square in (next-Layer's Shapes) do

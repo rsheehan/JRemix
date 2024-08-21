@@ -7,7 +7,7 @@ public class SelfReference extends RemixObject implements Expression {
 
     @Override
     public Object evaluate(Context context) throws ReturnException {
-        return this;
+        return ((MethodContext)context).getObject();
     }
 
 }

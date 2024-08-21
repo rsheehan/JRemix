@@ -95,12 +95,20 @@ public class BinaryExpression implements Expression {
                 case "!=" -> val1 != val2;
                 default -> null;
             };
-        } else if ((val1 == null && val2 instanceof RemixNull) ||
+        } else if ((val1 == null && val2 == null) ||
+                (val1 == null && val2 instanceof RemixNull) ||
                 (val1 instanceof RemixNull && val2 == null) ||
                 (val1 instanceof RemixNull && val2 instanceof RemixNull)) {
             return switch (operator) {
                 case "=" -> true;
                 case "!=" -> false;
+                default -> null;
+            };
+        } else if ((val1 == null || val2 == null) ||
+                (val1 instanceof RemixNull || val2 instanceof RemixNull)) {
+            return switch (operator) {
+                case "=" -> false;
+                case "!=" -> true;
                 default -> null;
             };
         } else if (val1 instanceof Long && val2 instanceof Long) {

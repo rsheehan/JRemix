@@ -471,6 +471,12 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new VarValueExpression(varName);
     }
 
+    /** SELFREF (from expression) */
+    @Override
+    public Expression visitExprSelf(RemixParser.ExprSelfContext ctx) {
+        return new SelfReference();
+    }
+
     /** NUMBER (from expression) */
     @Override
     public Expression visitExprNumber(RemixParser.ExprNumberContext ctx) {
@@ -806,7 +812,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     }
 
     private SimpleExpression<Double> produceDoubleExpression(String doubleString) {
-        if (doubleString.equals("π"))
+        if (doubleString.equals("π") || doubleString.equals("pi"))
             return new SimpleExpression<>(Math.PI);
         return new SimpleExpression<>(Double.parseDouble(doubleString));
     }

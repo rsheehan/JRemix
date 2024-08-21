@@ -1,0 +1,15 @@
+using graphics lib, turtle lib
+
+	the-Window : the graphics panel with layers
+	Turtle-Space : turtle space in the-Window
+
+	Turtle : a turtle
+	place Turtle in Turtle-Space
+	Turtle's Speed : 100
+
+	Turtle random walk
+
+Turtle random walk :
+	repeat 100 times
+		Turtle's Colour : random colour
+		move Turtle to (random turtle point)

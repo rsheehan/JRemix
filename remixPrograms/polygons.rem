@@ -9,7 +9,7 @@ using graphics lib
 		Polygon's Colour : random colour
 		Polygon's Size : 40
 		Polygon's Position : {X, the std height ÷ 2}
-		add Polygon to the-Window
+		place Polygon in the-Window
 		X : X + 100
 
 	update the-Window

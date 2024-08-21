@@ -5,9 +5,9 @@ using graphics lib
 	Square's Size : 200
 	Square's Heading : π ÷ 4
 	Square's Colour : green
-	add Square to the-Window
+	place Square in the-Window
 
 	Rectangle : a (blue) box of 200 x 200 at (the centre point)
-	add Rectangle to the-Window
+	place Rectangle in the-Window
 
 update the-Window

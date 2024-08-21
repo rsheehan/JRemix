@@ -368,6 +368,13 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprWordProduct(RemixParser.ExprWordProductContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code exprSelf}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprSelf(RemixParser.ExprSelfContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code exprEqual}
 	 * labeled alternative in {@link RemixParser#expression}.
 	 * @param ctx the parse tree

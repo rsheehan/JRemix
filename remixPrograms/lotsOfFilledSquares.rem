@@ -11,6 +11,6 @@ a random square :
 using graphics lib
 	the-Window : the graphics panel
 	repeat
-		add (a random square) to the-Window
+		place (a random square) in the-Window
 	… 100 times
 	update the-Window

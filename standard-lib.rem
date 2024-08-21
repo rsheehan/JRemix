@@ -419,20 +419,20 @@ The transparent return breaks out of the "when".
 =-
 Increment numeric variable "X".
 =-
-inc #X :
+inc/increment #X :
 	#X : #X + 1
 
 =-
 Decrement numeric variable "X".
 =-
-dec #X :
+dec/decrement #X :
 	#X : #X - 1
 
 =-
 Increment numeric variable "X".
 Return the previous Value.
 =-
-#X inc :
+#X inc/increment :
 	#X : #X + 1
 	#X - 1
 
@@ -440,7 +440,7 @@ Return the previous Value.
 Decrement numeric variable "X".
 Return the previous Value.
 =-
-#X dec :
+#X dec/decrement :
 	#X : #X - 1
 	#X + 1
 
@@ -617,6 +617,14 @@ test List-of-Tests :
 
 graphics lib :
 	include "remixLibraries/graphics.rem"
+
+turtle lib :
+	include "remixLibraries/turtle.rem"
+
+- Can be used instead of "using graphics lib, turtle lib"
+with turtle graphics [Block] :
+	using graphics lib, turtle lib
+		do Block in lib context
 
 -==============================-
 

@@ -4,7 +4,7 @@ using graphics lib
 	Triangle : a triangle
 	Triangle's Size : 100
 	Triangle's Position : { 0, the std height ÷ 2}
-	add Triangle to the-Window
+	place Triangle in the-Window
 
 	Rotation : every 2 ticks do
 		change Triangle heading by 2 degrees

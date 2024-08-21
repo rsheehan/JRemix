@@ -1,4 +1,4 @@
-Graphics : library "edu.fizz.remix.libraries.Graphics"
+Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 
 	=====================
 	Dimensions and points
@@ -192,6 +192,17 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 					prepare Layer shapes for drawing on JGraphics
 				refresh JGraphics ; Java
 
+			==================
+			Clears all layers.
+			==================
+			clear ME :
+				Layers : { a shape layer }
+				update ME
+
+			clear ME leaving base layer :
+				Layers : { Layers {1} }
+				update ME
+
 		Panel's Background : dark blue
 		return Panel
 
@@ -204,8 +215,8 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 	a graphics panel from JGraphics-Panel :
 		extend (a JGraphics-Panel with layers)
 
-			add Shape to ME :
-				add Shape to (Layers {1})
+			place Shape in ME :
+				place Shape in (Layers {1})
 
 			MY Shapes :
 				Layers {1}'s Shapes
@@ -260,12 +271,12 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 	=-
 	a shape layer :
 		create
-			Shapes : {}
+			Shapes : { }
 
 			getter
 				Shapes
 
-			add Shape to ME :
+			place Shape in ME :
 				if (Shape is a "list")
 					for each Part in Shape do
 						append Part to Shapes
@@ -273,7 +284,7 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 					append Shape to Shapes
 
 			clear MY shapes :
-				Shapes : {}
+				Shapes : { }
 
 			prepare MY shapes for drawing on JGraphics :
 				for each Shape in Shapes do
@@ -293,22 +304,25 @@ Graphics : library "edu.fizz.remix.libraries.Graphics"
 			Changes : Changes
 
 			animate ME :
-				dec Counter
+				decrement Counter
 				if (Counter = 0)
 					Counter : Ticks
 					do Changes
 
-	=
+	=======================================================================
 	The Java animation function is
 	animate at N ticks per second [Animation-Block] until [Condition-Block]
-	=
+	=======================================================================
 
+	=-
+	Animate "Block" in "the-Window" at "N" ticks per second.
+	=-
 	animate the-Window Number times at N ticks per second [Block] :
 		animate at N ticks per second
 			do Block
 			update the-Window
-			dec Number
+			decrement Number
 		… until [Number < 1]
 
 "Graphics library loaded." ↲
-Graphics
+Graphics-Lib

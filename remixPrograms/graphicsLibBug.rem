@@ -15,7 +15,7 @@ using graphics lib
 	Add-Line : every 1 tick do
 		add 1 to Count
 		New : random point
-		add (a (random colour) line from Current to New) to the-Window
+		place (a (random colour) line from Current to New) in the-Window
 		Current : New
 		update the-Window
 

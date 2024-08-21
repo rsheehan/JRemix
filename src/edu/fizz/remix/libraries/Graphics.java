@@ -280,9 +280,31 @@ public class Graphics extends LibraryExpression {
         }
     }
 
+    public static final class WaitFunction extends Function {
+
+        public WaitFunction() {
+            super(
+                    List.of("pause | | seconds", "pause | | second"),
+                    List.of("Animation", "Time"),
+                    List.of(false, false),
+                    false,
+                    "Pause \"Animation\" for \"Time\" seconds."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            AnimateFunction.AnimationBlock animationBlock = (AnimateFunction.AnimationBlock) context.retrieve("Animation");
+            double seconds = ((Number) context.retrieve("Time")).doubleValue();
+            animationBlock.pauseTimer((int)(seconds * 1000));
+            return null;
+        }
+    }
+
     public static final class AnimateFunction extends Function {
 
         Timer animationTimer;
+
         public AnimateFunction() {
             super(
                     List.of("animate at | ticks per second | until |", "animate at | tick per second | until |"),
@@ -301,29 +323,36 @@ public class Graphics extends LibraryExpression {
             Block condition = (Block) context.retrieve("Condition");
             AnimationBlock animationBlock = new AnimationBlock(context, animation, condition);
             animationTimer = new Timer((int)(1000/rate), animationBlock);
+            animationBlock.setAnimationTimer(animationTimer);
             animationTimer.start();
             return animationBlock;
         }
 
         private class AnimationBlock implements ActionListener {
 
-            private volatile static boolean timeToStop;
             private final Block animation;
             private final Block condition;
+            private Timer animationTimer;
 
             AnimationBlock( Context context, Block animationBlock, Block conditionBlock) {
                 animation = animationBlock;
                 condition = conditionBlock;
             }
 
-            public void stopAnimations() {
-                timeToStop = true;
+            public void setAnimationTimer(Timer animationTimer) {
+                this.animationTimer = animationTimer;
+            }
+
+            public void pauseTimer(int millis) throws InterruptedException {
+                animationTimer.stop();
+                Thread.sleep(millis);
+                animationTimer.start();
             }
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    animation.evaluate(null); // was "context" but uses the block context
+                    animation.evaluate(null); // uses the block context
                 } catch (ReturnException | InterruptedException ex) {
                     System.err.println("Problem animating");
                     throw new RuntimeException(ex);

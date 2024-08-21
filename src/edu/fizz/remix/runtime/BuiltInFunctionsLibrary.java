@@ -3,6 +3,7 @@ package edu.fizz.remix.runtime;
 import edu.fizz.remix.Remix;
 import edu.fizz.remix.editor.RemixREPL;
 import edu.fizz.remix.editor.RemixSwingWorker;
+import edu.fizz.remix.libraries.Graphics;
 
 import java.util.*;
 
@@ -161,7 +162,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class IsATypeFunction extends Function {
         public IsATypeFunction() {
             super(
-                    List.of("| is a |"),
+                    List.of("| is a |", "| is an |"),
                     List.of("Value", "Type-String"),
                     List.of(false, false),
                     false,
@@ -205,6 +206,25 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public Object execute(Context context) throws ReturnException, InterruptedException {
             Block block = (Block)context.retrieve("Block");
+            return block.evaluate(context);
+        }
+    }
+
+    /** The "do" function but in the context of the "do" not of the block. Evaluates the block parameter. */
+    public static final class DoInContextFunction extends Function {
+        public DoInContextFunction() {
+            super(
+                    List.of("do | in lib context"),
+                    List.of("Block"),
+                    List.of(true),
+                    false,
+                    "Execute the \"Block\" in library contexts."
+            );
+        }
+
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            Block block = (Block)context.retrieve("Block");
+            block.clearContext();
             return block.evaluate(context);
         }
     }
@@ -679,11 +699,30 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 y = ((Long)value).doubleValue();
             value = context.retrieve("change-X");
             if (value instanceof Double)
-                y = (Double)value;
+                x = (Double)value;
             else if (value instanceof Long)
-                y = ((Long)value).doubleValue();
+                x = ((Long)value).doubleValue();
             return Math.atan2(y, x);
         }
     }
 
+    public static final class PauseFunction extends Function {
+
+        public PauseFunction() {
+            super(
+                    List.of("pause | seconds", "pause | second"),
+                    List.of("Time"),
+                    List.of(false),
+                    false,
+                    "Pause for \"Time\" seconds."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            double seconds = ((Number) context.retrieve("Time")).doubleValue();
+            Thread.sleep((int)(seconds * 1000));
+            return null;
+        }
+    }
 }

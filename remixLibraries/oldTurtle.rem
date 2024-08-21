@@ -1,0 +1,418 @@
+=============================
+Turtle Operations and Objects
+=============================
+Turtle-Lib : library
+
+	turtle space in the-Window:
+		Command-List : { }
+		create
+			the-Window : the-Window
+			Base-Layer : the-Window base layer
+			-Turtle-Commands : Command-List ; the list of sub commands to execute each clock tick
+			-Current-Group : Command-List ; group to currently add commands to
+			Turtle-Rate : 30
+			-Animation : null
+
+			getter
+				Turtle-Rate
+
+			==========================
+			Place turtle in the space.
+			==========================
+			place Turtle in ME :
+				Turtle's Turtle-Space : ME
+				Turtle's Animation-Layer : the-Window next layer
+				place Turtle in (Turtle's Animation-Layer)
+				update the-Window
+
+			==================================
+			Place a turtle group in the space.
+			==================================
+			place group Turtle-Group in ME :
+				Turtle-Group's Turtle-Space : ME
+
+			=================================================
+			Group commands so that they all execute together.
+			=================================================
+			=add group commands to ME [Command-Block] :
+				Current-Group : { }
+				append Current-Group to Turtle-Commands
+				do Command-Block
+				Current-Group : Turtle-Commands
+
+			add turtle Command to ME :
+			=	append Command to Current-Group
+
+			========================
+			Clear the world's layers.
+			========================
+			erase ME :
+				append {
+					"command" : "clear"
+				} to Current-Group
+
+			===============================
+			Start running the command list.
+			===============================
+			animate Turtle-Commands in ME :
+				if (no Turtle-Commands)
+					return
+				Command-Pos : start Turtle-Commands
+				repeat
+					Command : next Command-Pos
+					do turtle Command
+					update the-Window
+					pause (1.0 ÷ Turtle-Rate) seconds
+				… until
+					end Command-Pos
+
+			=================================
+			Execute all commands in the list.
+			=================================
+			do all commands in Commands :
+				for each Command in Commands
+					do turtle Command
+
+			===========================================
+			Execute one command from the commands list.
+			===========================================
+			do turtle Command :
+				if (Command is a "list")
+					do all commands in Command
+				… otherwise
+					Turtle : Command {"turtle"} ; could be null
+					when
+						[Command {"command"} = "clear"] do
+							clear Base-Layer shapes
+
+						[Command {"command"} = "pause"] do
+							pause Animation (Command {"time"}) seconds
+
+						[Command {"command"} = "hide"] do
+							clear (Turtle's Animation-Layer) shapes ; which is where the turtle shape is
+
+						[Command {"command"} = "move"] do
+							Animation-Layer : Turtle's Animation-Layer
+							clear Animation-Layer shapes
+							if (Turtle's Pen-Down)
+								Line : a (Command {"colour"}) line from (Command {"start"})
+								… to (Command {"finish"})
+								if (Command {"continuing"})
+									place Line in Animation-Layer
+								… otherwise
+									place Line in Base-Layer
+							set Turtle to Command state
+							if (Turtle is visible)
+								place Turtle in Animation-Layer
+
+	================
+	A turtle object.
+	================
+	a turtle :
+		Turtle-Shape : a shape from {
+			{ 0, 1 }
+			{-2, 2 }
+			{ 0,-2 }
+			{ 2, 2 }
+		} scaled by 5
+
+		Turtle : extend Turtle-Shape
+			Turtle-Space : null
+			Animation-Layer : null ; its own animation layer
+			Pen-Down : true
+			Visible : true
+			Speed : 10
+
+			getters/setters
+				Turtle-Space
+				Animation-Layer
+				Speed
+
+			getters
+				Pen-Down
+
+			====================================================================
+			Turtle graphics have { 0, 0 } at the centre of the window
+			and the heading is in degrees turning anticlockwise from the right.
+			====================================================================
+
+			MY Position :
+				panel coordinate Position to turtle coordinate
+
+			MY Position T :
+				Position : turtle coordinate T to panel coordinate
+
+			MY Heading :
+				(Heading radians as degrees) heading to direction
+
+			MY Heading Angle :
+				Heading : (Angle heading to direction) degrees as radians
+
+			MY actual position : ; in panel coordinates not turtle coordinates
+				Position
+
+			set MY actual position actual-Position : ; in panel coordinates not turtle coordinates
+				Position : actual-Position
+
+			ME is visible :
+				Visible
+
+			hide ME :
+				Visible : false
+
+			show ME :
+				Visible : true
+
+			hide ME in animation :
+				add turtle {
+					"command" : "hide"
+					"turtle"  : ME
+				} to Turtle-Space
+
+			MY pen down :
+				Pen-Down : true
+
+			MY pen up :
+				Pen-Down : false
+
+			================
+			Turn the turtle.
+			================
+			turn ME Angle degrees/degree:
+				Radians : Angle degrees as radians
+				Heading : Heading + Radians
+
+			======================================
+			Move the turtle instantly.
+			Does not change the turtle's position.
+			Used as partial moves in animation.
+			======================================
+			instantly move ME from Start to Finish :
+				Animation-Layer : Turtle's Animation-Layer
+				clear Animation-Layer shapes
+				if (Pen-Down)
+					Line : a (Colour) line from (Start) to (Finish)
+					place Line in Animation-Layer
+
+				if (Visible)
+					place Turtle in Animation-Layer
+
+			================
+			Move the turtle.
+			================
+			move ME N steps/step :
+				Remaining : N
+				Distance : 0
+				Continuing : true
+
+				while [Remaining > Speed]
+					Distance : Distance + Speed
+					Finish : MY position after moving Distance
+					Command : Continuing command for moving ME from Position to Finish
+					add turtle Command to Turtle-Space
+					Remaining : Remaining - Speed
+
+				Finish : position after moving N
+				Command : (not Continuing) command for moving ME from Position to Finish
+				add turtle Command to Turtle-Space
+				Position : Finish
+
+			===============================
+			Move a turtle to a Position.
+			new-Position is a turtle point.
+			===============================
+			move ME to new-Position :
+				turn ME to new-Position
+				new-Position : turtle coordinate new-Position to panel coordinate
+				move ME (distance from Position to new-Position) steps
+
+			===============================
+			A subcommand for a turtle move.
+			===============================
+			is-Continuing command for moving ME from Start to Finish :
+				{
+					"command"    : "move"
+					"turtle"     : ME
+					"continuing" : is-Continuing
+					"start"      : Start
+					"finish"     : Finish
+					"visible"    : Visible
+					"colour"     : Colour
+					"pen-down"   : Pen-Down
+					"heading"    : Heading ; this is in radians
+				}
+
+			=========================================================
+			Used when animating commands need to update turtle state.
+			=========================================================
+			set ME to Command state :
+				Position : Command {"finish"}
+				Heading : Command {"heading"} ;) heading to direction) degrees as radians
+				Colour : Command {"colour"}
+
+			MY position after moving Distance :
+				actual-Heading : π ÷ 2 - Heading
+				{
+					Position {1} + Distance × cosine (actual-Heading)
+					Position {2} - Distance × sine (actual-Heading)
+				}
+
+	================================
+	A turtle group object.
+	Together for parallel operation.
+	================================
+	a group of Turtles :
+		create
+			Turtle-Space : null
+			Turtles : Turtles
+			group-Speed : Turtles{1}'s Speed
+
+			setter
+				Turtle-Space
+
+			===========================================
+			Move the group.
+			Each turtle has its own heading, colour etc
+			but they all move the same distance.
+			===========================================
+			move ME N step/steps :
+				Remaining : N
+				Distance : 0
+				Continuing : true
+
+				while [Remaining > group-Speed]
+					Distance : Distance + group-Speed
+
+					for each Turtle from Turtles
+
+
+					=group-Command : apply
+						Finish : Turtle position after moving Distance
+						Continuing command for moving Turtle from (Turtle actual position) to Finish
+					… to each Turtle from Turtles
+
+					-add turtle group-Command to Turtle-Space
+					=animate group-Command in Turtle-Space
+					Remaining : Remaining - group-Speed
+
+				group-Command : apply
+					Finish : Turtle position after moving N
+					Command : (not Continuing) command for moving Turtle from (Turtle actual position) to Finish
+					-set Turtle actual position Finish
+					Command
+				… to each Turtle from Turtles
+				-add turtle group-Command to Turtle-Space
+				animate group-Command in Turtle-Space
+
+			========================================
+			Hide all the turtle bodies in the group.
+			========================================
+			hide ME :
+				group-Command : apply
+					{ "command" : "hide", "turtle" : Turtle }
+				… to each Turtle from Turtles
+				add turtle group-Command to Turtle-Space
+
+=
+		Turn a turtle.
+		turn /the (me) (angle) degrees/degree:
+			heading : (heading + angle) % 360
+
+		Turn a turtle to face a Position.
+		turn /the (me) to (new-Position):
+			start-pos : Position
+			Finish : convert (new-Position) to paper coordinate
+			xd : Finish [1] - start-pos [1]
+			yd : start-pos [2] - Finish [2]
+			angle : arctangent (yd) over (xd)
+			heading : (angle) heading to direction % 360
+
+	-turtle-rate : 30
+
+	add continuing command to #Group for Turtle from Start to Finish:
+		add true command to #Group for Turtle from Start to Finish
+
+	add terminating command to #Group for Turtle from Start to Finish:
+		add false command to #Group for Turtle from Start to Finish
+
+Set up the screen for turtle use.
+Also sets up the base turtle.
+turtle graphics on (background) paper:
+	on standard (background) paper
+
+Set up for turtle use and execute the turtle commands.
+turtle graphics on (background) paper (turtle-block):
+	turtle graphics on (background) paper
+	do (turtle-block)
+	turtles go
+
+Draw a permanent line if the pen is down.
+draw (pen-down) with (pen) from Start to Finish:
+	if (pen-down)
+		draw on layer 1
+		draw with (pen)
+		draw line from Start to Finish
+
+Move the base turtle.
+move (steps) steps/step:
+	move Turtle (steps) steps
+
+Move the base turtle to a Position.
+move to (Position):
+	move Turtle to (Position)
+
+Turn the base turtle to face a Position.
+turn to (Position):
+	turn Turtle to (Position)
+
+Turn the base turtle.
+turn (angle) degrees/degree:
+	turn Turtle (angle) degrees
+
+Draw a circle around a turtle.
+draw (colour) circle of (radius) centred on /the Turtle:
+	draw with (colour) pen
+	draw circle of (radius) at (turtle's Position)
+
+Pause the turtles for a time.
+pause turtles/turtle for (time) secs/sec:
+	append {
+		command : "pause"
+		time : time
+	} to (Current-Group)
+=
+
+	=-
+	Convert turtle heading "Angle" to a direction (and vice versa).
+	=-
+	Angle heading to direction :
+		90 - Angle
+
+	=-
+	Convert panel coordinate "C" to a turtle coordinate.
+	=-
+	panel coordinate C to turtle coordinate :
+		Centre : the centre point
+		{
+			C {1} - Centre {1}
+			Centre {2} - C {2}
+		}
+
+	=-
+	Convert turtle coordinate "C" to a panel coordinate.
+	=-
+	turtle coordinate C to panel coordinate :
+		Centre : the centre point
+		{
+			C {1} + Centre {1}
+			Centre {2} - C {2}
+		}
+
+	=-
+	A random turtle coordinate.
+	=-
+	random turtle point :
+		panel coordinate (random point) to turtle coordinate
+
+"Turtle library loaded." ↲
+Turtle-Lib
