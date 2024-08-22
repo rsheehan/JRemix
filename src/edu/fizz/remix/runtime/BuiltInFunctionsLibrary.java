@@ -43,7 +43,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public Object execute(Context context) {
             Object object = context.retrieve("Object");
-            System.err.println(object);
+            System.out.println(object);
             return null;
         }
     }

@@ -3,18 +3,16 @@ using graphics lib, turtle lib
 	the-Window : the graphics panel with layers
 	Turtle-Space : turtle space in the-Window
 
+	Turtles : a group of 8 turtles
+	Turtle's Speed : 20
 	Angle : 0
-	Turtles : apply
-		Turtle : a turtle
-		Turtle's Speed : 20
+	for each Turtle in Turtles
 		Turtle's Colour : random colour
 		Turtle's Heading : add 45 to Angle
-		Turtle
-	… 8 times
-	Turtle-Group : a group of Turtles
-	place group Turtle-Group in Turtle-Space
-	Turtle-Group pattern
-	hide Turtle-Group
+	place group Turtles in Turtle-Space
+
+	Turtles pattern
+	hide Turtles
 
 Turtle pattern :
 	repeat 20 times

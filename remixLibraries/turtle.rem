@@ -8,7 +8,12 @@ Turtle-Lib : library
 		create
 			the-Window : the-Window
 			Base-Layer : the-Window base layer
+				- The Base-Layer is where turtle lines are put
+				- after a completed move command.
 			Turtle-Rate : 30
+				- The Turtle-Rate was the number of frames per second.
+				- Now it sets the time between parts of an unfinished
+				- move command. See "move Turtle/Group N steps"
 
 			getter
 				Base-Layer
@@ -207,16 +212,41 @@ Turtle-Lib : library
 	A turtle group object.
 	Together for parallel operation.
 	================================
-	a group of Turtles :
+	a group of N turtles :
+		Turtles : apply [a turtle] N times
 		create
 			Turtle-Space : null
 			Turtles : Turtles
-			group-Speed : Turtles{1}'s Speed
+			Speed : 10 ; for all turtles in the group
+
+			getter/setter
+				Speed
 
 			MY Turtle-Space Space : ; a setter for Turtle-Space
 				Turtle-Space : Space
 				for each Turtle in Turtles
 					place Turtle in Turtle-Space
+
+			====================================================
+			Enable the turtle group to iterate over the turtles.
+			====================================================
+			start ME :
+				turtle iterator
+
+			MY length :
+				Turtles length
+
+			turtle iterator :
+				create
+					Turtles : Turtles
+					Index : 0
+
+					end ME :
+						Index = Turtles length
+
+					next ME :
+						Turtles {increment Index}
+
 
 			===========================================
 			Move the group.
@@ -230,13 +260,13 @@ Turtle-Lib : library
 					Turtle actual position
 				… to each Turtle from Turtles
 
-				while [Remaining > group-Speed]
-					Distance : Distance + group-Speed
+				while [Remaining > Speed]
+					Distance : Distance + Speed
 					for each Turtle in Turtles keeping Index
 						Start : Starting {Index} ; initial position
 						Finish : Turtle position after moving Distance from Start
 						instantly move Turtle from Start to Finish in (Turtle's Animation-Layer)
-					Remaining : Remaining - group-Speed
+					Remaining : Remaining - Speed
 					pause (1.0 ÷ Turtle-Space's Turtle-Rate) seconds
 
 				- now add the "permanent" layer

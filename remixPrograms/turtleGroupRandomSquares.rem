@@ -3,14 +3,15 @@ using graphics lib, turtle lib
 	the-Window : the graphics panel with layers
 	Turtle-Space : turtle space in the-Window
 
-	Turtles : a group of 8 turtles
-	Angle : 0
+	Turtles : a group of 40 turtles
+	Turtles's Speed : 200
+
 	for each Turtle in Turtles
-		Turtle's Speed : 5
 		Turtle's Colour : random colour
-		Turtle's Heading : add 45 to Angle
+		Turtle's Position : random turtle point
 	place group Turtles in Turtle-Space
-	Turtles square of size 200
+
+	Turtles square of size 100
 	hide Turtles
 
 Turtle square of size Size :

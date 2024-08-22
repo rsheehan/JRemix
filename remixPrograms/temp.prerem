@@ -2,33 +2,30 @@
 using graphics lib, turtle lib[
 
 	the-Window : a graphics window with layers
-	the-World : turtle world in the-Window
+	Turtle-Space : turtle space in the-Window
 
 	repeat[
-		star explosion in the-World]
+		star explosion in Turtle-Space]
 	… 10 times
-	animate the-World]
+	quit "The End."]
 
-star explosion in the-World :[
-	Point : random turtle point
+star explosion in Space :[
 	Angle : 0
+	Point : random turtle point
 	Turtles : apply[
-		Turtle : a turtle in the-World
+		Turtle : a turtle
+		Turtle's Speed : 10
 		Turtle's Position : Point
-		Turtle's Heading : add 18 to Angle
+		Turtle's Heading : add 9 to Angle
 		Turtle's Colour : random colour
 		Turtle pen down
 		Turtle]
-	… 20 times
+	… 40 times
 
-	repeat (random from 5 to 20) times[
-		group commands in the-World[
-			for each (Turtle) in (Turtles)[
-				move Turtle 10 steps]]]
-
-	group commands in the-World[
-		for each Turtle in Turtles[
-			hide Turtle in animation]]
-
-	-pause the-World for 0.2 seconds
-	erase the-World]
+	Turtle-Group : a group of Turtles
+	place group Turtle-Group in Space
+	Size : random from 50 to 200
+	move Turtle-Group Size steps
+	hide Turtle-Group
+	pause 0.2 seconds
+	clear Space]

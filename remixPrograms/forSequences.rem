@@ -38,7 +38,7 @@ Count star iterator :
 			Index = MAX
 
 		next ME :
-			inc Index
+			increment Index
 			Stars : Stars ⊕ "*"
 
 List ↲

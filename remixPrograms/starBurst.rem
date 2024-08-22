@@ -9,20 +9,17 @@ using graphics lib, turtle lib
 
 
 star explosion in Space :
+	Turtle-Group : a group of 40 turtles
+	Turtle-Group's Speed : 7
+	place group Turtle-Group in Space
+
 	Angle : 0
 	Point : random turtle point
-	Turtles : apply
-		Turtle : a turtle
-		Turtle's Speed : 10
-		Turtle's Position : Point
+	for each Turtle in Turtle-Group
 		Turtle's Heading : add 9 to Angle
 		Turtle's Colour : random colour
-		Turtle pen down
-		Turtle
-	… 40 times
+		Turtle's Position : Point
 
-	Turtle-Group : a group of Turtles
-	place group Turtle-Group in Space
 	Size : random from 50 to 200
 	move Turtle-Group Size steps
 	-hide Turtle-Group
