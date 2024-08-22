@@ -213,8 +213,10 @@ Turtle-Lib : library
 			Turtles : Turtles
 			group-Speed : Turtles{1}'s Speed
 
-			setter
-				Turtle-Space
+			MY Turtle-Space Space : ; a setter for Turtle-Space
+				Turtle-Space : Space
+				for each Turtle in Turtles
+					place Turtle in Turtle-Space
 
 			===========================================
 			Move the group.
@@ -242,6 +244,14 @@ Turtle-Lib : library
 					Start : Starting {Index}
 					Finish : Turtle position after moving N from Start
 					instantly move Turtle from Start to Finish in (Turtle-Space's Base-Layer)
+
+			=================================================
+			Turn each turtle in the group by the same amount.
+			=================================================
+			turn ME Angle degrees :
+				for each Turtle in Turtles
+					Turtle's Heading : Turtle's Heading - Angle
+				update Turtle-Space
 
 			========================================
 			Hide all the turtle bodies in the group.

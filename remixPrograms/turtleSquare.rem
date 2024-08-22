@@ -12,7 +12,6 @@ using graphics lib, turtle lib
 		turn Turtle 45 degrees
 	hide Turtle
 
-
 Turtle square of size Size :
 	repeat 4 times
 		move Turtle Size steps

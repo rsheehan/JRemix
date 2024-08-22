@@ -13,12 +13,11 @@ star explosion in Space :
 	Point : random turtle point
 	Turtles : apply
 		Turtle : a turtle
-		Turtle's Speed : 20
+		Turtle's Speed : 10
 		Turtle's Position : Point
 		Turtle's Heading : add 9 to Angle
 		Turtle's Colour : random colour
 		Turtle pen down
-		place Turtle in Space
 		Turtle
 	… 40 times
 
@@ -27,5 +26,5 @@ star explosion in Space :
 	Size : random from 50 to 200
 	move Turtle-Group Size steps
 	-hide Turtle-Group
-	clear Space turtles
-	-clear Space
+	-clear Space turtles
+	clear Space

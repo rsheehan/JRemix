@@ -1,0 +1,22 @@
+using graphics lib, turtle lib
+
+	the-Window : the graphics panel with layers
+	Turtle-Space : turtle space in the-Window
+
+	Angle : 0
+	Turtles : apply
+		Turtle : a turtle
+		Turtle's Speed : 20
+		Turtle's Colour : random colour
+		Turtle's Heading : add 45 to Angle
+		Turtle
+	… 8 times
+	Turtle-Group : a group of Turtles
+	place group Turtle-Group in Turtle-Space
+	Turtle-Group pattern
+	hide Turtle-Group
+
+Turtle pattern :
+	repeat 20 times
+		move Turtle (random from 100 to 200) steps
+		turn Turtle (random from 90 to 180) degrees
