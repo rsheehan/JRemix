@@ -213,6 +213,9 @@ Turtle-Lib : library
 	Together for parallel operation.
 	================================
 	a group of N turtles :
+		if (N > 100)
+			"Turtle groups limited to 100." ↲
+			N : 100
 		Turtles : apply [a turtle] N times
 		create
 			Turtle-Space : null
@@ -231,12 +234,6 @@ Turtle-Lib : library
 			Enable the turtle group to iterate over the turtles.
 			====================================================
 			start ME :
-				turtle iterator
-
-			MY length :
-				Turtles length
-
-			turtle iterator :
 				create
 					Turtles : Turtles
 					Index : 0
@@ -246,7 +243,6 @@ Turtle-Lib : library
 
 					next ME :
 						Turtles {increment Index}
-
 
 			===========================================
 			Move the group.

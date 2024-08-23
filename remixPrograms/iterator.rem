@@ -2,7 +2,7 @@
 
 make N stars :
 	- the sequence object
-	- must include "start ME" and "MY length" methods
+	- must include "start ME" method
 	create
 		Count : N
 
@@ -22,9 +22,6 @@ make N stars :
 				next ME :
 					Index : Index + 1
 					Stars : Stars ⊕ "*"
-
-		MY length :
-			Count
 
 S : make 8 stars
 
