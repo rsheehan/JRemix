@@ -4,7 +4,6 @@ Turtle Operations and Objects
 Turtle-Lib : library
 
 	turtle space in the-Window:
-		Command-List : { }
 		create
 			the-Window : the-Window
 			Base-Layer : the-Window base layer
