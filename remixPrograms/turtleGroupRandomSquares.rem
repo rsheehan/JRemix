@@ -4,11 +4,12 @@ using graphics lib, turtle lib
 	Turtle-Space : turtle space in the-Window
 
 	Turtles : a group of 40 turtles
-	Turtles's Speed : 200
+	Turtles's Speed : 20
 
 	for each Turtle in Turtles
 		Turtle's Colour : random colour
 		Turtle's Position : random turtle point
+		Turtle's Heading : random angle
 	place group Turtles in Turtle-Space
 
 	Turtles square of size 100
@@ -18,3 +19,6 @@ Turtle square of size Size :
 	repeat 4 times
 		move Turtle Size steps
 		turn Turtle 90 degrees
+
+random angle :
+	random from 0 to 359

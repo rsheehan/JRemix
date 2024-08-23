@@ -217,7 +217,7 @@ Turtle-Lib : library
 		create
 			Turtle-Space : null
 			Turtles : Turtles
-			Speed : 10 ; for all turtles in the group
+			Speed : 10
 
 			getter/setter
 				Speed
