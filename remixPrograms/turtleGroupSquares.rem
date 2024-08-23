@@ -4,9 +4,9 @@ using graphics lib, turtle lib
 	Turtle-Space : turtle space in the-Window
 
 	Turtles : a group of 8 turtles
+	Turtles' Speed : 5
 	Angle : 0
 	for each Turtle in Turtles
-		Turtle's Speed : 5
 		Turtle's Colour : random colour
 		Turtle's Heading : add 45 to Angle
 	place group Turtles in Turtle-Space

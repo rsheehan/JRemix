@@ -74,7 +74,7 @@ LIBRARY				: 'library' ;
 USING				: 'using' ; // using a-library
 SELFREF				: 'ME' | 'MY' ;
 
-POSSESSIVE			: '\'s' ; // used for field access e.g. Robert's age
+POSSESSIVE			: '\'' ('s ' | ' ') ; // used for field access e.g. Robert's age
 
 IDENTIFIER			: (FIRSTCHAR CHARACTER* CAPITAL | CAPITAL) CHARACTER*;
 WORD				: FIRSTCHAR CHARACTER* ;

@@ -4,7 +4,7 @@ using graphics lib, turtle lib
 	Turtle-Space : turtle space in the-Window
 
 	Turtles : a group of 8 turtles
-	Turtles's Speed : 20
+	Turtles' Speed : 20
 	Angle : 0
 	for each Turtle in Turtles
 		Turtle's Colour : random colour

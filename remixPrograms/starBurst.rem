@@ -10,7 +10,7 @@ using graphics lib, turtle lib
 
 star explosion in Space :
 	Turtles : a group of 40 turtles
-	Turtles's Speed : 10
+	Turtles' Speed : 10
 
 	Angle : 0
 	Point : random turtle point
