@@ -1,5 +1,6 @@
 package edu.fizz.remix;
 
+import edu.fizz.remix.editor.RemixREPL;
 import edu.fizz.remix.parser.RemixParser;
 import edu.fizz.remix.parser.RemixParserBaseVisitor;
 import edu.fizz.remix.runtime.*;
@@ -607,7 +608,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** callPart callPart+ | singleWord */
     @Override
     public Expression visitFunctionCall(RemixParser.FunctionCallContext ctx) {
-        FunctionCallExpression funcCall = new FunctionCallExpression();
+        String fileName = RemixREPL.getFileName();
+        int lineNumber = ctx.getStart().getLine() - 1;
+        int lineOffset = ctx.getStart().getCharPositionInLine();
+        FunctionCallExpression funcCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
         int n = ctx.getChildCount();
         for (int i=0; i<n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -632,6 +636,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 funcCall.addParam(expression);
             }
         }
+//        System.err.printf("Function - %s - call on line: %d%n", funcCall.toString(), lineNumber);
         return funcCall;
     }
 

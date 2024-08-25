@@ -16,9 +16,14 @@ import java.io.IOException;
 
 public class RemixREPL {
 
+    public static final String EDITORTEXT = "*EditorText*";
+
+    private static String fileName;
+
     public static LibraryExpression loadPackage(String libName) throws Exception {
         String preRemFile;
         // Preprocess the .rem file
+        fileName = libName;
         preRemFile = PreProcess.processFile(libName);
         CharStream input = CharStreams.fromFileName(preRemFile);
         RemixLexer lexer = new RemixLexer(input);
@@ -27,6 +32,10 @@ public class RemixREPL {
         ParseTree tree = parser.program(); // parse
         EvalVisitor eval = new EvalVisitor();
         return (LibraryExpression)eval.visit(tree);
+    }
+
+    public static String getFileName() {
+        return fileName;
     }
 
 //    public static void checkEditorText(String editorText) {
@@ -41,6 +50,7 @@ public class RemixREPL {
         // then create CharStream fromString
         // then lexer, tokens, parse, tree, eval.visit
         // then run and return the string output
+        fileName = EDITORTEXT;
         String processedText;
         try {
             processedText = PreProcessREPL.processContents(editorText);

@@ -1,5 +1,7 @@
 package edu.fizz.remix.runtime;
 
+import edu.fizz.remix.editor.RemixREPL;
+
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
@@ -9,8 +11,19 @@ import java.util.NoSuchElementException;
  */
 public class FunctionCallExpression extends FunctionName<Expression> implements Expression {
 
+    private String fileName;
+    private int lineNumber;
+    private int lineOffset;
+
     public FunctionCallExpression() {
         super();
+    }
+
+    public FunctionCallExpression(String fileName, int lineNumber, int lineOffset) {
+        super();
+        this.fileName = fileName;
+        this.lineNumber = lineNumber;
+        this.lineOffset = lineOffset;
     }
 
     @Override
@@ -78,7 +91,10 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         if (function == null) {
             String readable = routineName; //.replace("_", " ");
             readable = readable.replace("|", "()");
-            System.err.format("\"%s\" does not exist.%n", readable);
+            if (!fileName.equals(RemixREPL.EDITORTEXT))
+                System.err.format("file: %s, ", fileName);
+            else System.err.format("line: %d, offset: %d%n\t\"%s\" does not exist or is a method with a null receiver.%n",
+                    lineNumber, lineOffset, readable);
             return null;
         }
         Context functionContext = new Context(context, function.isTransparent());
