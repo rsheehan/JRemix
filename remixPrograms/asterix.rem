@@ -1,6 +1,7 @@
-"Asterisk Diamonds" ↲
-"=================" ↲
-↲
+"
+Asterisk Diamonds
+=================
+" ↲
 
 for each Size from 1 to 41 in steps of 2 do
 	Size, "." ↲

@@ -22,6 +22,6 @@ star explosion in Space :
 
 	Size : random from 50 to 200
 	move Turtles Size steps
-	-hide Turtle-Group
+	-hide Turtles
 	-clear Space turtles
 	clear Space

@@ -12,13 +12,13 @@ using graphics lib, turtle lib
 		Turtle's Heading : random angle
 	place group Turtles in Turtle-Space
 
-	Turtles square of size 100
+	Turtles square 150
 	hide Turtles
 
-Turtle square of size Size :
+Turtles square Size :
 	repeat 4 times
-		move Turtle Size steps
-		turn Turtle 90 degrees
+		move Turtles Size steps
+		turn Turtles 90 degrees
 
 random angle :
 	random from 0 to 359
