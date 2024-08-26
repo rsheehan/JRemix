@@ -4,7 +4,7 @@ using graphics lib, turtle lib
 	Turtle-Space : turtle space in the-Window
 
 	Turtles : a group of 8 turtles
-	Turtles' Speed : 20
+	Turtles' Speed : 40
 	Angle : 0
 	for each Turtle in Turtles
 		Turtle's Colour : random colour
@@ -14,7 +14,7 @@ using graphics lib, turtle lib
 	Turtles pattern
 	hide Turtles
 
-Turtle pattern :
-	repeat 20 times
-		move Turtle (random from 100 to 200) steps
-		turn Turtle (random from 90 to 180) degrees
+Turtles pattern :
+	repeat 10 times
+		move Turtles (random from 200 to 400) steps
+		turn Turtles (random from 160 to 200) degrees
