@@ -34,7 +34,7 @@ EOS					: '.' ;		// End Of Statement
 
 fragment DIGIT		: [0-9] ;
 
-DOC_COMMENT			: EOL '=-' EOL .*? EOL '=-' EOL ;
+DOC_COMMENT			: EOL '=-' EOL .*? EOL '=-' ;
 
 COMMENT				: (
 					COMMENT_LINE // first visible character '-'

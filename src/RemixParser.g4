@@ -15,7 +15,7 @@ usingLibrary		: USING expression (COMMA expression)* blockOfStatements ;
 
 functionDefinition	: functionComment? functionSignature COLON COLON? EOL? blockOfStatements ;
 
-functionComment		: DOC_COMMENT ;
+functionComment		: DOC_COMMENT EOL ;
 
 functionSignature	: sigPart sigPart+
 					| singleWord

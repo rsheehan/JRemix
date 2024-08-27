@@ -1,0 +1,35 @@
+using graphics lib, turtle lib
+
+	the-Window : the graphics panel with layers
+	Turtle-Space : turtle space in the-Window
+
+	Turtles : a group of 20 turtles
+	Turtles' Speed : 20
+
+	for each Turtle in Turtles
+		Turtle's Colour : random colour
+		Turtle's Position : random turtle point
+		Turtle's Heading : random angle
+	place group Turtles in Turtle-Space
+
+	Turtles square 150
+
+	for each Turtle in Turtles
+		Turtle's Position : random turtle point
+		Turtle's Heading : random angle
+
+	Turtles triangle 150
+	hide Turtles
+
+Turtles square Size :
+	repeat 4 times
+		move Turtles Size steps
+		turn Turtles 90 degrees
+
+Turtles triangle Size :
+	repeat 3 times
+		move Turtles Size steps
+		turn Turtles 120 degrees
+
+random angle :
+	random from 0 to 359
