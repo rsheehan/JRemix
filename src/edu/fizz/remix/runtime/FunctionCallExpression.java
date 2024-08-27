@@ -11,13 +11,9 @@ import java.util.NoSuchElementException;
  */
 public class FunctionCallExpression extends FunctionName<Expression> implements Expression {
 
-    private String fileName;
-    private int lineNumber;
-    private int lineOffset;
-
-    public FunctionCallExpression() {
-        super();
-    }
+    private final String fileName;
+    private final int lineNumber;
+    private final int lineOffset;
 
     public FunctionCallExpression(String fileName, int lineNumber, int lineOffset) {
         super();

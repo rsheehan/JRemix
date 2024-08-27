@@ -44,8 +44,8 @@ COMMENT				: (
 					REMAINING_COMMENT // everything on a line following ';'
 					) -> skip ;
 
-fragment COMMENT_LINE		: EOL [ \t]* '-' ~'\n'* ;
-fragment COMMENT_SECTION	: EOL [ \t]* '=' .*? EOL [ \t]* '=' ~'\n'* ;
+fragment COMMENT_LINE		: EOL '\t'* '-' ~'\n'* ;
+fragment COMMENT_SECTION	: EOL '\t'* '=' .*? EOL '\t'* '=' ~'\n'* ;
 fragment REMAINING_COMMENT	: ';' ~'\n'* ;
 
 NUMBER				: '-'? ( 'pi' | 'π' | DIGIT+ ('.' DIGIT+)?) ;

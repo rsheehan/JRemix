@@ -63,11 +63,11 @@ blockOfStatements	: LBLOCK statement* RBLOCK ;
 
 statement			: assignmentStatement	# assStatement	// label not used
 					| printStatement		# prStatement	// label not used
-					| expression 			# expr
+					| expression 			# expr			// label not used
 					| endOfStatement		# blank // need to reconsider this
 					| REDO					# redo
 					| RETURN expression?	# return
-					| usingLibrary			# usingStatement	// label not used
+					| usingLibrary			# usingStatement// label not used
 					;
 
 endOfStatement		: EOL | EOS ;

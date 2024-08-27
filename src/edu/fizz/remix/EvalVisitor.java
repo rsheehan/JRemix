@@ -452,7 +452,11 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     public Expression visitExprConcat(RemixParser.ExprConcatContext ctx) {
         Expression first = (Expression) visit(ctx.expression(0));
         Expression second = (Expression) visit(ctx.expression(1));
-        FunctionCallExpression concatCall = new FunctionCallExpression();
+        String fileName = RemixREPL.getFileName();
+        int lineNumber = ctx.getStart().getLine() - 1;
+        int lineOffset = ctx.getStart().getCharPositionInLine();
+        FunctionCallExpression concatCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
+//        FunctionCallExpression concatCall = new FunctionCallExpression();
         concatCall.addParam(first);
         concatCall.addToName(ctx.CONCAT().getText().trim()); // need to trim because of spaces
         concatCall.addParam(second);
@@ -563,7 +567,11 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** (WORD | listElement) POSSESSIVE WORD */
     @Override
     public Expression visitGetterMethodCall(RemixParser.GetterMethodCallContext ctx) {
-        FunctionCallExpression getterCall = new FunctionCallExpression();
+        String fileName = RemixREPL.getFileName();
+        int lineNumber = ctx.getStart().getLine() - 1;
+        int lineOffset = ctx.getStart().getCharPositionInLine();
+        FunctionCallExpression getterCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
+//        FunctionCallExpression getterCall = new FunctionCallExpression();
         ParseTree node = ctx.getChild(0);
         if (node instanceof RemixParser.ListElementContext) {
             // must be listElement e.g. student{1}
@@ -581,7 +589,11 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** (WORD | listElement) POSSESSIVE WORD COLON expression */
     @Override
     public Expression visitSetterMethodCall(RemixParser.SetterMethodCallContext ctx) {
-        FunctionCallExpression setterCall = new FunctionCallExpression();
+        String fileName = RemixREPL.getFileName();
+        int lineNumber = ctx.getStart().getLine() - 1;
+        int lineOffset = ctx.getStart().getCharPositionInLine();
+        FunctionCallExpression setterCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
+//        FunctionCallExpression setterCall = new FunctionCallExpression();
         ParseTree node = ctx.getChild(0);
         if (node instanceof RemixParser.ListElementContext) {
             // must be listElement e.g. student{1}
