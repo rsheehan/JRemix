@@ -224,6 +224,10 @@ Turtle-Lib : library
 			getter/setter
 				Speed
 
+			===========================================
+			Not only sets the turtle space but adds all
+			turtles to it.
+			===========================================
 			MY Turtle-Space Space : ; a setter for Turtle-Space
 				Turtle-Space : Space
 				for each Turtle in Turtles
