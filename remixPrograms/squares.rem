@@ -4,10 +4,10 @@ using graphics lib
 	Square : a square
 	Square's Size : 200
 	Square's Heading : π ÷ 4
-	Square's Colour : green
+	Square's Colour : GREEN
 	place Square in the-Window
 
-	Rectangle : a (blue) box of 200 x 200 at (the centre point)
+	Rectangle : a BLUE box of 200 x 200 at THE-CENTRE-POINT
 	place Rectangle in the-Window
 
 update the-Window

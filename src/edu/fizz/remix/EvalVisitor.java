@@ -358,12 +358,12 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new AssignmentStatement(varName, expression);
     }
 
-    /** IDENTIFIER COLON COLON expression */
+    /** CONSTANT COLON expression */
     @Override
-    public AssignmentStatement visitSetConstant(RemixParser.SetConstantContext ctx) {
-        String varName = ctx.IDENTIFIER().getText();
+    public ConstantAssignmentStatement visitSetConstant(RemixParser.SetConstantContext ctx) {
+        String constName = ctx.CONSTANT().getText();
         Expression expression = (Expression) visit(ctx.expression());
-        return new AssignmentStatement(varName, expression);
+        return new ConstantAssignmentStatement(constName, expression);
     }
 
     /** (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) */
@@ -482,6 +482,13 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     public Expression visitExprVar(RemixParser.ExprVarContext ctx) {
         String varName = ctx.IDENTIFIER().getText();
         return new VarValueExpression(varName);
+    }
+
+    /** CONSTANT (from expression) */
+    @Override
+    public Expression visitExprConstant(RemixParser.ExprConstantContext ctx) {
+        String constantName = ctx.CONSTANT().getText();
+        return new ConstantValueExpression(constantName);
     }
 
     /** SELFREF (from expression) */
@@ -625,6 +632,13 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new VarValueExpression(varName);
     }
 
+    /** CONSTANT (from expression) */
+    @Override
+    public Expression visitCallConstant(RemixParser.CallConstantContext ctx) {
+        String constantName = ctx.CONSTANT().getText();
+        return new ConstantValueExpression(constantName);
+    }
+
     /** callPart callPart+ | singleWord */
     @Override
     public Expression visitFunctionCall(RemixParser.FunctionCallContext ctx) {
@@ -643,7 +657,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             } else if (node instanceof RemixParser.CallBlockContext) {
                 Expression expression = (Expression)visit(node);
                 funcCall.addBlockParam(expression);
-            } else if (node instanceof RemixParser.CallVarContext ||
+            } else if (node instanceof RemixParser.CallConstantContext ||
+                    node instanceof RemixParser.CallVarContext ||
                     node instanceof RemixParser.CallParamContext ||
                     node instanceof RemixParser.CallNumberContext ||
                     node instanceof RemixParser.CallWordProductContext ||

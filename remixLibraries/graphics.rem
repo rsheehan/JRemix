@@ -3,45 +3,27 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	=====================
 	Dimensions and points
 	=====================
-	the std width :
-		1000
-
-	the std height :
-		800
-
-	centre-x :
-		the std width ÷ 2
-
-	centre-y :
-		the std height ÷ 2
-
-	the centre point :
-		{ the std width ÷ 2, the std height ÷ 2 }
+	STD-WIDTH	: 1000
+	STD-HEIGHT	: 800
+	CENTRE-X	: STD-WIDTH ÷ 2
+	CENTRE-Y	: STD-HEIGHT ÷ 2
+	THE-CENTRE-POINT : { CENTRE-X, CENTRE-Y }
 
 	/a random point :
-		{ random (the std width), random (the std height) }
+		{ random STD-WIDTH, random STD-HEIGHT }
 
 	=======
 	Colours
 	=======
-	white :
-		{ 255, 255, 255 }
-	black :
-		{ 0, 0, 0 }
-	red :
-		{ 255, 0, 0 }
-	green :
-		{ 0, 255, 0 }
-	blue :
-		{ 0, 0, 255 }
-	dark blue :
-		{ 0, 0, 50 }
-	sky blue :
-		{ 180, 230, 255 }
-	grey :
-		{ 128, 128, 128 }
-	dark grey :
-		{ 64, 64, 64 }
+	WHITE		: { 255, 255, 255 }
+	BLACK		: { 0, 0, 0 }
+	RED			: { 255, 0, 0 }
+	GREEN		: { 0, 255, 0 }
+	BLUE		: { 0, 0, 255 }
+	DARK-BLUE	: { 0, 0, 50 }
+	SKY-BLUE	: { 180, 230, 255 }
+	GREY		: { 128, 128, 128 }
+	DARK-GREY	: { 64, 64, 64 }
 
 	/a random colour :
 		{ random 255, random 255, random 255 }
@@ -81,7 +63,7 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 		a shape from Points scaled by 5
 
 	a shape from Points scaled by Size :
-		a (red) shape from Points scaled by Size at (the centre point)
+		a RED shape from Points scaled by Size at THE-CENTRE-POINT
 
 	=-
 	Create a shape of "Colour" from the list of "Points" scaled by "Size"
@@ -136,7 +118,7 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 				Start, Finish, Width, Colour
 
 	a line from Start to Finish :
-		a (green) line from Start to Finish
+		a GREEN line from Start to Finish
 
 	a random line :
 		a (random colour) line from (random point) to (random point)
@@ -160,7 +142,7 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 				Radius, Position
 
 	a random circle :
-		Size : random (the std height ÷ 8) + 10
+		Size : random (STD-HEIGHT ÷ 8) + 10
 		a (random colour) circle of radius Size at (random point)
 
 	===============
@@ -212,7 +194,7 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 				Layers : { Layers {1} }
 				update ME
 
-		Panel's Background : dark blue
+		Panel's Background : DARK-BLUE
 		return Panel
 
 	=-
@@ -246,7 +228,7 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	Open a graphics window and return the graphics panel.
 	=-
 	open a graphics window :
-		JWindow : a "Drawing" window of (the std width) by (the std height)
+		JWindow : a "Drawing" window of STD-WIDTH by STD-HEIGHT
 		show JWindow ; Java
 		JGraphics-Panel : the JWindow graphics panel ; Java
 

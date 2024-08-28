@@ -1,7 +1,7 @@
 using graphics lib
 
 	the-Window : the graphics panel with layers
-	the-Window's Background : sky blue
+	the-Window's Background : SKY-BLUE
 	draw the landscape in the-Window
 	add Clouds to the-Window
 
@@ -19,22 +19,22 @@ draw the landscape in the-Window :
 add the back mountains on the-Back-Layer :
 	"back mountains" ↲
 	repeat 20 times
-		Mountain : a (dark grey) mountain with (black) outline of 200
+		Mountain : a DARK-GREY mountain with BLACK outline of 200
 		… based at 600
 		place Mountain in the-Back-Layer
 
 add the sea on the-Middle-Layer :
 	"sea" ↲
-	Box : a (dark blue) box of (the std width) x 200 at {
-		the std width ÷ 2
-		the std height - 100
+	Box : a DARK-BLUE box of STD-WIDTH x 200 at {
+		STD-WIDTH ÷ 2
+		STD-HEIGHT - 100
 	}
 	place Box in the-Middle-Layer
 
 add the front islands on the-Front-Layer :
 	"front islands" ↲
-	for each (Location) from 650 to 680 in steps of 3 do
-		Island : a (grey) mountain with (white) outline of 150
+	for each Location from 650 to 680 in steps of 3 do
+		Island : a GREY mountain with WHITE outline of 150
 		… based at Location
 		place Island in the-Front-Layer
 
@@ -49,7 +49,7 @@ add #Clouds to the-Window :
 A mountain is a polygon shape object of 3 points.
 =
 a Colour mountain with outline-Colour outline of max-Height based at Level :
-	Centre : random (the std width)
+	Centre : random STD-WIDTH
 	Height : random max-Height + 20
 	Width : random 100 + 250
 	Mountain : a Colour shape from {
@@ -69,8 +69,8 @@ When animated the "move ME" method changes the positions of all the parts.
 The "move ME" also wraps the cloud around when it passes off the window.
 =
 a cloud :
-	Base : random (the std height - 200)
-	Across : random (the std width)
+	Base : random (STD-HEIGHT - 200)
+	Across : random STD-WIDTH
 	R1 : random 10 + 30
 	R2 : random 10 + 20
 	Distance : 10
@@ -98,9 +98,9 @@ a cloud :
 			{ A-circle, B-circle, Box, Line }
 
 		move ME :
-			inc X1
-			inc X2
-			if ((X1 - A-radius) > the std width)
+			increment X1
+			increment X2
+			if ((X1 - A-radius) > STD-WIDTH)
 				Back : 0 - B-radius
 				X1 : Back - (X2 - X1)
 				X2 : Back
@@ -114,15 +114,15 @@ a cloud :
 			Line's Finish : { X2, Y1 + A-radius }
 
 		setup MY parts :
-			A-circle : a (white) circle of radius A-radius at { X1, Y1 }
-			A-circle's outline-Colour : black
-			B-circle : a (white) circle of radius B-radius at { X2, Y2 }
-			B-circle's outline-Colour : black
+			A-circle : a WHITE circle of radius A-radius at { X1, Y1 }
+			A-circle's outline-Colour : BLACK
+			B-circle : a WHITE circle of radius B-radius at { X2, Y2 }
+			B-circle's outline-Colour : BLACK
 			Position : { (X1 + X2) ÷ 2, (Y1 + A-radius + Y2 + 1) ÷ 2 }
 			Width : X2 - X1
 			Height : Y1 - Y2 + A-radius
-			Box : a (white) box of Width x Height at Position
-			Line : a (black) line from {
+			Box : a WHITE box of Width x Height at Position
+			Line : a BLACK line from {
 				X1, Y1 + A-radius
 			} to {
 				X2, Y1 + A-radius

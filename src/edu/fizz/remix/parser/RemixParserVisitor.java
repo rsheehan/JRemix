@@ -347,6 +347,13 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprMap(RemixParser.ExprMapContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code exprConstant}
+	 * labeled alternative in {@link RemixParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprConstant(RemixParser.ExprConstantContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code exprLess}
 	 * labeled alternative in {@link RemixParser#expression}.
 	 * @param ctx the parse tree
@@ -496,6 +503,13 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCallWord(RemixParser.CallWordContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code callConstant}
+	 * labeled alternative in {@link RemixParser#callPart}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallConstant(RemixParser.CallConstantContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code callVar}
 	 * labeled alternative in {@link RemixParser#callPart}.

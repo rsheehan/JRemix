@@ -29,8 +29,8 @@ an arrow:
 	}
 
 position the-Arrow at Angle :
-	X : centre-x + 200 × cosine (Angle degrees as radians)
-	Y : centre-y - 200 × sine (Angle degrees as radians)
+	X : CENTRE-X + 200 × cosine (Angle degrees as radians)
+	Y : CENTRE-Y - 200 × sine (Angle degrees as radians)
 	the-Arrow's Position : { X, Y }
 	the-Arrow's Heading : -(Angle degrees as radians)
 

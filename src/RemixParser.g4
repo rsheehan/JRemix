@@ -73,7 +73,7 @@ statement			: assignmentStatement	# assStatement	// label not used
 endOfStatement		: EOL | EOS ;
 
 assignmentStatement	: IDENTIFIER COLON expression 			# setVariable
-					| IDENTIFIER COLON COLON expression		# setConstant
+					| CONSTANT COLON expression		# setConstant
 					| IDENTIFIER listPart+ COLON expression	# setListElement
 					;
 
@@ -92,6 +92,7 @@ expression			: MINUS expression						# exprMinus
 					| expression CONCAT expression			# exprConcat
 					| listElement			# exprListElement // before functionCall
 					| functionCall			# exprFncCall
+					| CONSTANT				# exprConstant
 					| IDENTIFIER			# exprVar
 					| SELFREF				# exprSelf
 					| NUMBER				# exprNumber
@@ -125,6 +126,7 @@ functionCall		: callPart callPart+
 					;
 
 callPart			: WORD									# callWord
+					| CONSTANT								# callConstant
 					| IDENTIFIER							# callVar
 					| LPAREN EOL* expression EOL* RPAREN	# callParam
 					| SELFREF								# callSelf

@@ -1,4 +1,3 @@
-
 using graphics lib
 	Window : a graphics window with layers
 	base-Layer : Window base layer
@@ -13,7 +12,7 @@ using graphics lib
 		place Shape in next-Layer
 	… 50 times
 
-	for each y-Pos from 40 to (the std height - 20) in steps of 80 do
+	for each y-Pos from 40 to (STD-HEIGHT - 20) in steps of 80 do
 		Arrow : a triangle
 		Arrow's Size : 20
 		Arrow's Position : {0, y-Pos}
@@ -31,6 +30,6 @@ using graphics lib
 		animate Squares-Rotation
 		animate Arrows-Movement
 		update Window
-	… until [ Arrow's x-Pos ≥ the std width ]
+	… until [ Arrow's x-Pos ≥ STD-WIDTH ]
 
 "Finished" ↲

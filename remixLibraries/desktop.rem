@@ -1,0 +1,12 @@
+============================
+Desktop GUI and event system
+============================
+
+Desktop-Lib : library
+
+	a window :
+		create
+			Position : { 0, 0 }
+
+"Desktop library loaded." ↲
+Desktop-Lib

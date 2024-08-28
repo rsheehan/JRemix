@@ -4,15 +4,15 @@ using graphics lib
 	Layer : the-Window base layer
 
 	Triangle : a triangle
-	(red) Triangle at { 500, 400 } facing 0 scaled by 100
+	RED Triangle at { 500, 400 } facing 0 scaled by 100
 	place Triangle in Layer
 
 	Triangle : copy Triangle
-	(blue) Triangle at { 500, 400 } facing (π ÷ 3) scaled by 100
+	BLUE Triangle at { 500, 400 } facing (π ÷ 3) scaled by 100
 	place Triangle in Layer
 
 	Triangle : copy Triangle
-	(green) Triangle at { 200, 100 } facing π scaled by 50
+	GREEN Triangle at { 200, 100 } facing π scaled by 50
 	place Triangle in Layer
 
 update the-Window ; N.B. can be outside the using block because it is a method call

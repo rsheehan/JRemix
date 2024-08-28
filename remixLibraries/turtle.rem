@@ -301,20 +301,18 @@ Turtle-Lib : library
 	Convert panel coordinate "C" to a turtle coordinate.
 	=-
 	panel coordinate C to turtle coordinate :
-		Centre : the centre point
 		{
-			C {1} - Centre {1}
-			Centre {2} - C {2}
+			C {1} - CENTRE-X
+			CENTRE-Y - C {2}
 		}
 
 	=-
 	Convert turtle coordinate "C" to a panel coordinate.
 	=-
 	turtle coordinate C to panel coordinate :
-		Centre : the centre point
 		{
-			C {1} + Centre {1}
-			Centre {2} - C {2}
+			C {1} + CENTRE-X
+			CENTRE-Y - C {2}
 		}
 
 	=-

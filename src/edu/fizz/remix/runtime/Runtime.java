@@ -17,6 +17,9 @@ public class Runtime {
      */
     private static LibraryExpression programLibrary; // = new LibraryExpression();
 
+    private static HashMap<String, Object> stdlibConstants;
+    public static HashMap<String, Object> constants = new HashMap<String, Object>();
+
     // maps the completion name to the display name
     public static HashMap<String, CompletionNamesAndDoc> originalCompletionTable;
     public static HashMap<String, CompletionNamesAndDoc> completionTable;
@@ -34,6 +37,7 @@ public class Runtime {
      */
     public static void resetToStandard() {
         programLibrary = baseLibrary.copyFunctionsMethods();
+        constants = (HashMap<String, Object>) stdlibConstants.clone();
         completionTable = new HashMap<>(originalCompletionTable);
         // I don't use this yet see buildAdditionalCompletions()
         functionList = new ArrayList<>(originalFunctionList);
@@ -135,6 +139,7 @@ public class Runtime {
     public static void prepareEnvironment() throws Exception {
         initFunctionsAndCompletions();
         LibraryExpression standardLibrary = RemixREPL.loadPackage("standard-lib.rem");
+        stdlibConstants = (HashMap<String, Object>) constants.clone();
         //resetToStandard(); // so the libraries to use are reset to the originals
         // this also makes the currentLibrary the program one
         // merge the standardLibrary into the baseLibrary
