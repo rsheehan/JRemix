@@ -3,10 +3,10 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	=====================
 	Dimensions and points
 	=====================
-	STD-WIDTH	: 1000
-	STD-HEIGHT	: 800
-	CENTRE-X	: STD-WIDTH ÷ 2
-	CENTRE-Y	: STD-HEIGHT ÷ 2
+	STD-WIDTH  : 1000
+	STD-HEIGHT : 800
+	CENTRE-X   : STD-WIDTH ÷ 2
+	CENTRE-Y   : STD-HEIGHT ÷ 2
 	THE-CENTRE-POINT : { CENTRE-X, CENTRE-Y }
 
 	/a random point :
@@ -15,15 +15,15 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	=======
 	Colours
 	=======
-	WHITE		: { 255, 255, 255 }
-	BLACK		: { 0, 0, 0 }
-	RED			: { 255, 0, 0 }
-	GREEN		: { 0, 255, 0 }
-	BLUE		: { 0, 0, 255 }
-	DARK-BLUE	: { 0, 0, 50 }
-	SKY-BLUE	: { 180, 230, 255 }
-	GREY		: { 128, 128, 128 }
-	DARK-GREY	: { 64, 64, 64 }
+	WHITE     : { 255, 255, 255 }
+	BLACK     : { 0, 0, 0 }
+	RED       : { 255, 0, 0 }
+	GREEN     : { 0, 255, 0 }
+	BLUE      : { 0, 0, 255 }
+	DARK-BLUE : { 0, 0, 50 }
+	SKY-BLUE  : { 180, 230, 255 }
+	GREY      : { 128, 128, 128 }
+	DARK-GREY : { 64, 64, 64 }
 
 	/a random colour :
 		{ random 255, random 255, random 255 }

@@ -12,9 +12,13 @@ with turtle graphics
 		Arrow's Colour : a random colour
 		Arrow's Heading : Angle
 		add 10 to Angle
+
 	the-Arrows' Speed : 200
+	RADIUS : 200
 	position the-Arrows
-	the-Arrows' Speed : 6
+
+	the-Arrows' Speed : 5
+	STEP : 2 × RADIUS × π ÷ 180
 	repeat 180 times
 		animate the-Arrows
 
@@ -27,10 +31,9 @@ an arrow:
 	}
 
 position Arrows :
-	move Arrows 200 steps
+	move Arrows RADIUS steps
 	turn Arrows -90 degrees
 
 animate Arrows :
-	Step : 200 × π ÷ 180
-	move Arrows (2 × Step) steps
+	move Arrows STEP steps
 	turn Arrows -2 degrees
