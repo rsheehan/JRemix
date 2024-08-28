@@ -242,6 +242,13 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSetVariable(RemixParser.SetVariableContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code setConstant}
+	 * labeled alternative in {@link RemixParser#assignmentStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSetConstant(RemixParser.SetConstantContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code setListElement}
 	 * labeled alternative in {@link RemixParser#assignmentStatement}.
 	 * @param ctx the parse tree

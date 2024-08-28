@@ -358,6 +358,14 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new AssignmentStatement(varName, expression);
     }
 
+    /** IDENTIFIER COLON COLON expression */
+    @Override
+    public AssignmentStatement visitSetConstant(RemixParser.SetConstantContext ctx) {
+        String varName = ctx.IDENTIFIER().getText();
+        Expression expression = (Expression) visit(ctx.expression());
+        return new AssignmentStatement(varName, expression);
+    }
+
     /** (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) */
     public PrintStatement visitPrntStatement(RemixParser.PrntStatementContext ctx) {
         List<Expression> expressionList = new ArrayList<>();
