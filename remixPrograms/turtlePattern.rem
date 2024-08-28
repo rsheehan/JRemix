@@ -9,7 +9,7 @@ using graphics lib, turtle lib
 	for each Turtle in Turtles
 		Turtle's Colour : random colour
 		Turtle's Heading : add 45 to Angle
-	place group Turtles in Turtle-Space
+	place Turtles group in Turtle-Space
 
 	Turtles pattern
 	hide Turtles

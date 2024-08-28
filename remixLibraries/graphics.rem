@@ -9,6 +9,12 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	the std height :
 		800
 
+	centre-x :
+		the std width ÷ 2
+
+	centre-y :
+		the std height ÷ 2
+
 	the centre point :
 		{ the std width ÷ 2, the std height ÷ 2 }
 
@@ -70,6 +76,9 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 			{ Right, Bottom }
 			{ Left, Bottom }
 		} scaled by 1 at Position
+
+	a shape from Points :
+		a shape from Points scaled by 5
 
 	a shape from Points scaled by Size :
 		a (red) shape from Points scaled by Size at (the centre point)

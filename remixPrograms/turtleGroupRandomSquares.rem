@@ -10,7 +10,7 @@ using graphics lib, turtle lib
 		Turtle's Colour : random colour
 		Turtle's Position : random turtle point
 		Turtle's Heading : random angle
-	place group Turtles in Turtle-Space
+	place Turtles group in Turtle-Space
 
 	Turtles square 150
 	hide Turtles

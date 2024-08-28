@@ -1,0 +1,42 @@
+using graphics lib
+
+	===============
+	Rotating Arrows
+	===============
+
+	the-Window : a graphics window
+	the-Arrows : 36 arrows
+	place the-Arrows in the-Window
+	animate the-Arrows in the-Window
+
+N arrows :
+	Arrows : { }
+	Angle : 0
+	repeat N times
+		Arrow : an arrow
+		Arrow's Colour : a random colour
+		position Arrow at Angle
+		add 10 to Angle
+		append Arrow to Arrows
+	Arrows
+
+an arrow:
+	a shape from {
+		{ 0, 1 }
+		{-2, 2 }
+		{ 0,-2 }
+		{ 2, 2 }
+	}
+
+position the-Arrow at Angle :
+	X : centre-x + 200 × cosine (Angle degrees as radians)
+	Y : centre-y - 200 × sine (Angle degrees as radians)
+	the-Arrow's Position : { X, Y }
+	the-Arrow's Heading : -(Angle degrees as radians)
+
+animate the-Arrows in the-Window :
+	animate the-Window 180 times at 25 ticks per second
+		for each Arrow in the-Arrows
+			Angle : -(Arrow's Heading) radians as degrees
+			add 2 to Angle
+			position Arrow at Angle

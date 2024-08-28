@@ -1,0 +1,36 @@
+with turtle graphics
+
+	===============
+	Rotating Arrows
+	===============
+
+	the-Arrows : a group of 36 turtles
+	place the-Arrows group in (turtle space in (the graphics panel))
+	Angle : 0
+	for each Arrow in the-Arrows
+		Arrow pen up
+		Arrow's Colour : a random colour
+		Arrow's Heading : Angle
+		add 10 to Angle
+	the-Arrows' Speed : 200
+	position the-Arrows
+	the-Arrows' Speed : 6
+	repeat 180 times
+		animate the-Arrows
+
+an arrow:
+	a shape from {
+		{ 0, 1 }
+		{-2, 2 }
+		{ 0,-2 }
+		{ 2, 2 }
+	}
+
+position Arrows :
+	move Arrows 200 steps
+	turn Arrows -90 degrees
+
+animate Arrows :
+	Step : 200 × π ÷ 180
+	move Arrows (2 × Step) steps
+	turn Arrows -2 degrees

@@ -33,7 +33,7 @@ Turtle-Lib : library
 			==================================
 			Place a turtle group in the space.
 			==================================
-			place group Turtle-Group in ME :
+			place Turtle-Group group in ME :
 				Turtle-Group's Turtle-Space : ME
 
 			=============================================
