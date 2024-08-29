@@ -30,10 +30,10 @@ an arrow:
 		{ 2, 2 }
 	}
 
-position Arrows :
-	move Arrows RADIUS steps
-	turn Arrows -90 degrees
+position the-Arrows :
+	move the-Arrows RADIUS steps
+	turn the-Arrows -90 degrees
 
-animate Arrows :
-	move Arrows STEP steps
-	turn Arrows -2 degrees
+animate the-Arrows :
+	move the-Arrows STEP steps
+	turn the-Arrows -2 degrees
