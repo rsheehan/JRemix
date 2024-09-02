@@ -10,7 +10,7 @@ using Graphics
 		{-1,  1}
 	}
 
-	Square : a (random colour) shape from Square-Pts scaled by 200 at (the centre point)
+	Square : a (random colour) shape from Square-Pts scaled by 200 at THE-CENTRE-POINT
 
 	for each Angle from 0 to 80 in steps of 10 do
 		S : copy Square
@@ -25,9 +25,9 @@ using Graphics
 		{ 2,  2}
 	}
 
-	Arrow : a (red) shape from Arrow-Pts scaled by 10 at {
+	Arrow : a RED shape from Arrow-Pts scaled by 10 at {
 		"x" : 800
-		"y" : the std height ÷ 2
+		"y" : STD-HEIGHT ÷ 2
 	}
 	Arrow's Heading : 1.5π
 

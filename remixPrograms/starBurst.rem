@@ -1,6 +1,6 @@
 using graphics lib, turtle lib
 
-	the-Window : the graphics panel with layers
+	the-Window : the graphics panel
 	Turtle-Space : turtle space in the-Window
 
 	repeat
@@ -23,5 +23,4 @@ star explosion in Space :
 	Size : random from 50 to 200
 	move Turtles Size steps
 	-hide Turtles
-	-clear Space turtles
 	clear Space

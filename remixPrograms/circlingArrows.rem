@@ -4,9 +4,10 @@ using graphics lib
 	Rotating Arrows
 	===============
 
-	the-Window : a graphics window
+	the-Window : the graphics panel
+	Animation-Layer : the-Window next layer
 	the-Arrows : 36 arrows
-	place the-Arrows in the-Window
+	place the-Arrows in Animation-Layer
 	animate the-Arrows in the-Window
 
 N arrows :

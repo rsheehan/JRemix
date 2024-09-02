@@ -1,19 +1,20 @@
 using graphics lib
 	the-Window : a graphics window
-
+	Animation-Layer : the-Window next layer
+	Animation-Layer ↲
 	repeat
 		Shape : a square
 		Shape's Colour   : random colour
 		Shape's Position : random point
 		Shape's Size     : random from 10 to 100
 		Shape's Heading  : random from 1 to 90
-		place Shape in the-Window
+		place Shape in Animation-Layer
 	… 100 times
 
 	Turn : 2
 	Degree : 0
 	animate at 60 ticks per second
-		for each Shape in (the-Window's Shapes) do
+		for each Shape in (Animation-Layer's Shapes) do
 			change Shape heading by Turn degrees
 		update the-Window
 		Degree : Degree + Turn

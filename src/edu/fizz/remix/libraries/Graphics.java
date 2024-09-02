@@ -18,11 +18,11 @@ public class Graphics extends LibraryExpression {
     private static double[] pointsFromMapOrList(Object p) {
         double[] point = new double[2];
         if (p instanceof ArrayList<?> posList) {
-            point[0] = ((Number)posList.get(0)).doubleValue() * GraphicsPanel.IMAGE_SCALE;
-            point[1] = ((Number)posList.get(1)).doubleValue() * GraphicsPanel.IMAGE_SCALE;
+            point[0] = ((Number)posList.get(0)).doubleValue(); // * GraphicsPanel.IMAGE_SCALE;
+            point[1] = ((Number)posList.get(1)).doubleValue(); // * GraphicsPanel.IMAGE_SCALE;
         } else if (p instanceof HashMap<?,?> posMap){
-            point[0] = ((Number) posMap.get("x")).doubleValue() * GraphicsPanel.IMAGE_SCALE;
-            point[1] = ((Number) posMap.get("y")).doubleValue() * GraphicsPanel.IMAGE_SCALE;
+            point[0] = ((Number) posMap.get("x")).doubleValue(); // * GraphicsPanel.IMAGE_SCALE;
+            point[1] = ((Number) posMap.get("y")).doubleValue(); // * GraphicsPanel.IMAGE_SCALE;
         }
         return point;
     }
@@ -77,7 +77,7 @@ public class Graphics extends LibraryExpression {
 
         public GraphicsPanelFunction() {
             super(
-                    List.of("graphics panel"),
+                    List.of("open graphics panel"),
                     List.of(),
                     List.of(),
                     false,
@@ -122,7 +122,7 @@ public class Graphics extends LibraryExpression {
                     List.of("JWindow"),
                     List.of(false),
                     false,
-                    "The \"JWindow\" graphics panel"
+                    "The \"JWindow\" graphics panel."
             );
         }
 
@@ -133,11 +133,50 @@ public class Graphics extends LibraryExpression {
         }
     }
 
+    public static final class BaseLayerFunction extends Function {
+
+        public BaseLayerFunction() {
+            super(
+                    List.of("| base-layer", "the | base-layer"),
+                    List.of("Graphics-Panel"),
+                    List.of(false),
+                    false,
+                    "The base-layer of \"Graphics-Panel\"."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            GraphicsPanel panel = (GraphicsPanel) context.retrieve("Graphics-Panel");
+            return panel.getBaseLayer();
+        }
+    }
+
+    public static final class ClearBaseLayerFunction extends Function {
+
+        public ClearBaseLayerFunction() {
+            super(
+                    List.of("clear | base-layer"),
+                    List.of("Graphics-Panel"),
+                    List.of(false),
+                    false,
+                    "Clear the base-layer of \"Graphics-Panel\"."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            GraphicsPanel panel = (GraphicsPanel) context.retrieve("Graphics-Panel");
+            panel.clearBaseLayer();
+            return null;
+        }
+    }
+
     public static final class SetGraphicsBackgroundFunction extends Function {
 
         public SetGraphicsBackgroundFunction() {
             super(
-                    List.of("make the | background |"),
+                    List.of("make | background |", "make the | background |"),
                     List.of("Graphics-Panel", "Colour"),
                     List.of(false, false),
                     false,
@@ -192,14 +231,34 @@ public class Graphics extends LibraryExpression {
         }
     }
 
-    public static final class ClearLayersFunction extends Function {
-        public ClearLayersFunction() {
+//    public static final class ClearLayersFunction extends Function {
+//        public ClearLayersFunction() {
+//            super(
+//                    List.of("clear all | layers", "clear | layer"),
+//                    List.of("Graphics-Panel"),
+//                    List.of(false),
+//                    false,
+//                    "Remove current shapes from the \"Graphics-Panel\"."
+//            );
+//        }
+//
+//        @Override
+//        public Object execute(Context context) throws ReturnException, InterruptedException {
+//            GraphicsPanel panel = (GraphicsPanel) context.retrieve("Graphics-Panel");
+//            panel.clearBaseLayer();
+//            panel.removeShapes();
+//            return null;
+//        }
+//    }
+
+    public static final class ClearTransientLayersFunction extends Function {
+        public ClearTransientLayersFunction() {
             super(
-                    List.of("clear all | layers", "clear | layer"),
+                    List.of("clear transient | layers", "clear transient | layer"),
                     List.of("Graphics-Panel"),
                     List.of(false),
                     false,
-                    "Remove current shapes from the \"Graphics-Panel\"."
+                    "Remove current shapes from the \"Graphics-Panel\" leaving base-layer."
             );
         }
 
@@ -207,6 +266,100 @@ public class Graphics extends LibraryExpression {
         public Object execute(Context context) throws ReturnException, InterruptedException {
             GraphicsPanel panel = (GraphicsPanel) context.retrieve("Graphics-Panel");
             panel.removeShapes();
+            return null;
+        }
+    }
+
+    private static void dealWithLine(Color fillColour, Context shapeContext, GraphicsLayerImage layerImage, GraphicsPanel panel) {
+        int[] start = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Start")));
+        int[] finish = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Finish")));
+        double width = ((Number) shapeContext.retrieve("Width")).doubleValue();
+        if (layerImage != null)
+            layerImage.drawLine(fillColour, start, finish, width);
+        else if (panel != null)
+            panel.addLineForDrawing(fillColour, start, finish, width);
+    }
+
+    private static void dealWithShape(boolean filled, Color fillColour, Context shapeContext, GraphicsLayerImage layerImage, GraphicsPanel panel) {
+        // get the polygon
+        Path2D.Double shapePath = polygonFromPoints((ArrayList<?>) shapeContext.retrieve("Polygon"));
+        // get the position
+        int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Position")));
+        // get the scale
+        double scale = ((Number) shapeContext.retrieve("Size")).doubleValue();
+        AffineTransform scaledTransform = new AffineTransform();
+        scaledTransform.scale(scale, scale);
+        Path2D.Double scaledShapePath = new Path2D.Double(shapePath, scaledTransform);
+        // get the heading
+        double heading = doubleFromObject(shapeContext.retrieve("Heading"));
+        // get the outline colour
+        boolean outlined = true;
+        Color outlineColour = null;
+        Object outline = shapeContext.retrieve("outline-Colour");
+        if (outline instanceof RemixNull)
+            outlined = false;
+        else
+            outlineColour = colorFromRGBorString(outline);
+        if (panel != null)
+            panel.addShapeForDrawing(fillColour, outlineColour,
+                scaledShapePath, position, heading, filled, outlined);
+        else if (layerImage != null)
+            layerImage.drawShape(fillColour, outlineColour,
+                    scaledShapePath, position, heading, filled, outlined);
+    }
+
+    private static void dealWithCircle(boolean filled, Color fillColour, Context shapeContext, GraphicsLayerImage layerImage, GraphicsPanel panel) {
+        double radius = ((Number) shapeContext.retrieve("Radius")).doubleValue();
+        int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Position")));
+        // get the outline colour
+        boolean outlined = true;
+        Color outlineColour = null;
+        Object outline = shapeContext.retrieve("outline-Colour");
+        if (outline instanceof RemixNull)
+            outlined = false;
+        else
+            outlineColour = colorFromRGBorString(outline);
+        if (panel!= null)
+            panel.addCircleForDrawing(fillColour, outlineColour,
+                radius, position, filled, outlined);
+        else if (layerImage != null)
+            layerImage.drawCircle(fillColour, outlineColour,
+                    radius, position, filled, outlined);
+    }
+
+    public static final class AddShapeToBaseLayerFunction extends Function {
+
+        public AddShapeToBaseLayerFunction() {
+            super(
+                    List.of("add the | to the | base-layer"),
+                    List.of("Shape", "Base-Layer"),
+                    List.of(false, false),
+                    false,
+                    "Add the \"Shape\" to the \"Base-Layer\"."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            RemixObject shape = (RemixObject) context.retrieve("Shape");
+            GraphicsLayerImage layerImage = (GraphicsLayerImage) context.retrieve("Base-Layer");
+            Context shapeContext = shape.getContext();
+            // get the fill colour
+            boolean filled = true;
+            Color fillColour = null;
+            Object fill = shapeContext.retrieve("Colour");
+            if (fill instanceof RemixNull)
+                filled = false;
+            else
+                fillColour = colorFromRGBorString(fill);
+            if (shape.getContext().retrieve("Type").equals("shape")) {
+                dealWithShape(filled, fillColour, shapeContext, layerImage, null);
+            } else if (shape.getContext().retrieve("Type").equals("circle")) {
+                dealWithCircle(filled, fillColour, shapeContext, layerImage, null);
+            } else if (shape.getContext().retrieve("Type").equals("line")) {
+                dealWithLine(fillColour, shapeContext, layerImage, null);
+            } else
+                System.err.println("Bad shape - not added to the base-layer.");
             return null;
         }
     }
@@ -235,47 +388,14 @@ public class Graphics extends LibraryExpression {
                 filled = false;
             else
                 fillColour = colorFromRGBorString(fill);
-            if (shape.getContext().retrieve("Polygon") != null) {
-                // get the polygon
-                Path2D.Double shapePath = polygonFromPoints((ArrayList<?>) shapeContext.retrieve("Polygon"));
-                // get the position
-                int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Position")));
-                // get the scale
-                double scale = ((Number) shapeContext.retrieve("Size")).doubleValue();
-                AffineTransform scaledTransform = new AffineTransform();
-                scaledTransform.scale(scale, scale);
-                Path2D.Double scaledShapePath = new Path2D.Double(shapePath, scaledTransform);
-                // get the heading
-                double heading = doubleFromObject(shapeContext.retrieve("Heading"));
-                // get the outline colour
-                boolean outlined = true;
-                Color outlineColour = null;
-                Object outline = shapeContext.retrieve("outline-Colour");
-                if (outline instanceof RemixNull)
-                    outlined = false;
-                else
-                    outlineColour = colorFromRGBorString(outline);
-                panel.addShapeForDrawing(fillColour, outlineColour,
-                        scaledShapePath, position, heading, filled, outlined);
-            } else if (shape.getContext().retrieve("Radius") != null) {
-                double radius = ((Number) shapeContext.retrieve("Radius")).doubleValue();
-                int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Position")));
-                // get the outline colour
-                boolean outlined = true;
-                Color outlineColour = null;
-                Object outline = shapeContext.retrieve("outline-Colour");
-                if (outline instanceof RemixNull)
-                    outlined = false;
-                else
-                    outlineColour = colorFromRGBorString(outline);
-                panel.addCircleForDrawing(fillColour, outlineColour,
-                        radius, position, filled, outlined);
-            } else { // currently assuming this must be a line
-                int[] start = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Start")));
-                int[] finish = integerPoint(pointsFromMapOrList(shapeContext.retrieve("Finish")));
-                double width = ((Number)shapeContext.retrieve("Width")).doubleValue();
-                panel.addLineForDrawing(fillColour, start, finish, width);
-            }
+            if (shape.getContext().retrieve("Type").equals("shape")) {
+                dealWithShape(filled, fillColour, shapeContext, null, panel);
+            } else if (shape.getContext().retrieve("Type").equals("circle")) {
+                dealWithCircle(filled, fillColour, shapeContext, null, panel);
+            } else if (shape.getContext().retrieve("Type").equals("line")) {
+                dealWithLine(fillColour, shapeContext, null, panel);
+            } else
+                System.err.println("Bad shape - not added to the graphics panel.");
             return null;
         }
     }

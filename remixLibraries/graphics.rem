@@ -73,6 +73,7 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	a/an Colour shape from Points scaled by Size at Position:
 
 		create
+			Type           : "shape"
 			Colour         : Colour
 			outline-Colour : null ; no outline
 			Polygon        : Points
@@ -109,9 +110,10 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	=-
 	a/an Colour line from Start to Finish :
 		create
-			Start : Start
+			Type   : "line"
+			Start  : Start
 			Finish : Finish
-			Width : 3
+			Width  : 3
 			Colour : Colour
 
 			getters/setters
@@ -132,9 +134,10 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	=-
 	a/an Colour circle of radius Radius at Position :
 		create
-			Colour : Colour
+			Type     : "circle"
+			Colour   : Colour
 			outline-Colour : null ; no outline
-			Radius : Radius
+			Radius   : Radius
 			Position : Position
 
 			getters/setters
@@ -153,21 +156,29 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	Open the graphic panel with multiple layers.
 	Return the graphics panel.
 	=-
-	the graphics panel with layers :
-		a (graphics panel) with layers
+	the graphics panel :
+		an (open graphics panel) with layers
 
-	a JGraphics-Panel with layers :
+	===========================================================
+	The Remix Panel for drawing in.
+	It has a base layer which is an image for permanent shapes,
+	and multiple layers for animation on top of that.
+
+	It can be the built-in panel from the Remix IDE or a panel
+	in a graphics window created outside this.
+	===========================================================
+	a/an JGraphics-Panel with layers :
 		Panel : create
 			JGraphics : JGraphics-Panel
-			Layers : { a shape layer } ; default bottom layer
-			Background : null
+			Layers : { a base layer for JGraphics-Panel }
+			Background-Colour : DARK-BLUE ; set by "MY Background Colour"
 
 			getters
-				Layers, Background
+				Layers, Background-Colour
 
-			MY Background Colour : ; this is a setter
+			MY Background-Colour Colour : ; this is a setter
 				make the JGraphics background Colour ; Java
-				Background : Colour
+				Background-Colour : Colour
 
 			MY next layer :
 				New-Layer : a shape layer
@@ -177,8 +188,14 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 			MY base layer :
 				Layers {1}
 
+			==========================================
+			Useful to place a shape in the base layer.
+			==========================================
+			place Shape in ME :
+				place Shape in (Layers {1})
+
 			update ME :
-				clear all JGraphics layers ; Java
+				clear transient JGraphics layers ; Java
 				for each Layer in Layers do
 					prepare Layer shapes for drawing on JGraphics
 				refresh JGraphics ; Java
@@ -187,78 +204,35 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 			Clears all layers.
 			==================
 			clear ME :
-				Layers : { a shape layer }
+				clear JGraphics base-layer
+				clear ME leaving base-layer
+
+			clear ME leaving base-layer :
+				make the JGraphics background Background-Colour
+				Layers : { Layers{1} }
 				update ME
 
-			clear ME leaving base layer :
-				Layers : { Layers {1} }
-				update ME
-
-		Panel's Background : DARK-BLUE
+		clear Panel
 		return Panel
-
-	=-
-	Open the graphics panel with one layer.
-	=-
-	the graphics panel :
-		a graphics panel from (graphics panel)
-
-	a graphics panel from JGraphics-Panel :
-		extend (a JGraphics-Panel with layers)
-
-			place Shape in ME :
-				place Shape in (Layers {1})
-
-			MY Shapes :
-				Layers {1}'s Shapes
-
-	=-
-	Create a layered graphics panel with a "Background" colour.
-	=-
-	make a Background graphics panel :
-		Panel : a graphics panel with shape layers
-		Panel's Background : Background
-		Panel
 
 	================
 	Graphics Windows
 	================
-
-	=-
-	Open a graphics window and return the graphics panel.
-	=-
-	open a graphics window :
-		JWindow : a "Drawing" window of STD-WIDTH by STD-HEIGHT
-		show JWindow ; Java
-		JGraphics-Panel : the JWindow graphics panel ; Java
-
 	=-
 	Open a graphics window with multiple layers.
 	Return the graphics panel.
 	=-
-	a graphics window with layers :
-		JGraphics-Panel : open a graphics window
-		a JGraphics-Panel with layers
-
-	=-
-	Open a graphics window with only one layer.
-	Return the graphics panel.
-	=-
 	a graphics window :
-		JGraphics-Panel : open a graphics window
-		a graphics panel from JGraphics-Panel
-
-	=-
-	Create a layered window with a "Background" colour.
-	=-
-	make a/an Background window :
-		Window : a window with shape layers
-		Window's Background : Background
-		Window
+		JWindow : a "Drawing" window of STD-WIDTH by STD-HEIGHT
+		show JWindow ; Java
+		JGraphics-Panel : the JWindow graphics panel ; Java
+		a JGraphics-Panel with layers
 
 	=-
 	Create a shape layer.
 	Shapes get added to layers.
+	This does not include the base-layer which is special.
+	Animations should be placed in ordinary shape layers.
 	=-
 	a shape layer :
 		create
@@ -280,6 +254,32 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 			prepare MY shapes for drawing on JGraphics :
 				for each Shape in Shapes do
 					add the Shape to the JGraphics ; Java
+
+	=-
+	Create a base layer.
+	Shapes which get added to a base layer are "permanent".
+	At least until the layer gets cleared.
+	Animations should not be placed in the base layer.
+	=-
+	a base layer for JGraphics-Panel :
+		create
+			JGraphics-Panel : JGraphics-Panel
+
+			MY Shapes : ; a getter for shapes which are not stored
+				{ }
+
+			place Shape in ME :
+				if (Shape is a "list")
+					for each Part in Shape do
+						add the Part to the (JGraphics-Panel base-layer) base-layer; Java
+				… otherwise
+					add the Shape to the (JGraphics-Panel base-layer) base-layer; Java
+
+			clear MY shapes :
+				"Clearing shapes from the base layer - does nothing."
+
+			prepare MY shapes for drawing on JGraphics :
+				"Preparing shapes in the base layer - does nothing."
 
 	=========
 	Animation

@@ -6,17 +6,16 @@ Turtle-Lib : library
 	turtle space in the-Window:
 		create
 			the-Window : the-Window
-			Base-Layer : the-Window base layer
-				- The Base-Layer is where turtle lines are put
-				- after a completed move command.
 			Turtle-Rate : 30
 				- The Turtle-Rate was the number of frames per second.
 				- Now it sets the time between parts of an unfinished
 				- move command. See "move Turtle/Group N steps"
 
 			getter
-				Base-Layer
 				Turtle-Rate
+
+			MY Base-Layer :
+				the-Window base layer
 
 			update ME :
 				update the-Window
@@ -27,7 +26,6 @@ Turtle-Lib : library
 			place Turtle in ME :
 				Turtle's Turtle-Space : ME
 				Turtle's Animation-Layer : the-Window next layer
-				place Turtle in (Turtle's Animation-Layer)
 				update the-Window
 
 			==================================
@@ -43,12 +41,12 @@ Turtle-Lib : library
 			=============================================
 			clear ME :
 				clear the-Window
-				Base-Layer : the-Window base layer
 
 			=============================================
-			Clear all turtle layers.
+			Resets all turtle layers.
 			But leaves the base layer of the space.
 			This holds any pen marks left by the turtles.
+			Usually a similar effect to "hide Turtles"
 			=============================================
 			clear MY turtles :
 				clear the-Window leaving base layer
@@ -82,6 +80,14 @@ Turtle-Lib : library
 
 			setter
 				Turtle-Space
+
+			=======================================
+			Sets the animation layer for the turtle
+			and places the turtle in the layer.
+			=======================================
+			MY Animation-Layer Layer : ; a setter for the Animation-Layer
+				Animation-Layer : Layer
+				place ME in (Animation-Layer)
 
 			====================================================================
 			Turtle graphics have { 0, 0 } at the centre of the window

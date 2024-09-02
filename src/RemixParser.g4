@@ -73,7 +73,7 @@ statement			: assignmentStatement	# assStatement	// label not used
 endOfStatement		: EOL | EOS ;
 
 assignmentStatement	: IDENTIFIER COLON expression 			# setVariable
-					| CONSTANT COLON expression		# setConstant
+					| CONSTANT COLON expression				# setConstant
 					| IDENTIFIER listPart+ COLON expression	# setListElement
 					;
 

@@ -9,5 +9,3 @@ using graphics lib
 
 	Rectangle : a BLUE box of 200 x 200 at THE-CENTRE-POINT
 	place Rectangle in the-Window
-
-update the-Window

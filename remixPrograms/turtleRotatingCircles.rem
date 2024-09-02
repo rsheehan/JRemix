@@ -4,11 +4,12 @@ with turtle graphics
 	Rotating Arrows
 	===============
 
+	Space : turtle space in (the graphics panel)
 	the-Arrows : a group of 36 turtles
-	place the-Arrows group in (turtle space in (the graphics panel))
+	place the-Arrows group in Space
 	Angle : 0
 	for each Arrow in the-Arrows
-		Arrow pen up
+		Arrow pen down
 		Arrow's Colour : a random colour
 		Arrow's Heading : Angle
 		add 10 to Angle
@@ -17,10 +18,14 @@ with turtle graphics
 	RADIUS : 200
 	position the-Arrows
 
-	the-Arrows' Speed : 5
-	STEP : 2 × RADIUS × π ÷ 180
+	the-Arrows' Speed : 10
+	STEP : 10 ; 2 × RADIUS × π ÷ 180
 	repeat 180 times
 		animate the-Arrows
+	pause 1 second
+	hide the-Arrows
+	pause 1 second
+	clear Space
 
 position the-Arrows :
 	move the-Arrows RADIUS steps

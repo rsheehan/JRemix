@@ -11,9 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GraphicsPanel extends JPanel {
-    public static final int IMAGE_SCALE = 1;
-    private static final Stroke basicStroke = new BasicStroke(2 * IMAGE_SCALE);
+    public static final int IMAGE_SCALE = 2;
+    private static final Stroke basicStroke = new BasicStroke(2); // * IMAGE_SCALE);
     private final Dimension graphicsDimension;
+    private GraphicsLayerImage baseLayer;
     List<DrawObject> drawObjects = new ArrayList<>();
     List<DrawObject> nextDrawObjects = new ArrayList<>();
 
@@ -21,6 +22,7 @@ public class GraphicsPanel extends JPanel {
         super();
         graphicsDimension = size;
         setPreferredSize(graphicsDimension);
+        baseLayer = new GraphicsLayerImage(size);
         setBackground(new Color(0, 0, 50));
         addComponentListener(new ResizeListener());
     }
@@ -42,10 +44,22 @@ public class GraphicsPanel extends JPanel {
     @Override
     protected void paintComponent(java.awt.Graphics g) {
         super.paintComponent(g); // does the background
+        // this is where we insert the baseLayer image
+//        g.drawImage(baseLayer, 0, 0, null);
+        int width = graphicsDimension.width;
+        int height = graphicsDimension.height;
+        g.drawImage(baseLayer, 0, 0, width, height, 0, 0, width * IMAGE_SCALE, height * IMAGE_SCALE, null);
         for (DrawObject drawObject : drawObjects) {
             drawObject.draw(g);
         }
-//      g.drawImage(layer, 0, 0, width, height, 0, 0, width * IMAGE_SCALE, height * IMAGE_SCALE, null);
+    }
+
+    public GraphicsLayerImage getBaseLayer() {
+        return baseLayer;
+    }
+
+    public void clearBaseLayer() {
+        baseLayer = new GraphicsLayerImage(graphicsDimension);
     }
 
     static class ResizeListener extends ComponentAdapter {
@@ -97,7 +111,7 @@ public class GraphicsPanel extends JPanel {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.setColor(colour);
-            g2d.setStroke(new BasicStroke((float) (width * IMAGE_SCALE)));
+            g2d.setStroke(new BasicStroke((float) (width))); // * IMAGE_SCALE)));
             g2d.drawLine(start[0], start[1], finish[0], finish[1]);
         }
     }
@@ -128,30 +142,31 @@ public class GraphicsPanel extends JPanel {
         }
     }
 
-    void setPenColour(Color colour) {
-//        layers.get(currentLayer).setPenColour(colour);
-    }
-
-    void setPenSize(float size) {
-//        layers.get(currentLayer).setPenSize(size);
-    }
-
-    void drawLine(int[] start, int[] finish) {
-//        layers.get(currentLayer).drawLine(start, finish);
-        repaint();
-    }
-
-    public void addShapeForDrawing(Color fillColour, Color outlineColour, Path2D.Double scaledShapePath, int[] position, double heading, boolean filled, Boolean outlined) {
+    public void addShapeForDrawing(Color fillColour,
+                                   Color outlineColour,
+                                   Path2D.Double scaledShapePath,
+                                   int[] position,
+                                   double heading,
+                                   boolean filled,
+                                   Boolean outlined) {
         DrawShape shape = new DrawShape(fillColour, outlineColour, scaledShapePath, position, heading, filled, outlined);
         nextDrawObjects.add(shape);
     }
 
-    public void addLineForDrawing(Color lineColour, int[] start, int[] finish, double width) {
+    public void addLineForDrawing(Color lineColour,
+                                  int[] start,
+                                  int[] finish,
+                                  double width) {
         DrawLine line = new DrawLine(lineColour, start, finish, width);
         nextDrawObjects.add(line);
     }
 
-    public void addCircleForDrawing(Color fillColour, Color outlineColour, double radius, int[] centre, boolean filled, Boolean outlined) {
+    public void addCircleForDrawing(Color fillColour,
+                                    Color outlineColour,
+                                    double radius,
+                                    int[] centre,
+                                    boolean filled,
+                                    Boolean outlined) {
         DrawCircle circle = new DrawCircle(fillColour, outlineColour, centre, radius, filled, outlined);
         nextDrawObjects.add(circle);
     }

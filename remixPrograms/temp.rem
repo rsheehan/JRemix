@@ -1,30 +1,138 @@
-using graphics lib, turtle lib
+using graphics lib
 
-	the-Window : a graphics window with layers
-	Turtle-Space : turtle space in the-Window
+	the-Window : the graphics panel
+	the-Window's Background-Colour : SKY-BLUE
 
-	repeat
-		star explosion in Turtle-Space
+	draw the landscape in the-Window
+	add Clouds to the-Window
+
+	animate the-Window 1000 times at 30 ticks per second
+		for each Cloud in Clouds
+			move Cloud
+
+-============================================================================-
+
+draw the landscape in the-Window :
+	the-Back-Layer : the-Window base layer
+	CLOUD-LAYER : the-Window next layer
+	the-Front-Layer : the-Window next layer
+	add the back mountains on the-Back-Layer
+	add the sea on the-Back-Layer
+	add the front islands on the-Front-Layer
+	update the-Window
+
+add the back mountains on the-Back-Layer :
+	"back mountains" ↲
+	repeat 20 times
+		Mountain : a DARK-GREY mountain with BLACK outline of 400
+		… based at 600
+		place Mountain in the-Back-Layer
+
+add the sea on the-Back-Layer :
+	"sea" ↲
+	Box : a DARK-BLUE box of STD-WIDTH x 200 at {
+		STD-WIDTH ÷ 2
+		STD-HEIGHT - 100
+	}
+	place Box in the-Back-Layer
+
+add the front islands on the-Front-Layer :
+	"front islands" ↲
+	for each Location from 650 to 680 in steps of 3 do
+		Island : a GREY mountain with WHITE outline of 250
+		… based at Location
+		place Island in the-Front-Layer
+
+add #Clouds to the-Window :
+	#Clouds : apply
+		Cloud : a cloud
+		place (Cloud parts) in CLOUD-LAYER
+		Cloud
 	… 10 times
-	quit "The End."
 
-star explosion in Space :
-	Angle : 0
-	Point : random turtle point
-	Turtles : apply
-		Turtle : a turtle
-		Turtle's Speed : 10
-		Turtle's Position : Point
-		Turtle's Heading : add 9 to Angle
-		Turtle's Colour : random colour
-		Turtle pen down
-		Turtle
-	… 40 times
+=
+A mountain is a polygon shape object of 3 points.
+=
+a Colour mountain with outline-Colour outline of max-Height based at Level :
+	Centre : random STD-WIDTH
+	Height : random max-Height + 20
+	Width : random 150 + 250
+	Mountain : a Colour shape from {
+		{ 0, -Height }
+		{ Width ÷ 2, 0 }
+		{ -Width ÷ 2, 0 }
+	} scaled by 1 at { Centre, Level }
+	Mountain's outline-Colour : outline-Colour
+	return Mountain
 
-	Turtle-Group : a group of Turtles
-	place group Turtle-Group in Space
-	Size : random from 50 to 200
-	move Turtle-Group Size steps
-	hide Turtle-Group
-	pause 0.2 seconds
-	clear Space
+=
+A cloud is a composite object comprising of two circles, a rectangle and a line.
+
+Each part is added separately to the same window layer using the list returned from "MY parts".
+
+When animated the "move ME" method changes the positions of all the parts.
+The "move ME" also wraps the cloud around when it passes off the window.
+=
+a cloud :
+	Base : random (STD-HEIGHT - 200)
+	Across : random STD-WIDTH
+	R1 : random 10 + 30
+	R2 : random 10 + 20
+	Distance : 10
+	if (R1 > R2)
+		R1 swap R2
+
+	Cloud : create
+
+		- these are fields
+
+		X1 : (Across - R1) + Distance
+		X2 : (Across + R2) - Distance
+		Y1 : Base - R1
+		Y2 : Base - R2
+		A-radius : R1
+		B-radius : R2
+		A-circle : null
+		B-circle : null
+		Box : null
+		Line : null
+
+		- these are methods
+
+		MY parts :
+			{ A-circle, B-circle, Box, Line }
+
+		move ME :
+			increment X1
+			increment X2
+			if ((X1 - A-radius) > STD-WIDTH)
+				Back : 0 - B-radius
+				X1 : Back - (X2 - X1)
+				X2 : Back
+			A-circle's Position : { X1, Y1 }
+			B-circle's Position : { X2, Y2 }
+			Box's Position : {
+				(X1 + X2) ÷ 2
+				(Y1 + A-radius + Y2 + 1) ÷ 2
+			}
+			Line's Start : { X1, Y1 + A-radius }
+			Line's Finish : { X2, Y1 + A-radius }
+
+		setup MY parts :
+			A-circle : a WHITE circle of radius A-radius at { X1, Y1 }
+			A-circle's outline-Colour : BLACK
+			B-circle : a WHITE circle of radius B-radius at { X2, Y2 }
+			B-circle's outline-Colour : BLACK
+			Position : { (X1 + X2) ÷ 2, (Y1 + A-radius + Y2 + 1) ÷ 2 }
+			Width : X2 - X1
+			Height : Y1 - Y2 + A-radius
+			Box : a WHITE box of Width x Height at Position
+			Line : a BLACK line from {
+				X1, Y1 + A-radius
+			} to {
+				X2, Y1 + A-radius
+			}
+			Line's Width : 2
+
+	setup Cloud parts
+	return Cloud

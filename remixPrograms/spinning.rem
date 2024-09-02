@@ -1,10 +1,11 @@
 using graphics lib
 	the-Window : the graphics panel
+	Animation-Layer : the-Window next layer
 
 	Triangle : a triangle
 	Triangle's Size : 100
 	Triangle's Position : { 0, STD-HEIGHT ÷ 2}
-	place Triangle in the-Window
+	place Triangle in Animation-Layer
 
 	Rotation : every 2 ticks do
 		change Triangle heading by 2 degrees

@@ -1,6 +1,6 @@
 using graphics lib, turtle lib
 
-	the-Window : the graphics panel with layers
+	the-Window : the graphics panel
 	Turtle-Space : turtle space in the-Window
 
 	Turtles : a group of 8 turtles

@@ -1,7 +1,7 @@
 using graphics lib
-	Window : a graphics window with layers
-	base-Layer : Window base layer
-	next-Layer : Window next layer
+	Window : the graphics panel
+	Layer1 : Window next layer
+	Layer2 : Window next layer
 
 	repeat
 		Shape : a square
@@ -9,21 +9,21 @@ using graphics lib
 		Shape's Position : random point
 		Shape's Size     : random from 10 to 100
 		Shape's Heading  : random from 1 to 90
-		place Shape in next-Layer
+		place Shape in Layer2
 	… 50 times
 
 	for each y-Pos from 40 to (STD-HEIGHT - 20) in steps of 80 do
 		Arrow : a triangle
 		Arrow's Size : 20
 		Arrow's Position : {0, y-Pos}
-		place Arrow in base-Layer
+		place Arrow in Layer1
 
 	Squares-Rotation : every 1 tick do
-		for each Square in (next-Layer's Shapes) do
+		for each Square in (Layer2's Shapes) do
 			change Square heading by 2 degrees
 
 	Arrows-Movement : every 2 ticks do
-		for each Arrow in (base-Layer's Shapes) do
+		for each Arrow in (Layer1's Shapes) do
 			change Arrow x-pos by 5
 
 	animate at 50 ticks per second

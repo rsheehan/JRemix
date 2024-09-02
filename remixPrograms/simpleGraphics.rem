@@ -8,4 +8,3 @@ using graphics lib
 		place (a (random colour) line from Current to New) in the-Window
 		Current : New
 	… 100 times
-	update the-Window

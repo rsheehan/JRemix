@@ -76,7 +76,7 @@ SELFREF				: 'ME' | 'MY' ;
 
 POSSESSIVE			: '\'' ('s ' | ' ') ; // used for field access e.g. Robert's age
 
-CONSTANT			: CAPITAL (CAPITAL | '-')+ ;
+CONSTANT			: CAPITAL (CAPITAL | '-')+ (DIGIT)* ;
 IDENTIFIER			: (FIRSTCHAR CHARACTER* CAPITAL | CAPITAL) CHARACTER* ;
 WORD				: FIRSTCHAR CHARACTER* ;
 WORDPRODUCT			: '-'? DIGIT+ ('.' DIGIT+)? (IDENTIFIER | 'π') ;

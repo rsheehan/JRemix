@@ -2,6 +2,9 @@ Optimise "permanent" lines and shapes writing to a bitmap so that lots of lines 
 drawn every window update. Currently turtles leave permanent lines as shapes in a layer which
 all have to be redrawn.
 
+Check that "extend"ing an object with a different method definition of an existing method still
+allows non extended object method calls to work properly.
+
 I could add a string following "create" and "extend" to store a type name with a Remix object.
 Currently there is no unified way to determine the type except RemixObject.
 

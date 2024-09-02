@@ -1,7 +1,8 @@
 using graphics lib
 
-	the-Window : the graphics panel with layers
-	the-Window's Background : SKY-BLUE
+	the-Window : the graphics panel
+	the-Window's Background-Colour : SKY-BLUE
+
 	draw the landscape in the-Window
 	add Clouds to the-Window
 
@@ -12,46 +13,51 @@ using graphics lib
 -============================================================================-
 
 draw the landscape in the-Window :
-	add the back mountains on (the-Window next layer)
-	add the sea on (the-Window next layer)
-	add the front islands on (the-Window next layer)
+	the-Back-Layer  : the-Window base layer
+	THE-CLOUD-LAYER : the-Window next layer
+	- a constant can be accessed anywhere
+	the-Front-Layer : the-Window next layer
+	add the back mountains on the-Back-Layer
+	add the sea on the-Back-Layer
+	add the front islands on the-Front-Layer
+	update the-Window
 
 add the back mountains on the-Back-Layer :
 	"back mountains" ↲
 	repeat 20 times
-		Mountain : a DARK-GREY mountain with BLACK outline of 200
+		Mountain : a DARK-GREY mountain with BLACK outline of 300
 		… based at 600
 		place Mountain in the-Back-Layer
 
-add the sea on the-Middle-Layer :
+add the sea on the-Back-Layer :
 	"sea" ↲
 	Box : a DARK-BLUE box of STD-WIDTH x 200 at {
 		STD-WIDTH ÷ 2
 		STD-HEIGHT - 100
 	}
-	place Box in the-Middle-Layer
+	place Box in the-Back-Layer
 
 add the front islands on the-Front-Layer :
 	"front islands" ↲
 	for each Location from 650 to 680 in steps of 3 do
-		Island : a GREY mountain with WHITE outline of 150
+		Island : a GREY mountain with WHITE outline of 250
 		… based at Location
 		place Island in the-Front-Layer
 
 add #Clouds to the-Window :
 	#Clouds : apply
 		Cloud : a cloud
-		place (Cloud parts) in (the-Window base layer)
+		place (Cloud parts) in THE-CLOUD-LAYER
 		Cloud
 	… 10 times
 
 =
-A mountain is a polygon shape object of 3 points.
+A mountain is an isosceles triangle.
 =
 a Colour mountain with outline-Colour outline of max-Height based at Level :
 	Centre : random STD-WIDTH
 	Height : random max-Height + 20
-	Width : random 100 + 250
+	Width : random 150 + 300
 	Mountain : a Colour shape from {
 		{ 0, -Height }
 		{ Width ÷ 2, 0 }
@@ -85,47 +91,47 @@ a cloud :
 		X2 : (Across + R2) - Distance
 		Y1 : Base - R1
 		Y2 : Base - R2
-		A-radius : R1
-		B-radius : R2
-		A-circle : null
-		B-circle : null
+		radius-A : R1
+		radius-B : R2
+		circle-A : null
+		circle-B : null
 		Box : null
 		Line : null
 
 		- these are methods
 
 		MY parts :
-			{ A-circle, B-circle, Box, Line }
+			{ circle-A, circle-B, Box, Line }
 
 		move ME :
 			increment X1
 			increment X2
-			if ((X1 - A-radius) > STD-WIDTH)
-				Back : 0 - B-radius
+			if ((X1 - radius-A) > STD-WIDTH)
+				Back : 0 - radius-B
 				X1 : Back - (X2 - X1)
 				X2 : Back
-			A-circle's Position : { X1, Y1 }
-			B-circle's Position : { X2, Y2 }
+			circle-A's Position : { X1, Y1 }
+			circle-B's Position : { X2, Y2 }
 			Box's Position : {
 				(X1 + X2) ÷ 2
-				(Y1 + A-radius + Y2 + 1) ÷ 2
+				(Y1 + radius-A + Y2 + 1) ÷ 2
 			}
-			Line's Start : { X1, Y1 + A-radius }
-			Line's Finish : { X2, Y1 + A-radius }
+			Line's Start : { X1, Y1 + radius-A }
+			Line's Finish : { X2, Y1 + radius-A }
 
 		setup MY parts :
-			A-circle : a WHITE circle of radius A-radius at { X1, Y1 }
-			A-circle's outline-Colour : BLACK
-			B-circle : a WHITE circle of radius B-radius at { X2, Y2 }
-			B-circle's outline-Colour : BLACK
-			Position : { (X1 + X2) ÷ 2, (Y1 + A-radius + Y2 + 1) ÷ 2 }
+			circle-A : a WHITE circle of radius radius-A at { X1, Y1 }
+			circle-A's outline-Colour : BLACK
+			circle-B : a WHITE circle of radius radius-B at { X2, Y2 }
+			circle-B's outline-Colour : BLACK
+			Position : { (X1 + X2) ÷ 2, (Y1 + radius-A + Y2 + 1) ÷ 2 }
 			Width : X2 - X1
-			Height : Y1 - Y2 + A-radius
+			Height : Y1 - Y2 + radius-A
 			Box : a WHITE box of Width x Height at Position
 			Line : a BLACK line from {
-				X1, Y1 + A-radius
+				X1, Y1 + radius-A
 			} to {
-				X2, Y1 + A-radius
+				X2, Y1 + radius-A
 			}
 			Line's Width : 2
 
