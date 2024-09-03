@@ -437,6 +437,14 @@ Return the previous Value.
 	#X - 1
 
 =-
+Increment numeric variable "X" by "I".
+Return the previous Value.
+=-
+#X inc/increment by I :
+	#X : #X + I
+	#X - I
+
+=-
 Decrement numeric variable "X".
 Return the previous Value.
 =-
@@ -499,7 +507,7 @@ Number squared/sqrd/²:
 =-
 Return true 50% of the time.
 =-
-coin toss :
+coin toss heads :
 	if (random 2 = 1)
 		return true
 	false

@@ -230,6 +230,12 @@ Turtle-Lib : library
 			getter/setter
 				Speed
 
+			==========================================
+			Retrieve a specific turtle from the group.
+			==========================================
+			turtle N from ME :
+				Turtles {N}
+
 			===========================================
 			Not only sets the turtle space but adds all
 			turtles to it.

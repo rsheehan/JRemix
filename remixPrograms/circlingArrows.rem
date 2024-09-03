@@ -4,30 +4,31 @@ using graphics lib
 	Rotating Arrows
 	===============
 
-	the-Window : the graphics panel
-	Animation-Layer : the-Window next layer
+	the-Window : a graphics window
+	the-Animation-Layer : the-Window next layer
 	the-Arrows : 36 arrows
-	place the-Arrows in Animation-Layer
+	place the-Arrows in the-Animation-Layer
 	animate the-Arrows in the-Window
 
 N arrows :
 	Arrows : { }
 	Angle : 0
 	repeat N times
-		Arrow : an arrow
-		Arrow's Colour : a random colour
-		position Arrow at Angle
+		the-Arrow : an arrow
+		position the-Arrow at Angle
 		add 10 to Angle
-		append Arrow to Arrows
-	Arrows
+		append the-Arrow to Arrows
+	return Arrows
 
 an arrow:
-	a shape from {
+	Arrow : a shape from {
 		{ 0, 1 }
 		{-2, 2 }
 		{ 0,-2 }
 		{ 2, 2 }
 	}
+	Arrow's Colour : a random colour
+	return Arrow
 
 position the-Arrow at Angle :
 	X : CENTRE-X + 200 × cosine (Angle degrees as radians)
@@ -36,7 +37,7 @@ position the-Arrow at Angle :
 	the-Arrow's Heading : -(Angle degrees as radians)
 
 animate the-Arrows in the-Window :
-	animate the-Window 180 times at 25 ticks per second
+	animate the-Window 180 times at 30 ticks per second
 		for each Arrow in the-Arrows
 			Angle : -(Arrow's Heading) radians as degrees
 			add 2 to Angle
