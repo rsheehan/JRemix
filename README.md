@@ -36,7 +36,7 @@ You can access object fields using the possessive apostrophe.
             body of method
 
 More information about Remix can be found in this presentation, RemixIntroduction.pdf.
-The first half shows how Remix can be used to develop a program from pseudocode, the second half describes the language. (That link is for an earlier version of Remix. A revised document will eventually be provided.)
+The first half shows how Remix can be used to develop a program from pseudocode, the second half describes the language.
 
 Here is an animated random landscape program in Remix.
 
