@@ -169,12 +169,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return (RemixObjectExpression)visit(ctx.object());
     }
 
-    /** EXTEND LPAREN expression RPAREN LBLOCK EOL* object RBLOCK */
+    /** EXTEND expression LBLOCK EOL* object RBLOCK */
     @Override
     public RemixObjectExpression visitExtendObject(RemixParser.ExtendObjectContext ctx) {
-//        String varName = ctx.WORD().getText();
         Expression expression = (Expression) visit(ctx.expression());
-//        VarValueExpression originalObject = new VarValueExpression(varName);
         RemixObjectExpression extendedObject = (RemixObjectExpression)visit(ctx.object());
         return new RemixExtendedObjectExpression(expression, extendedObject);
     }

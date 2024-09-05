@@ -4,6 +4,14 @@ import java.util.HashMap;
 
 public class MethodTable extends HashMap<String, Method> {
 
+    public MethodTable() {
+        super();
+    }
+
+    public MethodTable(MethodTable methodTable) {
+        super(methodTable);
+    }
+
     public void addMethod(Method method) {
         for (String name : method.getAllNames()) {
             this.put(name, method);

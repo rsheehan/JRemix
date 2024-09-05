@@ -2,8 +2,8 @@ package edu.fizz.remix.runtime;
 
 public class RemixExtendedObjectExpression extends  RemixObjectExpression {
 
-    private Expression originalObject;
-    private RemixObjectExpression extendedObject;
+    private final Expression originalObject;
+    private final RemixObjectExpression extendedObject;
     public RemixExtendedObjectExpression(Expression originalObject, RemixObjectExpression extendedObject) {
         super();
         this.originalObject = originalObject;
@@ -22,6 +22,8 @@ public class RemixExtendedObjectExpression extends  RemixObjectExpression {
             Object result = assStmnt.evaluate(definingContext);
             remixObject.instanceAssign(assStmnt.name(), result); // add the instance variable with initial value
         }
+        // need to copy the methodTable because other objects may be using it
+        remixObject.methodTable = new MethodTable(remixObject.methodTable);
         extendedObject.methodTable.forEach((name, method) -> {
             remixObject.methodTable.addMethod(method);
         });

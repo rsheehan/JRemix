@@ -1,0 +1,47 @@
+object1 A :
+	create
+		A : A
+
+		show ME :
+			A
+
+object2 A B :
+	extend object1 A
+		B : B
+
+		show ME :
+			{ A, B }
+
+object3 A B C :
+	extend object2 A B
+		C : C
+
+		show ME :
+			{ A, B, C }
+
+test {
+	"Simple object."
+		X : object1 1
+		show X
+	… expected 1
+
+	"Extended object."
+		Y : object2 2 3
+		show Y
+	… expected { 2, 3 }
+
+	"Nested extended object."
+		Z : object3 4 5 6
+		show Z
+	… expected { 4, 5, 6 }
+
+	"Extended object again."
+		Y : object2 2 3
+		show Y
+	… expected { 2, 3 }
+
+	"Simple object again."
+		X : object1 1
+		show X
+	… expected 1
+}
