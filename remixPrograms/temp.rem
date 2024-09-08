@@ -1,28 +1,21 @@
-a person called Name :
-	create
-		Name : Name
+using graphics lib, turtle lib
 
-		MY introduction :
-			"My name is ", Name, "." ↲
+	the-Window : the graphics panel
+	the-Window's Background-Colour : random colour
+	Turtle-Space : turtle space in the-Window
 
-		say hello to ME :
-			"Hi ", Name, ", pleased to meet you." ↲
+	Turtles : a group of 8 turtles
+	Turtles' Speed : 400
+	Angle : 0
+	for each Turtle in Turtles
+		Turtle's Colour : random colour
+		Turtle's Heading : add 45 to Angle
+	place Turtles group in Turtle-Space
 
-a person called Name age Years :
-	extend (a person called Name) ; evaluates to remixObject
-		Age : Years
+	Turtles pattern
+	hide Turtles
 
-		say hello to ME :
-			"Hi ", Name, ", you are ", Age, " years old." ↲
-
-Mary : a person called "Mary"
-Mary introduction
-say hello to Mary
-↲
-Jack : a person called "Jack" age 30
-Jack introduction
-say hello to Jack
-↲
-say hello to (a person called "Stu" age 56)
-↲
-say hello to Mary
+Turtles pattern :
+	repeat 100 times
+		move Turtles 400 steps
+		turn Turtles (random from 160 to 200) degrees

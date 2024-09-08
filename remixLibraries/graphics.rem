@@ -1,3 +1,6 @@
+===============================
+Graphics Operations and Objects
+===============================
 Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 
 	=====================
@@ -28,16 +31,31 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	/a random colour :
 		{ random 255, random 255, random 255 }
 
+-==================================================================================================-
+
+	================
+	Graphics objects
+	================
+
 	======
 	Shapes
 	======
 
+	=-
+	Create a triangle.
+	=-
 	a triangle :
 		a 3 sided polygon
 
+	=-
+	Create a square.
+	=-
 	a square :
 		a 4 sided polygon
 
+	=-
+	Create an "N" sided polygon.
+	=-
 	a/an N sided polygon :
 		Points : { }
 		for each Side from 0 to (N - 1) do
@@ -47,6 +65,10 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 			} to Points
 		a shape from Points scaled by 20
 
+	=-
+	Create a box centred at "Position"
+	with "Colour" and "Width" x "Height".
+	=-
 	a/an Colour box of Width x Height at Position :
 		Left : -Width ÷ 2
 		Right : Width ÷ 2
@@ -59,9 +81,16 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 			{ Left, Bottom }
 		} scaled by 1 at Position
 
+	=-
+	Create a shape from the list of "Points".
+	The shape is scaled by 5.
+	=-
 	a shape from Points :
 		a shape from Points scaled by 5
 
+	=-
+	Create a shape from the list of "Points" scaled by "Size".
+	=-
 	a shape from Points scaled by Size :
 		a RED shape from Points scaled by Size at THE-CENTRE-POINT
 
@@ -119,9 +148,15 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 			getters/setters
 				Start, Finish, Width, Colour
 
+	=-
+	Create a green line from "Start" to "Finish".
+	=-
 	a line from Start to Finish :
 		a GREEN line from Start to Finish
 
+	=-
+	Create a random line.
+	=-
 	a random line :
 		a (random colour) line from (random point) to (random point)
 
@@ -144,9 +179,14 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 				Colour, outline-Colour,
 				Radius, Position
 
+	=-
+	Create a random circle.
+	=-
 	a random circle :
 		Size : random (STD-HEIGHT ÷ 8) + 10
 		a (random colour) circle of radius Size at (random point)
+
+-==================================================================================================-
 
 	===============
 	Graphics Panels
@@ -167,6 +207,9 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	It can be the built-in panel from the Remix IDE or a panel
 	in a graphics window created outside this.
 	===========================================================
+	=-
+	Return a panel with multiple layers based on "JGraphics-Panel".
+	=-
 	a/an JGraphics-Panel with layers :
 		Panel : create
 			JGraphics : JGraphics-Panel
@@ -256,9 +299,9 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 					add the Shape to the JGraphics ; Java
 
 	=-
-	Create a base layer.
-	Shapes which get added to a base layer are "permanent".
-	At least until the layer gets cleared.
+	Create a base layer for the "JGraphics-Panel".
+	Shapes which get added to a base layer are "permanent"
+	until the layer gets cleared.
 	Animations should not be placed in the base layer.
 	=-
 	a base layer for JGraphics-Panel :
@@ -280,6 +323,8 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 
 			prepare MY shapes for drawing on JGraphics :
 				"Preparing shapes in the base layer - does nothing."
+
+-==================================================================================================-
 
 	=========
 	Animation
@@ -314,6 +359,8 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 			update the-Window
 			decrement Number
 		… until [Number < 1]
+
+-==================================================================================================-
 
 "Graphics library loaded." ↲
 Graphics-Lib

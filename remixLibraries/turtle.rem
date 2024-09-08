@@ -3,6 +3,12 @@ Turtle Operations and Objects
 =============================
 Turtle-Lib : library
 
+	=-
+	Create a turtle space in "the-Window".
+	"the-Window" is a graphics panel.
+	A turtle space can have individual turtles or
+	groups of turtles added to it.
+	=-
 	turtle space in the-Window:
 		create
 			the-Window : the-Window
@@ -56,13 +62,17 @@ Turtle-Lib : library
 	================
 	A turtle object.
 	================
+
+	=-
+	Create a turtle.
+	=-
 	a turtle :
 		Turtle-Shape : a shape from {
 			{ 0, 1 }
 			{-2, 2 }
 			{ 0,-2 }
 			{ 2, 2 }
-		} scaled by 5
+		}
 
 		Turtle : extend Turtle-Shape
 			Turtle-Space : null
@@ -86,6 +96,7 @@ Turtle-Lib : library
 			and places the turtle in the layer.
 			=======================================
 			MY Animation-Layer Layer : ; a setter for the Animation-Layer
+				- this is called when a turtle is place in a turtle space.
 				Animation-Layer : Layer
 				place ME in (Animation-Layer)
 
@@ -217,6 +228,13 @@ Turtle-Lib : library
 	A turtle group object.
 	Together for parallel operation.
 	================================
+
+	=-
+	Create a group of "N" turtles.
+	Turtles in a turtle group can perform the same move and turn
+	instructions simultaneously.
+	They have a speed for the group.
+	=-
 	a group of N turtles :
 		if (N > 100)
 			"Turtle groups limited to 100." ↲
@@ -332,6 +350,8 @@ Turtle-Lib : library
 	=-
 	random turtle point :
 		panel coordinate (random point) to turtle coordinate
+
+-==================================================================================================-
 
 "Turtle library loaded." ↲
 Turtle-Lib
