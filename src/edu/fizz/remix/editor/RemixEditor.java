@@ -41,6 +41,7 @@ public class RemixEditor extends JFrame {
     private Popup docPopup;
     private final JPanel docPanel = new JPanel();
     protected final JTextArea docArea;
+    static String currentDirectory = "remixPrograms";
 
     private final HashMap<Object, Action> actions;
 
@@ -405,7 +406,7 @@ public class RemixEditor extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent event) {
-            JFileChooser chooser = new JFileChooser("remixPrograms"); // "Tests"); //
+            JFileChooser chooser = new JFileChooser(currentDirectory); // "Tests"); //
             FileNameExtensionFilter filter = new FileNameExtensionFilter(
                     "Remix programs", "rem");
             chooser.setFileFilter(filter);
@@ -417,6 +418,7 @@ public class RemixEditor extends JFrame {
                     throw new RuntimeException(e);
                 }
                 try {
+                    currentDirectory = chooser.getCurrentDirectory().getName();
                     File remFile = chooser.getSelectedFile();
                     Scanner myReader = new Scanner(remFile);
                     while (myReader.hasNextLine()) {

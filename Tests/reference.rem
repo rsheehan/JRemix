@@ -13,23 +13,23 @@ test {
 	… expected 4
 
 	"List ref element variable one level access"
-		VL {2} : 5
-		get (VL {2})
+		Vl {2} : 5
+		get (Vl {2})
 	… expected 5
 
 	"List ref variable one level change"
-		add 1 to (VL {2})
-		VL {2}
+		add 1 to (Vl {2})
+		Vl {2}
 	… expected 6
 
 	"Multi element list ref variable one level access"
-		ML {"a"}{1}{3} : 7
-		get (ML {"a"}{1}{3})
+		Ml {"a"}{1}{3} : 7
+		get (Ml {"a"}{1}{3})
 	… expected 7
 
 	"Multi element list ref variable one level change"
-		add 1 to (ML {"a"}{1}{3})
-		ML {"a"}{1}{3}
+		add 1 to (Ml {"a"}{1}{3})
+		Ml {"a"}{1}{3}
 	… expected 8
 }
 
@@ -52,9 +52,9 @@ test {
 	… expected 9
 
 	"List ref variable two level change"
-		VL {1} : 8
-		add two to (VL {1})
-		VL {1}
+		Vl {1} : 8
+		add two to (Vl {1})
+		Vl {1}
 	… expected 10
 
 	"Simple ref variable three level change"
@@ -64,9 +64,9 @@ test {
 	… expected 11
 
 	"List ref variable three level change"
-		VL {1} : 8
-		add four to (VL {1})
-		VL {1}
+		Vl {1} : 8
+		add four to (Vl {1})
+		Vl {1}
 	… expected 12
 }
 

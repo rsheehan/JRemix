@@ -42,20 +42,20 @@ test {
 ↲
 test {
 	"Auto mixed expansion"
-		MX {3}{"i"} : 7
-		length of (MX)
+		Mx {3}{"i"} : 7
+		length of (Mx)
 	… expected 3
 
 	"Value in mixed expansion"
-		MX {3}{"i"}
+		Mx {3}{"i"}
 	… expected 7
 
 	"Extend map in mixed expansion"
-		MX {3}{"j"} : 9
-		length of (MX {3})
+		Mx {3}{"j"} : 9
+		length of (Mx {3})
 	… expected 2
 }
 ↲
 L ↲
 M ↲
-MX ↲
+Mx ↲
