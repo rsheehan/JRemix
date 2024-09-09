@@ -19,7 +19,10 @@ import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -441,6 +444,20 @@ public class RemixEditor extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            JFileChooser chooser = new JFileChooser(currentDirectory); // "Tests"); //
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "Remix programs", "rem");
+            chooser.setFileFilter(filter);
+            int returnVal = chooser.showSaveDialog(editorTextPane);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                try {
+                    currentDirectory = chooser.getCurrentDirectory().getName();
+                    String remFileName = chooser.getSelectedFile().getName();
+                    Files.write(Path.of(currentDirectory, remFileName), editorTextPane.getText().getBytes());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
         }
     }
 
