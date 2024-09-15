@@ -4,6 +4,16 @@
 ==============================
 	-====================-
 
+===================
+Character constants
+===================
+EMPTY : ""
+SPACE : " "
+TAB : "	" ; this contains a tab character
+CR : "
+" ; this contains a carriage return character
+WHITE-SPACE : { SPACE, TAB, CR }
+
 ==============================
  Simple print functions
 ==============================
@@ -19,7 +29,7 @@ Print the "Value" followed by a space.
 =-
 Value _ :
 	print Value
-	print " "
+	print SPACE
 
 ==============================
  Boolean functions
@@ -52,6 +62,33 @@ A or B :
 	if B
 		return true
 	false
+
+=-
+Returns true if any block item in "List" is true.
+=-
+any of List :
+	for each Block in List do
+		if Block
+			return true
+		false
+
+=-
+Returns true if each block item in "List" is true.
+=-
+all of List :
+	for each Block in List do
+		if (not Block)
+			return false
+		true
+
+=-
+Only returns true if each block item in "List" is false.
+=-
+none of List :
+	for each Block in List do
+		if Block
+			return false
+		true
 
 ==============================
  Looping functions
@@ -299,6 +336,8 @@ join List1 and List2 :
 Concatenate the "String" "N" times.
 =-
 String N times :
+	if (N < 1) ; useful if N is zero
+		return EMPTY
 	Result : String
 	repeat
 		Result : Result ⊕ String
@@ -314,6 +353,59 @@ pluralize Word for Number :
 	… otherwise
 		Word
 
+=-
+Return a substring from "String" from positions "Start" to "Finish"
+inclusive.
+"Start" and "Finish" must be within the range of the string.
+Can reverse the order if "Start" > "Finish".
+=-
+String from Start to Finish :
+	Result : EMPTY
+	Length : String length
+	if (any of {
+		[Start < 1]
+		[Finish < 1]
+		[Start > Length]
+		[Finish > Length]
+	})
+		return Result
+	for each Char in String from position Start to Finish
+		Result : Result ⊕ Char
+
+=-
+Inserts or overwrites "this-String" into "String" at position "Pos".
+Overwrites if "Overwrite" is true, otherwise inserts.
+=-
+place this-String into #String at Pos do Overwrite :
+	Left : if (Pos > #String length)
+		#String
+	… otherwise
+		#String from 1 to (Pos - 1)
+	Right-Start : if Overwrite
+		Pos + this-String length
+	… otherwise
+		Pos
+	Right : #String from Right-Start to (#String length)
+	Spaces  : SPACE (Pos - #String length - 1) times
+	#String : Left ⊕ Spaces ⊕ this-String ⊕ Right
+
+=-
+Inserts "this-String" into "String" starting at position "Pos"
+moving characters to the right as necessary.
+If the position is greater than the last position in the string it adds
+necessary spaces before concatenating the insertion.
+=-
+insert this-String into #String at Pos :
+	place this-String into #String at Pos do false
+
+=-
+Overwrites "this-String" into "String" starting at position "Pos".
+If the position is greater than the last position in the string it adds
+necessary spaces before concatenating the insertion.
+=-
+overwrite this-String into #String at Pos :
+	place this-String into #String at Pos do true
+
 ==============================
  List string functions
 ==============================
@@ -322,7 +414,7 @@ pluralize Word for Number :
 Joins the string versions of the elements in "List".
 =-
 join List :
-	String : ""
+	String : EMPTY
 	for each Item in List do
 		String : String ⊕ Item
 
@@ -330,7 +422,7 @@ join List :
 Joins the "List" with "Separator" between elements.
 =-
 join List with separator Separator :
-	String : ""
+	String : EMPTY
 	for each Item in List keeping Count do
 		if (Count = List length)
 			return String ⊕ (Item as string)
@@ -378,6 +470,21 @@ Choose a random Item from the "List".
 =-
 choose from List :
 	List {random (List length)}
+
+=-
+Is the "Element" in the "List"?
+=-
+Element is in List :
+	for each Item in List
+		if (Element = Item)
+			return true
+		false
+
+=-
+The "List" does not contain the "Element".
+=-
+Element is not in List :
+	not (Element is in List)
 
 ==============================
  Map functions
@@ -579,7 +686,7 @@ Description [Code] expected Result :
 Create a test of "Code" with expected "Result".
 =-
 [Code] expected Result :
-	"" Code expected Result
+	EMPTY Code expected Result
 
 =-
 Make a group of tests out of "List-of-Tests" and run all tests.
@@ -591,7 +698,7 @@ test List-of-Tests :
 		Failing : 0
 
 		assert test Number Description [Code] produces Expected :
-			if (Description ≠ "")
+			if (Description ≠ EMPTY)
 				"\"", Description, "\"" ↲
 			… otherwise
 				"Test #", Number ↲
@@ -611,7 +718,7 @@ test List-of-Tests :
 				assert test Test-Number (Test {"description"})
 				… (Test {"code"}) produces (Test {"expected"})
 			↲
-			Test-String : Tests length ⊕ " " ⊕ (pluralize "Test" for (Tests length))
+			Test-String : Tests length ⊕ SPACE ⊕ (pluralize "Test" for (Tests length))
 			Test-String ↲
 			"=" (Test-String length) times ↲
 			"Expected : ", Passing ↲
@@ -633,6 +740,9 @@ turtle lib :
 with turtle graphics [Block] :
 	using graphics lib, turtle lib
 		do Block in lib context
+
+files lib :
+	include "remixLibraries/files.rem"
 
 -==============================-
 

@@ -583,6 +583,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 length = string.length();
             } else if (object instanceof Map<?,?> map) {
                 length = map.size();
+            } else if (object instanceof RangeExpression range) {
+                length = range.size();
             }
             return length;
         }

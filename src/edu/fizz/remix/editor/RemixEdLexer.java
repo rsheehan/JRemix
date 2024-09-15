@@ -64,13 +64,13 @@ public class RemixEdLexer {
         StyleConstants.setForeground(attr, Color.white);
         defaultStyle.addAttributes(attr);
         // variables
-        variable = makeStyle("variable", new Color(200,200,200), true, defaultStyle);
+        variable = makeStyle("variable", new Color(200,200,200), false, defaultStyle); // was italic
         // parentheses
         parentheses = makeStyle("parentheses", new Color(150,150,250), false, defaultStyle );
         // comments, all sorts
         comment = makeStyle("comment",new Color(170,121,66), true, defaultStyle );
         // operator text
-        operator = makeStyle("operator", Color.green, true, defaultStyle);
+        operator = makeStyle("operator", Color.green, false, defaultStyle); // was italic
         // literals
         literal = makeStyle("literal", Color.cyan, true, defaultStyle);
         // string - just a version of literal for the RemixStyleDocument code

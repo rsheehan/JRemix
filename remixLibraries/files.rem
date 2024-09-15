@@ -1,0 +1,120 @@
+===========================
+File Operations and Objects
+===========================
+Files-Lib : library "edu.fizz.remix.libraries.RemixFiles"
+
+	HOME : file directory (home)
+
+	a file with absolute path Name :
+		create
+			Name : Name
+
+			read ME :
+				read file Name ; Java
+
+			ME to string :
+				Name
+
+			=============================================
+			Produces a sequence of lines from the "File".
+			This can be used in for loops.
+			=============================================
+			lines from ME :
+				create
+					File : ME
+
+					start ME :
+						-iterator
+						create
+							Data : read File
+							Position : 0
+
+							end ME :
+								Position ≥ length of Data
+
+							next ME :
+								Line : ""
+								C : ""
+								while [(Position ≠ length of Data) and (C ≠ CR)]
+									C : (increment Position) in Data
+									Line : Line ⊕ C
+
+					ME to string :
+						"sequence of lines from " ⊕ (File to string)
+
+			=============================================
+			Produces a sequence of words from the "File".
+			This can be used in for loops.
+			=============================================
+			words from ME :
+				create
+					File : ME
+
+					start ME :
+						-iterator
+						create
+							Data : read File
+							Position : 0
+
+							end ME :
+								throw away whitespace
+								Position = length of Data
+
+							next ME :
+								throw away whitespace
+								Word : ""
+								while [Position ≠ length of Data]
+									C : (increment Position) in Data
+									if (C is in WHITE-SPACE)
+										return Word
+									Word : Word ⊕ C
+
+							throw away whitespace :
+								while [Position ≠ length of Data]
+									C : (increment Position) in Data
+									if (C is not in WHITE-SPACE)
+										decrement Position
+										return
+					ME to string :
+						"sequence of words from " ⊕ (File to string)
+
+			==================================================
+			Produces a sequence of characters from the "File".
+			This can be used in for loops.
+			==================================================
+			characters from ME :
+				create
+					File : ME
+
+					start ME :
+						-iterator
+						create
+							Data : read File
+							Position : 0
+
+							end ME :
+								Position = length of Data
+
+							next ME :
+								(increment Position) in Data
+
+					ME to string :
+						"sequence of characters from " ⊕ (File to string)
+	=-
+	A file directory object base on "Directory-Name".
+	Can be used to access files inside the directory.
+	=-
+	file directory Directory-Name:
+		create
+			Directory : Directory-Name ⊕ path separator
+
+			file Name in ME :
+				a file with absolute path (Directory ⊕ Name)
+
+			ME to string :
+				Directory
+
+-==================================================================================================-
+
+"Files library loaded." ↲
+Files-Lib

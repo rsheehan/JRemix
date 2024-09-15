@@ -1,21 +1,46 @@
-using graphics lib, turtle lib
+S : "abcdefghij"
 
-	the-Window : the graphics panel
-	the-Window's Background-Colour : random colour
-	Turtle-Space : turtle space in the-Window
+overwrite #String with this-String at Pos :
+	string-Length : #String length
+	Temp : #String from 1 to (Pos - 1)
+	
+	for each Char in this-String
+		Temp : Temp ⊕ Char
 
-	Turtles : a group of 8 turtles
-	Turtles' Speed : 400
-	Angle : 0
-	for each Turtle in Turtles
-		Turtle's Colour : random colour
-		Turtle's Heading : add 45 to Angle
-	place Turtles group in Turtle-Space
+	result-Length : Temp length
+	if (string-Length > result-Length)
+		Extra : #String from (result-Length + 1) to string-Length
+	#String : Temp ⊕ Extra
 
-	Turtles pattern
-	hide Turtles
+S ↲
+-overwrite S with "123" at 2
+for each I from 1 to 20
+	B : S
+	insert "123" into B at I true
+	B ↲
 
-Turtles pattern :
-	repeat 100 times
-		move Turtles 400 steps
-		turn Turtles (random from 160 to 200) degrees
+insert this-String into #String at Pos Overwriting :
+	Length : #String length
+	if Overwriting
+		insert-Length : this-String length
+	… otherwise
+		insert-Length : 0
+	#String : when
+		[Pos = 1] do [
+			if (Overwriting)
+				Right : #String from (insert-Length + 1) to Length
+			… otherwise
+				Right : #String
+			this-String ⊕ Right
+		]
+		[Pos > Length] do [
+			N : Pos - Length - 1
+			#String ⊕ (SPACE N times) ⊕ this-String
+		]
+		Left : #String from 1 to (Pos - 1)
+		Right : ""
+		if (Pos + insert-Length ≤ Length)
+			Right : #String from (Pos + insert-Length) to Length
+		Left ⊕ this-String ⊕ Right
+↲
+insert "XXXX" into S at 10 true ↲

@@ -1,0 +1,31 @@
+using files lib
+
+	Abc : file "abc.txt" in HOME
+	"File: ", Abc ↲
+	↲
+	Contents : read Abc
+	"Contents" ↲
+	"========" ↲
+	Contents ↲
+	"========" ↲
+
+	Lines : lines from Abc
+	Words : words from Abc
+	Chars : characters from Abc
+
+	-WriteFile : file "abcWrite.txt" in HOME
+↲
+Lines ↲
+for each Line in Lines keeping Count do
+	Count, ": ", Line ~
+↲↲
+Words ↲
+for each Word in Words do
+	Word, " " ~
+↲↲
+Chars ↲
+for each Char in Chars do
+	Char, " " ~
+↲
+
+HOME ↲

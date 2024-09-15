@@ -139,7 +139,6 @@ public class Runtime {
     public static void prepareEnvironment() throws Exception {
         initFunctionsAndCompletions();
         LibraryExpression standardLibrary = RemixREPL.loadPackage("standard-lib.rem");
-        stdlibConstants = (HashMap<String, Object>) constants.clone();
         //resetToStandard(); // so the libraries to use are reset to the originals
         // this also makes the currentLibrary the program one
         // merge the standardLibrary into the baseLibrary
@@ -147,7 +146,9 @@ public class Runtime {
         try {
             // currently libraries no longer maintain state in contexts (variables)
             // this means this is only useful for loading other libraries, printing etc.
+            // But they may contain CONSTANTS.
             standardLibrary.block.evaluate(new Context(baseLibrary));
+            stdlibConstants = (HashMap<String, Object>) constants.clone();
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in program.");
         }

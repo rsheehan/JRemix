@@ -137,11 +137,11 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         );
     }
 
-    /** DOC_COMMENT */
+    /** DOC_COMMENT EOL */
     @Override
     public String visitFunctionComment(RemixParser.FunctionCommentContext ctx) {
         String comment = ctx.DOC_COMMENT().getText();
-        return comment.substring(4,comment.length()-4);
+        return comment.substring(4,comment.length()-3);
     }
 
     /** sigPart sigPart+ | singleWord */

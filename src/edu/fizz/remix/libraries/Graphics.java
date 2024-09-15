@@ -98,18 +98,18 @@ public class Graphics extends LibraryExpression {
         public WindowFunction() {
             super(
                     List.of("a | window of | by |", "an | window of | by |"),
-                    List.of("TITLE", "WIDTH", "HEIGHT"),
+                    List.of("Title", "Width", "Height"),
                     List.of(false, false, false),
                     false,
-                    "Create window with \"TITLE\" of size \"WIDTH\" by \"HEIGHT\"."
+                    "Create window with \"Title\" of size \"Width\" by \"Height\"."
             );
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
-            String title = (String)context.retrieve("TITLE");
-            int width = ((Long)context.retrieve("WIDTH")).intValue();
-            int height = ((Long)context.retrieve("HEIGHT")).intValue();
+        public Object execute(Context context)  {
+            String title = (String)context.retrieve("Title");
+            int width = ((Long)context.retrieve("Width")).intValue();
+            int height = ((Long)context.retrieve("Height")).intValue();
             return new GraphicsWindow(title, width, height);
         }
     }
@@ -197,16 +197,16 @@ public class Graphics extends LibraryExpression {
         public ShowWindowFunction() {
             super(
                     List.of("show |"),
-                    List.of("WINDOW"),
+                    List.of("Window"),
                     List.of(false),
                     false,
-                    "Show the \"WINDOW\"."
+                    "Show the \"Window\"."
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            GraphicsWindow window = (GraphicsWindow) context.retrieve("WINDOW");
+            GraphicsWindow window = (GraphicsWindow) context.retrieve("Window");
             window.setVisible(true);
             return null;
         }

@@ -451,7 +451,7 @@ public class RemixEditor extends JFrame {
             int returnVal = chooser.showSaveDialog(editorTextPane);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 try {
-                    currentDirectory = chooser.getCurrentDirectory().getName();
+                    currentDirectory = chooser.getCurrentDirectory().getAbsolutePath();
                     String remFileName = chooser.getSelectedFile().getName();
                     Files.write(Path.of(currentDirectory, remFileName), editorTextPane.getText().getBytes());
                 } catch (IOException ex) {
