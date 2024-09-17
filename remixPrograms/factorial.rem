@@ -1,9 +1,9 @@
 - The beautiful factorial program -
 
-N ! :
-	if (N = 0)
+'n'! :
+	if ('n' = 0)
 		return 1
-	N × (N - 1)!
+	'n' × ('n' - 1)!
 
-for each N from 1 to 10
-	N, "! = ", N ! ↲
+for each 'n' from 1 to 10
+	'n', "! = ", 'n'! ↲

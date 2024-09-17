@@ -2,27 +2,27 @@
 The bug was that the graphics lib context was not visible.
 Now works.
 If the animate block is moved to a function at the top level all variables must be
-passed to it. Count has to be a reference variable.
+passed to it. 'count' has to be a reference variable.
 =
 
 using graphics lib
 
-	the-Window : the graphics panel
+	'the window' : the graphics panel
 
-	Current : random point
-	Count : 0
+	'current' : random point
+	'count' : 0
 
-	Add-Line : every 1 tick do
-		add 1 to Count
-		New : random point
-		place (a (random colour) line from Current to New) in the-Window
-		Current : New
-		update the-Window
+	'add line' : every 1 tick do
+		add 1 to 'count'
+		'new' : random point
+		place (a (random colour) line from 'current' to 'new') in 'the window'
+		'current' : 'new'
+		update 'the window'
 
 	"here" ↲
 
 	animate at 2 ticks per second
-		animate Add-Line
-	… until [Count = 10]
+		animate 'add line'
+	… until ['count' = 10]
 
 "there" ↲

@@ -1,44 +1,43 @@
 using graphics lib
 
 	===============
-	Rotating Arrows
+	Rotating arrows
 	===============
 
-	the-Window : a graphics window
-	the-Animation-Layer : the-Window next layer
-	the-Arrows : 36 arrows
-	place the-Arrows in the-Animation-Layer
-	animate the-Arrows in the-Window
+	'the window' : the graphics panel
+	'the animation layer' : 'the window' next layer
+	'arrows' : 36 arrows
+	place 'arrows' in 'the animation layer'
+	animate 'arrows' in 'the window'
 
-N arrows :
-	Arrows : { }
-	Angle : 0
-	repeat N times
-		the-Arrow : an arrow
-		position the-Arrow at Angle
-		add 10 to Angle
-		append the-Arrow to Arrows
-	return Arrows
+'n' arrows :
+	'arrows' : { }
+	'angle' : 0
+	repeat 'n' times
+		'the arrow' : an arrow
+		position 'the arrow' at 'angle'
+		add 10 to 'angle'
+		append 'the arrow' to 'arrows'
 
 an arrow:
-	Arrow : a shape from {
+	'arrow' : a shape from {
 		{ 0, 1 }
 		{-2, 2 }
 		{ 0,-2 }
 		{ 2, 2 }
 	}
-	Arrow's Colour : a random colour
-	return Arrow
+	'arrow's 'colour' : a random colour
+	'arrow'
 
-position the-Arrow at Angle :
-	X : CENTRE-X + 200 × cosine (Angle degrees as radians)
-	Y : CENTRE-Y - 200 × sine (Angle degrees as radians)
-	the-Arrow's Position : { X, Y }
-	the-Arrow's Heading : -(Angle degrees as radians)
+position 'the arrow' at 'angle' :
+	'x' : CENTRE-X + 200 × cosine ('angle' degrees as radians)
+	'y' : CENTRE-Y - 200 × sine ('angle' degrees as radians)
+	'the arrow's 'position' : { 'x', 'y' }
+	'the arrow's 'heading' : -'angle' degrees as radians
 
-animate the-Arrows in the-Window :
-	animate the-Window 180 times at 30 ticks per second
-		for each Arrow in the-Arrows
-			Angle : -(Arrow's Heading) radians as degrees
-			add 2 to Angle
-			position Arrow at Angle
+animate 'arrows' in 'the window' :
+	animate 'the window' 180 times at 30 ticks per second
+		for each 'arrow' in 'arrows'
+			'angle' : -('arrow's 'heading') radians as degrees
+			add 2 to 'angle'
+			position 'arrow' at 'angle'

@@ -1,46 +1,60 @@
-S : "abcdefghij"
+abc :
+	create
+		'a' : 1
+		'b' : 2
 
-overwrite #String with this-String at Pos :
-	string-Length : #String length
-	Temp : #String from 1 to (Pos - 1)
-	
-	for each Char in this-String
-		Temp : Temp ⊕ Char
+		getter/setter
+			'a'
 
-	result-Length : Temp length
-	if (string-Length > result-Length)
-		Extra : #String from (result-Length + 1) to string-Length
-	#String : Temp ⊕ Extra
+		MY 'b' :
+			'b' × 3
 
-S ↲
--overwrite S with "123" at 2
-for each I from 1 to 20
-	B : S
-	insert "123" into B at I true
-	B ↲
+		MY 'b' 'value' :
+			'b' : 'value' + 1
 
-insert this-String into #String at Pos Overwriting :
-	Length : #String length
-	if Overwriting
-		insert-Length : this-String length
-	… otherwise
-		insert-Length : 0
-	#String : when
-		[Pos = 1] do [
-			if (Overwriting)
-				Right : #String from (insert-Length + 1) to Length
-			… otherwise
-				Right : #String
-			this-String ⊕ Right
-		]
-		[Pos > Length] do [
-			N : Pos - Length - 1
-			#String ⊕ (SPACE N times) ⊕ this-String
-		]
-		Left : #String from 1 to (Pos - 1)
-		Right : ""
-		if (Pos + insert-Length ≤ Length)
-			Right : #String from (Pos + insert-Length) to Length
-		Left ⊕ this-String ⊕ Right
-↲
-insert "XXXX" into S at 10 true ↲
+'object' : abc
+'object'↲
+'object's 'a'↲
+'object's 'a' : 4
+'object's 'a'↲
+'object's 'b'↲
+'object's 'b' : 5
+'object's 'b'↲
+
+using graphics lib
+
+	STD-WIDTH ↲
+
+	'tri' : a triangle
+	'tri's 'outline colour' : RED
+	'tri'↲
+	'tri's 'colour' : BLUE
+	'tri'↲
+
+using graphics lib
+
+	'window' : the graphics panel
+
+	'x' : 50
+	'y' : 50
+	for each 'n' from 3 to 4 do
+		'polygon' : an 'n' sided polygon
+		'polygon'↲
+		'polygon's 'colour' : random colour
+		'polygon'↲
+		'polygon's 'size' : 40
+		'polygon'↲
+		'polygon's 'position' : {'x', 'y'}
+		'polygon'↲
+		'window'↲
+		'window's 'background colour'↲
+		'window's 'background colour' : BLUE
+		'window's 'background colour'↲
+		place 'polygon' in 'window'
+		"PLACED" ↲
+		add 100 to 'x'
+		if (('n' - 2) is divisible by 10)
+			add 100 to 'y'
+			'x' : 50
+
+	update 'window'

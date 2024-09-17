@@ -1,42 +1,42 @@
-- Test block has value of last statement when executed
+- 'test' block has value of last statement when executed
 "** PRINT AND EVAL BLOCK **" ↲
 
-A : "This should be printed after \"Doing the block.\""
+'A' : "This should be printed after \"Doing the block.\""
 
 - block here is a variable with a block as the value not a function
-Block :
+'block' :
 	1
 	"Doing the block." ↲
 	3
-	A
+	'A'
 
-Block ↲
-do Block ↲
+'block' ↲
+do 'block' ↲
 
-Test : [A < B]
-A : 7
-B : 5
-A, " is " ~
-if Test
+'test' : ['A' < 'B']
+'A' : 7
+'B' : 5
+'A', " is " ~
+if 'test'
 	"less than " ~
 … otherwise
 	"not less than " ~
-B ↲
+'B' ↲
 new line
 
-Test :
-	"a:", A, ", " ~
-	"b:", B ↲
+'test' :
+	"a:", 'A', ", " ~
+	"b:", 'B' ↲
 
-fn (Block) :
-	A : 5
-	B : 7
-	do Block
+fn 'block' :
+	'A' : 5
+	'B' : 7
+	do 'block'
 
-fn Test
+fn 'test'
 "Should be \"a:7, b:5\"" ↲
 
-A : 3
-B : 1
-fn Test
+'A' : 3
+'B' : 1
+fn 'test'
 "Should be \"a:3, b:1\"" ↲

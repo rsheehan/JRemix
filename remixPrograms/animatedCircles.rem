@@ -1,22 +1,22 @@
 using graphics lib
-	Window : the graphics panel
-	animate Window
+	'window' : the graphics panel
+	animate 'window'
 
 -==============================================================================-
 
-animate Window :
-	X : 50
-	Y : 50
-	N : 3
-	animate Window 80 times at 2 ticks per second
-		Polygon : an N sided polygon
-		Polygon's Colour : random colour
-		Polygon's Size : 40
-		Polygon's Position : {X, Y}
-		place Polygon in Window
-		N, " sided polygon" ↲
-		add 100 to X
-		if ((N - 2) is divisible by 10)
-			add 100 to Y
-			X : 50
-		add 1 to N
+animate 'window' :
+	'x' : 50
+	'y' : 50
+	'n' : 3
+	animate 'window' 80 times at 2 ticks per second
+		'polygon' : an 'n' sided polygon
+		'polygon's 'colour' : random colour
+		'polygon's 'size' : 40
+		'polygon's 'position' : {'x', 'y'}
+		place 'polygon' in 'window'
+		'n', " sided polygon" ↲
+		add 100 to 'x'
+		if (('n' - 2) is divisible by 10)
+			add 100 to 'y'
+			'x' : 50
+		add 1 to 'n'

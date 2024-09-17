@@ -3,9 +3,9 @@
 10 random values from {1, 2, 4, 8, 16, 32, 64, 128, 256}
 6 random values from (10 to 20)
 
-N random values from List :
-	"Generating ", N, " random values from ", List ↲
+'N' random values from 'list' :
+	"Generating ", 'N', " random values from ", 'list' ↲
 
 	repeat
-		choose from List, " " ~
-	… N times. ↲
+		choose from 'list', " " ~
+	… 'N' times. ↲

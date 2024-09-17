@@ -1,31 +1,31 @@
 - DELTA -
 
-NUMBER with Δ DELTA :
+'number' with δ 'DELTA' :
 	create
-		NUMBER : NUMBER
-		DELTA : DELTA
+		'number' : 'number'
+		'DELTA' : 'DELTA'
 
 		getter
-			NUMBER
+			'number'
 
-		OTHER equals ME :
-			absolute (NUMBER - OTHER's NUMBER) < DELTA
+		'other' equals ME :
+			absolute ('number' - 'other's 'number') < 'DELTA'
 
 		ME to string :
-			NUMBER ⊕ " with Δ " ⊕ DELTA
+			'number' ⊕ " with δ " ⊕ 'DELTA'
 
-A : 1.0 with Δ 0.5
-B : 0.99 with Δ 0.01
+'a' : 1.0 with δ 0.5
+'b' : 0.99 with δ 0.01
 
-"a: ", A ↲
-"b: ", B ↲
+"a: ", 'a' ↲
+"b: ", 'b' ↲
 
-if (B = A)
+if ('b' = 'a')
 	"b is equal to a" ↲
 … otherwise
 	"b is not equal to a" ↲
 
-if (A = B)
+if ('a' = 'b')
 	"a is equal to b" ↲
 … otherwise
 	"a is not equal to b" ↲

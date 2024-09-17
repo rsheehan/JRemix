@@ -1,26 +1,26 @@
 =
-The "local method" called inside the "repeat" is not found.
+The "local method" called inside the "repeat" was not found.
 =
 - context1:{), parent:null
 make an object :
 	- context2:{}, parent:context1
 	create
-		- objectContext{A}
-		A : 4
+		- objectContext{'A'}
+		'A' : 4
 
-		local method Z H :
-			A + Z + H
+		local method 'Z' 'H' :
+			'A' + 'Z' + 'H'
 
-		MY method X and Y :
-			- context3:objectContext{A}, localContext{X, Y, T},
-			A ↲
-			local method X Y ↲ ; this is found
-			debug A
-			repeat X times
+		MY method 'X' and 'Y' :
+			- context3:objectContext{'A'}, localContext{'X', 'Y', 'T'},
+			'A' ↲
+			local method 'X' 'Y' ↲ ; this is found
+			debug 'A'
+			repeat 'X' times
 				- block context
-				T : local method X Y ; this is NOT found
-				- T gets added to local method context
-			2T
+				'T' : local method 'X' 'Y' ; this is NOT found
+				- 'T' gets added to local method context
+			2'T'
 
-O : make an object
-O method 2 and 3 ↲
+'O' : make an object
+'O' method 2 and 3 ↲

@@ -2,6 +2,6 @@
 
 library
 	- Only accessible via a "using" block.
-	two A plus B :
-		2A + B
+	two 'A' plus 'B' :
+		2'A' + 'B'
 

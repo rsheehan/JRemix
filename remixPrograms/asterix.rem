@@ -3,47 +3,47 @@ Asterisk Diamonds
 =================
 " ↲
 
-for each Size from 1 to 41 in steps of 2 do
-	Size, "." ↲
-	print a diamond of Size
+for each 'size' from 1 to 41 in steps of 2 do
+	'size', "." ↲
+	print a diamond of 'size'
 	↲
 
 -==============================================================================-
 
 =-
-Show a diamond of "Size".
+Show a diamond of 'size'.
 =-
-print a diamond of Size :
-	show top half of Size diamond and fill in Lines
-	show middle line of Size diamond
-	show bottom half of Size diamond with Lines
+print a diamond of 'size' :
+	show top half of 'size' diamond and fill in 'lines'
+	show middle line of 'size' diamond
+	show bottom half of 'size' diamond with 'lines'
 
 =-
-Show the top half of the diamond of "Size".
-Fill in the "Lines" list at the same time.
+Show the top half of the diamond of 'size'.
+Fill in the 'lines' list at the same time.
 =-
-show top half of Size diamond and fill in #Lines :
-	#Lines : {}
-	if (Size ≥ 3)
-		for each Row from 1 to (Size ÷ 2) do
-			num-Spaces : Size - Row × 2
-			num-Stars : Row × 2 - 1
-			Spaces : " " num-Spaces times
-			Stars : " *" num-Stars times
-			#Lines {Row} : Spaces ⊕ Stars
-			#Lines {Row} ↲
+show top half of 'size' diamond and fill in #lines :
+	#lines : { }
+	if ('size' ≥ 3)
+		for each 'row' from 1 to ('size' ÷ 2) do
+			'num spaces' : 'size' - 'row' × 2
+			'num stars'  : 'row' × 2 - 1
+			'spaces'     : SPACE 'num spaces' times
+			'stars'      : " *" 'num stars' times
+			#lines {'row'} : 'spaces' ⊕ 'stars'
+			#lines {'row'} ↲
 
 =-
-Show the middle line of the diamond of "Size".
+Show the middle line of the diamond of 'size'.
 =-
-show middle line of Size diamond :
-	"* " Size times ↲
+show middle line of 'size' diamond :
+	"* " 'size' times ↲
 
 =-
-Show the bottom half of the diamond of "Size".
-Uses the "Lines" list.
+Show the bottom half of the diamond of 'size'.
+Uses the 'lines' list.
 =-
-show bottom half of Size diamond with Lines :
-	if (Size ≥ 3)
-		for each Row from (Size ÷ 2) to 1 do
-			Lines {Row} ↲
+show bottom half of 'size' diamond with 'lines' :
+	if ('size' ≥ 3)
+		for each 'row' from ('size' ÷ 2) to 1 do
+			'lines' {'row'} ↲

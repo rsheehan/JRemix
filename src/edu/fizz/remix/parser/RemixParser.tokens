@@ -65,3 +65,4 @@ STRING=45
 'extend'=33
 'library'=37
 'using'=38
+'s '=40

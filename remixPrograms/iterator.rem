@@ -1,29 +1,29 @@
 - Example of sequence object.
 
-make N stars :
+make 'n' stars :
 	- the sequence object
 	- must include "start ME" method
 	create
-		Count : N
+		'count' : 'n'
 
 		start ME :
 			- the iterator object
 			- must include an "end ME" and a "next ME" method
-			- can refer to sequence instance variables e.g. "Count"
+			- can refer to sequence instance variables e.g. "'count'"
 			- but only in the instance variable assignment section
 			create
-				MAX : Count
-				Index : 0
-				Stars : ""
+				'MAX' : 'count'
+				'index' : 0
+				'stars' : EMPTY
 
 				end ME :
-					Index = MAX
+					'index' = 'MAX'
 
 				next ME :
-					Index : Index + 1
-					Stars : Stars ⊕ "*"
+					'index' : 'index' + 1
+					'stars' : 'stars' ⊕ "*"
 
 S : make 8 stars
 
-for each Line in S do
-	Line ↲
+for each 'line' in S do
+	'line' ↲

@@ -1,31 +1,31 @@
 using files lib
 
-	Abc : file "abc.txt" in HOME
-	"File: ", Abc ↲
+	'abc file' : file "abc.txt" in HOME
+	"File: ", 'abc file' ↲
 	↲
-	Contents : read Abc
+	'contents' : read 'abc file'
 	"Contents" ↲
 	"========" ↲
-	Contents ↲
+	'contents' ↲
 	"========" ↲
 
-	Lines : lines from Abc
-	Words : words from Abc
-	Chars : characters from Abc
+	'lines' : lines from 'abc file'
+	'words' : words from 'abc file'
+	'chars' : characters from 'abc file'
 
 	-WriteFile : file "abcWrite.txt" in HOME
 ↲
-Lines ↲
-for each Line in Lines keeping Count do
-	Count, ": ", Line ~
+'lines' ↲
+for each 'line' in 'lines' keeping 'count' do
+	'count', ": ", 'line' ~
 ↲↲
-Words ↲
-for each Word in Words do
-	Word, " " ~
+'words' ↲
+for each 'word' in 'words' do
+	'word', " " ~
 ↲↲
-Chars ↲
-for each Char in Chars do
-	Char, " " ~
+'chars' ↲
+for each 'char' in 'chars' do
+	'char', " " ~
 ↲
 
 HOME ↲

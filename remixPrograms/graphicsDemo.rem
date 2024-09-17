@@ -1,12 +1,12 @@
 using graphics lib
 
-	the-Window : the graphics panel
+	'the window' : the graphics panel
 
-	Current : a random point
+	'current' : a random point
 	repeat
-		New : a random point
-		Colour : a random colour
-		place (a Colour line from Current to New) in the-Window
-		Current : New
+		'new' : a random point
+		'colour' : a random colour
+		place (a 'colour' line from 'current' to 'new') in 'the window'
+		'current' : 'new'
 	… 50 times
-	update the-Window
+	update 'the window'

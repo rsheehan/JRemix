@@ -2,31 +2,31 @@
 
 MIN : 0
 MAX : 100
-List : random list of 1000 numbers from MIN to MAX
+'list' : a random list of 1000 numbers from MIN to MAX
 
-List ↲
+'list' ↲
 
-sort List with values from MIN to MAX
+sort 'list' with values from MIN to MAX
 
-↲ . List ↲
+↲ . 'list' ↲
 
 ---------------------------------------------
 
-random list of Size numbers from Start to Finish :
+a random list of 'size' numbers from 'start' to 'finish' :
 	apply
-		random from Start to Finish
-	… Size times
+		random from 'start' to 'finish'
+	… 'size' times
 
-sort #List with values from Start to Finish :
-	Range : Finish - Start + 1
-	collect-Counts : apply [0] Range times
+sort #list with values from 'start' to 'finish' :
+	'range' : 'finish' - 'start' + 1
+	'collect counts' : apply [0] 'range' times
 
-	for each Value in #List do
-		Place : Value - Start + 1
-		inc (collect-Counts {Place})
+	for each 'value' in #list do
+		'place' : 'value' - 'start' + 1
+		increment ('collect counts' {'place'})
 
-	#List : {}
-	for each Item in collect-Counts keeping Index do
+	#list : { }
+	for each 'item' in 'collect counts' keeping 'index' do
 		repeat
-			append (Start + Index - 1) to #List
-		… Item times
+			append ('start' + 'index' - 1) to #list
+		… 'item' times

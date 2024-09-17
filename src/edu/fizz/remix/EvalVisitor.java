@@ -318,6 +318,13 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return methodSig;
     }
 
+//    private String identifier(String varName) {
+//        if (!varName.startsWith("#")) {
+//            varName = varName.substring(1, varName.length() - 1);
+//        }
+//        return varName;
+//    }
+
     /** LPAREN IDENTIFIER RPAREN */
     @Override
     public String visitMethSigParam(RemixParser.MethSigParamContext ctx) {
@@ -477,7 +484,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
 
     /** IDENTIFIER (from expression) */ // this should be a variable reference
     @Override
-    public Expression visitExprVar(RemixParser.ExprVarContext ctx) {
+    public Expression  visitExprVar(RemixParser.ExprVarContext ctx) {
         String varName = ctx.IDENTIFIER().getText();
         return new VarValueExpression(varName);
     }
@@ -548,7 +555,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             product.append(c);
             c = productWord.charAt(++i);
         }
-        word = productWord.substring(i);
+        if (productWord.substring(i).equals("π"))
+            word = "π";
+        else
+            word = productWord.substring(i);
         return new String[] {product.toString(), word};
     }
 
@@ -577,7 +587,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return (Block)visitChildren(ctx);
     }
 
-    /** (WORD | listElement) POSSESSIVE WORD */
+    /** (IDENTIFIER | listElement) POSSESSIVE IDENTIFIER; */
     @Override
     public Expression visitGetterMethodCall(RemixParser.GetterMethodCallContext ctx) {
         String fileName = RemixREPL.getFileName();
@@ -599,7 +609,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return getterCall;
     }
 
-    /** (WORD | listElement) POSSESSIVE WORD COLON expression */
+    /** (IDENTIFIER | listElement) POSSESSIVE IDENTIFIER COLON expression */
     @Override
     public Expression visitSetterMethodCall(RemixParser.SetterMethodCallContext ctx) {
         String fileName = RemixREPL.getFileName();
@@ -612,10 +622,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             // must be listElement e.g. student{1}
             setterCall.addParam((Expression)visit(node));
         } else {
-            // otherwise WORD is the object name
+            // otherwise IDENTIFIER is the object name
             setterCall.addParam(new VarValueExpression(node.getText()));
         }
-        // second WORD is the field name in the object
+        // second IDENTIFIER is the field name in the object
         node = ctx.getChild(2);
         setterCall.addToName(node.getText());
         // now add the expression

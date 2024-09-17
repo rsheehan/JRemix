@@ -1,7 +1,7 @@
-a function X :
-	Y : 3
-	repeat Y times
-		X : X + Y
-	X, " ", Y \n
+a function 'X' :
+	'Y' : 3
+	repeat 'Y' times
+		'X' : 'X' + 'Y'
+	'X', " ", 'Y' \n
 
 a function 2

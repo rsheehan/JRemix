@@ -54,16 +54,16 @@ public class RemixFiles extends LibraryExpression {
         public ReadFileContents() {
             super(
                     List.of("read file |"),
-                    List.of("Name"),
+                    List.of("name"),
                     List.of(false),
                     false,
-                    "Read the entire contents of file \"Name\"."
+                    "Read the entire contents of file \"name\"."
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            String fileName = (String)context.retrieve(("Name"));
+            String fileName = (String)context.retrieve(("name"));
             String result = "";
             try {
                 result = Files.readString(Path.of(fileName));

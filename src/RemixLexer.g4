@@ -74,16 +74,18 @@ LIBRARY				: 'library' ;
 USING				: 'using' ; // using a-library
 SELFREF				: 'ME' | 'MY' ;
 
-POSSESSIVE			: '\'' ('s ' | ' ') ; // used for field access e.g. Robert's age
+POSSESSIVE			: 's ' ; // used for field access e.g. 'Robert's 'age'
 
-CONSTANT			: CAPITAL (CAPITAL | '-')+ (DIGIT)* ;
-IDENTIFIER			: (FIRSTCHAR CHARACTER* CAPITAL | CAPITAL) CHARACTER* ;
+CONSTANT			: CAPITAL (CAPITAL | '-')* (DIGIT)* ;
+IDENTIFIER			: '\'' FIRSTCHAR IDCHAR* '\''
+					| '#' FIRSTCHAR CHARACTER* ;
 WORD				: FIRSTCHAR CHARACTER* ;
 WORDPRODUCT			: '-'? DIGIT+ ('.' DIGIT+)? (IDENTIFIER | 'π') ;
 
 STRING				: '"' ('\\"' | .)*? '"' ;
 
 // everything apart from white space, newline or special is a character
+fragment IDCHAR		: ~['’~\t\n↲] ;
 fragment FIRSTCHAR	: ~[.()[\]{,};:—|…'’\-0-9" ~\t\n↲] ; // ⊕+\-*×÷%=≠<≤>≥
 fragment CHARACTER	: ~[.()[\]{,};:—|…'’" ~\t\n↲] ; // ⊕+*×÷%=≠<≤>≥
 

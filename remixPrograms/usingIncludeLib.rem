@@ -3,16 +3,16 @@ using include "remixPrograms/includeLibrary.rem"
 
 	4 plus 3 ↲
 
-	O : making object
+	'O' : making object
 
-A minus B :
-	A - B
+'A' minus 'B' :
+	'A' - 'B'
 
 4 minus 3 ↲
 4 times 3 ↲
 4 plus 3 ↲
 
-O ↲
-print O ; should print "OV1 + OV2 = 6"
+'O' ↲
+print 'O' ; should print "OV1 + OV2 = 6"
 
 "Finished" ↲

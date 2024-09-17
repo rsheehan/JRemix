@@ -1,120 +1,120 @@
 ===========================
-File Operations and Objects
+'file' Operations and Objects
 ===========================
-Files-Lib : library "edu.fizz.remix.libraries.RemixFiles"
+'files library' : library "edu.fizz.remix.libraries.RemixFiles"
 
 	HOME : file directory (home)
 
-	a file with absolute path Name :
+	a file with absolute path 'name' :
 		create
-			Name : Name
+			'name' : 'name'
 
 			read ME :
-				read file Name ; Java
+				read file 'name' ; Java
 
 			ME to string :
-				Name
+				'name'
 
 			=============================================
-			Produces a sequence of lines from the "File".
+			Produces a sequence of lines from the 'file'.
 			This can be used in for loops.
 			=============================================
 			lines from ME :
 				create
-					File : ME
+					'file' : ME
 
 					start ME :
 						-iterator
 						create
-							Data : read File
-							Position : 0
+							'data' : read 'file'
+							'position' : 0
 
 							end ME :
-								Position ≥ length of Data
+								'position' ≥ length of 'data'
 
 							next ME :
-								Line : ""
-								C : ""
-								while [(Position ≠ length of Data) and (C ≠ CR)]
-									C : (increment Position) in Data
-									Line : Line ⊕ C
+								'line' : ""
+								'char' : ""
+								while [('position' ≠ length of 'data') and ('char' ≠ CR)]
+									'char' : (increment 'position') in 'data'
+									'line' : 'line' ⊕ 'char'
 
 					ME to string :
-						"sequence of lines from " ⊕ (File to string)
+						"sequence of lines from " ⊕ ('file' to string)
 
 			=============================================
-			Produces a sequence of words from the "File".
+			Produces a sequence of words from the 'file'.
 			This can be used in for loops.
 			=============================================
 			words from ME :
 				create
-					File : ME
+					'file' : ME
 
 					start ME :
 						-iterator
 						create
-							Data : read File
-							Position : 0
+							'data' : read 'file'
+							'position' : 0
 
 							end ME :
 								throw away whitespace
-								Position = length of Data
+								'position' = length of 'data'
 
 							next ME :
 								throw away whitespace
-								Word : ""
-								while [Position ≠ length of Data]
-									C : (increment Position) in Data
-									if (C is in WHITE-SPACE)
-										return Word
-									Word : Word ⊕ C
+								'word' : ""
+								while ['position' ≠ length of 'data']
+									'char' : (increment 'position') in 'data'
+									if ('char' is in WHITE-SPACE)
+										return 'word'
+									'word' : 'word' ⊕ 'char'
 
 							throw away whitespace :
-								while [Position ≠ length of Data]
-									C : (increment Position) in Data
-									if (C is not in WHITE-SPACE)
-										decrement Position
+								while ['position' ≠ length of 'data']
+									'char' : (increment 'position') in 'data'
+									if ('char' is not in WHITE-SPACE)
+										decrement 'position'
 										return
 					ME to string :
-						"sequence of words from " ⊕ (File to string)
+						"sequence of words from " ⊕ ('file' to string)
 
 			==================================================
-			Produces a sequence of characters from the "File".
+			Produces a sequence of characters from the 'file'.
 			This can be used in for loops.
 			==================================================
 			characters from ME :
 				create
-					File : ME
+					'file' : ME
 
 					start ME :
 						-iterator
 						create
-							Data : read File
-							Position : 0
+							'data' : read 'file'
+							'position' : 0
 
 							end ME :
-								Position = length of Data
+								'position' = length of 'data'
 
 							next ME :
-								(increment Position) in Data
+								(increment 'position') in 'data'
 
 					ME to string :
-						"sequence of characters from " ⊕ (File to string)
+						"sequence of characters from " ⊕ ('file' to string)
 	=-
-	A file directory object base on "Directory-Name".
+	A file directory object base on 'directory name'.
 	Can be used to access files inside the directory.
 	=-
-	file directory Directory-Name:
+	file directory 'directory name':
 		create
-			Directory : Directory-Name ⊕ path separator
+			'directory' : 'directory name' ⊕ path separator
 
-			file Name in ME :
-				a file with absolute path (Directory ⊕ Name)
+			file 'name' in ME :
+				a file with absolute path ('directory' ⊕ 'name')
 
 			ME to string :
-				Directory
+				'directory'
 
 -==================================================================================================-
 
 "Files library loaded." ↲
-Files-Lib
+'files library'

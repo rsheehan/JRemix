@@ -1,28 +1,28 @@
-a person called Name :
+a person called 'name' :
 	create
-		Name : Name
+		'name' : 'name'
 
 		MY introduction :
-			"My name is ", Name, "." ↲
+			"My name is ", 'name', "." ↲
 
 		say hello to ME :
-			"Hi ", Name, ", pleased to meet you." ↲
+			"Hi ", 'name', ", pleased to meet you." ↲
 
-a person called Name age Years :
-	extend a person called Name
-		Age : Years
+a person called 'name' age 'years' :
+	extend a person called 'name'
+		'age' : 'years'
 
 		say hello to ME :
-			"Hi ", Name, ", you are ", Age, " years old." ↲
+			"Hi ", 'name', ", you are ", 'age', " years old." ↲
 
-Mary : a person called "Mary"
-Mary introduction
-say hello to Mary
+'Mary' : a person called "Mary"
+'Mary' introduction
+say hello to 'Mary'
 
-Jack : a person called "Jack" age 30
-Jack introduction
-say hello to Jack
+'Jack' : a person called "Jack" age 30
+'Jack' introduction
+say hello to 'Jack'
 
 say hello to (a person called "Stu" age 56)
 ↲
-say hello to Mary
+say hello to 'Mary'

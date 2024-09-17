@@ -1,7 +1,7 @@
 ===============================
 Graphics Operations and Objects
 ===============================
-Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
+'graphics library' : library "edu.fizz.remix.libraries.Graphics"
 
 	=====================
 	Dimensions and points
@@ -38,7 +38,7 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	================
 
 	======
-	Shapes
+	'shapes'
 	======
 
 	=-
@@ -54,105 +54,105 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 		a 4 sided polygon
 
 	=-
-	Create an "N" sided polygon.
+	Create an 'N' sided polygon.
 	=-
-	a/an N sided polygon :
-		Points : { }
-		for each Side from 0 to (N - 1) do
+	a/an 'N' sided polygon :
+		'points' : { }
+		for each 'side' from 0 to ('N' - 1) do
 			append {
-				cosine (2π × Side ÷ N)
-				sine (2π × Side ÷ N)
-			} to Points
-		a shape from Points scaled by 20
+				cosine (2π × 'side' ÷ 'N')
+				sine (2π × 'side' ÷ 'N')
+			} to 'points'
+		a shape from 'points' scaled by 20
 
 	=-
-	Create a box centred at "Position"
-	with "Colour" and "Width" x "Height".
+	Create a box centred at 'position'
+	with 'colour' and 'width' x 'height'.
 	=-
-	a/an Colour box of Width x Height at Position :
-		Left : -Width ÷ 2
-		Right : Width ÷ 2
-		Top : -Height ÷ 2
-		Bottom : Height ÷ 2
-		a Colour shape from {
-			{ Left, Top }
-			{ Right, Top }
-			{ Right, Bottom }
-			{ Left, Bottom }
-		} scaled by 1 at Position
+	a/an 'colour' box of 'width' x 'height' at 'position' :
+		'left'   : -'width' ÷ 2
+		'right'  : 'width' ÷ 2
+		'top'    : -'height' ÷ 2
+		'bottom' : 'height' ÷ 2
+		a 'colour' shape from {
+			{ 'left', 'top' }
+			{ 'right', 'top' }
+			{ 'right', 'bottom' }
+			{ 'left', 'bottom' }
+		} scaled by 1 at 'position'
 
 	=-
-	Create a shape from the list of "Points".
+	Create a shape from the list of 'points'.
 	The shape is scaled by 5.
 	=-
-	a shape from Points :
-		a shape from Points scaled by 5
+	a shape from 'points' :
+		a shape from 'points' scaled by 5
 
 	=-
-	Create a shape from the list of "Points" scaled by "Size".
+	Create a shape from the list of 'points' scaled by 'size'.
 	=-
-	a shape from Points scaled by Size :
-		a RED shape from Points scaled by Size at THE-CENTRE-POINT
+	a shape from 'points' scaled by 'size' :
+		a RED shape from 'points' scaled by 'size' at THE-CENTRE-POINT
 
 	=-
-	Create a shape of "Colour" from the list of "Points" scaled by "Size"
-	at "Position".
-	Shapes can be filled or just outlines.
+	Create a shape of 'colour' from the list of 'points' scaled by 'size'
+	at 'position'.
+	'shapes' can be filled or just outlines.
 	=-
-	a/an Colour shape from Points scaled by Size at Position:
+	a/an 'colour' shape from 'points' scaled by 'size' at 'position':
 
 		create
-			Type           : "shape"
-			Colour         : Colour
-			outline-Colour : null ; no outline
-			Polygon        : Points
-			Position       : Position
-			Size           : Size
-			Heading        : 0.0 ; radians
+			'type'           : "shape"
+			'colour'         : 'colour'
+			'outline colour' : null ; no outline
+			'polygon'        : 'points'
+			'position'       : 'position'
+			'size'           : 'size'
+			'heading'        : 0.0 ; radians
 
 			getters/setters
-				Colour, outline-Colour,
-				Position, Size, Heading
+				'colour', 'outline colour',
+				'position', 'size', 'heading'
 
-			MY x-Pos :
-				Position {1}
+			MY x-pos :
+				'position'{1}
 
-			MY y-Pos :
-				Position {2}
+			MY y-pos :
+				'position'{2}
 
-			change MY x-pos by Δx :
-				Position {1} : Position {1} + Δx
+			change MY x-pos by 'δx' :
+				add 'δx' to ('position'{1})
 
-			change MY y-pos by Δy :
-				Position {2} : Position {2} + Δy
+			change MY y-pos by 'δy' :
+				add 'δy' to ('position'{2})
 
-			change MY heading by Δd degrees :
-				Heading : Heading + Δd degrees as radians
+			change MY heading by 'δd' degrees :
+				add ('δd' degrees as radians) to 'heading'
 
 	=====
 	Lines
 	=====
 
 	=-
-	Create a "Colour" line from "Start" to "Finish".
+	Create a 'colour' line from 'start' to 'finish'.
 	The width is 3 pixels by default.
 	=-
-	a/an Colour line from Start to Finish :
+	a/an 'colour' line from 'start' to 'finish' :
 		create
-			Type   : "line"
-			Start  : Start
-			Finish : Finish
-			Width  : 3
-			Colour : Colour
+			'type'   : "line"
+			'start'  : 'start'
+			'finish' : 'finish'
+			'width'  : 3
+			'colour' : 'colour'
 
 			getters/setters
-				Start, Finish, Width, Colour
+				'start', 'finish', 'width', 'colour'
 
 	=-
-	Create a green line from "Start" to "Finish".
+	Create a green line from 'start' to 'finish'.
 	=-
-	a line from Start to Finish :
-		a GREEN line from Start to Finish
+	a line from 'start' to 'finish' :
+		a GREEN line from 'start' to 'finish'
 
 	=-
 	Create a random line.
@@ -165,26 +165,26 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	=======
 
 	=-
-	Create a "Colour" circle of radius "Radius" at "Position".
+	Create a 'colour' circle of radius 'radius' at 'position'.
 	=-
-	a/an Colour circle of radius Radius at Position :
+	a/an 'colour' circle of radius 'radius' at 'position' :
 		create
-			Type     : "circle"
-			Colour   : Colour
-			outline-Colour : null ; no outline
-			Radius   : Radius
-			Position : Position
+			'type'     : "circle"
+			'colour'   : 'colour'
+			'outline colour' : null ; no outline
+			'radius'   : 'radius'
+			'position' : 'position'
 
 			getters/setters
-				Colour, outline-Colour,
-				Radius, Position
+				'colour', 'outline colour',
+				'radius', 'position'
 
 	=-
 	Create a random circle.
 	=-
 	a random circle :
-		Size : random (STD-HEIGHT ÷ 8) + 10
-		a (random colour) circle of radius Size at (random point)
+		'size' : random (STD-HEIGHT ÷ 8) + 10
+		a (random colour) circle of radius 'size' at (random point)
 
 -==================================================================================================-
 
@@ -200,7 +200,7 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 		an (open graphics panel) with layers
 
 	===========================================================
-	The Remix Panel for drawing in.
+	The Remix 'panel' for drawing in.
 	It has a base layer which is an image for permanent shapes,
 	and multiple layers for animation on top of that.
 
@@ -208,55 +208,55 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	in a graphics window created outside this.
 	===========================================================
 	=-
-	Return a panel with multiple layers based on "JGraphics-Panel".
+	Return a panel with multiple layers based on 'JGraphics panel'.
 	=-
-	a/an JGraphics-Panel with layers :
-		Panel : create
-			JGraphics : JGraphics-Panel
-			Layers : { a base layer for JGraphics-Panel }
-			Background-Colour : DARK-BLUE ; set by "MY Background Colour"
+	a/an 'JGraphics panel' with layers :
+		'panel' : create
+			'JGraphics' : 'JGraphics panel'
+			'layers' : { a base layer for 'JGraphics panel' }
+			'background colour' : DARK-BLUE ; set by "MY 'background colour'
 
 			getters
-				Layers, Background-Colour
+				'layers', 'background colour'
 
-			MY Background-Colour Colour : ; this is a setter
-				make the JGraphics background Colour ; Java
-				Background-Colour : Colour
+			MY 'background colour' 'colour' : ; this is a setter
+				make the 'JGraphics' background 'colour' ; Java
+				'background colour' : 'colour'
 
 			MY next layer :
-				New-Layer : a shape layer
-				append New-Layer to Layers
-				New-Layer
+				'new layer' : a shape layer
+				append 'new layer' to 'layers'
+				'new layer'
 
 			MY base layer :
-				Layers {1}
+				'layers'{1}
 
 			==========================================
 			Useful to place a shape in the base layer.
 			==========================================
-			place Shape in ME :
-				place Shape in (Layers {1})
+			place 'shape' in ME :
+				place 'shape' in ('layers'{1})
 
 			update ME :
-				clear transient JGraphics layers ; Java
-				for each Layer in Layers do
-					prepare Layer shapes for drawing on JGraphics
-				refresh JGraphics ; Java
+				clear transient 'JGraphics' layers ; Java
+				for each 'layer' in 'layers' do
+					prepare 'layer' shapes for drawing on 'JGraphics'
+				refresh 'JGraphics' ; Java
 
 			==================
 			Clears all layers.
 			==================
 			clear ME :
-				clear JGraphics base-layer
+				clear 'JGraphics' base-layer
 				clear ME leaving base-layer
 
 			clear ME leaving base-layer :
-				make the JGraphics background Background-Colour
-				Layers : { Layers{1} }
+				make the 'JGraphics' background 'background colour'
+				'layers' : { 'layers'{1} }
 				update ME
 
-		clear Panel
-		return Panel
+		clear 'panel'
+		return 'panel'
 
 	================
 	Graphics Windows
@@ -266,62 +266,62 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	Return the graphics panel.
 	=-
 	a graphics window :
-		JWindow : a "Drawing" window of STD-WIDTH by STD-HEIGHT
-		show JWindow ; Java
-		JGraphics-Panel : the JWindow graphics panel ; Java
-		a JGraphics-Panel with layers
+		'JWindow' : a "Drawing" window of STD-WIDTH by STD-HEIGHT
+		show 'JWindow' ; Java
+		'JGraphics panel' : the 'JWindow' graphics panel ; Java
+		a 'JGraphics panel' with layers
 
 	=-
 	Create a shape layer.
-	Shapes get added to layers.
+	'shapes' get added to layers.
 	This does not include the base-layer which is special.
 	Animations should be placed in ordinary shape layers.
 	=-
 	a shape layer :
 		create
-			Shapes : { }
+			'shapes' : { }
 
 			getter
-				Shapes
+				'shapes'
 
-			place Shape in ME :
-				if (Shape is a "list")
-					for each Part in Shape do
-						append Part to Shapes
+			place 'shape' in ME :
+				if ('shape' is a "list")
+					for each 'part' in 'shape' do
+						append 'part' to 'shapes'
 				… otherwise
-					append Shape to Shapes
+					append 'shape' to 'shapes'
 
 			clear MY shapes :
-				Shapes : { }
+				'shapes' : { }
 
-			prepare MY shapes for drawing on JGraphics :
-				for each Shape in Shapes do
-					add the Shape to the JGraphics ; Java
+			prepare MY shapes for drawing on 'JGraphics' :
+				for each 'shape' in 'shapes' do
+					add the 'shape' to the 'JGraphics' ; Java
 
 	=-
-	Create a base layer for the "JGraphics-Panel".
-	Shapes which get added to a base layer are "permanent"
+	Create a base layer for the 'JGraphics panel'.
+	'shapes' which get added to a base layer are "permanent"
 	until the layer gets cleared.
 	Animations should not be placed in the base layer.
 	=-
-	a base layer for JGraphics-Panel :
+	a base layer for 'JGraphics panel' :
 		create
-			JGraphics-Panel : JGraphics-Panel
+			'JGraphics panel' : 'JGraphics panel'
 
-			MY Shapes : ; a getter for shapes which are not stored
+			MY 'shapes' : ; a getter for shapes which are not stored
 				{ }
 
-			place Shape in ME :
-				if (Shape is a "list")
-					for each Part in Shape do
-						add the Part to the (JGraphics-Panel base-layer) base-layer; Java
+			place 'shape' in ME :
+				if ('shape' is a "list")
+					for each 'part' in 'shape' do
+						add the 'part' to the ('JGraphics panel' base-layer) base-layer; Java
 				… otherwise
-					add the Shape to the (JGraphics-Panel base-layer) base-layer; Java
+					add the 'shape' to the ('JGraphics panel' base-layer) base-layer; Java
 
 			clear MY shapes :
 				"Clearing shapes from the base layer - does nothing."
 
-			prepare MY shapes for drawing on JGraphics :
+			prepare MY shapes for drawing on 'JGraphics' :
 				"Preparing shapes in the base layer - does nothing."
 
 -==================================================================================================-
@@ -331,36 +331,36 @@ Graphics-Lib : library "edu.fizz.remix.libraries.Graphics"
 	=========
 
 	=-
-	Create an animation object which executes "Changes" every "N" ticks.
+	Create an animation object which executes 'changes' every 'N' ticks.
 	=-
-	every N tick/ticks /do [Changes] :
+	every 'N' tick/ticks /do ['changes'] :
 		create
-			Ticks : N
-			Counter : N
-			Changes : Changes
+			'ticks' : 'N'
+			'counter' : 'N'
+			'changes' : 'changes'
 
 			animate ME :
-				decrement Counter
-				if (Counter = 0)
-					Counter : Ticks
-					do Changes
+				decrement 'counter'
+				if ('counter' = 0)
+					'counter' : 'ticks'
+					do 'changes'
 
 	=======================================================================
 	The Java animation function is
-	animate at N ticks per second [Animation-Block] until [Condition-Block]
+	animate at 'N' ticks per second [Animation-block] until [Condition-block]
 	=======================================================================
 
 	=-
-	Animate "Block" in "the-Window" at "N" ticks per second.
+	Animate 'block' in 'the window' at 'N' ticks per second.
 	=-
-	animate the-Window Number times at N ticks per second [Block] :
-		animate at N ticks per second
-			do Block
-			update the-Window
-			decrement Number
-		… until [Number < 1]
+	animate 'the window' 'number' times at 'N' ticks per second ['block'] :
+		animate at 'N' ticks per second
+			do 'block'
+			update 'the window'
+			decrement 'number'
+		… until ['number' < 1]
 
 -==================================================================================================-
 
 "Graphics library loaded." ↲
-Graphics-Lib
+'graphics library'

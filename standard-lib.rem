@@ -25,10 +25,10 @@ new line :
 	↲
 
 =-
-Print the "Value" followed by a space.
+Print the 'value' followed by a space.
 =-
-Value _ :
-	print Value
+'value' _ :
+	print 'value'
 	print SPACE
 
 ==============================
@@ -36,57 +36,57 @@ Value _ :
 ==============================
 
 =-
-Negate the "Value".
+Negate the 'value'.
 =-
-not Value :
-	if Value
+not 'value' :
+	if 'value'
 		return false
 	true
 
 =-
 The boolean "and" operation.
 =-
-A and B :
-	if (not A)
+'A' and 'B' :
+	if (not 'A')
 		return false
-	if (not B)
+	if (not 'B')
 		return false
 	true
 
 =-
 The boolean "or" operation.
 =-
-A or B :
-	if A
+'A' or 'B' :
+	if 'A'
 		return true
-	if B
+	if 'B'
 		return true
 	false
 
 =-
-Returns true if any block item in "List" is true.
+Returns true if any block item in 'list' is true.
 =-
-any of List :
-	for each Block in List do
-		if Block
+any of 'list' :
+	for each 'block' in 'list' do
+		if 'block'
 			return true
 		false
 
 =-
-Returns true if each block item in "List" is true.
+Returns true if each block item in 'list' is true.
 =-
-all of List :
-	for each Block in List do
-		if (not Block)
+all of 'list' :
+	for each 'block' in 'list' do
+		if (not 'block')
 			return false
 		true
 
 =-
-Only returns true if each block item in "List" is false.
+Only returns true if each block item in 'list' is false.
 =-
-none of List :
-	for each Block in List do
-		if Block
+none of 'list' :
+	for each 'block' in 'list' do
+		if 'block'
 			return false
 		true
 
@@ -95,101 +95,101 @@ none of List :
 ==============================
 
 =-
-Run "Block" for each "Item" in the "Sequence".
-"Block" will usually use the variable passed as "Item".
-Return either the last statement value or whatever is returned from "Block".
+Run 'block' for each 'item' in the 'sequence'.
+'block' will usually use the variable passed as 'item'.
+Return either the last statement value or whatever is returned from 'block'.
 A sequence here is a list, range, map, string or sequence object.
 =-
-for each #Item in Sequence /do [Block] :
-	Pos : start Sequence
+for each #item in 'sequence' /do ['block'] :
+	'pos' : start 'sequence'
 	do
-		if (end Pos)
-			return Last
-		#Item : next Pos
-		- A return in the "Block" following breaks out of the loop, with its result.
-		Last : do Block
+		if (end 'pos')
+			return 'last'
+		#item : next 'pos'
+		- A return in the 'block' following breaks out of the loop, with its result.
+		'last' : do 'block'
 		redo
 
 =-
-Run "Block" for each "Number" from "Start" to "Finish".
+Run 'block' for each 'number' from 'start' to 'finish'.
 =-
-for each #Number from Start to Finish /do [Block] :
-	for each #Number in (Start to Finish) do Block
+for each #number from 'start' to 'finish' /do ['block'] :
+	for each #number in ('start' to 'finish') do 'block'
 
 =-
-Run "Block" for each "Number" from "Start" to "Finish" in steps of "Step".
+Run 'block' for each 'number' from 'start' to 'finish' in steps of 'step'.
 =-
-for each #Number from Start to Finish in steps of Step /do [Block]:
-	if (Start < Finish)
-		Test : [#Number ≤ Finish]
+for each #number from 'start' to 'finish' in steps of 'step' /do ['block']:
+	if ('start' < 'finish')
+		'test' : [#number ≤ 'finish']
 	… otherwise
-		Test : [#Number ≥ Finish]
-	#Number : Start
-	while Test do
-		Last : do Block
-		#Number : #Number + Step
-	Last
+		'test' : [#number ≥ 'finish']
+	#number : 'start'
+	while 'test' do
+		'last' : do 'block'
+		#number : #number + 'step'
+	'last'
 
 =-
-Run "Block" for each "Item" in the "Sequence" at all positions from "Start" to "Finish".
-"Start" to "Finish" can go backwards.
-"Block" will usually use the variable passed as "Item".
-A sequence here is a list, range, string or sequence object with a Pos in Sequence method.
+Run 'block' for each 'item' in the 'sequence' at all positions from 'start' to 'finish'.
+'start' to 'finish' can go backwards.
+'block' will usually use the variable passed as 'item'.
+A sequence here is a list, range, string or sequence object with a 'pos' in 'sequence' method.
 =-
-for each #Item in Sequence from position Start to Finish /do [Block] :
-	for each Pos from Start to Finish do
-		#Item : Pos in Sequence
-		do Block
+for each #item in 'sequence' from position 'start' to 'finish' /do ['block'] :
+	for each 'pos' from 'start' to 'finish' do
+		#item : 'pos' in 'sequence'
+		do 'block'
 
 =-
-Run "Block" for each "Item" in the "Sequence" keeping count in "Count".
+Run 'block' for each 'item' in the 'sequence' keeping count in 'count'.
 A sequence here is a list, range, map, string or sequence object.
 =-
-for each #Item in Sequence keeping #Count /do [Block] :
-	#Count : 0
-	for each #Item in Sequence do
-		inc #Count
-		do Block
+for each #item in 'sequence' keeping #count /do ['block'] :
+	#count : 0
+	for each #item in 'sequence' do
+		increment #count
+		do 'block'
 
 =-
-Repeat the "Block" for ever.
+Repeat the 'block' for ever.
 =-
-repeat [Block] forever :
-	do Block
+repeat ['block'] forever :
+	do 'block'
 	redo
 
 =-
-Repeat the "Block" "Count" number of times.
+Repeat the 'block' 'count' number of times.
 =-
-repeat [Block] Count times :
-	if (Count ≤ 0)
-		return Last ; none if unassigned
-	Last : do Block
-	Count : Count - 1
+repeat ['block'] 'count' times :
+	if ('count' ≤ 0)
+		return 'last' ; none if unassigned
+	'last' : do 'block'
+	'count' : 'count' - 1
 	redo
 
 =-
-Repeat the "Block" "Count" number of times.
+Repeat the 'block' 'count' number of times.
 =-
-repeat Count times [Block] :
-	repeat Block Count times
+repeat 'count' times ['block'] :
+	repeat 'block' 'count' times
 
 =-
-Repeat the "Block" until the "Condition" is true.
+Repeat the 'block' until the 'condition' is true.
 =-
-repeat [Block] until [Condition] :
-	Last : do Block
-	if Condition
-		return Last
+repeat ['block'] until ['condition'] :
+	'last' : do 'block'
+	if 'condition'
+		return 'last'
 	redo
 
 =-
-While a "Condition" is true keep doing "Block".
+While a 'condition' is true keep doing 'block'.
 =-
-while [Condition] /do [Block] :
-	if (not Condition)
-		return Last
-	Last : do Block
+while ['condition'] /do ['block'] :
+	if (not 'condition')
+		return 'last'
+	'last' : do 'block'
 	redo
 
 ==============================
@@ -197,327 +197,327 @@ while [Condition] /do [Block] :
 ==============================
 
 =-
-Filter "List" using "Condition-Block" on each "Item" keeping "Keep-Block".
-The Blocks commonly refer to "Item".
+Filter 'list' using 'condition block' on each 'item' keeping 'keep block'.
+The Blocks commonly refer to 'item'.
 =-
-filter List by #Item where [Condition-Block] keeping [Keep-Block] :
-	new-List : {}
-	for each #Item in List do
-		if Condition-Block
-			append (do Keep-Block) to new-List
-	new-List
+filter 'list' by #item where ['condition block'] keeping ['keep block'] :
+	'new list' : { }
+	for each #item in 'list' do
+		if 'condition block'
+			append (do 'keep block') to 'new list'
+	'new list'
 
 =-
-Filter "List" using "Condition-Block" on each "Item".
-The Block commonly refers to "Item".
+Filter 'list' using 'condition block' on each 'item'.
+The 'block' commonly refers to 'item'.
 =-
-filter List by #Item where [Condition-Block] :
-	filter List by #Item where Condition-Block keeping [#Item]
+filter 'list' by #item where ['condition block'] :
+	filter 'list' by #item where 'condition block' keeping [#item]
 
 =-
-Collect Items from "List" until "Condition" is true.
-The "Condition" is checked before adding the "Item".
+Collect Items from 'list' until 'condition' is true.
+The 'condition' is checked before adding the 'item'.
 =-
-keep #Item from List until [Condition] :
-	new-List : {}
-	for each #Item in List do
-		if Condition
+keep #item from 'list' until ['condition'] :
+	'new list' : { }
+	for each #item in 'list' do
+		if 'condition'
 			return
-		append #Item to new-List
-	new-List
+		append #item to 'new list'
+	'new list'
 
 =-
-Collect Items from "List" where "Condition" is true,
-stopping when "Termination" becomes true.
-The conditions are checked before adding the "Item".
+Collect Items from 'list' where 'condition' is true,
+stopping when 'termination' becomes true.
+The conditions are checked before adding the 'item'.
 =-
-keep #Item from List where [Condition] until [Termination] :
-	Result : {}
-	for each #Item in List do
-		if Termination
+keep #item from 'list' where ['condition'] until ['termination'] :
+	'result' : { }
+	for each #item in 'list' do
+		if 'termination'
 			return
-		if Condition
-			append #Item to Result
-	Result
+		if 'condition'
+			append #item to 'result'
+	'result'
 
 =-
-Create a new List by applying "Block" to each element of "List".
-"Block" will usually use the variable passed as "Item".
+Create a new 'list' by applying 'block' to each element of 'list'.
+'block' will usually use the variable passed as 'item'.
 =-
-apply [Block] to each #Item from List :
-	new-List : {}
-	for each #Item in List do
-		append (do Block) to new-List
-	new-List
+apply ['block'] to each #item from 'list' :
+	'new list' : { }
+	for each #item in 'list' do
+		append (do 'block') to 'new list'
+	'new list'
 
 =-
-Create a new List by applying "Block" "N" times.
+Create a new 'list' by applying 'block' 'N' times.
 =-
-apply [Block] N times :
-	new-List : {}
+apply ['block'] 'N' times :
+	'new list' : { }
 	repeat
-		append (do Block) to new-List
-	… N times
-	new-List
+		append (do 'block') to 'new list'
+	… 'N' times
+	'new list'
 
 ==============================
  List reduce functions
 ==============================
 
 =-
-Can be used to construct List reduce functions.
-"Initial" is executed first.
-Then each "Item" in the "Sequence" is executed in the "Block".
+Can be used to construct 'list' reduce functions.
+'initial' is executed first.
+Then each 'item' in the 'sequence' is executed in the 'block'.
 A sequence here is a list, range, map, string or sequence object.
 =-
-starting with [Initial] apply [Block] on each #Item in Sequence :
-	do Initial
-	for each #Item in Sequence do Block
+starting with ['initial'] apply ['block'] on each #item in 'sequence' :
+	do 'initial'
+	for each #item in 'sequence' do 'block'
 
 =-
-Sum the "List" values.
+'sum' the 'list' values.
 =-
-sum List :
+sum 'list' :
 	starting with
-		Sum : 0
+		'sum' : 0
 	… apply
-		Sum : Sum + Number
-	… on each Number in List
+		add 'number' to 'sum'
+	… on each 'number' in 'list'
 
 =-
-Multiply the "List" values.
+Multiply the 'list' values.
 =-
-product List:
+product 'list':
 	starting with
-		Product : 1
+		'product' : 1
 	… apply
-		Product : Product × Number
-	… on each Number in List
+		multiply 'product' by 'number'
+	… on each 'number' in 'list'
 
 =-
-Find the average of the elements in the "List".
+Find the average of the elements in the 'list'.
 =-
-average of List :
+average of 'list' :
 	starting with
-		Sum : 0.0
+		'sum' : 0.0
 	… apply
-		Sum : Sum + Item
-	… on each Item in List
-	Sum ÷ (List length)
+		add 'item' to 'sum'
+	… on each 'item' in 'list'
+	'sum' ÷ ('list' length)
 
 =-
-Find the average of "Key" elements in the "List-of-Maps".
-The "Key" should be passed as a string.
+Find the average of 'key' elements in the 'list of maps'.
+The 'key' should be passed as a string.
 =-
-average Key of List-of-Maps :
+average 'key' of 'list of maps' :
 	starting with
-		Sum : 0.0
+		'sum' : 0.0
 	… apply
-		Sum : Sum + Map {Key}
-	… on each Map in List-of-Maps
-	Sum ÷ (List-of-Maps length)
+		add ('map'{'key'}) to 'sum' ; with the change to quoted variables
+	… on each 'map' in 'list of maps'
+	'sum' ÷ ('list of maps' length)
 
 =-
-Join the contents of "List1" and "List2".
+Join the contents of 'list 1' and 'list 2'.
 The original lists remain unchanged.
 =-
-join List1 and List2 :
+join 'list 1' and 'list 2' :
 	starting with
-		List : copy List1
+		'list' : copy 'list 1'
 	… apply
-		append Item to List
-	… on each Item in List2
+		append 'item' to 'list'
+	… on each 'item' in 'list 2'
 
 ==============================
  String functions
 ==============================
 
 =-
-Concatenate the "String" "N" times.
+Concatenate the 'string' 'N' times.
 =-
-String N times :
-	if (N < 1) ; useful if N is zero
+'string' 'N' times :
+	if ('N' < 1) ; useful if 'N' is zero
 		return EMPTY
-	Result : String
+	'result' : 'string'
 	repeat
-		Result : Result ⊕ String
-	… (N - 1) times
-	Result
+		'result' : 'result' ⊕ 'string'
+	… ('N' - 1) times
+	'result'
 
 =-
-Adds an 's' to "Word" if plural, "Number" > 1.
+Adds an 's' to 'word' if plural, 'number' > 1.
 =-
-pluralize Word for Number :
-	if (Number > 1)
-		Word ⊕ "s"
+pluralize 'word' for 'number' :
+	if ('number' > 1)
+		'word' ⊕ "s"
 	… otherwise
-		Word
+		'word'
 
 =-
-Return a substring from "String" from positions "Start" to "Finish"
+Return a substring from 'string' from positions 'start' to 'finish'
 inclusive.
-"Start" and "Finish" must be within the range of the string.
-Can reverse the order if "Start" > "Finish".
+'start' and 'finish' must be within the range of the string.
+Can reverse the order if 'start' > 'finish'.
 =-
-String from Start to Finish :
-	Result : EMPTY
-	Length : String length
+'string' from 'start' to 'finish' :
+	'result' : EMPTY
+	'length' : 'string' length
 	if (any of {
-		[Start < 1]
-		[Finish < 1]
-		[Start > Length]
-		[Finish > Length]
+		['start' < 1]
+		['finish' < 1]
+		['start' > 'length']
+		['finish' > 'length']
 	})
-		return Result
-	for each Char in String from position Start to Finish
-		Result : Result ⊕ Char
+		return 'result'
+	for each 'char' in 'string' from position 'start' to 'finish'
+		'result' : 'result' ⊕ 'char'
 
 =-
-Inserts or overwrites "this-String" into "String" at position "Pos".
-Overwrites if "Overwrite" is true, otherwise inserts.
+Inserts or overwrites 'this string' into 'string' at position 'pos'.
+Overwrites if 'overwrite' is true, otherwise inserts.
 =-
-place this-String into #String at Pos do Overwrite :
-	Left : if (Pos > #String length)
-		#String
+place 'this string' into #string at 'pos' do 'overwrite' :
+	'left' : if ('pos' > #string length)
+		#string
 	… otherwise
-		#String from 1 to (Pos - 1)
-	Right-Start : if Overwrite
-		Pos + this-String length
+		#string from 1 to ('pos' - 1)
+	'right start' : if 'overwrite'
+		'pos' + 'this string' length
 	… otherwise
-		Pos
-	Right : #String from Right-Start to (#String length)
-	Spaces  : SPACE (Pos - #String length - 1) times
-	#String : Left ⊕ Spaces ⊕ this-String ⊕ Right
+		'pos'
+	'right' : #string from 'right start' to (#string length)
+	'spaces'  : SPACE ('pos' - #string length - 1) times
+	#string : 'left' ⊕ 'spaces' ⊕ 'this string' ⊕ 'right'
 
 =-
-Inserts "this-String" into "String" starting at position "Pos"
+Inserts 'this string' into 'string' starting at position 'pos'
 moving characters to the right as necessary.
 If the position is greater than the last position in the string it adds
 necessary spaces before concatenating the insertion.
 =-
-insert this-String into #String at Pos :
-	place this-String into #String at Pos do false
+insert 'this string' into #string at 'pos' :
+	place 'this string' into #string at 'pos' do false
 
 =-
-Overwrites "this-String" into "String" starting at position "Pos".
+Overwrites 'this string' into 'string' starting at position 'pos'.
 If the position is greater than the last position in the string it adds
 necessary spaces before concatenating the insertion.
 =-
-overwrite this-String into #String at Pos :
-	place this-String into #String at Pos do true
+overwrite 'this string' into #string at 'pos' :
+	place 'this string' into #string at 'pos' do true
 
 ==============================
  List string functions
 ==============================
 
 =-
-Joins the string versions of the elements in "List".
+Joins the string versions of the elements in 'list'.
 =-
-join List :
-	String : EMPTY
-	for each Item in List do
-		String : String ⊕ Item
+join 'list' :
+	'string' : EMPTY
+	for each 'item' in 'list' do
+		'string' : 'string' ⊕ 'item'
 
 =-
-Joins the "List" with "Separator" between elements.
+Joins the 'list' with 'separator' between elements.
 =-
-join List with separator Separator :
-	String : EMPTY
-	for each Item in List keeping Count do
-		if (Count = List length)
-			return String ⊕ (Item as string)
-		String : String ⊕ (Item as string) ⊕ Separator
+join 'list' with separator 'separator' :
+	'string' : EMPTY
+	for each 'item' in 'list' keeping 'count' do
+		if ('count' = 'list' length)
+			return 'string' ⊕ ('item' as string)
+		'string' : 'string' ⊕ ('item' as string) ⊕ 'separator'
 
 =-
-The "List" as a string.
+The 'list' as a string.
 =-
-List as string :
-	if (not (List is a "List"))
-		return List
-	"{" ⊕ join List with separator ", " ⊕ "}"
+'list' as string :
+	if (not ('list' is a "list"))
+		return 'list'
+	"{" ⊕ join 'list' with separator ", " ⊕ "}"
 
 ==============================
  List functions
 ==============================
 
 =-
-	Append "Value" to the end of "List".
+Append 'value' to the end of 'list'.
 =-
-to List append Value :
-	append Value to List
+to 'list' append 'value' :
+	append 'value' to 'list'
 
 =-
-The first Value in the "List".
+The first 'value' in the 'list'.
 =-
-first in List :
-	List {1}
+first in 'list' :
+	'list'{1}
 
 =-
-The last Value in the "List".
+The last 'value' in the 'list'.
 =-
-last in List :
-	List {List length}
+last in 'list' :
+	'list'{'list' length}
 
 =-
-Is the "Sequence" empty?
+Is the 'sequence' empty?
 A sequence here is a list, range, map, string or sequence object.
 =-
-no/empty Sequence :
-	Sequence length = 0
+no/empty 'sequence' :
+	'sequence' length = 0
 
 =-
-Choose a random Item from the "List".
+Choose a random item from the 'list'.
 =-
-choose from List :
-	List {random (List length)}
+choose from 'list' :
+	'list'{random ('list' length)}
 
 =-
-Is the "Element" in the "List"?
+Is the 'element' in the 'list'?
 =-
-Element is in List :
-	for each Item in List
-		if (Element = Item)
+'element' is in 'list' :
+	for each 'item' in 'list'
+		if ('element' = 'item')
 			return true
 		false
 
 =-
-The "List" does not contain the "Element".
+The 'list' does not contain the 'element'.
 =-
-Element is not in List :
-	not (Element is in List)
+'element' is not in 'list' :
+	not ('element' is in 'list')
 
 ==============================
  Map functions
 ==============================
 
 =-
-Merge the "Extra" map into "Map".
-"Map" is modified.
+Merge the 'extra' map into 'map'.
+'map' is modified.
 =-
-merge Extra into Map :
-	for each Item in Extra do
-		Map {Item} : Extra {Item}
+merge 'extra' into 'map' :
+	for each 'item' in 'extra' do
+		'map'{'item'} : 'extra'{'item'}
 
 ==============================
  Selection functions
 ==============================
 
 =-
-Executes statements in "Block".
+Executes statements in 'block'.
 These statements are usually "[] do []"
 The difference between "when" and "do" - "when" is not transparent.
 =-
-when [Block] :
-	do Block
+when ['block'] :
+	do 'block'
 
 =-
-If "Option" Block is true, return executed "Result".
-Used in a "when" Block.
+If 'option' 'block' is true, return executed 'result'.
+Used in a "when" 'block'.
 The transparent return breaks out of the "when".
 =-
-/this [Option] do [Result] ::
-	if (do Option)
-		return do Result
+/this ['option'] do ['result'] ::
+	if (do 'option')
+		return do 'result'
 
 ==============================
  Numeric functions
@@ -537,79 +537,87 @@ dec/decrement #X :
 
 =-
 Increment numeric variable "X".
-Return the previous Value.
+Return the previous value.
 =-
 #X inc/increment :
 	#X : #X + 1
 	#X - 1
 
 =-
-Increment numeric variable "X" by "I".
-Return the previous Value.
+Increment numeric variable "X" by 'I'.
+Return the previous value.
 =-
-#X inc/increment by I :
-	#X : #X + I
-	#X - I
+#X inc/increment by 'I' :
+	#X : #X + 'I'
+	#X - 'I'
 
 =-
 Decrement numeric variable "X".
-Return the previous Value.
+Return the previous value.
 =-
 #X dec/decrement :
 	#X : #X - 1
 	#X + 1
 
 =-
-Add "Value" to variable "X".
+Decrement numeric variable "X" by 'I'.
+Return the previous value.
 =-
-add Value to #X :
-	#X : #X + Value
+#X dec/decrement by 'I' :
+	#X : #X - 'I'
+	#X + 'I'
 
 =-
-Subtract "Value" from variable "X".
+Add 'value' to variable "X".
 =-
-subtract Value from #X :
-	#X : #X - Value
+add 'value' to #X :
+	#X : #X + 'value'
 
 =-
-Multiply variable "X" by "Value".
+Subtract 'value' from variable "X".
 =-
-multiply #X by Value :
-	#X : #X × Value
+subtract 'value' from #X :
+	#X : #X - 'value'
 
 =-
-Divide variable "X" by "Value".
+Multiply variable "X" by 'value'.
 =-
-divide #X by Value :
-	#X : #X ÷ Value
+multiply #X by 'value' :
+	#X : #X × 'value'
 
 =-
-The absolute value of "Number".
+Divide variable "X" by 'value'.
 =-
-absolute Number :
-	if (Number < 0)
-		return -Number
-	Number
+divide #X by 'value' :
+	#X : #X ÷ 'value'
 
 =-
-Is "Number" divisible by "Div"?
+The absolute value of 'number'.
 =-
-Number is divisible by Div :
-	return Number % Div = 0
+absolute 'number' :
+	if ('number' < 0)
+		return -'number'
+	'number'
 
 =-
-A random integer from "Start" to "Finish" inclusive.
+Is 'number' divisible by 'div'?
 =-
-random from Start to Finish :
-	if (Start < Finish)
-		return random (Finish - Start + 1) + Start - 1
-	random (Start - Finish + 1) + Finish - 1
+'number' is divisible by 'div' :
+	return 'number' % 'div' = 0
 
 =-
-The square of "Number".
+A random integer from 'start' to 'finish' inclusive.
 =-
-Number squared/sqrd/²:
-	Number × Number
+random from 'start' to 'finish' :
+	if ('start' < 'finish')
+		return random ('finish' - 'start' + 1) + 'start' - 1
+	random ('start' - 'finish' + 1) + 'finish' - 1
+
+=-
+The square of 'number'.
+=-
+'number' squared/sqrd/²:
+	'number' × 'number'
 
 =-
 Return true 50% of the time.
@@ -620,111 +628,111 @@ coin toss heads :
 	false
 
 =-
-The Euclidean distance from "A" to "B".
-"A" and "B" are map values with keys "x" and "y".
+The Euclidean distance from 'A' to 'B'.
+'A' and 'B' are map values with keys "x" and "y".
 =-
-distance from A to B :
-	if (A is a "list")
-		A : xy map from A
-	if (B is a "list")
-		B : xy map from B
-	Δx : B {"x"} - A {"x"}
-	Δy : B {"y"} - A {"y"}
-	√(Δx ² + Δy ²)
+distance from 'A' to 'B' :
+	if ('A' is a "list")
+		'A' : xy map from 'A'
+	if ('B' is a "list")
+		'B' : xy map from 'B'
+	'δx' : 'B'{"x"} - 'A'{"x"}
+	'δy' : 'B'{"y"} - 'A'{"y"}
+	√('δx'² + 'δy'²)
 
 =-
-Return xy map from 2 element "List"
+Return xy map from 2 element 'list'
 =-
-xy map from List:
-	{"x" : List{1}, "y" : List{2}}
+xy map from 'list':
+	{ "x" : 'list'{1}, "y" : 'list'{2} }
 
 =-
-Radian equivalent of "Angle" degrees.
+Radian equivalent of 'angle' degrees.
 =-
-Angle degrees as radians :
-	Angle ÷ 180.0 × π
+'angle' degrees as radians :
+	'angle' ÷ 180.0 × π
 
 =-
-Degree equivalent of "Angle" radians.
+Degree equivalent of 'angle' radians.
 =-
-Angle radians as degrees :
-	Angle ÷ π × 180.0
+'angle' radians as degrees :
+	'angle' ÷ π × 180.0
 
 ==============================
  Swapping functions
 ==============================
 
 =-
-Swap "A" with "B".
+Swap 'A' with 'B'.
 =-
 #A swap #B :
-	Temp : #A
+	'temp' : #A
 	#A : #B
-	#B : Temp
+	#B : 'temp'
 
-=-
-Swap "List" element "This" with "That".
-"List" can be a list or map.
-"This" and "That" are indexes or keys.
-=-
-swap List element This with That :
-	Temp : List {This}
-	List {This} : List {That}
-	List {That} : Temp
+=
+Swap 'list' element 'this' with 'that'.
+'list' can be a list or map.
+'this' and 'that' are indexes or keys.
+-
+swap 'list' element 'this' with 'that' :
+	'temp' : 'list'{'this'}
+	'list'{'this'} : 'list'{'that'}
+=	'list'{'that'} : 'temp'
 
 ==============================
  Testing functions
 ==============================
 
 =-
-Create a test of "Code" with expected "Result" described by "Description".
+Create a test of 'code' with expected 'result' described by 'description'.
 =-
-Description [Code] expected Result :
-	{ "description" : Description, "code" : Code, "expected" : Result }
+'description' ['code'] expected 'result' :
+	{ "description" : 'description', "code" : 'code', "expected" : 'result' }
 
 =-
-Create a test of "Code" with expected "Result".
+Create a test of 'code' with expected 'result'.
 =-
-[Code] expected Result :
-	EMPTY Code expected Result
+['code'] expected 'result' :
+	EMPTY 'code' expected 'result'
 
 =-
-Make a group of tests out of "List-of-Tests" and run all tests.
+Make a group of tests out of 'list of tests' and run all tests.
 =-
-test List-of-Tests :
-	Test-Object : create
-		Tests : List-of-Tests
-		Passing : 0
-		Failing : 0
+test 'list of tests' :
+	'test object' : create
+		'tests' : 'list of tests'
+		'passing' : 0
+		'failing' : 0
 
-		assert test Number Description [Code] produces Expected :
-			if (Description ≠ EMPTY)
-				"\"", Description, "\"" ↲
+		assert test 'number' 'description' ['code'] produces 'expected' :
+			if ('description' ≠ EMPTY)
+				"\"", 'description', "\"" ↲
 			… otherwise
-				"Test #", Number ↲
+				"test #", 'number' ↲
 
-			Result : do Code
+			'result' : do 'code'
 
-			if (Result = Expected)
-				inc Passing
+			if ('result' = 'expected')
+				increment 'passing'
 				"  Passed" ↲
 			… otherwise
-				inc Failing
-				"  Failed: produces ", Result, ", should be ", Expected ↲
+				increment 'failing'
+				"  Failed: produces ", 'result', ", should be ", 'expected' ↲
 
 		execute MY tests :
 			"Starting tests: " ↲
-			for each Test in Tests keeping Test-Number do
-				assert test Test-Number (Test {"description"})
-				… (Test {"code"}) produces (Test {"expected"})
+			for each 'test' in 'tests' keeping 'test number' do
+				assert test 'test number' ('test'{"description"})
+				… ('test'{"code"}) produces ('test'{"expected"})
 			↲
-			Test-String : Tests length ⊕ SPACE ⊕ (pluralize "Test" for (Tests length))
-			Test-String ↲
-			"=" (Test-String length) times ↲
-			"Expected : ", Passing ↲
-			"Failing : ", Failing ↲
+			'test string' : 'tests' length ⊕ SPACE ⊕ (pluralize "test" for ('tests' length))
+			'test string' ↲
+			"=" ('test string' length) times ↲
+			"expected : ", 'passing' ↲
+			"failing : ", 'failing' ↲
 
-	execute Test-Object tests
+	execute 'test object' tests
 
 ==============================
  Common library functions
@@ -737,9 +745,9 @@ turtle lib :
 	include "remixLibraries/turtle.rem"
 
 - Can be used instead of "using graphics lib, turtle lib"
-with turtle graphics [Block] :
+with turtle graphics ['block'] :
 	using graphics lib, turtle lib
-		do Block in lib context
+		do 'block' in lib context
 
 files lib :
 	include "remixLibraries/files.rem"

@@ -1,4 +1,4 @@
-Family : {
+'family' : {
 	{
 		"name" : "Robert"
 		"age" : 65
@@ -25,16 +25,16 @@ Family : {
 	}
 }
 
-Names : apply
-	Person {"name"}
-… to each Person from Family
+'names' : apply
+	'person'{"name"}
+… to each 'person' from 'family'
 
-"The people in the family are ", join Names with separator ", ", "." ↲
+"The people in the family are ", join 'names' with separator ", ", "." ↲
 
-"The average age of the family is ", average "age" of Family, "." ↲
+"The average age of the family is ", average "age" of 'family', "." ↲
 
-Ages : apply
-	Person {"age"}
-… to each Person from Family
+'ages' : apply
+	'person'{"age"}
+… to each 'person' from 'family'
 
-Ages, " has average ", average of Ages ↲
+'ages', " has average ", average of 'ages' ↲

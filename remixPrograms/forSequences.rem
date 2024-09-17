@@ -1,90 +1,90 @@
 - For loops and sequences -
 
-List : {1, 2, 4, 8}
-Range : 5 to 10
-String : "abcdefg"
-Map : {"x" : 2, "y" : 6, "z": 10, "a" : 15}
-Sequence : make 4 star sequence
+'list'     : { 1, 2, 4, 8 }
+'range'    : 5 to 10
+'string'   : "abcdefg"
+'map'      : { "x" : 2, "y" : 6, "z": 10, "a" : 15 }
+'sequence' : make 4 star sequence
 
-make N star sequence :
+make 'N' star sequence :
 	- the sequence object
 	- must include "start ME" and "MY length" methods
 	create
-		Count : N
+		'count' : 'N'
 
 		start ME :
-			Count star iterator
+			'count' star iterator
 
 		MY length :
-			Count
+			'count'
 
 		- this is optional for specific item access
-		Position in ME :
-			Iterator : Count star iterator
-			repeat Position times
-				next Iterator
+		'position' in ME :
+			'iterator' : 'count' star iterator
+			repeat 'position' times
+				next 'iterator'
 
-Count star iterator :
+'count' star iterator :
 	- the iterator object
 	- must include an "end ME" and a "next ME" method
-	- can refer to sequence instance variables e.g. "Count"
+	- can refer to sequence instance variables e.g. "'count'"
 	- but only in the instance variable assignment section
 	create
-		MAX : Count
-		Index : 0
-		Stars : ""
+		'MAX'   : 'count'
+		'index' : 0
+		'stars' : ""
 
 		end ME :
-			Index = MAX
+			'index' = 'MAX'
 
 		next ME :
-			increment Index
-			Stars : Stars ⊕ "*"
+			increment 'index'
+			'stars' : 'stars' ⊕ "*"
 
-List ↲
-Range ↲
-String ↲
-Map ↲
-Sequence ↲
+'list' ↲
+'range' ↲
+'string' ↲
+'map' ↲
+'sequence' ↲
 
-for each Item in List do
-	Item _
+for each 'item' in 'list' do
+	'item' _
 ↲
-for each Item in Range do
-	Item _
+for each 'item' in 'range' do
+	'item' _
 ↲
-for each Item in String do
-	Item _
+for each 'item' in 'string' do
+	'item' _
 ↲
-for each Item in Map do
-	Item, ":", Map {Item}, " " ~
+for each 'item' in 'map' do
+	'item', ":", 'map' {'item'}, " " ~
 ↲
-for each Item in Sequence do
-	Item _
+for each 'item' in 'sequence' do
+	'item' _
 ↲
-for each Item in List from position 4 to 2 do
-	Item _
+for each 'item' in 'list' from position 4 to 2 do
+	'item' _
 ↲
-for each Item in Range from position 4 to 2 do
-	Item _
+for each 'item' in 'range' from position 4 to 2 do
+	'item' _
 ↲
-for each Item in String from position 4 to 2 do
-	Item _
+for each 'item' in 'string' from position 4 to 2 do
+	'item' _
 ↲
-for each Item in Sequence from position 4 to 2 do
-	Item _
+for each 'item' in 'sequence' from position 4 to 2 do
+	'item' _
 ↲
-for each Item in List keeping Count do
-	Count, ":", Item, " " ~
+for each 'item' in 'list' keeping 'count' do
+	'count', ":", 'item', " " ~
 ↲
-for each Item in Range keeping Count do
-	Count, ":", Item, " " ~
+for each 'item' in 'range' keeping 'count' do
+	'count', ":", 'item', " " ~
 ↲
-for each Item in String keeping Count do
-	Count, ":", Item, " " ~
+for each 'item' in 'string' keeping 'count' do
+	'count', ":", 'item', " " ~
 ↲
-for each Item in Map keeping Count do
-	Count, ":", Item, ":", Map {Item}, " " ~
+for each 'item' in 'map' keeping 'count' do
+	'count', ":", 'item', ":", 'map'{'item'}, " " ~
 ↲
-for each Item in Sequence keeping Count do
-	Count, ":", Item, " " ~
+for each 'item' in 'sequence' keeping 'count' do
+	'count', ":", 'item', " " ~

@@ -3,6 +3,8 @@
 extra function :
 	"This is the included function output."
 
-included-Var : "Robert"
-included-Var ↲
+'included var' : "Robert"
+'included var' ↲
+
+CONSTANT : "The constant is available in the including file."
 

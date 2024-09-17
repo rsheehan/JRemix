@@ -140,6 +140,10 @@ public class RemixEdLexer {
                 mode = LexMode.insideLine;
                 return dealWithString(pos);
             }
+            case '\'' -> {
+                mode = LexMode.insideLine;
+                return dealWithVariable(pos);
+            }
             case '-', ';' -> {
                 return dealWithSingleLineComment(pos);
             }
@@ -173,6 +177,9 @@ public class RemixEdLexer {
             case '\n' -> mode = LexMode.startOfLine;
             case '\"' -> {
                 return dealWithString(pos);
+            }
+            case '\'' -> {
+                return dealWithVariable(pos);
             }
             case ';' -> {
                 return dealWithSingleLineComment(pos);
@@ -313,6 +320,17 @@ public class RemixEdLexer {
         return pos + 1;
     }
 
+    private static int dealWithVariable(int pos) throws BadLocationException {
+        int varPos;
+        for (varPos = pos + 1; varPos < document.getLength(); varPos++) {
+            char ch = getChar(varPos);
+            if (ch == '\'')
+                break;
+        }
+        document.setCharacterAttributes(pos, varPos - pos + 1, variable, true);
+        return varPos + 1;
+    }
+
     private static int dealWithWord(int pos) throws BadLocationException {
         // gobble word chars until space, separator, operator, newline
         int wordPos;
@@ -329,7 +347,7 @@ public class RemixEdLexer {
             wordStyle = keyword;
         else if (isLiteralWord(word))
             wordStyle = literal;
-        else if (isVariable(pos, wordPos - 1))
+        else if (isRefVariable(pos, wordPos - 1))
             wordStyle = variable;
         else
             wordStyle = document.getStyle("default");
@@ -366,15 +384,13 @@ public class RemixEdLexer {
         return literalWords.contains(word);
     }
 
-    private static boolean isVariable(int startWord, int endWord) throws BadLocationException {
-        boolean capital = false;
-        if (document.getText(startWord,1).equals("#")) // a reference variable
-            capital = true;
-        for (int i = startWord; i <= endWord; i++) {
-            if (identifierChar(document.getText(i, 1)))
-                capital = true;
-        }
-        return capital; //identifierChar(document.getText(startWord, 1));
+    private static boolean isRefVariable(int startWord, int endWord) throws BadLocationException {
+        //        // a reference variable
+//        for (int i = startWord; i <= endWord; i++) {
+//            if (identifierChar(document.getText(i, 1)))
+//                identifier = true;
+//        }
+        return document.getText(startWord, 1).equals("#"); //identifierChar(document.getText(startWord, 1));
     }
 
     private static boolean follows(String wordBefore, int pos) throws BadLocationException {
