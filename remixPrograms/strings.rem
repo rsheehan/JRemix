@@ -1,33 +1,33 @@
 - Some string manipulation -
 
-Sentence : "the quick brown fox jumps over the lazy dog"
+'sentence' : "the quick brown fox jumps over the lazy dog"
 
-Sentence ↲
+'sentence' ↲
 
-for each Char in Sentence do
-	Char _
+for each 'char' in 'sentence' do
+	'char' _
 ↲
 
-for each Char in Sentence do
-	if (Char = "z")
+for each 'char' in 'sentence' do
+	if ('char' = "z")
 		return
-	Char _
+	'char' _
 ↲
 
-String backwards :
-	Result : ""
-	for each Char in String from position (String length) to 1 do
-		Result : Result ⊕ Char
-	Result
+'string' backwards :
+	'result' : ""
+	for each 'char' in 'string' from position ('string' length) to 1 do
+		'result' : 'result' ⊕ 'char'
+	'result'
 
-reverse #String :
-	#String : #String backwards
+reverse #string :
+	#string : #string backwards
 
-reverse Sentence
-Sentence ↲
+reverse 'sentence'
+'sentence' ↲
 
-Sentence backwards ↲
+'sentence' backwards ↲
 
-Sentence ↲
+'sentence' ↲
 
-(Sentence) from (Sentence length) to 1 ↲
+'sentence' from ('sentence' length) to 1 ↲

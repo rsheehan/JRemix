@@ -12,7 +12,7 @@ animate 'window' :
 		'polygon' : an 'n' sided polygon
 		'polygon's 'colour' : random colour
 		'polygon's 'size' : 40
-		'polygon's 'position' : {'x', 'y'}
+		'polygon's 'position' : { 'x', 'y' }
 		place 'polygon' in 'window'
 		'n', " sided polygon" ↲
 		add 100 to 'x'

@@ -1,37 +1,39 @@
-Graphics : graphics lib
+'graphics' : graphics lib
 
-using Graphics
-	the-Window : the graphics panel
+using 'graphics'
+	'the window' : the graphics panel
 
-	Square-Pts : {
+	'square pts' : {
 		{-1, -1}
 		{ 1, -1}
 		{ 1,  1}
 		{-1,  1}
 	}
 
-	Square : a (random colour) shape from Square-Pts scaled by 200 at THE-CENTRE-POINT
+	'square' : a (random colour) shape from 'square pts' scaled by 200 at THE-CENTRE-POINT
 
-	for each Angle from 0 to 80 in steps of 10 do
-		S : copy Square
-		S's Heading : Angle degrees as radians
-		S's Colour : random colour
-		place S in the-Window
+	for each 'angle' from 0 to 80 in steps of 10 do
+		'S' : copy 'square'
+		'S's 'heading' : 'angle' degrees as radians
+		'S's 'colour' : random colour
+		place 'S' in 'the window'
 
-	Arrow-Pts : {
+	'arrow pts' : {
 		{ 0,  1}
 		{-2,  2}
 		{ 0, -2}
 		{ 2,  2}
 	}
 
-	Arrow : a RED shape from Arrow-Pts scaled by 10 at {
+	'arrow' : a RED shape from 'arrow pts' scaled by 10 at {
 		"x" : 800
 		"y" : STD-HEIGHT ÷ 2
 	}
-	Arrow's Heading : 1.5π
+	'arrow's 'heading' : 1.5π
+	'arrow's 'outline colour' : RED
+	'arrow's 'colour' : null
 
-	place Arrow in the-Window
-	update the-Window
+	place 'arrow' in 'the window'
+	update 'the window'
 
 "Finished" ↲

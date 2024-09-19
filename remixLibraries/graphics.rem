@@ -114,10 +114,10 @@ Graphics Operations and Objects
 				'colour', 'outline colour',
 				'position', 'size', 'heading'
 
-			MY x-pos :
+			MY 'x-pos' : ; a fake getter
 				'position'{1}
 
-			MY y-pos :
+			MY 'y-pos' : ; a fake getter
 				'position'{2}
 
 			change MY x-pos by 'δx' :
@@ -201,7 +201,7 @@ Graphics Operations and Objects
 
 	===========================================================
 	The Remix 'panel' for drawing in.
-	It has a base layer which is an image for permanent shapes,
+	It has a base-layer which is an image for permanent shapes,
 	and multiple layers for animation on top of that.
 
 	It can be the built-in panel from the Remix IDE or a panel
@@ -213,29 +213,29 @@ Graphics Operations and Objects
 	a/an 'JGraphics panel' with layers :
 		'panel' : create
 			'JGraphics' : 'JGraphics panel'
-			'layers' : { a base layer for 'JGraphics panel' }
-			'background colour' : DARK-BLUE ; set by "MY 'background colour'
+			'layers' : { a base-layer for 'JGraphics panel' }
+			'colour' : DARK-BLUE ; set by "MY 'colour' 'the colour'"
 
 			getters
 				'layers', 'background colour'
 
-			MY 'background colour' 'colour' : ; this is a setter
+			MY 'colour' 'the colour' : ; this is a setter
+				'colour' : 'the colour'
 				make the 'JGraphics' background 'colour' ; Java
-				'background colour' : 'colour'
 
 			MY next layer :
 				'new layer' : a shape layer
 				append 'new layer' to 'layers'
 				'new layer'
 
-			MY base layer :
-				'layers'{1}
+			MY 'base-layer' :
+				'layers' {1}
 
 			==========================================
-			Useful to place a shape in the base layer.
+			Useful to place a shape in the base-layer.
 			==========================================
 			place 'shape' in ME :
-				place 'shape' in ('layers'{1})
+				place 'shape' in ('layers' {1})
 
 			update ME :
 				clear transient 'JGraphics' layers ; Java
@@ -248,11 +248,11 @@ Graphics Operations and Objects
 			==================
 			clear ME :
 				clear 'JGraphics' base-layer
-				clear ME leaving base-layer
+				clear ME leaving the base-layer
 
-			clear ME leaving base-layer :
-				make the 'JGraphics' background 'background colour'
-				'layers' : { 'layers'{1} }
+			clear ME leaving the base-layer :
+				make the 'JGraphics' background 'colour'
+				'layers' : { 'layers' {1} }
 				update ME
 
 		clear 'panel'
@@ -299,14 +299,14 @@ Graphics Operations and Objects
 					add the 'shape' to the 'JGraphics' ; Java
 
 	=-
-	Create a base layer for the 'JGraphics panel'.
-	'shapes' which get added to a base layer are "permanent"
+	Create a base-layer for the 'JGraphics panel'.
+	'shapes' which get added to a base-layer are "permanent"
 	until the layer gets cleared.
-	Animations should not be placed in the base layer.
+	Animations should not be placed in the base-layer.
 	=-
-	a base layer for 'JGraphics panel' :
+	a base-layer for 'JGraphics panel' :
 		create
-			'JGraphics panel' : 'JGraphics panel'
+			'JGraphics panel' : 'JGraphics panel' ; base layer can change so need this
 
 			MY 'shapes' : ; a getter for shapes which are not stored
 				{ }
@@ -314,15 +314,15 @@ Graphics Operations and Objects
 			place 'shape' in ME :
 				if ('shape' is a "list")
 					for each 'part' in 'shape' do
-						add the 'part' to the ('JGraphics panel' base-layer) base-layer; Java
+						add the 'part' to the ('JGraphics panel' base-layer) image ; Java
 				… otherwise
-					add the 'shape' to the ('JGraphics panel' base-layer) base-layer; Java
+					add the 'shape' to the ('JGraphics panel' base-layer) image ; Java
 
 			clear MY shapes :
-				"Clearing shapes from the base layer - does nothing."
+				"Clearing shapes from the base-layer - does nothing."
 
 			prepare MY shapes for drawing on 'JGraphics' :
-				"Preparing shapes in the base layer - does nothing."
+				"Preparing shapes in the base-layer - does nothing."
 
 -==================================================================================================-
 
@@ -351,10 +351,10 @@ Graphics Operations and Objects
 	=======================================================================
 
 	=-
-	Animate 'block' in 'the window' at 'N' ticks per second.
+	Animate 'block' in 'the window' at 'n' ticks per second.
 	=-
-	animate 'the window' 'number' times at 'N' ticks per second ['block'] :
-		animate at 'N' ticks per second
+	animate 'the window' 'number' times at 'n' ticks per second ['block'] :
+		animate at 'n' ticks per second
 			do 'block'
 			update 'the window'
 			decrement 'number'

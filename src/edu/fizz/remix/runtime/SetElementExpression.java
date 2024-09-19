@@ -60,8 +60,11 @@ public class SetElementExpression implements Expression {
             } else {
                 if (listMap instanceof ArrayList nextList)
                     setListComponentValue(context, nextList, ((Number) id).intValue(), indexes, value);
-                else
-                    setMapComponentValue(context, (HashMap) listMap, (String) id, indexes, value);
+                else if (listMap instanceof HashMap nextMap)
+                    setMapComponentValue(context, nextMap, (String) id, indexes, value);
+                else {
+                    System.err.printf("Variable \"%s\" is neither a list or a map in assignment.%n", listName);
+                }
             }
         } catch (ReturnException e) {
             System.err.println("ReturnException caught in makeList/makeMap of set element statement.");

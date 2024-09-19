@@ -1,10 +1,10 @@
 using graphics lib
 
-	the-Window : the graphics panel
+	'the window' : the graphics panel
 
-	Current : random point
+	'current' : random point
 	repeat
-		New : random point
-		place (a (random colour) line from Current to New) in the-Window
-		Current : New
+		'new' : random point
+		place (a (random colour) line from 'current' to 'new') in 'the window'
+		'current' : 'new'
 	… 100 times

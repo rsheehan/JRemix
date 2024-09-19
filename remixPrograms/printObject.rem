@@ -1,11 +1,11 @@
 - Print objects -
 
-shape Points :
+shape 'points' :
 	create
-		Points : Points
+		'points' : 'points'
 
 		ME to string :
-			Points as string
+			'points' as string
 
 no string :
 	create
@@ -15,9 +15,9 @@ no string :
 		ME to string :
 			"no String"
 
-Box : shape { { 0, 0 }, { 3, 0 }, { 0, 4 } }
-Box ↲
+'box' : shape { { 0, 0 }, { 3, 0 }, { 0, 4 } }
+'box' ↲
 
-No : no string
-No ↲
-No as string ↲
+'no' : no string
+'no' ↲
+'no' as string ↲

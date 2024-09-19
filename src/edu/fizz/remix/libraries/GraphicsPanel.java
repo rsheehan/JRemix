@@ -45,7 +45,6 @@ public class GraphicsPanel extends JPanel {
     protected void paintComponent(java.awt.Graphics g) {
         super.paintComponent(g); // does the background
         // this is where we insert the baseLayer image
-//        g.drawImage(baseLayer, 0, 0, null);
         int width = graphicsDimension.width;
         int height = graphicsDimension.height;
         g.drawImage(baseLayer, 0, 0, width, height, 0, 0, width * IMAGE_SCALE, height * IMAGE_SCALE, null);

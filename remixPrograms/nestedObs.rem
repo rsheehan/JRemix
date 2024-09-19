@@ -1,35 +1,35 @@
-add three to Value :
-	Caller : create
-		Value : Value
+add three to 'value' :
+	'caller' : create
+		'value' : 'value'
 
-		add one to Value:
-			inc Value
+		add one to 'value':
+			inc 'value'
 
 		exec ME :
-			"Value in first exec: ", Value ↲
-			Caller : create
-				Value : Value
+			"'value' in first exec: ", 'value' ↲
+			'caller' : create
+				'value' : 'value'
 
-				add two to Value:
-					Value + 2
+				add two to 'value':
+					'value' + 2
 
 				exec ME :
-					Value : add two to Value
-					"Value from 2: ", Value ↲
+					'value' : add two to 'value'
+					"'value' from 2: ", 'value' ↲
 
-			exec Caller
-			add one to Value
-			"Value from exec: ", Value ↲
+			exec 'caller'
+			add one to 'value'
+			"'value' from exec: ", 'value' ↲
 
-	exec Caller
+	exec 'caller'
 
-Value : 4
-add three to Value
-"Value: ", Value ↲
+'value' : 4
+add three to 'value'
+"'value': ", 'value' ↲
 
 = Output
-Value in first exec: 4
-Value from 2: 6
-Value from exec: 5
-Value: 4
+'value' in first exec: 4
+'value' from 2: 6
+'value' from exec: 5
+'value': 4
 =

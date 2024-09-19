@@ -2,27 +2,27 @@
 Test rainfall problem.
 ======================
 
-average Rain-Fall :
-	Valid-Data : keep X from Rain-Fall where [ X ≥ 0 ] until [ X = 999 ]
-	if (no Valid-Data)
+average 'rain fall' :
+	'valid data' : keep 'x' from 'rain fall' where [ 'x' ≥ 0 ] until [ 'x' = 999 ]
+	if (no 'valid data')
 		return "No valid data"
-	average of Valid-Data
+	average of 'valid data'
 
 ---- testing ----
 
 test {
 	"All negatives"
-		Rain-Fall : { -1, -2, -3 }
-		average Rain-Fall
+		'rain fall' : { -1, -2, -3 }
+		average 'rain fall'
 	… expected "No valid data"
 
 	"General sample with some negative values before the terminal value"
-		Rain-Fall : { -1, -3, 0, 5, -2, 1.0, 0, -1, 6, 9, 0, 999, -2, 0, 10, -1 }
-		average Rain-Fall
+		'rain fall' : { -1, -3, 0, 5, -2, 1.0, 0, -1, 6, 9, 0, 999, -2, 0, 10, -1 }
+		average 'rain fall'
 	… expected 3
 
 	[
-		Rain-Fall : {1, 3}
-		average Rain-Fall
+		'rain fall' : {1, 3}
+		average 'rain fall'
 	] expected 2
 }

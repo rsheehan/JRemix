@@ -35,22 +35,25 @@ public class GetElementExpression implements Expression {
         Object id;
         Object listOrMapPart = context.retrieve(listName);
         if (listOrMapPart instanceof ArrayList<?> ||
-                listOrMapPart instanceof HashMap<?,?> ||
-                listOrMapPart instanceof RangeExpression)
+                listOrMapPart instanceof HashMap<?, ?> ||
+                listOrMapPart instanceof RangeExpression) {
             for (Object elementId : listElementIds) {
                 // TODO: could be errors at any position
-                id = ((Expression)elementId).evaluate(context);
+                id = ((Expression) elementId).evaluate(context);
 
-                    if (id instanceof Number numId) {
-                        int i = numId.intValue();
-                        try {
-                            listOrMapPart = ((List<?>) listOrMapPart).get(i - 1); // java zero based, Remix one based
-                        } catch (IndexOutOfBoundsException ex) {
-                            listOrMapPart = new RemixNull();
-                        }
-                    } else if (id instanceof String stringId)
-                        listOrMapPart = ((Map<?, ?>) listOrMapPart).get(stringId);
+                if (id instanceof Number numId) {
+                    int i = numId.intValue();
+                    try {
+                        listOrMapPart = ((List<?>) listOrMapPart).get(i - 1); // java zero based, Remix one based
+                    } catch (IndexOutOfBoundsException ex) {
+                        listOrMapPart = new RemixNull();
+                    }
+                } else if (id instanceof String stringId)
+                    listOrMapPart = ((Map<?, ?>) listOrMapPart).get(stringId);
             }
+        } else {
+                System.err.printf("Variable \"%s\" is neither a list or a map.%n", listName);
+        }
         if (listOrMapPart == null)
             listOrMapPart = new RemixNull();
         return listOrMapPart;

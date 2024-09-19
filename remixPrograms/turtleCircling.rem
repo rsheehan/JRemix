@@ -4,30 +4,30 @@ with turtle graphics
 	Rotating Arrows
 	===============
 
-	TSpace : turtle space in (the graphics panel)
+	'turtle space' : turtle space in (the graphics panel)
 
-	the-Arrows : a group of 36 turtles
-	prepare the-Arrows
-	place the-Arrows group in TSpace
+	'arrows' : a group of 36 turtles
+	prepare 'arrows'
+	place 'arrows' group in 'turtle space'
 	RADIUS : 200
-	move the-Arrows to start positions
+	move 'arrows' to start positions
 
 	repeat 180 times
-		animate the-Arrows
+		animate 'arrows'
 
-prepare the-Arrows :
-	Angle : 0
-	for each Arrow in the-Arrows
-		Arrow pen up
-		Arrow's Colour  : a random colour
-		Arrow's Heading : Angle increment by 10
+prepare 'arrows' :
+	'angle' : 0
+	for each 'arrow' in 'arrows'
+		'arrow' pen up
+		'arrow's 'colour'  : a random colour
+		'arrow's 'heading' : 'angle' increment by 10
 
-move the-Arrows to start positions :
-	the-Arrows's Speed : 200
-	move the-Arrows RADIUS steps
-	turn the-Arrows -90 degrees
+move 'arrows' to start positions :
+	'arrows's 'speed' : 200
+	move 'arrows' RADIUS steps
+	turn 'arrows' -90 degrees
 
-animate the-Arrows :
-	the-Arrows' Speed : 5
-	move the-Arrows (2 × RADIUS × π ÷ 180) steps
-	turn the-Arrows -2 degrees
+animate 'arrows' :
+	'arrows's 'speed' : 5
+	move 'arrows' (2 × RADIUS × π ÷ 180) steps
+	turn 'arrows' -2 degrees

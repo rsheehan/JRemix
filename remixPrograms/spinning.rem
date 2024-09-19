@@ -1,23 +1,23 @@
 using graphics lib
-	the-Window : the graphics panel
-	Animation-Layer : the-Window next layer
+	'the window' : the graphics panel
+	'animation layer' : 'the window' next layer
 
-	Triangle : a triangle
-	Triangle's Size : 100
-	Triangle's Position : { 0, STD-HEIGHT ÷ 2}
-	place Triangle in Animation-Layer
+	'triangle' : a triangle
+	'triangle's 'size' : 100
+	'triangle's 'position' : { 0, STD-HEIGHT ÷ 2 }
+	place 'triangle' in 'animation layer'
 
-	Rotation : every 2 ticks do
-		change Triangle heading by 2 degrees
+	'rotation' : every 2 ticks do
+		change 'triangle' heading by 2 degrees
 
-	Movement : every 1 tick do
-		change Triangle x-pos by 4
+	'movement' : every 1 tick do
+		change 'triangle' x-pos by 4
 
 	animate at 60 ticks per second
-		animate Movement
-		animate Rotation
-		update the-Window
+		animate 'movement'
+		animate 'rotation'
+		update 'the window'
 	… until
-		(Triangle's x-Pos) ≥ STD-WIDTH
+		('triangle's 'x-pos') ≥ STD-WIDTH
 
 "Finished" ↲

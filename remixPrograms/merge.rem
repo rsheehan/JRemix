@@ -1,42 +1,42 @@
-my-List : apply [random 100] 80 times
-my-List ↲
+'my list' : apply [random 1000] 1000 times
+'my list' ↲
 
-merge-sort my-List
-my-List ↲
+merge-sort 'my list'
+'my list' ↲
 
 ============
  Merge sort
 ============
 
-merge-sort List :
-	sort List from 1 to (length of List)
+merge-sort 'list' :
+	sort 'list' from 1 to ('list' length)
 
-sort List from Start to Finish :
-	if (Start ≥ Finish)
+sort 'list' from 'start' to 'finish' :
+	if ('start' ≥ 'finish')
 		return
-	Middle : Start + (Finish - Start) ÷ 2
-	sort List from Start to Middle
-	sort List from (Middle + 1) to Finish
-	merge List from Start to Middle to Finish
+	'middle' : 'start' + ('finish' - 'start') ÷ 2
+	sort 'list' from 'start' to 'middle'
+	sort 'list' from ('middle' + 1) to 'finish'
+	merge 'list' from 'start' to 'middle' to 'finish'
 
-merge List from Start to Middle to Finish :
-	Left : Start
-	Right : Middle + 1
-	working-List : {}
+merge 'list' from 'start' to 'middle' to 'finish' :
+	'left' : 'start'
+	'right' : 'middle' + 1
+	'working list' : { }
 	- while values on both sides
-	while [(Left ≤ Middle) and (Right ≤ Finish)] do
-		if (List {Left} ≤ List {Right})
-			append (List {Left inc}) to working-List
+	while [('left' ≤ 'middle') and ('right' ≤ 'finish')] do
+		if ('list' {'left'} ≤ 'list' {'right'})
+			append ('list' {'left' inc}) to 'working list'
 		… otherwise
-			append (List {Right inc}) to working-List
-	- remaining values on the Left
-	if (Left ≤ Middle)
-		for each Item in List from position Left to Middle do
-			append Item to working-List
-	- remaining values on the Right
-	if (Right ≤ Finish)
-		for each Item in List from position Right to Finish do
-			append Item to working-List
-	- put back in original List
-	for each Item from Start to Finish do
-		List {Item} : working-List {Item - Start + 1}
+			append ('list' {'right' inc}) to 'working list'
+	- remaining values on the 'left'
+	if ('left' ≤ 'middle')
+		for each 'item' in 'list' from position 'left' to 'middle' do
+			append 'item' to 'working list'
+	- remaining values on the 'right'
+	if ('right' ≤ 'finish')
+		for each 'item' in 'list' from position 'right' to 'finish' do
+			append 'item' to 'working list'
+	- put back in original 'list'
+	for each 'item' from 'start' to 'finish' do
+		'list' {'item'} : 'working list' {'item' - 'start' + 1}

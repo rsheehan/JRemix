@@ -1,11 +1,11 @@
 using graphics lib
-	the-Window : the graphics panel
+	'the window' : the graphics panel
 
-	Square : a square
-	Square's Size : 200
-	Square's Heading : π ÷ 4
-	Square's Colour : GREEN
-	place Square in the-Window
+	'square' : a square
+	'square's 'size' : 200
+	'square's 'heading' : π ÷ 4
+	'square's 'colour' : GREEN
+	place 'square' in 'the window'
 
-	Rectangle : a BLUE box of 200 x 200 at THE-CENTRE-POINT
-	place Rectangle in the-Window
+	'rectangle' : a BLUE box of 200 x 200 at THE-CENTRE-POINT
+	place 'rectangle' in 'the window'

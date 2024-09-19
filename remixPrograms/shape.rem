@@ -1,24 +1,24 @@
 using graphics lib
-	the-Window : the graphics panel
+	'the window' : the graphics panel
 
-	Layer : the-Window base layer
+	'layer' : 'the window's 'base-layer'
 
-	Triangle : a triangle
-	RED Triangle at { 500, 400 } facing 0 scaled by 100
-	place Triangle in Layer
+	'triangle' : a triangle
+	RED 'triangle' at { 500, 400 } facing 0 scaled by 100
+	place 'triangle' in 'layer'
 
-	Triangle : copy Triangle
-	BLUE Triangle at { 500, 400 } facing (π ÷ 3) scaled by 100
-	place Triangle in Layer
+	'triangle' : copy 'triangle'
+	BLUE 'triangle' at { 500, 400 } facing (π ÷ 3) scaled by 100
+	place 'triangle' in 'layer'
 
-	Triangle : copy Triangle
-	GREEN Triangle at { 200, 100 } facing π scaled by 50
-	place Triangle in Layer
+	'triangle' : copy 'triangle'
+	GREEN 'triangle' at { 200, 100 } facing π scaled by 50
+	place 'triangle' in 'layer'
 
-update the-Window ; N.B. can be outside the using block because it is a method call
+update 'the window' ; N.B. can be outside the using block because it is a method call
 
-Colour Shape at Position facing Heading scaled by Scale :
-	Shape's Colour : Colour
-	Shape's Position : Position
-	Shape's Heading : Heading
-	Shape's Size : Scale
+'colour' 'shape' at 'position' facing 'heading' scaled by 'scale' :
+	'shape's 'colour' : 'colour'
+	'shape's 'position' : 'position'
+	'shape's 'heading' : 'heading'
+	'shape's 'size' : 'scale'

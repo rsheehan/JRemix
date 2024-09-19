@@ -88,7 +88,7 @@ public class RemixEditor extends JFrame {
 
         // set up the tabs
         StyleContext sc = StyleContext.getDefaultStyleContext();
-        float tabDiff = 40; // this matches 4 characters of new courier 16 font width
+        float tabDiff = 32; // 40 matches 4 characters of new courier 16 font width
         List<TabStop> tabList = new ArrayList<>();
         for (int i = 1; i <= 40; i++) {
             tabList.add(new TabStop(tabDiff * i));
@@ -96,6 +96,10 @@ public class RemixEditor extends JFrame {
         TabSet tabs = new TabSet(tabList.toArray(new TabStop[0]));
         AttributeSet paraSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.TabSet, tabs);
         editorTextPane.setParagraphAttributes(paraSet, false);
+
+        MutableAttributeSet lineSet = new SimpleAttributeSet();
+        StyleConstants.setLineSpacing(lineSet, 0.25f);
+        editorTextPane.setParagraphAttributes(lineSet, false);
 
         JScrollPane editorScrollPane = new JScrollPane(editorTextPane);
         editorScrollPane.setMinimumSize(new Dimension(711, 800));

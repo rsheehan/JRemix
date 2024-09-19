@@ -1,15 +1,15 @@
 - Multiple libraries at once. -
 
 LIB1 : library
-	A with B :
-		A ⊕ " from LIB1 " ⊕ B
+	'A' with 'B' :
+		'A' ⊕ " from LIB1 " ⊕ 'B'
 
-	A alone :
+	'A' alone :
 		"from LIB1"
 
 LIB2 : library
-	A with B :
-		A ⊕ " from LIB2 " ⊕ B
+	'A' with 'B' :
+		'A' ⊕ " from LIB2 " ⊕ 'B'
 
 test {
 	"single library"

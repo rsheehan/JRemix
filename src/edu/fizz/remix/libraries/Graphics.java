@@ -258,7 +258,7 @@ public class Graphics extends LibraryExpression {
                     List.of("graphics panel"),
                     List.of(false),
                     false,
-                    "Remove current shapes from the \"graphics panel\" leaving base-layer."
+                    "Remove current shapes from the \"graphics panel\" leaving the base-layer."
             );
         }
 
@@ -271,31 +271,31 @@ public class Graphics extends LibraryExpression {
     }
 
     private static void dealWithLine(Color fillColour, Context shapeContext, GraphicsLayerImage layerImage, GraphicsPanel panel) {
-        int[] start = integerPoint(pointsFromMapOrList(shapeContext.retrieve("start")));
-        int[] finish = integerPoint(pointsFromMapOrList(shapeContext.retrieve("finish")));
-        double width = ((Number) shapeContext.retrieve("width")).doubleValue();
-        if (layerImage != null)
+        int[] start = integerPoint(pointsFromMapOrList(shapeContext.retrieve("'start'")));
+        int[] finish = integerPoint(pointsFromMapOrList(shapeContext.retrieve("'finish'")));
+        double width = ((Number) shapeContext.retrieve("'width'")).doubleValue();
+        if (layerImage != null) {
             layerImage.drawLine(fillColour, start, finish, width);
-        else if (panel != null)
+        } else if (panel != null)
             panel.addLineForDrawing(fillColour, start, finish, width);
     }
 
     private static void dealWithShape(boolean filled, Color fillColour, Context shapeContext, GraphicsLayerImage layerImage, GraphicsPanel panel) {
         // get the polygon
-        Path2D.Double shapePath = polygonFromPoints((ArrayList<?>) shapeContext.retrieve("polygon"));
+        Path2D.Double shapePath = polygonFromPoints((ArrayList<?>) shapeContext.retrieve("'polygon'"));
         // get the position
-        int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("position")));
+        int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("'position'")));
         // get the scale
-        double scale = ((Number) shapeContext.retrieve("size")).doubleValue();
+        double scale = ((Number) shapeContext.retrieve("'size'")).doubleValue();
         AffineTransform scaledTransform = new AffineTransform();
         scaledTransform.scale(scale, scale);
         Path2D.Double scaledShapePath = new Path2D.Double(shapePath, scaledTransform);
         // get the heading
-        double heading = doubleFromObject(shapeContext.retrieve("heading"));
+        double heading = doubleFromObject(shapeContext.retrieve("'heading'"));
         // get the outline colour
         boolean outlined = true;
         Color outlineColour = null;
-        Object outline = shapeContext.retrieve("outline colour");
+        Object outline = shapeContext.retrieve("'outline colour'");
         if (outline instanceof RemixNull)
             outlined = false;
         else
@@ -309,12 +309,12 @@ public class Graphics extends LibraryExpression {
     }
 
     private static void dealWithCircle(boolean filled, Color fillColour, Context shapeContext, GraphicsLayerImage layerImage, GraphicsPanel panel) {
-        double radius = ((Number) shapeContext.retrieve("radius")).doubleValue();
-        int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("position")));
+        double radius = ((Number) shapeContext.retrieve("'radius'")).doubleValue();
+        int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("'position'")));
         // get the outline colour
         boolean outlined = true;
         Color outlineColour = null;
-        Object outline = shapeContext.retrieve("outline colour");
+        Object outline = shapeContext.retrieve("'outline colour'");
         if (outline instanceof RemixNull)
             outlined = false;
         else
@@ -331,7 +331,7 @@ public class Graphics extends LibraryExpression {
 
         public AddShapeToBaseLayerFunction() {
             super(
-                    List.of("add the | to the | base-layer"),
+                    List.of("add the | to the | image"),
                     List.of("shape", "base-layer"),
                     List.of(false, false),
                     false,
@@ -347,16 +347,17 @@ public class Graphics extends LibraryExpression {
             // get the fill colour
             boolean filled = true;
             Color fillColour = null;
-            Object fill = shapeContext.retrieve("colour");
+            Object fill = shapeContext.retrieve("'colour'");
             if (fill instanceof RemixNull)
                 filled = false;
             else
                 fillColour = colorFromRGBorString(fill);
-            if (shape.getContext().retrieve("type").equals("shape")) {
+            final Object retrieve = shapeContext.retrieve("'type'");
+            if (retrieve.equals("shape")) {
                 dealWithShape(filled, fillColour, shapeContext, layerImage, null);
-            } else if (shape.getContext().retrieve("type").equals("circle")) {
+            } else if (retrieve.equals("circle")) {
                 dealWithCircle(filled, fillColour, shapeContext, layerImage, null);
-            } else if (shape.getContext().retrieve("type").equals("line")) {
+            } else if (retrieve.equals("line")) {
                 dealWithLine(fillColour, shapeContext, layerImage, null);
             } else
                 System.err.println("Bad shape - not added to the base-layer.");
@@ -383,16 +384,17 @@ public class Graphics extends LibraryExpression {
             // get the fill colour
             boolean filled = true;
             Color fillColour = null;
-            Object fill = shapeContext.retrieve("colour");
+            Object fill = shapeContext.retrieve("'colour'");
             if (fill instanceof RemixNull)
                 filled = false;
             else
                 fillColour = colorFromRGBorString(fill);
-            if (shape.getContext().retrieve("type").equals("shape")) {
+            final Object type = shapeContext.retrieve("'type'");
+            if (type.equals("shape")) {
                 dealWithShape(filled, fillColour, shapeContext, null, panel);
-            } else if (shape.getContext().retrieve("type").equals("circle")) {
+            } else if (type.equals("circle")) {
                 dealWithCircle(filled, fillColour, shapeContext, null, panel);
-            } else if (shape.getContext().retrieve("type").equals("line")) {
+            } else if (type.equals("line")) {
                 dealWithLine(fillColour, shapeContext, null, panel);
             } else
                 System.err.println("Bad shape - not added to the graphics panel.");

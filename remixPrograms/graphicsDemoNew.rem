@@ -30,6 +30,6 @@ using graphics lib
 		animate 'squares rotation'
 		animate 'arrows movement'
 		update 'window'
-	… until [ 'arrow' x-pos ≥ STD-WIDTH ]
+	… until [ 'arrow's 'x-pos' ≥ STD-WIDTH ]
 
 "Finished" ↲

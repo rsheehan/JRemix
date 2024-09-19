@@ -1,35 +1,35 @@
 using graphics lib, turtle lib
 
-	the-Window : the graphics panel
-	Turtle-Space : turtle space in the-Window
+	'the window' : the graphics panel
+	'turtle space' : turtle space in 'the window'
 
-	Turtles : a group of 20 turtles
-	Turtles' Speed : 20
+	'turtles' : a group of 20 turtles
+	'turtles' 'speed' : 20
 
-	for each Turtle in Turtles
-		Turtle's Colour : random colour
-		Turtle's Position : random turtle point
-		Turtle's Heading : random angle
-	place Turtles group in Turtle-Space
+	for each 'turtle' in 'turtles'
+		'turtle's 'colour' : random colour
+		'turtle's 'position' : random turtle point
+		'turtle's 'heading' : random angle
+	place 'turtles' group in 'turtle space'
 
-	Turtles square 150
+	'turtles' square 150
 
-	for each Turtle in Turtles
-		Turtle's Position : random turtle point
-		Turtle's Heading : random angle
+	for each 'turtle' in 'turtles'
+		'turtle's 'position' : random turtle point
+		'turtle's 'heading' : random angle
 
-	Turtles triangle 150
-	hide Turtles
+	'turtles' triangle 150
+	hide 'turtles'
 
-Turtles square Size :
+'turtles' square 'size' :
 	repeat 4 times
-		move Turtles Size steps
-		turn Turtles 90 degrees
+		move 'turtles' 'size' steps
+		turn 'turtles' 90 degrees
 
-Turtles triangle Size :
+'turtles' triangle 'size' :
 	repeat 3 times
-		move Turtles Size steps
-		turn Turtles 120 degrees
+		move 'turtles' 'size' steps
+		turn 'turtles' 120 degrees
 
 random angle :
 	random from 0 to 359

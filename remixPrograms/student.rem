@@ -1,8 +1,8 @@
 =
-Student record
+'student' record
 =
 
-Students : {
+'students' : {
 	"Martin Developer" age 22 knows {
 		"Java" : "Expert"
 		"python" : "Advanced"
@@ -18,47 +18,47 @@ Students : {
 	}
 }
 
-"Student data" ↲
+"student data" ↲
 "============" ↲
-for each Student in Students do
-	Student's Name ↲
-	Student's Age ↲
-	Student's Languages ↲
+for each 'student' in 'students' do
+	'student's 'name' ↲
+	'student's 'age' ↲
+	'student's 'languages' ↲
 	↲
 
-merge {"BASIC" : "Expert"} into (Students {2}'s Languages)
+merge {"BASIC" : "Expert"} into ('students' {2}s 'languages')
 
 "Expertise" ↲
 "=========" ↲
-for each Student in Students do
-	Student ↲
+for each 'student' in 'students' do
+	'student' ↲
 
 ----------------
 
-Name age Age knows Languages :
+'name' age 'age' knows 'languages' :
 	create
-		Name : Name
-		Age : Age
-		Languages : Languages
+		'name' : 'name'
+		'age' : 'age'
+		'languages' : 'languages'
 
 		getter
-			Name, Age
-			Languages
+			'name', 'age'
+			'languages'
 
 		MY expert languages :
-			filter Languages by Language where
-				Languages {Language} = "Expert"
+			filter 'languages' by 'language' where
+				'languages' {'language'} = "Expert"
 
 		ME to string :
-			Result : Name ⊕ " age " ⊕ Age ⊕ ", expert in "
-			Expertise : MY expert languages
-			if (no Expertise)
-				Result ⊕ "nothing"
+			'result' : 'name' ⊕ " age " ⊕ 'age' ⊕ ", expert in "
+			'expertise' : MY expert languages
+			if (no 'expertise')
+				'result' ⊕ "nothing"
 			… otherwise
-				for each Language in Expertise keeping Count do
+				for each 'language' in 'expertise' keeping 'count' do
 					when
-						[Count = 1] do
-							Result : Result ⊕ Language
-						[Count < Expertise length] do
-							Result : Result ⊕ ", " ⊕ Language
-						Result ⊕ " and " ⊕ Language
+						['count' = 1] do
+							'result' : 'result' ⊕ 'language'
+						['count' < 'expertise' length] do
+							'result' : 'result' ⊕ ", " ⊕ 'language'
+						'result' ⊕ " and " ⊕ 'language'

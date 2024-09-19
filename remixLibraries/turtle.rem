@@ -1,61 +1,62 @@
 =============================
-Turtle Operations and Objects
+'turtle' Operations and Objects
 =============================
-Turtle-Lib : library
+'turtle library' : library
 
 	=-
-	Create a turtle space in "the-Window".
-	"the-Window" is a graphics panel.
+	Create a turtle space in 'the window'.
+	'the window' is a graphics panel.
 	A turtle space can have individual turtles or
 	groups of turtles added to it.
 	=-
-	turtle space in the-Window:
+	turtle space in 'the window':
 		create
-			the-Window : the-Window
-			Turtle-Rate : 30
-				- The Turtle-Rate was the number of frames per second.
+			'the window' : 'the window'
+			'turtle rate' : 30
+				- The 'turtle rate' was the number of frames per second.
 				- Now it sets the time between parts of an unfinished
-				- move command. See "move Turtle/Group N steps"
+				- move command. See "move 'turtle' 'n' steps"
 
 			getter
-				Turtle-Rate
+				'turtle rate'
 
-			MY Base-Layer :
-				the-Window base layer
+			MY 'base-layer' :
+				'the window's 'base-layer'
 
 			update ME :
-				update the-Window
+				update 'the window'
 
 			==========================
 			Place turtle in the space.
 			==========================
-			place Turtle in ME :
-				Turtle's Turtle-Space : ME
-				Turtle's Animation-Layer : the-Window next layer
-				update the-Window
+			place 'turtle' in ME :
+				'turtle's 'turtle space' : ME
+				'turtle's 'animation layer' : 'the window' next layer
+				update 'the window'
 
 			==================================
 			Place a turtle group in the space.
 			==================================
-			place Turtle-Group group in ME :
+			place 'turtle group' group in ME :
 				'turtle group's 'turtle space' : ME
 
 			=============================================
 			Clear the space.
-			This includes the base layer of the space.
+			This includes the base-layer of the space.
 			This holds any pen marks left by the turtles.
 			=============================================
 			clear ME :
-				clear the-Window
+				clear 'the window'
 
-			=============================================
+			==============================================
 			Resets all turtle layers.
-			But leaves the base layer of the space.
+			But leaves the base-layer of the space.
 			This holds any pen marks left by the turtles.
-			Usually a similar effect to "hide Turtles"
-			=============================================
+			Usually a similar effect to "hide turtles"
+			but that leaves the turtles' animation layers.
+			==============================================
 			clear MY turtles :
-				clear the-Window leaving base layer
+				clear 'the window' leaving the base-layer
 
 -==================================================================================================-
 
@@ -67,159 +68,159 @@ Turtle-Lib : library
 	Create a turtle.
 	=-
 	a turtle :
-		Turtle-Shape : a shape from {
+		'turtle shape' : a shape from {
 			{ 0, 1 }
 			{-2, 2 }
 			{ 0,-2 }
 			{ 2, 2 }
 		}
 
-		Turtle : extend Turtle-Shape
-			Turtle-Space : null
-			Animation-Layer : null ; its own animation layer
-			Pen-Down : true
-			Visible : true
-			Speed : 10
+		'turtle' : extend 'turtle shape'
+			'turtle space' : null
+			'animation layer' : null ; its own animation layer
+			'pen down' : true
+			'visible' : true
+			'speed' : 10
 
 			getters/setters
-				Animation-Layer
-				Speed
+				'speed'
 
 			getter
-				Pen-Down
+				'animation layer'
+				'pen down'
 
 			setter
-				Turtle-Space
+				'turtle space'
 
 			=======================================
 			Sets the animation layer for the turtle
 			and places the turtle in the layer.
 			=======================================
-			MY Animation-Layer Layer : ; a setter for the Animation-Layer
+			MY 'animation layer' 'layer' : ; a setter for the 'animation layer'
 				- this is called when a turtle is place in a turtle space.
-				Animation-Layer : Layer
-				place ME in (Animation-Layer)
+				'animation layer' : 'layer'
+				place ME in 'animation layer'
 
 			====================================================================
-			Turtle graphics have { 0, 0 } at the centre of the window
+			'turtle' graphics have { 0, 0 } at the centre of the window
 			and the heading is in degrees turning anticlockwise from the right.
 			====================================================================
 
-			MY Position :
-				panel coordinate Position to turtle coordinate
+			MY 'position' :
+				panel coordinate 'position' to turtle coordinate
 
-			MY Position Turtle-Coordinate :
-				Position : turtle coordinate Turtle-Coordinate to panel coordinate
+			MY 'position' 'turtle coordinate' :
+				'position' : turtle coordinate 'turtle coordinate' to panel coordinate
 
-			MY Heading :
-				(Heading radians as degrees) heading to direction
+			MY 'heading' :
+				('heading' radians as degrees) heading to direction
 
-			MY Heading Angle :
-				Heading : (Angle heading to direction) degrees as radians
+			MY 'heading' 'angle' :
+				'heading' : ('angle' heading to direction) degrees as radians
 
-			MY actual position : ; in panel coordinates not turtle coordinates
-				Position
+			MY 'window position' : ; in panel coordinates not turtle coordinates
+				'position'
 
-			set MY actual position actual-Position : ; in panel coordinates not turtle coordinates
-				Position : actual-Position
+			MY 'window position' 'the position' : ; in panel coordinates not turtle coordinates
+				'position' : 'the position'
 
 			ME is visible :
-				Visible
+				'visible'
 
 			hide ME :
-				Visible : false
-				if (Animation-Layer ≠ null)
-					clear Animation-Layer shapes
-				update Turtle-Space
+				'visible' : false
+				if ('animation layer' ≠ null)
+					clear 'animation layer' shapes
+				update 'turtle space'
 
 			show ME :
-				Visible : true
-				if (Animation-Layer ≠ null)
-					clear Animation-Layer shapes
-					place ME in Animation-Layer
-				update Turtle-Space
+				'visible' : true
+				if ('animation layer' ≠ null)
+					clear 'animation layer' shapes
+					place ME in 'animation layer'
+				update 'turtle space'
 
 			MY pen down :
-				Pen-Down : true
+				'pen down' : true
 
 			MY pen up :
-				Pen-Down : false
+				'pen down' : false
 
 			================
 			Turn the turtle.
 			================
-			turn ME Angle degrees/degree:
-				Radians : Angle degrees as radians
-				Heading : Heading + Radians
+			turn ME 'angle' degrees/degree:
+				'radians' : 'angle' degrees as radians
+				'heading' : 'heading' + 'radians'
 
 			=======================================
 			Move the turtle instantly.
 			Used as partial moves in animation.
-			Start and Finish are panel coordinates.
+			'start' and 'finish' are panel coordinates.
 			=======================================
-			instantly move ME from Start to Finish in Destination-Layer :
-				clear Animation-Layer shapes
-				if (Pen-Down)
-					Line : a Colour line from Start to Finish
-					place Line in Destination-Layer
-				Position : Finish
-				if (Visible)
-					place ME in Animation-Layer
-				update Turtle-Space
+			instantly move ME from 'start' to 'finish' in 'destination layer' :
+				clear 'animation layer' shapes
+				if ('pen down')
+					'line' : a 'colour' line from 'start' to 'finish'
+					place 'line' in 'destination layer'
+				'position' : 'finish'
+				if ('visible')
+					place ME in 'animation layer'
+				update 'turtle space'
 
 			================
 			Move the turtle.
 			================
-			move ME N steps/step :
-				Remaining : N
-				Distance : 0
-				Start : Position ; initial position
-				while [Remaining > Speed]
-					Distance : Distance + Speed
-					Finish : MY position after moving Distance from Start
-					instantly move ME from Start to Finish in Animation-Layer
-					Remaining : Remaining - Speed
-					pause (1.0 ÷ Turtle-Space's Turtle-Rate) seconds
+			move ME 'n' steps/step :
+				'remaining' : 'n'
+				'distance' : 0
+				'start' : 'position' ; initial position
+				while ['remaining' > 'speed']
+					'distance' : 'distance' + 'speed'
+					'finish' : MY position after moving 'distance' from 'start'
+					instantly move ME from 'start' to 'finish' in 'animation layer'
+					'remaining' : 'remaining' - 'speed'
+					pause (1.0 ÷ 'turtle space's 'turtle rate') seconds
 				- now add the "permanent" layer
-				Finish : MY position after moving N from Start
-				instantly move ME from Start to Finish in (Turtle-Space's Base-Layer)
+				'finish' : MY position after moving 'n' from 'start'
+				instantly move ME from 'start' to 'finish' in ('turtle space's 'base-layer')
 
-			====================================
-			Move the turtle to a Position.
-			Turtle-Coordinate is a turtle point.
-			====================================
-			move ME to Turtle-Coordinate :
-				turn ME to Turtle-Coordinate
-				new-Position : turtle coordinate Turtle-Coordinate to panel coordinate
-				move ME (distance from Position to new-Position) steps
+			================================
+			Move the turtle to a 'position'.
+			'coordinate' is a turtle point.
+			================================
+			move ME to 'coordinate' :
+				turn ME to 'coordinate'
+				'new position' : turtle coordinate 'coordinate' to panel coordinate
+				move ME (distance from 'position' to 'new position') steps
 
 			================
 			Turn the turtle.
 			================
-			turn ME Angle degrees/degree:
-				add (Angle degrees as radians) to Heading
-				update Turtle-Space
+			turn ME 'angle' degrees/degree:
+				add ('angle' degrees as radians) to 'heading'
+				update 'turtle space'
 
-			====================================
-			Turn a turtle to face a Position.
-			Turtle-Coordinate is a turtle point.
-			====================================
-			turn ME to Turtle-Coordinate :
-				Finish : turtle coordinate Turtle-Coordinate to panel coordinate
-				Δx : Finish {1} - Position {1}
-				Δy : Position {2} - Finish {2}
-				Heading : π ÷ 2 - arc tangent Δy over Δx
-				update Turtle-Space
+			===================================
+			Turn a turtle to face a 'position'.
+			'coordinate' is a turtle point.
+			===================================
+			turn ME to 'coordinate' :
+				'finish' : turtle coordinate 'coordinate' to panel coordinate
+				'δx' : 'finish' {1} - 'position' {1}
+				'δy' : 'position' {2} - 'finish' {2}
+				'heading' : π ÷ 2 - arc tangent 'δy' over 'δx'
+				update 'turtle space'
 
 			===============================================================
 			Where the turtle would be after moving with the current heading
 			from the starting position.
 			===============================================================
-			MY position after moving Distance from Start :
-				actual-Heading : π ÷ 2 - Heading
+			MY position after moving 'distance' from 'start' :
+				'actual heading' : π ÷ 2 - 'heading'
 				{
-					Start {1} + Distance × cosine (actual-Heading)
-					Start {2} - Distance × sine (actual-Heading)
+					'start' {1} + 'distance' × cosine ('actual heading')
+					'start' {2} - 'distance' × sine ('actual heading')
 				}
 
 -==================================================================================================-
@@ -230,119 +231,126 @@ Turtle-Lib : library
 	================================
 
 	=-
-	Create a group of "N" turtles.
-	Turtles in a turtle group can perform the same move and turn
+	Create a group of "'n'" turtles.
+	'turtles' in a turtle group can perform the same move and turn
 	instructions simultaneously.
 	They have a speed for the group.
 	=-
-	a group of N turtles :
-		if (N > 100)
-			"Turtle groups limited to 100." ↲
-			N : 100
-		Turtles : apply [a turtle] N times
+	a group of 'n' turtles :
+		if ('n' > 100)
+			"turtle groups limited to 100." ↲
+			'n' : 100
+		'turtles' : apply [a turtle] 'n' times
 		create
-			Turtle-Space : null
-			Turtles : Turtles
-			Speed : 10 ; this is for the group
+			'turtle space' : null
+			'turtles' : 'turtles'
+			'speed' : 10 ; this is for the group
 
 			getter/setter
-				Speed
+				'speed'
 
 			==========================================
 			Retrieve a specific turtle from the group.
 			==========================================
-			turtle N from ME :
-				Turtles {N}
+			turtle 'n' from ME :
+				'turtles' {'n'}
 
 			===========================================
 			Not only sets the turtle space but adds all
 			turtles to it.
 			===========================================
-			MY Turtle-Space Space : ; a setter for Turtle-Space
-				Turtle-Space : Space
-				for each Turtle in Turtles
-					place Turtle in Turtle-Space
+			MY 'turtle space' 'space' : ; a setter for 'turtle space'
+				'turtle space' : 'space'
+				for each 'turtle' in 'turtles'
+					place 'turtle' in 'turtle space'
 
 			====================================================
 			Enable the turtle group to iterate over the turtles.
 			====================================================
 			start ME :
 				create
-					Turtles : Turtles
-					Index : 0
+					'turtles' : 'turtles'
+					'index' : 0
 
 					end ME :
-						Index = Turtles length
+						'index' = 'turtles' length
 
 					next ME :
-						Turtles {increment Index}
+						'turtles' {increment 'index'}
 
 			===========================================
 			Move the group.
 			Each turtle has its own heading, colour etc
 			but they all move the same distance.
 			===========================================
-			move ME N step/steps :
-				Remaining : N
-				Distance : 0
-				Starting : apply
-					Turtle actual position
-				… to each Turtle from Turtles
+			move ME 'n' step/steps :
+				'remaining' : 'n'
+				'distance' : 0
+				'starting' : apply
+					'turtle's 'window position'
+				… to each 'turtle' from 'turtles'
 
-				while [Remaining > Speed]
-					Distance : Distance + Speed
-					for each Turtle in Turtles keeping Index
-						Start : Starting {Index} ; initial position
-						Finish : Turtle position after moving Distance from Start
-						instantly move Turtle from Start to Finish in (Turtle's Animation-Layer)
-					Remaining : Remaining - Speed
-					pause (1.0 ÷ Turtle-Space's Turtle-Rate) seconds
+				while ['remaining' > 'speed']
+					'distance' : 'distance' + 'speed'
+					for each 'turtle' in 'turtles' keeping 'index'
+						'start' : 'starting' {'index'} ; initial position
+						'finish' : 'turtle' position after moving 'distance' from 'start'
+						instantly move 'turtle' from 'start' to 'finish' in ('turtle's 'animation layer')
+					'remaining' : 'remaining' - 'speed'
+					pause (1.0 ÷ 'turtle space's 'turtle rate') seconds
 
 				- now add the "permanent" layer
-				for each Turtle in Turtles keeping Index
-					Start : Starting {Index}
-					Finish : Turtle position after moving N from Start
-					instantly move Turtle from Start to Finish in (Turtle-Space's Base-Layer)
+				for each 'turtle' in 'turtles' keeping 'index'
+					'start' : 'starting' {'index'}
+					'finish' : 'turtle' position after moving 'n' from 'start'
+					instantly move 'turtle' from 'start' to 'finish' in ('turtle space's 'base-layer')
 
 			=================================================
 			Turn each turtle in the group by the same amount.
 			=================================================
-			turn ME Angle degrees :
-				for each Turtle in Turtles
-					Turtle's Heading : Turtle's Heading - Angle
-				update Turtle-Space
+			turn ME 'angle' degrees :
+				for each 'turtle' in 'turtles'
+					'turtle's 'heading' : 'turtle's 'heading' - 'angle'
+				update 'turtle space'
 
 			========================================
 			Hide all the turtle bodies in the group.
 			========================================
 			hide ME :
-				for each Turtle in Turtles
-					hide Turtle
+				for each 'turtle' in 'turtles'
+					hide 'turtle'
+
+			========================================
+			Show all the turtle bodies in the group.
+			========================================
+			show ME :
+				for each 'turtle' in 'turtles'
+					show 'turtle'
 
 -==================================================================================================-
 
 	=-
-	Convert turtle heading "Angle" to a direction (and vice versa).
+	Convert turtle heading "'angle'" to a direction (and vice versa).
 	=-
-	Angle heading to direction :
-		90 - Angle
+	'angle' heading to direction :
+		90 - 'angle'
 
 	=-
-	Convert panel coordinate "C" to a turtle coordinate.
+	Convert panel coordinate "'coordinate'" to a turtle coordinate.
 	=-
-	panel coordinate C to turtle coordinate :
+	panel coordinate 'coordinate' to turtle coordinate :
 		{
-			C {1} - CENTRE-X
-			CENTRE-Y - C {2}
+			'coordinate' {1} - CENTRE-X
+			CENTRE-Y - 'coordinate' {2}
 		}
 
 	=-
-	Convert turtle coordinate "C" to a panel coordinate.
+	Convert turtle coordinate "'coordinate'" to a panel coordinate.
 	=-
-	turtle coordinate C to panel coordinate :
+	turtle coordinate 'coordinate' to panel coordinate :
 		{
-			C {1} + CENTRE-X
-			CENTRE-Y - C {2}
+			'coordinate' {1} + CENTRE-X
+			CENTRE-Y - 'coordinate' {2}
 		}
 
 	=-
@@ -354,4 +362,4 @@ Turtle-Lib : library
 -==================================================================================================-
 
 "Turtle library loaded." ↲
-Turtle-Lib
+'turtle library'

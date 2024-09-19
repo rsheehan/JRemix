@@ -1,17 +1,17 @@
-A : "abcdefghij"
+'A' : "abcdefghij"
 
-for each I from 1 to (A length)
-	A from I to (A length) ↲
+for each 'I' from 1 to ('A' length)
+	'A' from 'I' to ('A' length) ↲
 
-for each I from (A length) to 1
-	A from I to 1 ↲
+for each 'I' from ('A' length) to 1
+	'A' from 'I' to 1 ↲
 
-for each I from 1 to 20
-	B : A
-	insert "12345" into B at I
-	B ↲
+for each 'I' from 1 to 20
+	'B' : 'A'
+	insert "12345" into 'B' at 'I'
+	'B' ↲
 
-for each I from 1 to 20
-	B : A
-	overwrite "12345" into B at I
-	B ↲
+for each 'I' from 1 to 20
+	'B' : 'A'
+	overwrite "12345" into 'B' at 'I'
+	'B' ↲

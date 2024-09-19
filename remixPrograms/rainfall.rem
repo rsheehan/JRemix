@@ -2,17 +2,15 @@
 The rainfall problem.
 =====================
 
-Rain-Fall : { -1, -3, 0, 5, -2, 1.0, 0, -1, 6, 7, 999, -2, 0, 10, -1 }
+'rain fall' : { -1, -3, 0, 5, -2, 1.0, 0, -1, 6, 7, 999, -2, 0, 10, -1 }
 
-"Original data: ", Rain-Fall ↲
+"Original data: ", 'rain fall' ↲
+'valid data' : keep 'x' from 'rain fall' where ['x' ≥ 0] until ['x' = 999]
+"Clean data: ", 'valid data' ↲
 ↲
-Valid-Data : keep X from Rain-Fall where [X ≥ 0] until [X = 999]
+publish average 'valid data' ↲
 
-"Clean data: ", Valid-Data ↲
-↲
-publish average Valid-Data ↲
-
-publish average Rain :
-	if (no Rain)
+publish average 'rain' :
+	if (no 'rain')
 		return "No valid data."
-	"The average rainfall is " ⊕ average of Rain
+	"The average rainfall is " ⊕ average of 'rain'

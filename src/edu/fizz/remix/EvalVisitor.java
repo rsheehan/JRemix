@@ -594,10 +594,9 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         int lineNumber = ctx.getStart().getLine() - 1;
         int lineOffset = ctx.getStart().getCharPositionInLine();
         FunctionCallExpression getterCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
-//        FunctionCallExpression getterCall = new FunctionCallExpression();
         ParseTree node = ctx.getChild(0);
         if (node instanceof RemixParser.ListElementContext) {
-            // must be listElement e.g. student{1}
+            // must be listElement e.g. 'student' {1}
             getterCall.addParam((Expression)visit(node));
         } else {
             // otherwise WORD is the object name
@@ -616,7 +615,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         int lineNumber = ctx.getStart().getLine() - 1;
         int lineOffset = ctx.getStart().getCharPositionInLine();
         FunctionCallExpression setterCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
-//        FunctionCallExpression setterCall = new FunctionCallExpression();
         ParseTree node = ctx.getChild(0);
         if (node instanceof RemixParser.ListElementContext) {
             // must be listElement e.g. student{1}

@@ -1,8 +1,8 @@
 - Lots of filled circles -
 
 using graphics lib
-	the-Window : the graphics panel
+	'the window' : the graphics panel
 	repeat
-		place (a random circle) in the-Window
+		place (a random circle) in 'the window'
 	… 100 times
-	update the-Window
+	update 'the window'

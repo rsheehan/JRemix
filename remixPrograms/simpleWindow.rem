@@ -1,23 +1,23 @@
 using graphics lib
-	the-Window : a graphics window
-	Animation-Layer : the-Window next layer
-	Animation-Layer ↲
+	'the window' : a graphics window
+	'animation layer' : 'the window' next layer
+	'animation layer' ↲
 	repeat
-		Shape : a square
-		Shape's Colour   : random colour
-		Shape's Position : random point
-		Shape's Size     : random from 10 to 100
-		Shape's Heading  : random from 1 to 90
-		place Shape in Animation-Layer
+		'shape' : a square
+		'shape's 'colour'   : random colour
+		'shape's 'position' : random point
+		'shape's 'size'     : random from 10 to 100
+		'shape's 'heading'  : random from 1 to 90
+		place 'shape' in 'animation layer'
 	… 100 times
 
-	Turn : 2
-	Degree : 0
+	'turn' : 2
+	'degree' : 0
 	animate at 60 ticks per second
-		for each Shape in (Animation-Layer's Shapes) do
-			change Shape heading by Turn degrees
-		update the-Window
-		Degree : Degree + Turn
-	… until [Degree ≥ 360]
+		for each 'shape' in ('animation layer's 'shapes') do
+			change 'shape' heading by 'turn' degrees
+		update 'the window'
+		'degree' : 'degree' + 'turn'
+	… until ['degree' ≥ 360]
 
 "Finished" ↲

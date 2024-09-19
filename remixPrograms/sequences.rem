@@ -1,11 +1,11 @@
-List : { 2, 4, 8, 16 }
-Range : 3 to 9
+'list' : { 2, 4, 8, 16 }
+'range' : 3 to 9
 
-each List
-each Range
+each 'list'
+each 'range'
 each "Hello"
 
-each Sequence :
-	for each Number from 1 to (length of Sequence) do
-		Number, ":", Number in Sequence, " " ~
+each 'sequence' :
+	for each 'number' from 1 to ('sequence' length) do
+		'number', ":", 'number' in 'sequence', " " ~
 	↲

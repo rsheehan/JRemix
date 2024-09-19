@@ -1,19 +1,19 @@
-a person called Name :
+a person called 'name' :
 	create
-		Name : Name
+		'name' : 'name'
 
 		getter
-			Name
+			'name'
 
 		say hello to ME :
-			"Hi ", Name ↲
+			"Hi ", 'name' ↲
 
 		welcome ME and say bye :
 			say hello to ME
 			"bye now." ↲
 
-Person : a person called "Mary"
-Person's Name ↲
-say hello to Person
+'person' : a person called "Mary"
+'person's 'name' ↲
+say hello to 'person'
 ↲
-welcome Person and say bye
+welcome 'person' and say bye

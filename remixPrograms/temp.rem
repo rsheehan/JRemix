@@ -1,60 +1,12 @@
-abc :
+object :
 	create
-		'a' : 1
-		'b' : 2
+		'field1' : 1
+		'field2' : 2
+		
+		getters
+			'field1', 'field2'
 
-		getter/setter
-			'a'
-
-		MY 'b' :
-			'b' × 3
-
-		MY 'b' 'value' :
-			'b' : 'value' + 1
-
-'object' : abc
-'object'↲
-'object's 'a'↲
-'object's 'a' : 4
-'object's 'a'↲
-'object's 'b'↲
-'object's 'b' : 5
-'object's 'b'↲
-
-using graphics lib
-
-	STD-WIDTH ↲
-
-	'tri' : a triangle
-	'tri's 'outline colour' : RED
-	'tri'↲
-	'tri's 'colour' : BLUE
-	'tri'↲
-
-using graphics lib
-
-	'window' : the graphics panel
-
-	'x' : 50
-	'y' : 50
-	for each 'n' from 3 to 4 do
-		'polygon' : an 'n' sided polygon
-		'polygon'↲
-		'polygon's 'colour' : random colour
-		'polygon'↲
-		'polygon's 'size' : 40
-		'polygon'↲
-		'polygon's 'position' : {'x', 'y'}
-		'polygon'↲
-		'window'↲
-		'window's 'background colour'↲
-		'window's 'background colour' : BLUE
-		'window's 'background colour'↲
-		place 'polygon' in 'window'
-		"PLACED" ↲
-		add 100 to 'x'
-		if (('n' - 2) is divisible by 10)
-			add 100 to 'y'
-			'x' : 50
-
-	update 'window'
+'O' : object
+'O'↲
+'O's 'field1' ↲
+'O's 'field2' ↲
