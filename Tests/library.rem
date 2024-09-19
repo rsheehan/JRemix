@@ -3,16 +3,16 @@
 
 LIB1 : library
 
-	X plus Y :
-		X + Y
+	'X' plus 'Y' :
+		'X' + 'Y'
 
-	name Name age Age :
+	name 'name' age 'age' :
 		create
-			Name : Age
-			Age : Name
+			'name' : 'age'
+			'age' : 'name'
 
 			ME to string :
-				Name ⊕ ", " ⊕ Age ⊕ " years old"
+				'name' ⊕ ", " ⊕ 'age' ⊕ " years old"
 
 using LIB1
 	4 plus 6 ↲
@@ -21,13 +21,13 @@ using LIB1
 
 LIB2 : library
 
-	name Name age Age :
+	name 'name' age 'age' :
 		create
-			Name : Name
-			Age : Age
+			'name' : 'name'
+			'age' : 'age'
 
 			ME to string :
-				Name ⊕ ", " ⊕ Age ⊕ " years old"
+				'name' ⊕ ", " ⊕ 'age' ⊕ " years old"
 
 LIB3 : library
 
@@ -69,17 +69,17 @@ test {
 using LIB3
 	test {
 		"Simple reference call"
-			X : 16
-			with X reference
+			'X' : 16
+			with 'X' reference
 		… expected 32
 
 		"Changed variable"
-			X
+			'X'
 		… expected 32
 	}
 
 ↲. "Outside" ↲
-"X: ", X, " should be 32\n" ↲
+"'X': ", 'X', " should be 32\n" ↲
 
 test {
 	"Calling function out of scope."

@@ -1,7 +1,7 @@
-L : {}
-M : {"x" : 5}
-Ml : {"a" : {1, 2, 3}, "b" : {4, 5, 6}}
-Lm : {
+'L' : {}
+'M' : {"x" : 5}
+'Ml' : {"a" : {1, 2, 3}, "b" : {4, 5, 6}}
+'Lm' : {
 	{"a" : 2, "b" : 4, "c" : 6}
 	{"a" : 3, "b" : 5, "c" : 7}
 	{"a" : 1, "b" : 6, "c" : 8}
@@ -9,43 +9,43 @@ Lm : {
 
 test {
 	"Appending to empty list"
-		append 2 to L
-		L {1}
+		append 2 to 'L'
+		'L' {1}
 	... expected 2
 
 	"Changing element"
-		append 4 to L
-		L {2} : 5
-		L {2}
+		append 4 to 'L'
+		'L' {2} : 5
+		'L' {2}
 	... expected 5
 
 	"List and map element via variable"
-		Vl : 1
-		Vm : "x"
-		L {Vl} × M {Vm}
+		'Vl' : 1
+		'Vm' : "x"
+		'L' {'Vl'} × 'M' {'Vm'}
 	... expected (2 × 5)
 
 	"Adding to map with key"
-		M {"y"} : 3
-		M {"y"}
+		'M' {"y"} : 3
+		'M' {"y"}
 	... expected 3
 
 	"Map element via variable"
-		N : "x"
-		M {N}
+		'N' : "x"
+		'M' {'N'}
 	... expected 5
 
 	"Nested map"
-		M {"n"} : {"x":6}
-		M {"n"}{"x"}
+		'M' {"n"} : {"x":6}
+		'M' {"n"}{"x"}
 	... expected 6
 
 	"Mixed map list"
-		Ml {"b"}{2}
+		'Ml' {"b"}{2}
 	... expected 5
 
 	"Mixed list map"
-		Lm {2}{"c"}
+		'Lm' {2}{"c"}
 	... expected 7
 }
 =

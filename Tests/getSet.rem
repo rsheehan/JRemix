@@ -1,25 +1,25 @@
 a person :
 	create
-		Name : "Robert"
+		'name' : "Robert"
 
 		getter
-			Name
+			'name'
 
-		MY Name : ; overrides getter
-			Name ⊕ Name
+		MY 'name' : ; overrides getter
+			'name' ⊕ 'name'
 
-		MY Name (Value) :
-			Name : "*" ⊕ Value ⊕ "*"
+		MY 'name' ('value') :
+			'name' : "*" ⊕ 'value' ⊕ "*"
 
-P : a person
+'P' : a person
 
 test {
 	"Overwritten user defined getter."
-		P's Name
+		'P's 'name'
 	… expected "RobertRobert"
 
 	"User defined setter."
-		P's Name : "Peter"
-		P's Name
+		'P's 'name' : "Peter"
+		'P's 'name'
 	… expected "*Peter**Peter*"
 }

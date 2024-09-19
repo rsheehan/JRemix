@@ -1,61 +1,61 @@
 test {
 	"Auto list expansion"
-		L {4} : 1
-		length of (L)
+		'L' {4} : 1
+		length of ('L')
 	… expected 4
 
 	"Value in list expansion"
-		L {4}
+		'L' {4}
 	… expected 1
 
 	"Nested list expansion"
-		L {2}{5} : 2
-		length of (L {2})
+		'L' {2}{5} : 2
+		length of ('L' {2})
 	… expected 5
 
 	"Value in nested list expansion"
-		L {2}{5}
+		'L' {2}{5}
 	… expected 2
 
 	"Null values in list expansion"
-		L {2}{4}
+		'L' {2}{4}
 	… expected null
 }
 ↲
 test {
 	"Auto map creation"
-		M {"x"} : "zero"
-		length of (M)
+		'M' {"x"} : "zero"
+		length of ('M')
 	… expected 1
 
 	"Nested map expansion"
-		M {"A"}{"A"} : "one"
-		M {"A"}{"B"} : "two"
-		length of (M {"A"})
+		'M' {"A"}{"A"} : "one"
+		'M' {"A"}{"B"} : "two"
+		length of ('M' {"A"})
 	… expected 2
 
 	"Value in map expansion"
-		M {"A"}{"B"}
+		'M' {"A"}{"B"}
 	… expected "two"
 
 }
 ↲
 test {
 	"Auto mixed expansion"
-		Mx {3}{"i"} : 7
-		length of (Mx)
+		'Mx' {3}{"i"} : 7
+		length of ('Mx')
 	… expected 3
 
 	"Value in mixed expansion"
-		Mx {3}{"i"}
+		'Mx' {3}{"i"}
 	… expected 7
 
 	"Extend map in mixed expansion"
-		Mx {3}{"j"} : 9
-		length of (Mx {3})
+		'Mx' {3}{"j"} : 9
+		length of ('Mx' {3})
 	… expected 2
 }
 ↲
-L ↲
-M ↲
-Mx ↲
+'L' ↲
+'M' ↲
+'Mx' ↲

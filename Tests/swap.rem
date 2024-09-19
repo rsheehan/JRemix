@@ -4,24 +4,24 @@ Testing swaps
 
 test {
 	"Swap simple variables"
-		A : 7
-		B : 6
-		A swap B
-		A
+		'A' : 7
+		'B' : 6
+		'A' swap 'B'
+		'A'
 	… expected 6
 	"and the other variable"
-		B
+		'B'
 	… expected 7
 
 	"Swap list items"
-		List : {1, 2, 4, 8, 16}
-		swap List element 3 with 1
-		List
+		'list' : {1, 2, 4, 8, 16}
+		('list' {3}) swap ('list' {1})
+		'list'
 	… expected {4, 2, 1, 8, 16}
 
 	"Swap map items"
-		Map : {"a" : 1, "b" : 3, "c" : 5, "d" : 7}
-		swap Map element "b" with "d"
-		Map
+		'map' : {"a" : 1, "b" : 3, "c" : 5, "d" : 7}
+		('map' {"b"}) swap ('map' {"d"})
+		'map'
 	… expected {"a" : 1, "d" : 3, "c" : 5, "b" : 7}
 }

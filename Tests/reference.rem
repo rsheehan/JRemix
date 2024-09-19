@@ -3,33 +3,33 @@ get #A :
 
 test {
 	"Simple ref variable one level access"
-		V : 3
-		get V
+		'V' : 3
+		get 'V'
 	… expected 3
 
 	"Simple ref variable one level change"
-		add 1 to V
-		V
+		add 1 to 'V'
+		'V'
 	… expected 4
 
 	"List ref element variable one level access"
-		Vl {2} : 5
-		get (Vl {2})
+		'Vl' {2} : 5
+		get ('Vl' {2})
 	… expected 5
 
 	"List ref variable one level change"
-		add 1 to (Vl {2})
-		Vl {2}
+		add 1 to ('Vl' {2})
+		'Vl' {2}
 	… expected 6
 
 	"Multi element list ref variable one level access"
-		Ml {"a"}{1}{3} : 7
-		get (Ml {"a"}{1}{3})
+		'Ml' {"a"}{1}{3} : 7
+		get ('Ml' {"a"}{1}{3})
 	… expected 7
 
 	"Multi element list ref variable one level change"
-		add 1 to (Ml {"a"}{1}{3})
-		Ml {"a"}{1}{3}
+		add 1 to ('Ml' {"a"}{1}{3})
+		'Ml' {"a"}{1}{3}
 	… expected 8
 }
 
@@ -46,56 +46,56 @@ add four to #B :
 
 test {
 	"Simple ref variable two level change"
-		V : 7
-		add two to V
-		V
+		'V' : 7
+		add two to 'V'
+		'V'
 	… expected 9
 
 	"List ref variable two level change"
-		Vl {1} : 8
-		add two to (Vl {1})
-		Vl {1}
+		'Vl' {1} : 8
+		add two to ('Vl' {1})
+		'Vl' {1}
 	… expected 10
 
 	"Simple ref variable three level change"
-		V : 7
-		add four to V
-		V
+		'V' : 7
+		add four to 'V'
+		'V'
 	… expected 11
 
 	"List ref variable three level change"
-		Vl {1} : 8
-		add four to (Vl {1})
-		Vl {1}
+		'Vl' {1} : 8
+		add four to ('Vl' {1})
+		'Vl' {1}
 	… expected 12
 }
 
 ↲
 
-B : create
-	X : 3
+'B' : create
+	'X' : 3
 
 	getter
-		X
+		'X'
 
 	add two to MY x :
-		add two to X
+		add two to 'X'
 
 	add four to MY x :
-		add four to X
+		add four to 'X'
 
 test {
 	"Simple getter access"
-		B's X
+		'B's 'X'
 	… expected 3
 
 	"Object field as ref variable two level change"
-		add two to B x
-		B's X
+		add two to 'B' x
+		'B's 'X'
 	… expected 5
 
 	"Object field as ref variable three level change"
-		add four to B x
-		B's X
+		add four to 'B' x
+		'B's 'X'
 	… expected 9
 }

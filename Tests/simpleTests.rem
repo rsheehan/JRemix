@@ -3,11 +3,11 @@
 simple function :
 	1
 
-function Param :
-	Param
+function 'param' :
+	'param'
 
-function var #Param :
-	#Param
+function var #param :
+	#param
 
 test {
 	"Function no parameters"
@@ -19,7 +19,7 @@ test {
 	… expected 2
 
 	"Function returns value of var parameter"
-		Var : 3
-		function var Var
+		'var' : 3
+		function var 'var'
 	… expected 3
 }

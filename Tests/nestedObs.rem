@@ -1,41 +1,41 @@
-add three to Value :
-	Caller : create
-		Value : Value
-		Caller : create
-			Value : Value
+add three to 'value' :
+	'caller' : create
+		'value' : 'value'
+		'caller' : create
+			'value' : 'value'
 
 			getter
-				Value
+				'value'
 
-			add two to Value:
-				Value + 2
+			add two to 'value':
+				'value' + 2
 
 			exec ME :
-				Value : add two to Value
+				'value' : add two to 'value'
 
 		getter
-			Value
+			'value'
 
-		add one to Value:
-			inc Value
+		add one to 'value':
+			inc 'value'
 
 		MY inner value :
-			Caller's Value
+			'caller's 'value'
 
 		exec ME :
-			exec Caller
-			add one to Value
+			exec 'caller'
+			add one to 'value'
 
-	exec Caller
-	Caller
+	exec 'caller'
+	'caller'
 
 test {
 	"Outer instance variable"
-		Object : add three to 2
-		Object's Value
+		'object' : add three to 2
+		'object's 'value'
 	… expected 3
 
 	"Inner instance variable"
-		Object inner value
+		'object' inner value
 	… expected 4
 }

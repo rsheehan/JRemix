@@ -2,41 +2,41 @@
 Calculate a prime
 =================
 
-prime number N :
-	if (N = 1)
+prime number 'n' :
+	if ('n' = 1)
 		return 2
-	Prime-Count : 1
-	Primes : {2}
+	'prime count' : 1
+	'primes' : {2}
 	repeat
-		Biggest-Prime : last in Primes
-		Start : Biggest-Prime + 1
-		Finish : Biggest-Prime × Biggest-Prime + 1
-		Test-Range : Start to Finish
-		More-Primes : {}
-		Result : Prime-Count stopping at N filter X from Test-Range producing More-Primes
-			X is not divisible by any number in Primes up to (√ X)
-		if (Result = 0)
-			Primes : join Primes and More-Primes
+		'biggest prime' : last in 'primes'
+		'start' : 'biggest prime' + 1
+		'finish' : 'biggest prime' × 'biggest prime' + 1
+		'test range' : 'start' to 'finish'
+		'more primes' : {}
+		'result' : 'prime count' stopping at 'n' filter 'x' from 'test range' producing 'more primes'
+			'x' is not divisible by any number in 'primes' up to (√'x')
+		if ('result' = 0)
+			'primes' : join 'primes' and 'more primes'
 		… otherwise
-			return Result
+			return 'result'
 	… forever
 
 -----------
 
-#Count stopping at N filter #Item from List producing #More-Primes [Condition-Block] :
-	for each #Item in List do
-		if Condition-Block
-			inc #Count
-			if (#Count = N)
-				return #Item
-			append #Item to #More-Primes
+#count stopping at 'n' filter #item from 'list' producing #more ['condition'] :
+	for each #item in 'list' do
+		if 'condition'
+			inc #count
+			if (#count = 'n')
+				return #item
+			append #item to #more
 		0
 
-X is not divisible by any number in List up to Limit :
-	for each Number in List do
-		if (X is divisible by Number)
+'x' is not divisible by any number in 'list' up to 'limit' :
+	for each 'number' in 'list' do
+		if ('x' is divisible by 'number')
 			return false
-		if (Number > Limit)
+		if ('number' > 'limit')
 			return true
 		true
 

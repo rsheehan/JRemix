@@ -1,9 +1,9 @@
 "LIBRARY" ↲
-Lib : library
+LIB : library
 	a :
 		"function"
 
-	A : "variable"
+	'A' : "variable"
 
 	test {
 		"function call in named library block"
@@ -11,19 +11,19 @@ Lib : library
 		… expected "function"
 
 		"variable in named library block"
-			A
+			'A'
 		… expected "variable"
 	}
 ↲
 "USING" ↲
-using Lib
+using LIB
 	test {
 		"function call in named library using block"
 			a
 		… expected "function"
 
 		"variable in named library using block"
-			A
+			'A'
 		… expected "variable"
 	}
 ↲
@@ -34,15 +34,15 @@ test {
 	… expected "null"
 
 	"variable at top-level"
-		A
+		'A'
 	… expected "variable"
 }
 ↲
 using library
-	A : 1
+	'A' : 1
 
-	function X :
-		X + 2
+	function 'X' :
+		'X' + 2
 	test {
 		"function inside library"
 			function 4
@@ -58,6 +58,6 @@ using library
 ↲
 test {
 	"variable modified in library"
-		A
+		'A'
 	… expected 1
 }
