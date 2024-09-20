@@ -45,11 +45,16 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         Useful for inserting lots of lines and then call fullLex.
      */
     public void insertLine(String line) throws BadLocationException {
-        insertString(getLength(), line, null);
+        insertStringNoLex(getLength(), line, null);
     }
 
     @Override
     public void insertString(int offset, String text, AttributeSet style) throws BadLocationException {
+        insertStringNoLex(offset, text, style);
+        RemixEdLexer.fullLex(); // overkill, just to get things going at the moment
+    }
+
+    public void insertStringNoLex(int offset, String text, AttributeSet style) throws BadLocationException {
         completionsHere = null; // now always done, repeated completions come from "shift TAB" handler
         if (text.equals("\t") && !inStringOrComment(offset)) { // don't if in a string or a comment
             handleTab(offset);
@@ -67,7 +72,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 }
             }
         }
-        RemixEdLexer.fullLex(); // overkill, just to get things going at the moment
     }
 
     @Override

@@ -432,6 +432,7 @@ public class RemixEditor extends JFrame {
                         String line = myReader.nextLine();
                         doc.insertLine(line + "\n");
                     }
+                    RemixEdLexer.fullLex();
                     myReader.close();
                     editorTextPane.setCaretPosition(0);
                 } catch (FileNotFoundException | BadLocationException e) {

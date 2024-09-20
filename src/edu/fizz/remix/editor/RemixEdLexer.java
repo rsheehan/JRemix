@@ -64,29 +64,30 @@ public class RemixEdLexer {
         StyleConstants.setForeground(attr, Color.white);
         defaultStyle.addAttributes(attr);
         // variables
-        variable = makeStyle("variable", new Color(200,200,200), false, defaultStyle); // was italic
+        variable = makeStyle("variable", new Color(200,200,200), false, true, defaultStyle); // was italic
         // parentheses
-        parentheses = makeStyle("parentheses", new Color(150,150,250), false, defaultStyle );
+        parentheses = makeStyle("parentheses", new Color(150,150,250), false, false, defaultStyle);
         // comments, all sorts
-        comment = makeStyle("comment",new Color(170,121,66), true, defaultStyle );
+        comment = makeStyle("comment",new Color(170,121,66), true, false, defaultStyle);
         // operator text
-        operator = makeStyle("operator", Color.green, false, defaultStyle); // was italic
+        operator = makeStyle("operator", Color.green, false, false, defaultStyle); // was italic
         // literals
-        literal = makeStyle("literal", Color.cyan, true, defaultStyle);
+        literal = makeStyle("literal", Color.cyan, true, false, defaultStyle);
         // string - just a version of literal for the RemixStyleDocument code
-        string = makeStyle("string", new Color(255,200,200), true, defaultStyle);
+        string = makeStyle("string", new Color(255,200,200), true, false, defaultStyle);
         // keywords
-        keyword = makeStyle("keyword", Color.red, false, defaultStyle);
+        keyword = makeStyle("keyword", Color.red, false, false, defaultStyle);
         // separator
-        separator = makeStyle("separator", Color.magenta, false, defaultStyle);
+        separator = makeStyle("separator", Color.magenta, false, false, defaultStyle);
     }
 
-    private static Style makeStyle(String name, Color colour, boolean italic, Style base) {
+    private static Style makeStyle(String name, Color colour, boolean italic, boolean underline, Style base) {
         Style newStyle = document.addStyle(name, base);
         SimpleAttributeSet attr = new SimpleAttributeSet();
         if (colour != null)
             StyleConstants.setForeground(attr, colour);
         StyleConstants.setItalic(attr, italic);
+        StyleConstants.setUnderline(attr, underline);
         newStyle.addAttributes(attr);
         return newStyle;
     }
@@ -324,10 +325,12 @@ public class RemixEdLexer {
         int varPos;
         for (varPos = pos + 1; varPos < document.getLength(); varPos++) {
             char ch = getChar(varPos);
-            if (ch == '\'')
+            if (ch == '\'' || ch == '\n')
                 break;
         }
-        document.setCharacterAttributes(pos, varPos - pos + 1, variable, true);
+        document.setCharacterAttributes(pos, 1, defaultStyle, true);
+        document.setCharacterAttributes(pos + 1, varPos - pos - 1, variable, true);
+        document.setCharacterAttributes(varPos, 1, defaultStyle, true);
         return varPos + 1;
     }
 
