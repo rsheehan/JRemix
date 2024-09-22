@@ -22,8 +22,8 @@ using graphics lib
 
 add the back mountains on 'the back layer' :
 	repeat 20 times
-		'mountain' : a DARK-GREY mountain with BLACK outline of 300
-		… based at 600
+		'mountain' : a DARK-GREY mountain with BLACK edges 
+		… of height 300 based at 600
 		place 'mountain' in 'the back layer'
 
 add the sea on 'the back layer' :
@@ -35,8 +35,8 @@ add the sea on 'the back layer' :
 
 add the islands on 'the front layer' :
 	for each 'location' from 650 to 680 in steps of 3 do
-		'island' : a GREY mountain with WHITE outline of 250
-		… based at 'location'
+		'island' : a GREY mountain with WHITE edges
+		… of height 250 based at 'location'
 		place 'island' in 'the front layer'
 
 'n' clouds in 'the cloud layer' :
@@ -49,7 +49,8 @@ add the islands on 'the front layer' :
 =
 A mountain is an isosceles triangle.
 =
-a 'colour' mountain with 'outline colour' outline of 'max height' based at 'level' :
+a 'colour' mountain with 'outline colour' edges
+… of height 'max height' based at 'level' :
 	'centre' : random STD-WIDTH
 	'height' : random 'max height' + 20
 	'width'  : random 150 + 300
@@ -119,7 +120,10 @@ a cloud :
 			'circle A's 'outline colour' : BLACK
 			'circle B' : a WHITE circle of radius 'radius B' at { 'x2', 'y2' }
 			'circle B's 'outline colour' : BLACK
-			'position' : { ('x1' + 'x2') ÷ 2, ('y1' + 'radius A' + 'y2' + 1) ÷ 2 }
+			'position' : {
+				('x1' + 'x2') ÷ 2
+				('y1' + 'radius A' + 'y2' + 1) ÷ 2
+			}
 			'width' : 'x2' - 'x1'
 			'height' : 'y1' - 'y2' + 'radius A'
 			'box' : a WHITE box of 'width' x 'height' at 'position'

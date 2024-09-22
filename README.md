@@ -6,7 +6,7 @@ Remix is a flexible programming language based around the idea of mix-fix (as op
 
 To keep function calls as readable as possible, there can be many names for the same function. Multiple names are defined with a simple syntax. e.g.
 
-    pause turtles/turtle for Time seconds/second:
+    pause turtles/turtle for 'time' seconds/second:
 is the function signature for a function which can be called with any of the following statements:
 
     pause turtles for 5 seconds
@@ -18,22 +18,22 @@ Objects are created using the following syntax, and can have optional automatica
 You can access object fields using the possessive apostrophe.
 
     create
-        Field1 : value
-        Field2 : value
+        'field1' : value
+        'field2' : value
 
         getter
-            Field1
+            'field1'
 
         setter
-            Field2
+            'field2'
 
         MY method1 :
             body of method
 
-        another method on ME with a Parameter :
+        another method on ME with a 'parameter' :
             body of method
             
-        a private method with a Parameter but no object parameter :
+        a private method with a 'parameter' but no object parameter :
             body of method
 
 More information about Remix can be found in this [presentation](https://github.com/rsheehan/JRemix/blob/main/RemixIntroduction.pdf).
@@ -43,71 +43,66 @@ Here is an animated random landscape program in Remix.
 
 	using graphics lib
 	
-		the-Window : the graphics panel
-		the-Window's Background-Colour : SKY-BLUE
+		'the window' : the graphics panel
+		'the window's 'colour' : SKY-BLUE
+		
+		'the back layer'  : 'the window's 'base-layer'
+		'the cloud layer' : 'the window' next layer
+		'the front layer' : 'the window' next layer
+		
+		add the back mountains on 'the back layer'
+		add the sea on 'the back layer'
+		add the islands on 'the front layer'
+		update 'the window'	
 	
-		draw the landscape in the-Window
-		add Clouds to the-Window
+		'the clouds' : 10 clouds in 'the cloud layer'
 	
-		animate the-Window 1000 times at 30 ticks per second
-			for each Cloud in Clouds
-				move Cloud
+		animate 'the window' 1000 times at 30 ticks per second
+			for each 'cloud' in 'the clouds'
+				move 'cloud'
 	
 	-============================================================================-
 	
-	draw the landscape in the-Window :
-		the-Back-Layer  : the-Window base layer
-		THE-CLOUD-LAYER : the-Window next layer
-		- a constant can be accessed anywhere
-		the-Front-Layer : the-Window next layer
-		add the back mountains on the-Back-Layer
-		add the sea on the-Back-Layer
-		add the front islands on the-Front-Layer
-		update the-Window
-	
-	add the back mountains on the-Back-Layer :
-		"back mountains" ↲
+	add the back mountains on 'the back layer' :
 		repeat 20 times
-			Mountain : a DARK-GREY mountain with BLACK outline of 300
+			'mountain' : a DARK-GREY mountain with BLACK outline of 300
 			… based at 600
-			place Mountain in the-Back-Layer
+			place 'mountain' in 'the back layer'
 	
-	add the sea on the-Back-Layer :
-		"sea" ↲
-		Box : a DARK-BLUE box of STD-WIDTH x 200 at {
+	add the sea on 'the back layer' :
+		'sea' : a DARK-BLUE box of STD-WIDTH x 200 at {
 			STD-WIDTH ÷ 2
 			STD-HEIGHT - 100
 		}
-		place Box in the-Back-Layer
+		place 'sea' in 'the back layer'
 	
-	add the front islands on the-Front-Layer :
-		"front islands" ↲
-		for each Location from 650 to 680 in steps of 3 do
-			Island : a GREY mountain with WHITE outline of 250
-			… based at Location
-			place Island in the-Front-Layer
+	add the islands on 'the front layer' :
+		for each 'location' from 650 to 680 in steps of 3 do
+			'island' : a GREY mountain with WHITE outline of 250
+			… based at 'location'
+			place 'island' in 'the front layer'
 	
-	add #Clouds to the-Window :
-		#Clouds : apply
-			Cloud : a cloud
-			place (Cloud parts) in THE-CLOUD-LAYER
-			Cloud
-		… 10 times
+	'n' clouds in 'the cloud layer' :
+		apply
+			'cloud' : a cloud
+			place ('cloud' parts) in 'the cloud layer'
+			'cloud'
+		… 'n' times
 	
 	=
 	A mountain is an isosceles triangle.
 	=
-	a Colour mountain with outline-Colour outline of max-Height based at Level :
-		Centre : random STD-WIDTH
-		Height : random max-Height + 20
-		Width : random 150 + 300
-		Mountain : a Colour shape from {
-			{ 0, -Height }
-			{ Width ÷ 2, 0 }
-			{ -Width ÷ 2, 0 }
-		} scaled by 1 at { Centre, Level }
-		Mountain's outline-Colour : outline-Colour
-		return Mountain
+	a 'colour' mountain with 'outline colour' outline of 'max height' based at 'level' :
+		'centre' : random STD-WIDTH
+		'height' : random 'max height' + 20
+		'width'  : random 150 + 300
+		'mountain' : a 'colour' shape from {
+			{ 0, -'height' }
+			{ 'width' ÷ 2, 0 }
+			{ -'width' ÷ 2, 0 }
+		} scaled by 1 at { 'centre', 'level' }
+		'mountain's 'outline colour' : 'outline colour'
+		'mountain'
 	
 	=
 	A cloud is a composite object comprising of two circles, a rectangle and a line.
@@ -118,67 +113,68 @@ Here is an animated random landscape program in Remix.
 	The "move ME" also wraps the cloud around when it passes off the window.
 	=
 	a cloud :
-		Base : random (STD-HEIGHT - 200)
-		Across : random STD-WIDTH
-		R1 : random 10 + 30
-		R2 : random 10 + 20
-		Distance : 10
-		if (R1 > R2)
-			R1 swap R2
+		'base'   : random (STD-HEIGHT - 200)
+		'across' : random STD-WIDTH
+		'r1' : random 10 + 30
+		'r2' : random 10 + 20
+		'distance' : 10
+		if ('r1' > 'r2')
+			'r1' swap 'r2'
 	
-		Cloud : create
+		'cloud' : create
 	
 			- these are fields
 	
-			X1 : (Across - R1) + Distance
-			X2 : (Across + R2) - Distance
-			Y1 : Base - R1
-			Y2 : Base - R2
-			radius-A : R1
-			radius-B : R2
-			circle-A : null
-			circle-B : null
-			Box : null
-			Line : null
+			'x1' : ('across' - 'r1') + 'distance'
+			'x2' : ('across' + 'r2') - 'distance'
+			'y1' : 'base' - 'r1'
+			'y2' : 'base' - 'r2'
+			'radius A' : 'r1'
+			'radius B' : 'r2'
+			'circle A' : null
+			'circle B' : null
+			'box' : null
+			'line' : null
 	
 			- these are methods
 	
 			MY parts :
-				{ circle-A, circle-B, Box, Line }
+				{ 'circle A', 'circle B', 'box', 'line' }
 	
 			move ME :
-				increment X1
-				increment X2
-				if ((X1 - radius-A) > STD-WIDTH)
-					Back : 0 - radius-B
-					X1 : Back - (X2 - X1)
-					X2 : Back
-				circle-A's Position : { X1, Y1 }
-				circle-B's Position : { X2, Y2 }
-				Box's Position : {
-					(X1 + X2) ÷ 2
-					(Y1 + radius-A + Y2 + 1) ÷ 2
+				increment 'x1'
+				increment 'x2'
+				if (('x1' - 'radius A') > STD-WIDTH)
+					'back' : 0 - 'radius B'
+					'x1' : 'back' - ('x2' - 'x1')
+					'x2' : 'back'
+				'circle A's 'position' : { 'x1', 'y1' }
+				'circle B's 'position' : { 'x2', 'y2' }
+				'box's 'position' : {
+					('x1' + 'x2') ÷ 2
+					('y1' + 'radius A' + 'y2' + 1) ÷ 2
 				}
-				Line's Start : { X1, Y1 + radius-A }
-				Line's Finish : { X2, Y1 + radius-A }
+				'line's 'start' : { 'x1', 'y1' + 'radius A' }
+				'line's 'finish' : { 'x2', 'y1' + 'radius A' }
 	
 			setup MY parts :
-				circle-A : a WHITE circle of radius radius-A at { X1, Y1 }
-				circle-A's outline-Colour : BLACK
-				circle-B : a WHITE circle of radius radius-B at { X2, Y2 }
-				circle-B's outline-Colour : BLACK
-				Position : { (X1 + X2) ÷ 2, (Y1 + radius-A + Y2 + 1) ÷ 2 }
-				Width : X2 - X1
-				Height : Y1 - Y2 + radius-A
-				Box : a WHITE box of Width x Height at Position
-				Line : a BLACK line from {
-					X1, Y1 + radius-A
+				'circle A' : a WHITE circle of radius 'radius A' at { 'x1', 'y1' }
+				'circle A's 'outline colour' : BLACK
+				'circle B' : a WHITE circle of radius 'radius B' at { 'x2', 'y2' }
+				'circle B's 'outline colour' : BLACK
+				'position' : { ('x1' + 'x2') ÷ 2, ('y1' + 'radius A' + 'y2' + 1) ÷ 2 }
+				'width' : 'x2' - 'x1'
+				'height' : 'y1' - 'y2' + 'radius A'
+				'box' : a WHITE box of 'width' x 'height' at 'position'
+				'line' : a BLACK line from {
+					'x1', 'y1' + 'radius A'
 				} to {
-					X2, Y1 + radius-A
+					'x2', 'y1' + 'radius A'
 				}
-				Line's Width : 2
+				'line's 'width' : 2
 	
-		setup Cloud parts
-		return Cloud
+		setup 'cloud' parts
+		return 'cloud'
+
 
 Remix has a simple library and include file system. Libraries can contain both Java and Remix functions as in the graphics library used in the landscape example.

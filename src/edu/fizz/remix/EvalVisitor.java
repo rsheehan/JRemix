@@ -587,48 +587,44 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return (Block)visitChildren(ctx);
     }
 
-    /** (IDENTIFIER | listElement) POSSESSIVE IDENTIFIER; */
+    /** getterSetterObject POSSESSIVE IDENTIFIER; */
     @Override
     public Expression visitGetterMethodCall(RemixParser.GetterMethodCallContext ctx) {
         String fileName = RemixREPL.getFileName();
         int lineNumber = ctx.getStart().getLine() - 1;
         int lineOffset = ctx.getStart().getCharPositionInLine();
         FunctionCallExpression getterCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
-        ParseTree node = ctx.getChild(0);
-        if (node instanceof RemixParser.ListElementContext) {
-            // must be listElement e.g. 'student' {1}
-            getterCall.addParam((Expression)visit(node));
-        } else {
-            // otherwise WORD is the object name
-            getterCall.addParam(new VarValueExpression(node.getText()));
-        }
-        // second WORD is the field name in the object
-        node = ctx.getChild(2);
-        getterCall.addToName(node.getText());
+        getterCall.addParam((Expression)visit(ctx.getterSetterObject()));
+        getterCall.addToName(ctx.IDENTIFIER().getText());
         return getterCall;
     }
 
-    /** (IDENTIFIER | listElement) POSSESSIVE IDENTIFIER COLON expression */
+    /** getterSetterObject POSSESSIVE IDENTIFIER COLON expression */
     @Override
     public Expression visitSetterMethodCall(RemixParser.SetterMethodCallContext ctx) {
         String fileName = RemixREPL.getFileName();
         int lineNumber = ctx.getStart().getLine() - 1;
         int lineOffset = ctx.getStart().getCharPositionInLine();
         FunctionCallExpression setterCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
-        ParseTree node = ctx.getChild(0);
-        if (node instanceof RemixParser.ListElementContext) {
-            // must be listElement e.g. student{1}
-            setterCall.addParam((Expression)visit(node));
-        } else {
-            // otherwise IDENTIFIER is the object name
-            setterCall.addParam(new VarValueExpression(node.getText()));
-        }
-        // second IDENTIFIER is the field name in the object
-        node = ctx.getChild(2);
-        setterCall.addToName(node.getText());
+        setterCall.addParam((Expression)visit(ctx.getterSetterObject()));
+        setterCall.addToName(ctx.IDENTIFIER().getText());
         // now add the expression
         setterCall.addParam((Expression) visit(ctx.expression()));
         return setterCall;
+    }
+
+    /** IDENTIFIER (from getterSetterObject) */
+    @Override
+    public Expression visitIdentifierGetterSetter(RemixParser.IdentifierGetterSetterContext ctx) {
+        String varName = ctx.IDENTIFIER().getText();
+        return new VarValueExpression(varName);
+    }
+
+    /** CONSTANT (from getterSetterObject) */
+    @Override
+    public Expression visitConstantGetterSetter(RemixParser.ConstantGetterSetterContext ctx) {
+        String constantName = ctx.CONSTANT().getText();
+        return new ConstantValueExpression(constantName);
     }
 
     /** IDENTIFIER (from callPart) */
@@ -638,7 +634,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new VarValueExpression(varName);
     }
 
-    /** CONSTANT (from expression) */
+    /** CONSTANT (from callPart) */
     @Override
     public Expression visitCallConstant(RemixParser.CallConstantContext ctx) {
         String constantName = ctx.CONSTANT().getText();

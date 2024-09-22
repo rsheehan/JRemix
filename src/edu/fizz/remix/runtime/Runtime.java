@@ -138,7 +138,7 @@ public class Runtime {
     /** Run the standard library setting up functions. No longer objects and global data */
     public static void prepareEnvironment() throws Exception {
         initFunctionsAndCompletions();
-        LibraryExpression standardLibrary = RemixREPL.loadPackage("standard-lib.rem");
+        LibraryExpression standardLibrary = RemixREPL.loadPackage("remixLibraries/standard-lib.rem");
         //resetToStandard(); // so the libraries to use are reset to the originals
         // this also makes the currentLibrary the program one
         // merge the standardLibrary into the baseLibrary

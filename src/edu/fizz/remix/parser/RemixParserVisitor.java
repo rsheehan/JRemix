@@ -478,6 +478,27 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSetterMethodCall(RemixParser.SetterMethodCallContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code identifierGetterSetter}
+	 * labeled alternative in {@link RemixParser#getterSetterObject}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdentifierGetterSetter(RemixParser.IdentifierGetterSetterContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code constantGetterSetter}
+	 * labeled alternative in {@link RemixParser#getterSetterObject}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConstantGetterSetter(RemixParser.ConstantGetterSetterContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code listElementGetterSetter}
+	 * labeled alternative in {@link RemixParser#getterSetterObject}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitListElementGetterSetter(RemixParser.ListElementGetterSetterContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link RemixParser#listElement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

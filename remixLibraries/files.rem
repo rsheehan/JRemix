@@ -1,9 +1,23 @@
 ===========================
-'file' Operations and Objects
+File Operations and Objects
 ===========================
 'files library' : library "edu.fizz.remix.libraries.RemixFiles"
 
 	HOME : file directory (home)
+
+	=-
+	A file directory object based on 'directory name'.
+	Can be used to access files inside the directory.
+	=-
+	file directory 'directory name':
+		create
+			'directory' : 'directory name' ⊕ path separator
+
+			file 'name' in ME :
+				a file with absolute path ('directory' ⊕ 'name')
+
+			ME to string :
+				'directory'
 
 	a file with absolute path 'name' :
 		create
@@ -33,8 +47,8 @@
 								'position' ≥ length of 'data'
 
 							next ME :
-								'line' : ""
-								'char' : ""
+								'line' : EMPTY
+								'char' : EMPTY
 								while [('position' ≠ length of 'data') and ('char' ≠ CR)]
 									'char' : (increment 'position') in 'data'
 									'line' : 'line' ⊕ 'char'
@@ -62,7 +76,7 @@
 
 							next ME :
 								throw away whitespace
-								'word' : ""
+								'word' : EMPTY
 								while ['position' ≠ length of 'data']
 									'char' : (increment 'position') in 'data'
 									if ('char' is in WHITE-SPACE)
@@ -100,19 +114,6 @@
 
 					ME to string :
 						"sequence of characters from " ⊕ ('file' to string)
-	=-
-	A file directory object base on 'directory name'.
-	Can be used to access files inside the directory.
-	=-
-	file directory 'directory name':
-		create
-			'directory' : 'directory name' ⊕ path separator
-
-			file 'name' in ME :
-				a file with absolute path ('directory' ⊕ 'name')
-
-			ME to string :
-				'directory'
 
 -==================================================================================================-
 

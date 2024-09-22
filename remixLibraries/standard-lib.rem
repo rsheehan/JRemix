@@ -313,7 +313,7 @@ average 'key' of 'list of maps' :
 	starting with
 		'sum' : 0.0
 	… apply
-		add ('map'{'key'}) to 'sum' ; with the change to quoted variables
+		add ('map' {'key'}) to 'sum' ; with the change to quoted variables
 	… on each 'map' in 'list of maps'
 	'sum' ÷ ('list of maps' length)
 
@@ -450,13 +450,13 @@ to 'list' append 'value' :
 The first 'value' in the 'list'.
 =-
 first in 'list' :
-	'list'{1}
+	'list' {1}
 
 =-
 The last 'value' in the 'list'.
 =-
 last in 'list' :
-	'list'{'list' length}
+	'list' {'list' length}
 
 =-
 Is the 'sequence' empty?
@@ -469,7 +469,7 @@ no/empty 'sequence' :
 Choose a random item from the 'list'.
 =-
 choose from 'list' :
-	'list'{random ('list' length)}
+	'list' {random ('list' length)}
 
 =-
 Is the 'element' in the 'list'?
@@ -496,7 +496,7 @@ Merge the 'extra' map into 'map'.
 =-
 merge 'extra' into 'map' :
 	for each 'item' in 'extra' do
-		'map'{'item'} : 'extra'{'item'}
+		'map' {'item'} : 'extra' {'item'}
 
 ==============================
  Selection functions
@@ -636,15 +636,15 @@ distance from 'A' to 'B' :
 		'A' : xy map from 'A'
 	if ('B' is a "list")
 		'B' : xy map from 'B'
-	'δx' : 'B'{"x"} - 'A'{"x"}
-	'δy' : 'B'{"y"} - 'A'{"y"}
+	'δx' : 'B' {"x"} - 'A' {"x"}
+	'δy' : 'B' {"y"} - 'A' {"y"}
 	√('δx'² + 'δy'²)
 
 =-
 Return xy map from 2 element 'list'
 =-
 xy map from 'list':
-	{ "x" : 'list'{1}, "y" : 'list'{2} }
+	{ "x" : 'list' {1}, "y" : 'list' {2} }
 
 =-
 Radian equivalent of 'angle' degrees.
@@ -676,9 +676,9 @@ Swap 'list' element 'this' with 'that'.
 'this' and 'that' are indexes or keys.
 -
 swap 'list' element 'this' with 'that' :
-	'temp' : 'list'{'this'}
-	'list'{'this'} : 'list'{'that'}
-=	'list'{'that'} : 'temp'
+	'temp' : 'list' {'this'}
+	'list' {'this'} : 'list' {'that'}
+=	'list' {'that'} : 'temp'
 
 ==============================
  Testing functions
@@ -723,8 +723,8 @@ test 'list of tests' :
 		execute MY tests :
 			"Starting tests: " ↲
 			for each 'test' in 'tests' keeping 'test number' do
-				assert test 'test number' ('test'{"description"})
-				… ('test'{"code"}) produces ('test'{"expected"})
+				assert test 'test number' ('test' {"description"})
+				… ('test' {"code"}) produces ('test' {"expected"})
 			↲
 			'test string' : 'tests' length ⊕ SPACE ⊕ (pluralize "test" for ('tests' length))
 			'test string' ↲

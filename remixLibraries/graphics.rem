@@ -114,6 +114,9 @@ Graphics Operations and Objects
 				'colour', 'outline colour',
 				'position', 'size', 'heading'
 
+			getter
+				'type'
+
 			MY 'x-pos' : ; a fake getter
 				'position'{1}
 

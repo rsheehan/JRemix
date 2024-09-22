@@ -3,12 +3,12 @@ using graphics lib, turtle lib
 	'the window' : the graphics panel
 	'turtle space' : turtle space in 'the window'
 
-	'turtles' : a group of 8 turtles
+	'turtles' : a group of 16 turtles
 	'turtles's 'speed' : 40
 	'angle' : 0
 	for each 'turtle' in 'turtles'
 		'turtle's 'colour' : random colour
-		'turtle's 'heading' : add 45 to 'angle'
+		'turtle's 'heading' : add 22.5 to 'angle'
 	place 'turtles' group in 'turtle space'
 
 	'turtles' pattern

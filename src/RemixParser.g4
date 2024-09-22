@@ -111,9 +111,14 @@ expression			: MINUS expression						# exprMinus
 					| LPAREN EOL* expression EOL* RPAREN	# exprParen // after functionCall
 					;
 
-getterMethodCall	: (IDENTIFIER | listElement) POSSESSIVE IDENTIFIER ; // e.g. Robert's Name
+getterMethodCall	: getterSetterObject POSSESSIVE IDENTIFIER ;
 
-setterMethodCall    : (IDENTIFIER | listElement) POSSESSIVE IDENTIFIER COLON expression ; // e.g. Robert's Name : "Rob"
+setterMethodCall    : getterSetterObject POSSESSIVE IDENTIFIER COLON expression	;
+
+getterSetterObject	: IDENTIFIER	# identifierGetterSetter
+					| CONSTANT		# constantGetterSetter
+					| listElement	# listElementGetterSetter // uses listElement only
+					;
 
 listElement			: IDENTIFIER listPart+ ; // access a list element
 

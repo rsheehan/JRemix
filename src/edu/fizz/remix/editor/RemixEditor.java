@@ -81,7 +81,7 @@ public class RemixEditor extends JFrame {
         editorTextPane.setSelectionColor(new Color(100,80,80));
 
         // the base font
-        editorTextPane.setFont(new Font("monospaced", Font.PLAIN, 13)); // previously "Monaco" on Mac
+        editorTextPane.setFont(new Font("monospaced", Font.PLAIN, 14)); // previously "Monaco" on Mac
         doc = new RemixStyledDocument(editorTextPane);
         editorTextPane.setStyledDocument(doc);
         RemixEdLexer.initStyles(doc);
