@@ -7,7 +7,7 @@ using graphics lib
 	'the cloud layer' : 'the window' next layer
 	'the front layer' : 'the window' next layer
 	
-	add the back mountains on 'the back layer'
+	add the mountains on 'the back layer'
 	add the sea on 'the back layer'
 	add the islands on 'the front layer'
 	update 'the window'	
@@ -20,7 +20,7 @@ using graphics lib
 
 -============================================================================-
 
-add the back mountains on 'the back layer' :
+add the mountains on 'the back layer' :
 	repeat 20 times
 		'mountain' : a DARK-GREY mountain with BLACK edges 
 		… of height 300 based at 600
@@ -63,76 +63,66 @@ a 'colour' mountain with 'outline colour' edges
 	'mountain'
 
 =
-A cloud is a composite object comprising of two circles, a rectangle and a line.
+A cloud is a composite object comprising of two circles, a rectangle
+and a line.
 
-Each part is added separately to the same window layer using the list returned from "MY parts".
+Each part is added separately to the same window layer using the list
+returned from "MY parts".
 
 When animated the "move ME" method changes the positions of all the parts.
 The "move ME" also wraps the cloud around when it passes off the window.
 =
 a cloud :
+	
+	- setting up the object's field values
+
 	'base'   : random (STD-HEIGHT - 200)
 	'across' : random STD-WIDTH
 	'r1' : random 10 + 30
 	'r2' : random 10 + 20
 	'distance' : 10
-	if ('r1' > 'r2')
+	if ('r1' > 'r2') ; bigger circle to the right
 		'r1' swap 'r2'
 
-	'cloud' : create
+	'x1' : ('across' - 'r1') + 'distance'
+	'x2' : ('across' + 'r2') - 'distance'
+	'y1' : 'base' - 'r1'
+	'y2' : 'base' - 'r2'
 
+	'circle A' : a WHITE circle of radius 'r1' at { 'x1', 'y1' }
+	'circle A's 'outline colour' : BLACK
+	'circle B' : a WHITE circle of radius 'r2' at { 'x2', 'y2' }
+	'circle B's 'outline colour' : BLACK
+
+	'width' : 'x2' - 'x1'
+	'height' : 'y1' - 'y2' + 'r1'
+	'position' : {
+		('x1' + 'x2') ÷ 2
+		('y1' + 'r1' + 'y2' + 1) ÷ 2
+	}
+
+	'box' : a WHITE box of 'width' x 'height' at 'position'
+	'line' : a BLACK line from {'x1', 'y1' + 'r1'} to {'x2', 'y1' + 'r1'}
+	'line's 'width' : 2
+
+	- creating the object
+	create
 		- these are fields
-
-		'x1' : ('across' - 'r1') + 'distance'
-		'x2' : ('across' + 'r2') - 'distance'
-		'y1' : 'base' - 'r1'
-		'y2' : 'base' - 'r2'
-		'radius A' : 'r1'
-		'radius B' : 'r2'
-		'circle A' : null
-		'circle B' : null
-		'box' : null
-		'line' : null
-
+		'circle A' : 'circle A'
+		'circle B' : 'circle B'
+		'box'  : 'box'
+		'line' : 'line'
+		'size' : 'circle A's 'radius' + 'circle B's 'radius' + 
+		… ('circle B's 'x-pos' - 'circle A's 'x-pos')
 		- these are methods
-
 		MY parts :
 			{ 'circle A', 'circle B', 'box', 'line' }
 
 		move ME :
-			increment 'x1'
-			increment 'x2'
-			if (('x1' - 'radius A') > STD-WIDTH)
-				'back' : 0 - 'radius B'
-				'x1' : 'back' - ('x2' - 'x1')
-				'x2' : 'back'
-			'circle A's 'position' : { 'x1', 'y1' }
-			'circle B's 'position' : { 'x2', 'y2' }
-			'box's 'position' : {
-				('x1' + 'x2') ÷ 2
-				('y1' + 'radius A' + 'y2' + 1) ÷ 2
-			}
-			'line's 'start' : { 'x1', 'y1' + 'radius A' }
-			'line's 'finish' : { 'x2', 'y1' + 'radius A' }
-
-		setup MY parts :
-			'circle A' : a WHITE circle of radius 'radius A' at { 'x1', 'y1' }
-			'circle A's 'outline colour' : BLACK
-			'circle B' : a WHITE circle of radius 'radius B' at { 'x2', 'y2' }
-			'circle B's 'outline colour' : BLACK
-			'position' : {
-				('x1' + 'x2') ÷ 2
-				('y1' + 'radius A' + 'y2' + 1) ÷ 2
-			}
-			'width' : 'x2' - 'x1'
-			'height' : 'y1' - 'y2' + 'radius A'
-			'box' : a WHITE box of 'width' x 'height' at 'position'
-			'line' : a BLACK line from {
-				'x1', 'y1' + 'radius A'
-			} to {
-				'x2', 'y1' + 'radius A'
-			}
-			'line's 'width' : 2
-
-	setup 'cloud' parts
-	return 'cloud'
+			'left edge' : 'circle A's 'x-pos' - 'circle A's 'radius'
+			if ('left edge' < STD-WIDTH) ; ordinary move right
+				for each 'part' in (MY parts)
+					change 'part' x-pos by 1
+			… otherwise ; wrap the cloud around the window
+				for each 'part' in (MY parts)
+					change 'part' x-pos by -(STD-WIDTH + 'size')
