@@ -101,21 +101,33 @@ Graphics Operations and Objects
 	=-
 	a/an 'colour' shape from 'points' scaled by 'size' at 'position':
 
-		create
+		extend a shape at 'position'
 			'type'           : "shape"
 			'colour'         : 'colour'
 			'outline colour' : null ; no outline
 			'polygon'        : 'points'
-			'position'       : 'position'
 			'size'           : 'size'
 			'heading'        : 0.0 ; radians
 
 			getters/setters
 				'colour', 'outline colour',
-				'position', 'size', 'heading'
+				'size', 'heading'
 
 			getter
 				'type'
+
+			change MY heading by 'δd' degrees :
+				add ('δd' degrees as radians) to 'heading'
+
+	=-
+	Create an object with a position.
+	=-
+	a shape at 'position' :
+		create
+			'position' : 'position'
+
+			getter/setter
+				'position'
 
 			MY 'x-pos' : ; a fake getter
 				'position'{1}
@@ -128,9 +140,6 @@ Graphics Operations and Objects
 
 			change MY y-pos by 'δy' :
 				add 'δy' to ('position'{2})
-
-			change MY heading by 'δd' degrees :
-				add ('δd' degrees as radians) to 'heading'
 
 	=====
 	Lines
@@ -150,6 +159,14 @@ Graphics Operations and Objects
 
 			getters/setters
 				'start', 'finish', 'width', 'colour'
+
+			change MY x-pos by 'δx' :
+				add 'δx' to ('start'{1})
+				add 'δx' to ('finish'{1})
+
+			change MY y-pos by 'δy' :
+				add 'δy' to ('start'{2})
+				add 'δy' to ('finish'{2})
 
 	=-
 	Create a green line from 'start' to 'finish'.
@@ -171,16 +188,15 @@ Graphics Operations and Objects
 	Create a 'colour' circle of radius 'radius' at 'position'.
 	=-
 	a/an 'colour' circle of radius 'radius' at 'position' :
-		create
+		extend a shape at 'position'
 			'type'     : "circle"
 			'colour'   : 'colour'
 			'outline colour' : null ; no outline
 			'radius'   : 'radius'
-			'position' : 'position'
 
 			getters/setters
 				'colour', 'outline colour',
-				'radius', 'position'
+				'radius'
 
 	=-
 	Create a random circle.
