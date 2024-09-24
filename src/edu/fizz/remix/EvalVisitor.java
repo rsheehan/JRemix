@@ -634,6 +634,14 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new VarValueExpression(varName);
     }
 
+    /** MINUS expression (from callPart) */
+    @Override
+    public Expression visitCallMinusExpr(RemixParser.CallMinusExprContext ctx) {
+        Expression value = (Expression) visit(ctx.expression());
+        SimpleExpression<Long> minusOne = new SimpleExpression<>(-1L);
+        return new BinaryExpression(minusOne, "*", value);
+    }
+
     /** CONSTANT (from callPart) */
     @Override
     public Expression visitCallConstant(RemixParser.CallConstantContext ctx) {
@@ -661,6 +669,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 funcCall.addBlockParam(expression);
             } else if (node instanceof RemixParser.CallConstantContext ||
                     node instanceof RemixParser.CallVarContext ||
+                    node instanceof RemixParser.CallMinusExprContext ||
                     node instanceof RemixParser.CallParamContext ||
                     node instanceof RemixParser.CallNumberContext ||
                     node instanceof RemixParser.CallWordProductContext ||

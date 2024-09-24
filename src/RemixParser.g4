@@ -131,6 +131,7 @@ functionCall		: callPart callPart+
 					;
 
 callPart			: WORD									# callWord
+					| MINUS expression						# callMinusExpr
 					| CONSTANT								# callConstant
 					| IDENTIFIER							# callVar
 					| LPAREN EOL* expression EOL* RPAREN	# callParam
