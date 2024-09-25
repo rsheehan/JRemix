@@ -132,18 +132,18 @@ another class with same method name :
 			" From another method." ↲
 
 'Robert' : make person called "Robert" of age 64 with "grey" hair
-{ 'Robert's 'name', " ", 'Robert's 'age'} ↲
+{ 'Robert'’s 'name', " ", 'Robert'’s 'age'} ↲
 print person 'Robert'
 'Stephanie' : make person called "Stephanie" of age 61 with "brown" hair
 print person 'Stephanie'
 print person 'Robert'
 print person 'Stephanie'
-'Stephanie's 'name', " ", 'Stephanie's 'age' ↲
+'Stephanie'’s 'name', " ", 'Stephanie'’s 'age' ↲
 
 print person (another class with same method name). new line
-'Robert's 'age' : 11. 'Robert's 'hair' : "blue"
+'Robert'’s 'age' : 11. 'Robert'’s 'hair' : "blue"
 print person 'Robert'
-'Robert's 'name', " ", 'Robert's 'age' ↲ ; possessives are no longer syntactic sugar
+'Robert'’s 'name', " ", 'Robert'’s 'age' ↲ ; possessives are no longer syntactic sugar
 -'Robert' 'name', " ", 'Robert' 'age' ↲ ; so these two lines are the same
 
 'copy' : another class with same method name

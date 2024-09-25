@@ -86,16 +86,16 @@ test {
 
 test {
 	"Simple getter access"
-		'B's 'X'
+		'B'’s 'X'
 	… expected 3
 
 	"Object field as ref variable two level change"
 		add two to 'B' x
-		'B's 'X'
+		'B'’s 'X'
 	… expected 5
 
 	"Object field as ref variable three level change"
 		add four to 'B' x
-		'B's 'X'
+		'B'’s 'X'
 	… expected 9
 }

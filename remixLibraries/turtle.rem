@@ -21,7 +21,7 @@
 				'turtle rate'
 
 			MY 'base-layer' :
-				'the window's 'base-layer'
+				'the window'’s 'base-layer'
 
 			update ME :
 				update 'the window'
@@ -30,15 +30,15 @@
 			Place turtle in the space.
 			==========================
 			place 'turtle' in ME :
-				'turtle's 'turtle space' : ME
-				'turtle's 'animation layer' : 'the window' next layer
+				'turtle'’s 'turtle space' : ME
+				'turtle'’s 'animation layer' : 'the window' next layer
 				update 'the window'
 
 			==================================
 			Place a turtle group in the space.
 			==================================
 			place 'turtle group' group in ME :
-				'turtle group's 'turtle space' : ME
+				'turtle group'’s 'turtle space' : ME
 
 			=============================================
 			Clear the space.
@@ -180,10 +180,10 @@
 					'finish' : MY position after moving 'distance' from 'start'
 					instantly move ME from 'start' to 'finish' in 'animation layer'
 					'remaining' : 'remaining' - 'speed'
-					pause (1.0 ÷ 'turtle space's 'turtle rate') seconds
+					pause (1.0 ÷ 'turtle space'’s 'turtle rate') seconds
 				- now add the "permanent" layer
 				'finish' : MY position after moving 'n' from 'start'
-				instantly move ME from 'start' to 'finish' in ('turtle space's 'base-layer')
+				instantly move ME from 'start' to 'finish' in ('turtle space'’s 'base-layer')
 
 			================================
 			Move the turtle to a 'position'.
@@ -287,7 +287,7 @@
 				'remaining' : 'n'
 				'distance' : 0
 				'starting' : apply
-					'turtle's 'window position'
+					'turtle'’s 'window position'
 				… to each 'turtle' from 'turtles'
 
 				while ['remaining' > 'speed']
@@ -295,22 +295,22 @@
 					for each 'turtle' in 'turtles' keeping 'index'
 						'start' : 'starting' {'index'} ; initial position
 						'finish' : 'turtle' position after moving 'distance' from 'start'
-						instantly move 'turtle' from 'start' to 'finish' in ('turtle's 'animation layer')
+						instantly move 'turtle' from 'start' to 'finish' in ('turtle'’s 'animation layer')
 					'remaining' : 'remaining' - 'speed'
-					pause (1.0 ÷ 'turtle space's 'turtle rate') seconds
+					pause (1.0 ÷ 'turtle space'’s 'turtle rate') seconds
 
 				- now add the "permanent" layer
 				for each 'turtle' in 'turtles' keeping 'index'
 					'start' : 'starting' {'index'}
 					'finish' : 'turtle' position after moving 'n' from 'start'
-					instantly move 'turtle' from 'start' to 'finish' in ('turtle space's 'base-layer')
+					instantly move 'turtle' from 'start' to 'finish' in ('turtle space'’s 'base-layer')
 
 			=================================================
 			Turn each turtle in the group by the same amount.
 			=================================================
 			turn ME 'angle' degrees :
 				for each 'turtle' in 'turtles'
-					'turtle's 'heading' : 'turtle's 'heading' - 'angle'
+					'turtle'’s 'heading' : 'turtle'’s 'heading' - 'angle'
 				update 'turtle space'
 
 			========================================

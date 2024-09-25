@@ -9,7 +9,7 @@
 			'number'
 
 		'other' equals ME :
-			absolute ('number' - 'other's 'number') < 'DELTA'
+			absolute ('number' - 'other'’s 'number') < 'DELTA'
 
 		ME to string :
 			'number' ⊕ " with δ " ⊕ 'DELTA'

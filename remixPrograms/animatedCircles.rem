@@ -10,9 +10,9 @@ animate 'window' :
 	'n' : 3
 	animate 'window' 80 times at 2 ticks per second
 		'polygon' : an 'n' sided polygon
-		'polygon's 'colour' : random colour
-		'polygon's 'size' : 40
-		'polygon's 'position' : { 'x', 'y' }
+		'polygon'’s 'colour' : random colour
+		'polygon'’s 'size' : 40
+		'polygon'’s 'position' : { 'x', 'y' }
 		place 'polygon' in 'window'
 		'n', " sided polygon" ↲
 		add 100 to 'x'

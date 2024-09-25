@@ -6,9 +6,9 @@ using graphics lib
 	'x' : 50
 	for each 'n' from 3 to 12 do
 		'polygon' : an 'n' sided polygon
-		'polygon's 'colour' : random colour
-		'polygon's 'size' : 40
-		'polygon's 'position' : { 'x', STD-HEIGHT ÷ 2 }
+		'polygon'’s 'colour' : random colour
+		'polygon'’s 'size' : 40
+		'polygon'’s 'position' : { 'x', STD-HEIGHT ÷ 2 }
 		place 'polygon' in 'the window'
 		'x' : 'x' + 100
 

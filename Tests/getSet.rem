@@ -15,11 +15,11 @@ a person :
 
 test {
 	"Overwritten user defined getter."
-		'P's 'name'
+		'P'’s 'name'
 	… expected "RobertRobert"
 
 	"User defined setter."
-		'P's 'name' : "Peter"
-		'P's 'name'
+		'P'’s 'name' : "Peter"
+		'P'’s 'name'
 	… expected "*Peter**Peter*"
 }

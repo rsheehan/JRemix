@@ -42,11 +42,11 @@ The first half shows how Remix can be used to develop a program from pseudocode,
 Here is an animated random landscape program in Remix.
 
 	using graphics lib
-	
+
 		'the window' : the graphics panel
-		'the window's 'colour' : SKY-BLUE
+		'the window'’s 'colour' : SKY-BLUE
 		
-		'the back layer'  : 'the window's 'base-layer'
+		'the back layer'  : 'the window'’s 'base-layer'
 		'the cloud layer' : 'the window' next layer
 		'the front layer' : 'the window' next layer
 		
@@ -102,7 +102,7 @@ Here is an animated random landscape program in Remix.
 			{ 'width' ÷ 2, 0 }
 			{ -'width' ÷ 2, 0 }
 		} scaled by 1 at { 'centre', 'level' }
-		'mountain's 'outline colour' : 'outline colour'
+		'mountain'’s 'outline colour' : 'outline colour'
 		'mountain'
 	
 	=
@@ -133,9 +133,9 @@ Here is an animated random landscape program in Remix.
 		'y2' : 'base' - 'r2'
 	
 		'circle A' : a WHITE circle of radius 'r1' at { 'x1', 'y1' }
-		'circle A's 'outline colour' : BLACK
+		'circle A'’s 'outline colour' : BLACK
 		'circle B' : a WHITE circle of radius 'r2' at { 'x2', 'y2' }
-		'circle B's 'outline colour' : BLACK
+		'circle B'’s 'outline colour' : BLACK
 	
 		'width' : 'x2' - 'x1'
 		'height' : 'y1' - 'y2' + 'r1'
@@ -146,29 +146,27 @@ Here is an animated random landscape program in Remix.
 	
 		'box' : a WHITE box of 'width' x 'height' at 'position'
 		'line' : a BLACK line from {'x1', 'y1' + 'r1'} to {'x2', 'y1' + 'r1'}
-		'line's 'width' : 2
-	
+		'line'’s 'width' : 2
 	
 		- creating the object
-		
+
 		create
-	
 			- these are fields
-	
+
 			'circle A' : 'circle A'
 			'circle B' : 'circle B'
 			'box'  : 'box'
 			'line' : 'line'
-			'size' : 'circle A's 'radius' + 'circle B's 'radius' + 
-			… ('circle B's 'x-pos' - 'circle A's 'x-pos')
-				
+			'size' : 'circle A'’s 'radius' + 'circle B'’s 'radius' + 
+			… ('circle B'’s 'x-pos' - 'circle A'’s 'x-pos')
+
 			- these are methods
-	
+
 			MY parts :
 				{ 'circle A', 'circle B', 'box', 'line' }
 	
 			move ME :
-				'left edge' : 'circle A's 'x-pos' - 'circle A's 'radius'
+				'left edge' : 'circle A'’s 'x-pos' - 'circle A'’s 'radius'
 				if ('left edge' < STD-WIDTH) ; ordinary move right
 					for each 'part' in (MY parts)
 						change 'part' x-pos by 1

@@ -58,7 +58,7 @@ public class RemixParser extends Parser {
 			null, null, null, "'\\n'", "'.'", null, null, null, null, null, "' < '", 
 			"' > '", null, null, "' = '", null, null, "'-'", "'null'", null, "'return'", 
 			"'redo'", "'create'", "'extend'", null, null, null, "'library'", "'using'", 
-			null, "'s '"
+			null, "''s '"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();

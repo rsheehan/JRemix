@@ -2,10 +2,10 @@
 
 a random square :
 	'shape' : a square
-	'shape's 'colour'   : random colour
-	'shape's 'size'     : random from 5 to 100
-	'shape's 'position' : random point
-	'shape's 'heading'  : (random 360) degrees as radians
+	'shape'’s 'colour'   : random colour
+	'shape'’s 'size'     : random from 5 to 100
+	'shape'’s 'position' : random point
+	'shape'’s 'heading'  : (random 360) degrees as radians
 	'shape'
 
 using graphics lib

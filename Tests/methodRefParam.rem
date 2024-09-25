@@ -16,7 +16,7 @@ an object :
 test {
 	"original value" ['B'] expected 0
 
-	"instance get" ['Z's 'X'] expected 3
+	"instance get" ['Z'’s 'X'] expected 3
 
 	"updated via method"
 		'Z' add to 'B'

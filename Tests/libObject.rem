@@ -34,11 +34,11 @@ test {
 		'O' method one
 	… expected 29
 	"Getting instance var"
-		'O's 'X'
+		'O'’s 'X'
 	… expected 3
 	"Setting and getting instance var"
-		'O's 'Y' : 8
-		'O's 'Y'
+		'O'’s 'Y' : 8
+		'O'’s 'Y'
 	… expected 8
 }
 
