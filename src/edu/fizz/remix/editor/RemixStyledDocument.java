@@ -61,6 +61,8 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         } else {
             if (text.equals("\n") && !inStringOrComment(offset)) {
                 autoIndent(offset);
+            } else if (inIdentifier(offset)) {
+                super.insertString(offset, text, style);
             } else if (offset > 0 && inStringOrComment(offset - 1)) { // current pos not styled yet
                 super.insertString(offset, text, defaultStyle);
             } else if (text.equals("/") && setterBefore(offset)) {
@@ -216,6 +218,10 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         return result;
     }
 
+    private static boolean inIdentifier(int pos) {
+        String styleName = RemixEdLexer.getStyleName(pos);
+        return styleName.equals("singleQuote") || styleName.equals("variable");
+    }
 
     private static boolean inStringOrComment(int pos) {
         String styleName = RemixEdLexer.getStyleName(pos);
