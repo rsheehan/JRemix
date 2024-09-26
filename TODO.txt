@@ -1,6 +1,8 @@
 I could add a string following "create" and "extend" to store a type name with a Remix object.
 Currently there is no unified way to determine the type except RemixObject.
 
+Multiple iterators over sequences.
+
 There is an inconsistency in the naming of some standard functions.
 e.g.
 for each #Item in Sequence /do [Block] :
