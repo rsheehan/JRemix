@@ -106,15 +106,19 @@ a cloud :
 	'line'’s'width' : 2
 
 	- creating the object
+
 	create
 		- these are fields
+
 		'circle A' : 'circle A'
 		'circle B' : 'circle B'
 		'box'  : 'box'
 		'line' : 'line'
 		'size' : 'circle A'’s'radius' + 'circle B'’s'radius' + 
 		… ('circle B'’s'x-pos' - 'circle A'’s'x-pos')
+
 		- these are methods
+
 		MY parts :
 			{ 'circle A', 'circle B', 'box', 'line' }
 
