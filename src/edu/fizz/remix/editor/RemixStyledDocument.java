@@ -186,7 +186,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
     /* Should we remove surrounding parentheses? */
     private boolean removeParens(int offset, String opening) throws BadLocationException {
-        if ("{[\"".contains(opening))
+        if ("{[\"'".contains(opening))
             return surroundedByParens(offset);
         return false;
     }
