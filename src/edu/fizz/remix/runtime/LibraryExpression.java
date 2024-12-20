@@ -8,7 +8,7 @@ import java.util.HashMap;
  * The method table is shared by all libraries including the main program.
  * The block only makes sense when a file is being loaded with
  * loadPackage or running the contents of the editor window.
- *
+
  * Internal libraries from the "library" expression don't use the block and context.
  * The main program is a library expression which also holds the built-in
  * functions and the standard-lib functions.
@@ -67,7 +67,7 @@ public class LibraryExpression implements Expression {
         // not really a clone, doesn't copy the block.
         LibraryExpression copy = new LibraryExpression();
         copy.functionTable = new HashMap<>(functionTable);
-        copy.methodTable = new HashMap<>(methodTable);
+        methodTable = new HashMap<>(methodTable);
         return copy;
     }
 

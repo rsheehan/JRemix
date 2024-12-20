@@ -5,6 +5,10 @@ File Operations and Objects
 
 	HOME : file directory (home)
 
+	READING : "reading"
+	WRITING : "writing"
+	BOTH : "both"
+
 	=-
 	A file directory object based on 'directory name'.
 	Can be used to access files inside the directory.
@@ -13,18 +17,42 @@ File Operations and Objects
 		create
 			'directory' : 'directory name' ⊕ path separator
 
-			file 'name' in ME :
-				a file with absolute path ('directory' ⊕ 'name')
+			open file 'name' in ME :
+				a file with full path ('directory' ⊕ 'name') for READING
+
+			open file 'name' in ME for 'access' :
+				a file with full path ('directory' ⊕ 'name') for 'access'
 
 			ME to string :
 				'directory'
 
-	a file with absolute path 'name' :
+	=-
+	A file with full path 'name' opened for 'access' type access.
+	'access' can be READING, WRITING or BOTH.
+	=-
+	a file with full path 'name' for 'access':
 		create
 			'name' : 'name'
+			'access' : 'access'
+
+			getter
+				'access'
 
 			read ME :
-				read file 'name' ; Java
+				if ('access' is in { READING, BOTH })
+					return read file 'name' ; Java
+				'name', " is not open for reading." ↲
+				""
+
+			write 'contents' to ME :
+				if ('access' is in { WRITING, BOTH })
+					return write 'contents' to file 'name'
+				'name', " is not open for writing." ↲
+
+			append 'contents' to ME :
+				if ('access' is in { WRITING, BOTH })
+					return write (read ME ⊕ 'contents') to file 'name'
+				'name', " is not open for writing." ↲
 
 			ME to string :
 				'name'
@@ -38,20 +66,7 @@ File Operations and Objects
 					'file' : ME
 
 					start ME :
-						-iterator
-						create
-							'data' : read 'file'
-							'position' : 0
-
-							end ME :
-								'position' ≥ length of 'data'
-
-							next ME :
-								'line' : EMPTY
-								'char' : EMPTY
-								while [('position' ≠ length of 'data') and ('char' ≠ CR)]
-									'char' : (increment 'position') in 'data'
-									'line' : 'line' ⊕ 'char'
+						line iterator from 'file'
 
 					ME to string :
 						"sequence of lines from " ⊕ ('file' to string)
@@ -65,30 +80,8 @@ File Operations and Objects
 					'file' : ME
 
 					start ME :
-						-iterator
-						create
-							'data' : read 'file'
-							'position' : 0
+						word iterator from 'file'
 
-							end ME :
-								throw away whitespace
-								'position' = length of 'data'
-
-							next ME :
-								throw away whitespace
-								'word' : EMPTY
-								while ['position' ≠ length of 'data']
-									'char' : (increment 'position') in 'data'
-									if ('char' is in WHITE-SPACE)
-										return 'word'
-									'word' : 'word' ⊕ 'char'
-
-							throw away whitespace :
-								while ['position' ≠ length of 'data']
-									'char' : (increment 'position') in 'data'
-									if ('char' is not in WHITE-SPACE)
-										decrement 'position'
-										return
 					ME to string :
 						"sequence of words from " ⊕ ('file' to string)
 
@@ -101,21 +94,72 @@ File Operations and Objects
 					'file' : ME
 
 					start ME :
-						-iterator
-						create
-							'data' : read 'file'
-							'position' : 0
-
-							end ME :
-								'position' = length of 'data'
-
-							next ME :
-								(increment 'position') in 'data'
+						character iterator from 'file'
 
 					ME to string :
 						"sequence of characters from " ⊕ ('file' to string)
 
--==================================================================================================-
+	=-
+	Create a line iterator from the 'file'.
+	=-
+	line iterator from 'file' :
+		create
+			'data' : read 'file'
+			'position' : 0
+
+			end ME :
+				'position' = length of 'data'
+
+			next ME :
+				'line' : EMPTY
+				'char' : EMPTY
+				while [('position' ≠ length of 'data') and ('char' ≠ CR)]
+					'char' : (increment 'position') in 'data'
+					'line' : 'line' ⊕ 'char'
+
+	=-
+	Create a word iterator from the 'file'.
+	=-
+	word iterator from 'file' :
+		create
+			'data' : read 'file'
+			'position' : 0
+
+			end ME :
+				throw away whitespace
+				'position' = length of 'data'
+
+			next ME :
+				throw away whitespace
+				'word' : EMPTY
+				while ['position' ≠ length of 'data']
+					'char' : (increment 'position') in 'data'
+					if ('char' is in WHITE-SPACE)
+						return 'word'
+					'word' : 'word' ⊕ 'char'
+
+			throw away whitespace :
+				while ['position' ≠ length of 'data']
+					'char' : (increment 'position') in 'data'
+					if ('char' is not in WHITE-SPACE)
+						decrement 'position'
+						return
+
+	=-
+	Create a character iterator from the 'file'.
+	=-
+	character iterator from 'file':
+		create
+			'data' : read 'file'
+			'position' : 0
+
+			end ME :
+				'position' = length of 'data'
+
+			next ME :
+				(increment 'position') in 'data'
+
+-============================================================================-
 
 "Files library loaded." ↲
 'files library'

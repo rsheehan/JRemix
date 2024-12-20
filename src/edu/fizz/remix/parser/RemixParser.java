@@ -1,4 +1,4 @@
-// Generated from /Users/robert/IdeaProjects/remix/src/RemixParser.g4 by ANTLR 4.13.1
+// Generated from /Users/robert/IdeaProjects/remix/src/RemixParser.g4 by ANTLR 4.13.2
 package edu.fizz.remix.parser;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
 public class RemixParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.13.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.13.2", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -57,8 +57,7 @@ public class RemixParser extends Parser {
 			null, "':'", "'('", "')'", "'['", "']'", "'{'", "'}'", "','", "'~'", 
 			null, null, null, "'\\n'", "'.'", null, null, null, null, null, "' < '", 
 			"' > '", null, null, "' = '", null, null, "'-'", "'null'", null, "'return'", 
-			"'redo'", "'create'", "'extend'", null, null, null, "'library'", "'using'", 
-			null, "''s '"
+			"'redo'", "'create'", "'extend'", null, null, null, "'library'", "'using'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();

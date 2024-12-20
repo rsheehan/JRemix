@@ -1,6 +1,6 @@
 using files lib
 
-	'abc file' : file "abc.txt" in HOME
+	'abc file' : open file "abc.txt" in HOME
 	"File: ", 'abc file' ↲
 	↲
 	'contents' : read 'abc file'
@@ -13,7 +13,7 @@ using files lib
 	'words' : words from 'abc file'
 	'chars' : characters from 'abc file'
 
-	-WriteFile : file "abcWrite.txt" in HOME
+	'write file' : open file "abcWrite.txt" in HOME for BOTH
 ↲
 'lines' ↲
 for each 'line' in 'lines' keeping 'count' do
@@ -26,6 +26,12 @@ for each 'word' in 'words' do
 'chars' ↲
 for each 'char' in 'chars' do
 	'char', " " ~
-↲
+↲↲
+'write file' ↲
 
-HOME ↲
+append "Hello world! " to 'write file'
+
+'words' : words from 'write file'
+for each 'word' in 'words' do
+	'word' ↲
+

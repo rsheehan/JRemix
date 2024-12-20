@@ -1,0 +1,9 @@
+using files lib
+	'write file' : open file "abcWrite.txt" in HOME for BOTH
+
+append "\nHello world!" to 'write file'
+read 'write file' ↲
+"--------" ↲
+'lines' : lines from 'write file'
+for each 'line' in 'lines' 
+	'line' ~

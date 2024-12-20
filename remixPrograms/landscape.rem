@@ -74,7 +74,7 @@ The "move ME" also wraps the cloud around when it passes off the window.
 =
 a cloud :
 	
-	- setting up the object'’s field values
+	- setting up the object’s field values
 
 	'base'   : random (STD-HEIGHT - 200)
 	'across' : random STD-WIDTH

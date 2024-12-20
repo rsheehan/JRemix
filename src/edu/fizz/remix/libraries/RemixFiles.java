@@ -57,13 +57,13 @@ public class RemixFiles extends LibraryExpression {
                     List.of("name"),
                     List.of(false),
                     false,
-                    "Read the entire contents of file \"name\"."
+                    "Read the entire contents of file 'name'."
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            String fileName = (String)context.retrieve(("name"));
+            String fileName = (String)context.retrieve("name");
             String result = "";
             try {
                 result = Files.readString(Path.of(fileName));
@@ -72,6 +72,33 @@ public class RemixFiles extends LibraryExpression {
                 throw new RuntimeException(e);
             }
             return result;
+        }
+    }
+
+    public static final class WriteFileContents extends Function {
+
+        public WriteFileContents() {
+            super(
+                    List.of("write | to file |"),
+                    List.of("contents", "name"),
+                    List.of(false, false),
+                    false,
+                    "Write the entire 'contents' to file 'name'.\n" +
+                            "Overwrites any existing contents."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            String data = (String)context.retrieve("contents");
+            String fileName = (String)context.retrieve("name");
+            try {
+                // returns the path
+                return Files.writeString(Path.of(fileName), data);
+            } catch (IOException e) {
+                System.err.println(e);
+                throw new RuntimeException(e);
+            }
         }
     }
 
