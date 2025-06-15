@@ -1,0 +1,14 @@
+using files lib
+
+	'abc file' : open file "abc.txt" in HOME for BINARY-READING
+	"File: ", 'abc file' ↲
+	↲
+	'binary contents' : binary read 'abc file'
+
+	"Contents" ↲
+	"========" ↲
+	'binary contents' ↲
+	"========" ↲
+
+	'iterator' : byte iterator from 'abc file'
+	"iterator: ", 'iterator'↲

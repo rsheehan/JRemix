@@ -1,0 +1,67 @@
+DOT-SIZE : 4
+DOT-SPACE : 5
+
+using files lib, graphics lib
+
+	'window' : the graphics panel
+
+	'directory' : file directory "/Users/robert/Documents/AppleII/ROMS"
+
+	'video ROM' : open file "IIE.US#062000" in 'directory' for BINARY-READING
+	"File: ", 'video ROM' ↲
+	↲
+
+	'across' : 0
+	'down' : 0
+	'char rows' : { }
+	'bytes' : bytes from 'video ROM'
+	for each 'byte' in 'bytes' keeping 'count'
+		if ('count' > 256 × 8)
+			return
+		append 'byte' to 'char rows'
+		if (length of 'char rows' = 8)
+			display 'char rows' at 'across' 'down' in 'window'
+			'char rows' : { }
+			increment 'across'
+			if ('across' = 16)
+				'across' : 0
+				add 8 to 'down'
+
+
+display 'character' at 'across' 'down' in 'window' :
+	'character', " across: ", 'across', " down: ", 'down' ↲
+	for each 'byte' in 'character' keeping 'byte count'
+		for each 'bit' in (bits from 'byte') keeping 'bit count'
+			if (not 'bit')
+				'x' : ('across' + 1) × 7 - 'bit count' + 2
+				'y' : 'down' + 'byte count' + 1
+				square at { 'x', 'y' } in 'window'
+=
+Graphics stuff
+=
+square at 'position' in 'window' :
+	'x' : 'position'{1} × DOT-SPACE
+	'y' : 'position'{2} × DOT-SPACE
+	'square' : a RED box of DOT-SIZE x DOT-SIZE at { 'x', 'y' }
+	place 'square' in 'window'
+	update 'window'
+	
+
+bits from 'value' :
+	create
+		'value' : 'value'
+		
+		start ME :
+			create
+				'value' : 'value'
+				'bit pos' : 128
+		
+				end ME :
+					'bit pos' = 0
+		
+				next ME :
+					'result' : 'value' ≥ 'bit pos'
+					if 'result'
+						subtract 'bit pos' from 'value'
+					divide 'bit pos' by 2
+					'result'

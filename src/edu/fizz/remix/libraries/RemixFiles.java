@@ -102,4 +102,30 @@ public class RemixFiles extends LibraryExpression {
         }
     }
 
+    public static final class ReadBinaryFileContents extends Function {
+
+        public ReadBinaryFileContents() {
+            super(
+                    List.of("read binary file |"),
+                    List.of("name"),
+                    List.of(false),
+                    false,
+                    "Read the entire contents of binary file 'name'."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            String fileName = (String)context.retrieve("name");
+            byte[] result;
+            try {
+                result = Files.readAllBytes(Path.of(fileName));
+            } catch (IOException e) {
+                System.err.println(e);
+                throw new RuntimeException(e);
+            }
+            return result;
+        }
+    }
+
 }

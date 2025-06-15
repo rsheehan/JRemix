@@ -8,6 +8,7 @@ File Operations and Objects
 	READING : "reading"
 	WRITING : "writing"
 	BOTH : "both"
+	BINARY-READING : "bin reading"
 
 	=-
 	A file directory object based on 'directory name'.
@@ -28,7 +29,7 @@ File Operations and Objects
 
 	=-
 	A file with full path 'name' opened for 'access' type access.
-	'access' can be READING, WRITING or BOTH.
+	'access' can be READING, WRITING, BOTH, BINARY-READING.
 	=-
 	a file with full path 'name' for 'access':
 		create
@@ -46,13 +47,17 @@ File Operations and Objects
 
 			write 'contents' to ME :
 				if ('access' is in { WRITING, BOTH })
-					return write 'contents' to file 'name'
+					return write 'contents' to file 'name' ; Java
 				'name', " is not open for writing." ↲
 
 			append 'contents' to ME :
 				if ('access' is in { WRITING, BOTH })
 					return write (read ME ⊕ 'contents') to file 'name'
 				'name', " is not open for writing." ↲
+
+			binary read ME :
+				if ('access' = BINARY-READING)
+					return read binary file 'name' ; Java
 
 			ME to string :
 				'name'
@@ -98,6 +103,20 @@ File Operations and Objects
 
 					ME to string :
 						"sequence of characters from " ⊕ ('file' to string)
+
+			=============================================
+			Produces a sequence of bytes from the 'file'.
+			This can be used in for loops.
+			=============================================
+			bytes from ME :
+				create
+					'file' : ME
+
+					start ME :
+						byte iterator from 'file'
+
+					ME to string :
+						"sequence of bytes from " ⊕ ('file' to string)
 
 	=-
 	Create a line iterator from the 'file'.
@@ -148,7 +167,7 @@ File Operations and Objects
 	=-
 	Create a character iterator from the 'file'.
 	=-
-	character iterator from 'file':
+	character iterator from 'file' :
 		create
 			'data' : read 'file'
 			'position' : 0
@@ -158,6 +177,24 @@ File Operations and Objects
 
 			next ME :
 				(increment 'position') in 'data'
+
+	=-
+	Create a byte iterator from the 'file'
+	Bytes from this are values from 0 to 255.
+	=-
+	byte iterator from 'file' :
+		create
+			'data' : binary read 'file'
+			'position' : 0
+
+			end ME :
+				'position' = length of 'data'
+
+			next ME :
+				'value' : (increment 'position') in 'data'
+				if ('value' < 0)
+					'value' : 'value' + 256
+				return 'value'
 
 -============================================================================-
 

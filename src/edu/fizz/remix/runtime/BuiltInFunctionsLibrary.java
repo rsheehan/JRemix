@@ -531,6 +531,12 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 } else {
                     return range.get(index - 1 );
                 }
+            } else if (object instanceof byte[] array) {
+                if (index < 1 || index > array.length) {
+                    return new RemixNull();
+                } else {
+                    return (long)array[index - 1]; // converts to long
+                }
             }
             return new RemixNull();
         }
@@ -585,7 +591,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 length = map.size();
             } else if (object instanceof RangeExpression range) {
                 length = range.size();
-            }
+            } else if (object instanceof byte[] array)
+                length = array.length;
             return length;
         }
     }
@@ -629,6 +636,36 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             else if (value instanceof Long)
                 d = ((Long)value).doubleValue();
             return Math.sqrt(d);
+        }
+
+    }
+
+    public static final class PowerFunction extends Function {
+        public PowerFunction() {
+            super(
+                    List.of("| to the power of |", "| ^ |"),
+                    List.of("Number", "Power"),
+                    List.of(false, false),
+                    false,
+                    "Raise \"Number\" to \"Power\"."
+            );
+        }
+
+        @Override
+        public Double execute(Context context) {
+            double d = 0;
+            double p = 0;
+            Object value = context.retrieve("Number");
+            if (value instanceof Double)
+                d = (Double)value;
+            else if (value instanceof Long)
+                d = ((Long)value).doubleValue();
+            Object power = context.retrieve("Power");
+            if (power instanceof Double)
+                p = (Double)power;
+            else if (power instanceof Long)
+                p = ((Long)power).doubleValue();
+            return Math.pow(d, p);
         }
 
     }
