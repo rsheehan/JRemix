@@ -66,34 +66,32 @@ public class RemixEdLexer {
         defaultStyle.addAttributes(attr);
         // variables
 //        variable = makeStyle("variable", new Color(200,200,200), false, true, defaultStyle); // was italic
-        variable = makeStyle("variable", Color.white, false, new Color(0,0,100), defaultStyle); // was italic
+        variable = makeStyle("variable", Color.white, false, true, defaultStyle); // was italic
         // singleQuote
-        singleQuote = makeStyle("singleQuote", new Color(100,100,100), false, null, defaultStyle);
+        singleQuote = makeStyle("singleQuote", new Color(60,60,60), false, false, defaultStyle);
         // parentheses
-        parentheses = makeStyle("parentheses", new Color(150,150,250), false, null, defaultStyle);
+        parentheses = makeStyle("parentheses", new Color(150,150,250), false, false, defaultStyle);
         // comments, all sorts
-        comment = makeStyle("comment",new Color(170,121,66), true, null, defaultStyle);
+        comment = makeStyle("comment",new Color(170,121,66), true, false, defaultStyle);
         // operator text
-        operator = makeStyle("operator", Color.green, false, null, defaultStyle); // was italic
+        operator = makeStyle("operator", Color.green, false, false, defaultStyle); // was italic
         // literals
-        literal = makeStyle("literal", Color.cyan, true, null, defaultStyle);
+        literal = makeStyle("literal", Color.cyan, true, false, defaultStyle);
         // string - just a version of literal for the RemixStyleDocument code
-        string = makeStyle("string", new Color(255,200,200), true, null, defaultStyle);
+        string = makeStyle("string", new Color(255,200,200), true, false, defaultStyle);
         // keywords
-        keyword = makeStyle("keyword", Color.red, false, null, defaultStyle);
+        keyword = makeStyle("keyword", Color.red, false, false, defaultStyle);
         // separator
-        separator = makeStyle("separator", Color.magenta, false, null, defaultStyle);
+        separator = makeStyle("separator", Color.magenta, false, false, defaultStyle);
     }
 
-    private static Style makeStyle(String name, Color colour, boolean italic, Color background, Style base) {
+    private static Style makeStyle(String name, Color colour, boolean italic, boolean underline, Style base) {
         Style newStyle = document.addStyle(name, base);
         SimpleAttributeSet attr = new SimpleAttributeSet();
         if (colour != null)
             StyleConstants.setForeground(attr, colour);
         StyleConstants.setItalic(attr, italic);
-//        StyleConstants.setUnderline(attr, underline);
-        if (background != null)
-            StyleConstants.setBackground(attr, background);
+        StyleConstants.setUnderline(attr, underline);
         newStyle.addAttributes(attr);
         return newStyle;
     }

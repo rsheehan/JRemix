@@ -118,12 +118,15 @@ for each #number from 'start' to 'finish' /do ['block'] :
 
 =-
 Run 'block' for each 'number' from 'start' to 'finish' in steps of 'step'.
+'step' is coerced to be positive if 'start' ≤ 'finish' otherwise negative.
 =-
 for each #number from 'start' to 'finish' in steps of 'step' /do ['block']:
-	if ('start' < 'finish')
+	if ('start' ≤ 'finish')
 		'test' : [#number ≤ 'finish']
+		'step' : absolute 'step'
 	… otherwise
 		'test' : [#number ≥ 'finish']
+		'step' : -(absolute 'step')
 	#number : 'start'
 	while 'test' do
 		'last' : do 'block'

@@ -1,0 +1,26 @@
+test {
+	"low to high positive step" 
+		for each 'n' from 0 to 2 in steps of 1 
+			'n'
+	… expected 2,
+	"low to high negative step" 
+		for each 'n' from 0 to 2 in steps of -1 
+			'n'
+	… expected 2,
+	"same to same positive step" 
+		for each 'n' from 0 to 0 in steps of 1 
+			'n'
+	… expected 0,
+	"same to same negative step" 
+		for each 'n' from 0 to 0 in steps of -1 
+			'n'
+	… expected 0,
+	"high to low positive step" 
+		for each 'n' from 2 to 0 in steps of 1 
+			'n'
+	… expected 0,
+	"high to low negative step" 
+		for each 'n' from 2 to 0 in steps of -1 
+			'n'
+	… expected 0
+}
