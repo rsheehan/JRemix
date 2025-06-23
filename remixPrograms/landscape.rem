@@ -1,48 +1,48 @@
 using graphics lib
 
-	'the window' : the graphics panel
-	'the window'’s 'colour' : SKY-BLUE
+	'window' : the graphics panel
+	'window'’s 'colour' : SKY-BLUE
 	
-	'the back layer'  : 'the window'’s 'base-layer'
-	'the cloud layer' : 'the window' next layer
-	'the front layer' : 'the window' next layer
+	'back layer'  : 'window'’s 'base-layer'
+	'cloud layer' : 'window' next layer
+	'front layer' : 'window' next layer
 	
-	add the mountains on 'the back layer'
-	add the sea on 'the back layer'
-	add the islands on 'the front layer'
-	update 'the window'	
+	add the mountains on the 'back layer'
+	add the sea on the 'back layer'
+	add the islands on the 'front layer'
+	update 'window'	
 
-	'the clouds' : 10 clouds in 'the cloud layer'
+	'the clouds' : 10 clouds in the 'cloud layer'
 
-	animate 'the window' 1000 times at 30 ticks per second
+	animate 'window' 100 times at 30 ticks per second
 		for each 'cloud' in 'the clouds'
 			move 'cloud'
 
 -============================================================================-
 
-add the mountains on 'the back layer' :
+add the mountains on the 'back layer' :
 	repeat 20 times
 		'mountain' : a DARK-GREY mountain with BLACK edges 
 		… of height 300 based at 600
-		place 'mountain' in 'the back layer'
+		place 'mountain' in 'back layer'
 
-add the sea on 'the back layer' :
+add the sea on the 'back layer' :
 	'sea' : a DARK-BLUE box of STD-WIDTH x 200 at {
 		STD-WIDTH ÷ 2
 		STD-HEIGHT - 100
 	}
-	place 'sea' in 'the back layer'
+	place 'sea' in 'back layer'
 
-add the islands on 'the front layer' :
+add the islands on the 'front layer' :
 	for each 'location' from 650 to 680 in steps of 3 do
 		'island' : a GREY mountain with WHITE edges
 		… of height 250 based at 'location'
-		place 'island' in 'the front layer'
+		place 'island' in 'front layer'
 
-'n' clouds in 'the cloud layer' :
+'n' clouds in the 'cloud layer' :
 	apply
 		'cloud' : a cloud
-		place ('cloud' parts) in 'the cloud layer'
+		place ('cloud' parts) in 'cloud layer'
 		'cloud'
 	… 'n' times
 
