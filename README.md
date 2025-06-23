@@ -40,6 +40,9 @@ More information about Remix can be found in this [presentation](https://github.
 The first half shows how Remix can be used to develop a program from pseudocode, the second half briefly describes the language.
 
 Here is an animated random landscape program in Remix. N.B. This is how it appears in the Remix editor. In particular note the underlining of variable names.
-![landscapePages.pdf](images/landscapePages.png)
+![landscape1.png](images/landscape1.png)
+![landscape2.png](images/landscape2.png)
+![landscape3.png](images/landscape3.png)
+
 
 Remix has a simple library and include file system. Libraries can contain both Java and Remix functions as in the graphics library used in the landscape example.
