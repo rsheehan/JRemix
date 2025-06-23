@@ -29,6 +29,8 @@ Think about ranges being used in multidimensional ListMaps. See GetElementExpres
 Allow operations to modify blocks. e.g. concatenation
 Thus moving blocks into more first class object status.
 
+Check that method names can have optional words as function names can.
+
 Error messages required
 =======================
 Dealing with null (NULL?) returned values

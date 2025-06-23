@@ -17,6 +17,8 @@ import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,6 +32,7 @@ import java.util.Scanner;
 
 public class RemixEditor extends JFrame {
 
+    public static final int SIZE = 14;
     private final JTextPane editorTextPane;
     private Point caretPoint; // the point of the top left of the caret within the document pane
     // this is always set when a caret update occurs
@@ -76,12 +79,13 @@ public class RemixEditor extends JFrame {
         editorTextPane = new JTextPane();
         editorTextPane.addKeyListener(new CatchKeys());
         editorTextPane.setMargin(new Insets(5,10,5,10));
+        editorTextPane.setForeground(Color.white);
         editorTextPane.setBackground(Color.black);
         editorTextPane.setCaretColor(Color.white);
         editorTextPane.setSelectionColor(new Color(100,80,80));
 
         // the base font
-        editorTextPane.setFont(new Font("monospaced", Font.PLAIN, 14)); // previously "Monaco" on Mac
+        editorTextPane.setFont(new Font("monospaced", Font.PLAIN, SIZE)); // previously "Monaco" on Mac
         doc = new RemixStyledDocument(editorTextPane);
         editorTextPane.setStyledDocument(doc);
         RemixEdLexer.initStyles(doc);
@@ -346,6 +350,8 @@ public class RemixEditor extends JFrame {
         menu.add(openAction);
         SaveFileAction saveAction = new SaveFileAction();
         menu.add(saveAction);
+        PrintFileAction printAction = new PrintFileAction();
+        menu.add(printAction);
         return menu;
     }
 
@@ -444,7 +450,7 @@ public class RemixEditor extends JFrame {
 
     class SaveFileAction extends AbstractAction {
         public SaveFileAction() {
-            super("Save");
+            super("Save…");
         }
 
         @Override
@@ -461,6 +467,23 @@ public class RemixEditor extends JFrame {
                     Files.write(Path.of(currentDirectory, remFileName), editorTextPane.getText().getBytes());
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
+                }
+            }
+        }
+    }
+
+    class PrintFileAction extends AbstractAction {
+        public PrintFileAction() { super("Print…");}
+
+        @Override
+        public void actionPerformed(ActionEvent ev) {
+            PrinterJob job = PrinterJob.getPrinterJob();
+            job.setPrintable(editorTextPane.getPrintable(null, null));
+            if (job.printDialog()) {
+                try {
+                    job.print();
+                } catch (PrinterException e) {
+                    System.err.println("Error during printing: " + e.getMessage());
                 }
             }
         }

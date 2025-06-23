@@ -9,6 +9,7 @@ import static java.lang.Character.isDigit;
 import static java.lang.System.err;
 
 public class RemixEdLexer {
+
     private enum LexMode {
         startOfLine,
         insideLine,
@@ -65,23 +66,23 @@ public class RemixEdLexer {
         StyleConstants.setForeground(attr, Color.white);
         defaultStyle.addAttributes(attr);
         // variables
-        variable = makeStyle("variable", Color.white, false, true, 14, defaultStyle); // was italic
+        variable = makeStyle("variable", Color.white, false, true, RemixEditor.SIZE, defaultStyle); // was italic
         // singleQuote
-        singleQuote = makeStyle("singleQuote", new Color(60,60,60), false, false, 6, defaultStyle);
+        singleQuote = makeStyle("singleQuote", new Color(70,70,70), false, false, RemixEditor.SIZE / 2, defaultStyle);
         // parentheses
-        parentheses = makeStyle("parentheses", new Color(150,150,250), false, false, 14, defaultStyle);
+        parentheses = makeStyle("parentheses", new Color(150,150,250), false, false, RemixEditor.SIZE, defaultStyle);
         // comments, all sorts
-        comment = makeStyle("comment",new Color(170,121,66), true, false, 14, defaultStyle);
+        comment = makeStyle("comment",new Color(170,121,66), true, false, RemixEditor.SIZE, defaultStyle);
         // operator text
-        operator = makeStyle("operator", Color.green, false, false, 14, defaultStyle); // was italic
+        operator = makeStyle("operator", Color.green, false, false, RemixEditor.SIZE, defaultStyle); // was italic
         // literals
-        literal = makeStyle("literal", Color.cyan, true, false, 14, defaultStyle);
+        literal = makeStyle("literal", Color.cyan, true, false, RemixEditor.SIZE, defaultStyle);
         // string - just a version of literal for the RemixStyleDocument code
-        string = makeStyle("string", new Color(255,200,200), true, false, 14, defaultStyle);
+        string = makeStyle("string", new Color(255,200,200), true, false, RemixEditor.SIZE, defaultStyle);
         // keywords
-        keyword = makeStyle("keyword", Color.red, false, false, 14, defaultStyle);
+        keyword = makeStyle("keyword", Color.red, false, false, RemixEditor.SIZE, defaultStyle);
         // separator
-        separator = makeStyle("separator", Color.magenta, false, false, 14, defaultStyle);
+        separator = makeStyle("separator", Color.magenta, false, false, RemixEditor.SIZE, defaultStyle);
     }
 
     private static Style makeStyle(String name, Color colour, boolean italic, boolean underline, int size, Style base) {
