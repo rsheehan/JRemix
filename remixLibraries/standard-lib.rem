@@ -100,7 +100,7 @@ Run 'block' for each 'item' in the 'sequence'.
 Return either the last statement value or whatever is returned from 'block'.
 A sequence here is a list, range, map, string or sequence object.
 =-
-for each #item in 'sequence' /do ['block'] :
+for each #item in /the 'sequence' /do ['block'] :
 	'pos' : start 'sequence'
 	do
 		if (end 'pos')
@@ -139,7 +139,7 @@ Run 'block' for each 'item' in the 'sequence' at all positions from 'start' to '
 'block' will usually use the variable passed as 'item'.
 A sequence here is a list, range, string or sequence object with a 'pos' in 'sequence' method.
 =-
-for each #item in 'sequence' from position 'start' to 'finish' /do ['block'] :
+for each #item in /the 'sequence' from position 'start' to 'finish' /do ['block'] :
 	for each 'pos' from 'start' to 'finish' do
 		#item : 'pos' in 'sequence'
 		do 'block'
@@ -148,7 +148,7 @@ for each #item in 'sequence' from position 'start' to 'finish' /do ['block'] :
 Run 'block' for each 'item' in the 'sequence' keeping count in 'count'.
 A sequence here is a list, range, map, string or sequence object.
 =-
-for each #item in 'sequence' keeping #count /do ['block'] :
+for each #item in /the 'sequence' keeping #count /do ['block'] :
 	#count : 0
 	for each #item in 'sequence' do
 		increment #count
