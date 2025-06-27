@@ -97,7 +97,7 @@ public class Graphics extends LibraryExpression {
 
         public WindowFunction() {
             super(
-                    List.of("a | window of | by |", "an | window of | by |"),
+                    List.of("a ⫾ window of ⫾ by ⫾", "an ⫾ window of ⫾ by ⫾"),
                     List.of("title", "width", "height"),
                     List.of(false, false, false),
                     false,
@@ -118,7 +118,7 @@ public class Graphics extends LibraryExpression {
 
         public WindowGraphicsPanelFunction() {
             super(
-                    List.of("the | graphics panel"),
+                    List.of("the ⫾ graphics panel"),
                     List.of("JWindow"),
                     List.of(false),
                     false,
@@ -137,7 +137,7 @@ public class Graphics extends LibraryExpression {
 
         public BaseLayerFunction() {
             super(
-                    List.of("| base-layer", "the | base-layer"),
+                    List.of("⫾ base-layer", "the ⫾ base-layer"),
                     List.of("graphics panel"),
                     List.of(false),
                     false,
@@ -156,7 +156,7 @@ public class Graphics extends LibraryExpression {
 
         public ClearBaseLayerFunction() {
             super(
-                    List.of("clear | base-layer"),
+                    List.of("clear ⫾ base-layer"),
                     List.of("graphics panel"),
                     List.of(false),
                     false,
@@ -176,7 +176,7 @@ public class Graphics extends LibraryExpression {
 
         public SetGraphicsBackgroundFunction() {
             super(
-                    List.of("make | background |", "make the | background |"),
+                    List.of("make ⫾ background ⫾", "make the ⫾ background ⫾"),
                     List.of("graphics panel", "colour"),
                     List.of(false, false),
                     false,
@@ -196,7 +196,7 @@ public class Graphics extends LibraryExpression {
     public static final class ShowWindowFunction extends Function {
         public ShowWindowFunction() {
             super(
-                    List.of("show |"),
+                    List.of("show ⫾"),
                     List.of("window"),
                     List.of(false),
                     false,
@@ -215,7 +215,7 @@ public class Graphics extends LibraryExpression {
     public static final class RefreshGraphicsFunction extends Function {
         public RefreshGraphicsFunction() {
             super(
-                    List.of("refresh |"),
+                    List.of("refresh ⫾"),
                     List.of("graphics panel"),
                     List.of(false),
                     false,
@@ -234,7 +234,7 @@ public class Graphics extends LibraryExpression {
 //    public static final class ClearLayersFunction extends Function {
 //        public ClearLayersFunction() {
 //            super(
-//                    List.of("clear all | layers", "clear | layer"),
+//                    List.of("clear all ⫾ layers", "clear ⫾ layer"),
 //                    List.of("Graphics-Panel"),
 //                    List.of(false),
 //                    false,
@@ -254,7 +254,7 @@ public class Graphics extends LibraryExpression {
     public static final class ClearTransientLayersFunction extends Function {
         public ClearTransientLayersFunction() {
             super(
-                    List.of("clear transient | layers", "clear transient | layer"),
+                    List.of("clear transient ⫾ layers", "clear transient ⫾ layer"),
                     List.of("graphics panel"),
                     List.of(false),
                     false,
@@ -331,7 +331,7 @@ public class Graphics extends LibraryExpression {
 
         public AddShapeToBaseLayerFunction() {
             super(
-                    List.of("add the | to the | image"),
+                    List.of("add the ⫾ to the ⫾ image"),
                     List.of("shape", "base-layer"),
                     List.of(false, false),
                     false,
@@ -369,7 +369,7 @@ public class Graphics extends LibraryExpression {
 
         public AddShapeFunction() {
             super(
-                    List.of("add the | to the |"),
+                    List.of("add the ⫾ to the ⫾"),
                     List.of("shape", "graphics panel"),
                     List.of(false, false),
                     false,
@@ -406,7 +406,7 @@ public class Graphics extends LibraryExpression {
 
         public WaitFunction() {
             super(
-                    List.of("pause | | seconds", "pause | | second"),
+                    List.of("pause ⫾ ⫾ seconds", "pause ⫾ ⫾ second"),
                     List.of("animation", "time"),
                     List.of(false, false),
                     false,
@@ -429,7 +429,7 @@ public class Graphics extends LibraryExpression {
 
         public AnimateFunction() {
             super(
-                    List.of("animate at | ticks per second | until |", "animate at | tick per second | until |"),
+                    List.of("animate at ⫾ ticks per second ⫾ until ⫾", "animate at ⫾ tick per second ⫾ until ⫾"),
                     List.of("rate", "animation", "condition"),
                     List.of(false, true, true),
                     false,

@@ -40,13 +40,13 @@ public class FunctionName<T> {
     }
 
     public void addParam(T parameter) {
-        addToName("|");
+        addToName("⫾");
         parameters.add(parameter);
         blockParams.add(false);
     }
 
     public void addBlockParam(T parameter) {
-        addToName("|");
+        addToName("⫾");
         parameters.add(parameter);
         blockParams.add(true);
     }

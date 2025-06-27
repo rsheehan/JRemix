@@ -86,7 +86,7 @@ STRING				: '"' ('\\"' | .)*? '"' ;
 
 // everything apart from white space, newline or special is a character
 fragment IDCHAR		: ~['’~\t\n↲] ;
-fragment FIRSTCHAR	: ~[.()[\]{,};:—|…'’\-0-9" ~\t\n↲] ; // ⊕+\-*×÷%=≠<≤>≥
-fragment CHARACTER	: ~[.()[\]{,};:—|…'’" ~\t\n↲] ; // ⊕+*×÷%=≠<≤>≥
+fragment FIRSTCHAR	: ~[.()[\]{,};:—…'’\-0-9" ~\t\n↲] ; // ⊕+\-*×÷%=≠<≤>≥
+fragment CHARACTER	: ~[.()[\]{,};:—…'’" ~\t\n↲] ; // ⊕+*×÷%=≠<≤>≥
 
 fragment CAPITAL 	: [A-Z\u0391-\u03A9] ; // Roman and Greek capital letters

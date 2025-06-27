@@ -53,7 +53,7 @@ public class RemixFiles extends LibraryExpression {
 
         public ReadFileContents() {
             super(
-                    List.of("read file |"),
+                    List.of("read file ⫾"),
                     List.of("name"),
                     List.of(false),
                     false,
@@ -79,7 +79,7 @@ public class RemixFiles extends LibraryExpression {
 
         public WriteFileContents() {
             super(
-                    List.of("write | to file |"),
+                    List.of("write ⫾ to file ⫾"),
                     List.of("contents", "name"),
                     List.of(false, false),
                     false,
@@ -106,7 +106,7 @@ public class RemixFiles extends LibraryExpression {
 
         public ReadBinaryFileContents() {
             super(
-                    List.of("read binary file |"),
+                    List.of("read binary file ⫾"),
                     List.of("name"),
                     List.of(false),
                     false,

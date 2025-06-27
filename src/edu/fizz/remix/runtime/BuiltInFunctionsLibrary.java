@@ -13,7 +13,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class QuitFunction extends Function {
         public QuitFunction() {
             super(
-                    List.of("quit |"),
+                    List.of("quit ⫾"),
                     List.of("Message"),
                     List.of(false),
                     false,
@@ -33,7 +33,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class DebugFunction extends Function {
         public DebugFunction() {
             super(
-                    List.of("debug |"),
+                    List.of("debug ⫾"),
                     List.of("Object"),
                     List.of(false),
                     false,
@@ -53,7 +53,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public IncludeFunction() {
             super(
-                    List.of("include |"),
+                    List.of("include ⫾"),
                     List.of("File-Name"),
                     List.of(false),
                     false,
@@ -102,7 +102,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class CopyFunction extends Function {
         public CopyFunction() {
             super(
-                List.of("copy |"),
+                List.of("copy ⫾"),
                 List.of("Original"),
                 List.of(false),
                 false,
@@ -144,7 +144,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class TypeOfFunction extends Function {
         public TypeOfFunction() {
             super(
-                    List.of("type of |"),
+                    List.of("type of ⫾"),
                     List.of("Value"),
                     List.of(false),
                     false,
@@ -162,7 +162,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class IsATypeFunction extends Function {
         public IsATypeFunction() {
             super(
-                    List.of("| is a |", "| is an |"),
+                    List.of("⫾ is a ⫾", "⫾ is an ⫾"),
                     List.of("Value", "Type-String"),
                     List.of(false, false),
                     false,
@@ -196,7 +196,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class DoFunction extends Function {
         public DoFunction() {
             super(
-                    List.of("do |"),
+                    List.of("do ⫾"),
                     List.of("Block"),
                     List.of(true),
                     true,
@@ -214,7 +214,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class DoInContextFunction extends Function {
         public DoInContextFunction() {
             super(
-                    List.of("do | in lib context"),
+                    List.of("do ⫾ in lib context"),
                     List.of("Block"),
                     List.of(true),
                     false,
@@ -235,7 +235,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class PrintFunction extends Function {
         public PrintFunction() {
             super(
-                    List.of("print |"),
+                    List.of("print ⫾"),
                     List.of("Value"),
                     List.of(false),
                     false,
@@ -271,7 +271,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 }
                 publish("}");
             } else if (value instanceof RemixObject object) {
-                Method method = object.findMethod("| to string");
+                Method method = object.findMethod("⫾ to string");
                 MethodContext methodContext = new MethodContext(null, object);
                 if (method != null) {
                     try {
@@ -306,7 +306,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class IfFunction extends Function {
         public IfFunction() {
             super(
-                    List.of("if | |"),
+                    List.of("if ⫾ ⫾"),
                     Arrays.asList("Condition", "Consequence"),
                     List.of(false, true),
                     true,
@@ -333,7 +333,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class IfOtherwiseFunction extends Function {
         public IfOtherwiseFunction() {
             super(
-                    List.of("if | | otherwise |"),
+                    List.of("if ⫾ ⫾ otherwise ⫾"),
                     Arrays.asList("Condition", "Consequence", "Alternative"),
                     List.of(false, true, true),
                     true,
@@ -363,7 +363,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public StartFunction() {
             super(
-                    Arrays.asList("start |", "start of |"),
+                    Arrays.asList("start ⫾", "start of ⫾"),
                     List.of("List"),
                     List.of(false),
                     false,
@@ -408,7 +408,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public NextFunction() {
             super(
-                    List.of("next |"),
+                    List.of("next ⫾"),
                     List.of("Position"),
                     List.of(false),
                     false,
@@ -428,7 +428,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public EndFunction() {
             super(
-                    Arrays.asList("| at end", "end |"),
+                    Arrays.asList("⫾ at end", "end ⫾"),
                     List.of("Position"),
                     List.of(false),
                     false,
@@ -448,7 +448,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public RangeFunction() {
             super(
-                    List.of("| to |"),
+                    List.of("⫾ to ⫾"),
                     Arrays.asList("Start", "Finish"),
                     List.of(false, false),
                     false,
@@ -470,7 +470,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public ConcatFunction() {
             super(
-                    List.of("| ⊕ |", "| (+) |"),
+                    List.of("⫾ ⊕ ⫾", "⫾ (+) ⫾"),
                     Arrays.asList("First", "Second"),
                     List.of(false, false),
                     false,
@@ -499,7 +499,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public ExtractFunction() {
             super(
-                    List.of("| in |"),
+                    List.of("⫾ in ⫾"),
                     Arrays.asList("Index", "Sequence"),
                     List.of(false, false),
                     false,
@@ -548,7 +548,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public AppendFunction() {
             super(
-                    List.of("append | to |"),
+                    List.of("append ⫾ to ⫾"),
                     Arrays.asList("Value", "List"),
                     List.of(false, false),
                     false,
@@ -571,7 +571,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public LengthFunction() {
             super(
-                    List.of("| length", "length of |"),
+                    List.of("⫾ length", "length of ⫾"),
                     List.of("List"),
                     List.of(false),
                     false,
@@ -601,7 +601,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public RandomFunction() {
             super(
-                    List.of("random |"),
+                    List.of("random ⫾"),
                     List.of("MAX"),
                     List.of(false),
                     false,
@@ -619,7 +619,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class SquareRootFunction extends Function {
         public SquareRootFunction() {
             super(
-                    List.of("sqrt |", "√ |"),
+                    List.of("sqrt ⫾", "√ ⫾"),
                     List.of("Number"),
                     List.of(false),
                     false,
@@ -643,7 +643,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class PowerFunction extends Function {
         public PowerFunction() {
             super(
-                    List.of("| to the power of |", "| ^ |"),
+                    List.of("⫾ to the power of ⫾", "⫾ ^ ⫾"),
                     List.of("Number", "Power"),
                     List.of(false, false),
                     false,
@@ -673,7 +673,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class SineFunction extends Function {
         public SineFunction() {
             super(
-                    List.of("sine |"),
+                    List.of("sine ⫾"),
                     List.of("Number"),
                     List.of(false),
                     false,
@@ -696,7 +696,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class CosineFunction extends Function {
         public CosineFunction() {
             super(
-                    List.of("cosine |"),
+                    List.of("cosine ⫾"),
                     List.of("Number"),
                     List.of(false),
                     false,
@@ -719,7 +719,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     public static final class ArcTangentFunction extends Function {
         public ArcTangentFunction() {
             super(
-                    List.of("arc tangent | over |"),
+                    List.of("arc tangent ⫾ over ⫾"),
                     List.of("change-Y", "change-X"),
                     List.of(false, false),
                     false,
@@ -749,7 +749,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public PauseFunction() {
             super(
-                    List.of("pause | seconds", "pause | second"),
+                    List.of("pause ⫾ seconds", "pause ⫾ second"),
                     List.of("Time"),
                     List.of(false),
                     false,
