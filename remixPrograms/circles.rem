@@ -4,7 +4,7 @@ using graphics lib
 
 	'x' : 50
 	'y' : 50
-	for each 'n' from 3 to 82 do
+	for each 'n' from 3 to 82
 		'polygon' : an 'n' sided polygon
 		'polygon'’s 'colour' : random colour
 		'polygon'’s 'size' : 40

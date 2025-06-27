@@ -13,7 +13,7 @@ a person called 'name' :
 			"bye now." ↲
 
 'person' : a person called "Mary"
-'person's 'name' ↲
+'person'’s 'name' ↲
 say hello to 'person'
 ↲
 welcome 'person' and say bye

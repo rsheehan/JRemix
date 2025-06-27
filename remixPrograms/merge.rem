@@ -24,19 +24,19 @@ merge 'list' from 'start' to 'middle' to 'finish' :
 	'right' : 'middle' + 1
 	'working list' : { }
 	- while values on both sides
-	while [('left' ≤ 'middle') and ('right' ≤ 'finish')] do
+	while [('left' ≤ 'middle') and ('right' ≤ 'finish')]
 		if ('list' {'left'} ≤ 'list' {'right'})
 			append ('list' {'left' inc}) to 'working list'
 		… otherwise
 			append ('list' {'right' inc}) to 'working list'
 	- remaining values on the 'left'
 	if ('left' ≤ 'middle')
-		for each 'item' in 'list' from position 'left' to 'middle' do
+		for each 'item' in 'list' from position 'left' to 'middle'
 			append 'item' to 'working list'
 	- remaining values on the 'right'
 	if ('right' ≤ 'finish')
-		for each 'item' in 'list' from position 'right' to 'finish' do
+		for each 'item' in 'list' from position 'right' to 'finish'
 			append 'item' to 'working list'
 	- put back in original 'list'
-	for each 'item' from 'start' to 'finish' do
+	for each 'item' from 'start' to 'finish'
 		'list' {'item'} : 'working list' {'item' - 'start' + 1}

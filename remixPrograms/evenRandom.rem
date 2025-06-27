@@ -8,7 +8,7 @@
 
 even values in 'the list' :
 	'even' : 0
-	for each 'item' in 'the list' do
+	for each 'item' in 'the list'
 		if ('item' is divisible by 2)
 			'even' increment
 	return 'even'

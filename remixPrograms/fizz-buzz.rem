@@ -2,7 +2,7 @@
  Fizz-Buzz
 ===========
 
-for each 'N' from 1 to 30 do
+for each 'N' from 1 to 30
 	when
 		['N' is divisible by 15] do ["fizz-buzz" _]
 		['N' is divisible by 3]  do ["fizz" _]

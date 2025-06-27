@@ -21,13 +21,13 @@ if ('A' = 1)
 if (('A' != 1) or 'B')
 	"A is not 1 or B is true" ↲
 
-(for each 'value' in { 1, 2, 3, 4 } do
+(for each 'value' in { 1, 2, 3, 4 }
 	'value' _
 	if ('value' = 2)
 		return "Wow!"
 ) _
 
-for each 'count' from 5 to 10 do
+for each 'count' from 5 to 10
 	'count' _
 new line
 
@@ -39,7 +39,7 @@ new line
 'X' : 1
 (repeat ['X' _. 'X' : 'X' + 1] until ['X' = 10]) ↲
 
-while ['X' > 0] do
+while ['X' > 0]
 	('X' × 'X') _
 	'X' : 'X' - 1
 new line
@@ -47,7 +47,7 @@ new line
 'evens' : filter (1 to 10) by 'value' where ['value' is divisible by 2]
 length of 'evens' ↲
 'evens' ↲
-for each 'I' in 'evens' do ['I' _]
+for each 'I' in 'evens' ['I' _]
 new line
 
 keep 'X' from (1 to 100) until ['X' = 20] ↲
@@ -56,7 +56,7 @@ keep 'X' from (1 to 100) until ['X' = 20] ↲
 	'I' × 'I' × 'I'
 ... to each 'I' from (1 to 20)
 
-for each 'value' in 'cubes' do
+for each 'value' in 'cubes'
 	'value' _
 new line
 
@@ -65,15 +65,15 @@ new line
 	inc 'X'
 ... 10 times
 (type of 'ten') ↲
-for each 'I' in 'ten' do
+for each 'I' in 'ten'
 	'I' _
 new line
 
-for each 'I' from 1 to 10 do
+for each 'I' from 1 to 10
 	('I' × 'I' × 'I') _
 new line
 
-for each 'I' from 1 to 10 do
+for each 'I' from 1 to 10
 	if ('I' > 5)
 		return
 	'I' _
@@ -85,8 +85,8 @@ new line
 	{3, 6, 9, 12}
 }
 
-for each 'row' in 'nested' do
-	for each 'item' in 'row' do
+for each 'row' in 'nested'
+	for each 'item' in 'row'
 		('item' × 'item') _
 	new line
 new line
@@ -157,7 +157,7 @@ repeat
 repeat ['I' _. 'I' : 'I' + 1] until ['I' = 10]
 'result' : while
 	'I' ≥ 0
-… do
+…
 	'I' _. 'I' : 'I' - 1
 
 'result' ↲ ; this prints -1
@@ -169,7 +169,7 @@ repeat ['I' _. 'I' : 'I' + 1] until ['I' = 10]
 	4
 }
 
-for each 'item' in 'A' do
+for each 'item' in 'A'
 	'item' _
 
 'person' : {"name" : "Robert", "age" : 65}

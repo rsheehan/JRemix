@@ -1,15 +1,15 @@
 with turtle graphics
 	'space' : turtle space in (the graphics panel)
 	TURTLE : a turtle
-	TURTLE s 'speed' : 400
+	TURTLE’s  'speed' : 400
 	place TURTLE in 'space'
 	for each ('size') from 10 to 300 in steps of 10 
 		square of size 'size'
 
 square of size 'size' :
 	'turtle' : TURTLE
-	'turtle' s 'speed' ↲
-	TURTLE s 'colour' : random colour
+	'turtle'’s 'speed' ↲
+	TURTLE’s 'colour' : random colour
 	repeat 4 times
 		move TURTLE 'size' steps
 		turn TURTLE 90 degrees

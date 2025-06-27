@@ -12,12 +12,12 @@ insertion sort 'list'
 check for missing values in 'list' :
 	'count of values' : apply [0] 100 times
 	count each item in 'list' into 'count of values'
-	for each 'item' in 'count of values' keeping 'count' do
+	for each 'item' in 'count of values' keeping 'count'
 		if ('item' = 0)
 			'count', " is missing" ↲
 
 count each item in 'list' into 'tally' :
-	for each 'item' in 'list' do
+	for each 'item' in 'list'
 		increment ('tally' {'item'})
 
 ================
@@ -25,8 +25,8 @@ count each item in 'list' into 'tally' :
 ================
 
 insertion sort 'list' :
-	for each 'position' from 2 to ('list' length) do
-		for each 'this' from 'position' to 2 do
+	for each 'position' from 2 to ('list' length)
+		for each 'this' from 'position' to 2
 			swap if element to the left is greater than 'this' in 'list'
 
 swap if element to the left is greater than 'this' in 'list' ::

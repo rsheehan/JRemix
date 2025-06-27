@@ -21,12 +21,12 @@ sort #list with values from 'start' to 'finish' :
 	'range' : 'finish' - 'start' + 1
 	'collect counts' : apply [0] 'range' times
 
-	for each 'value' in #list do
+	for each 'value' in #list
 		'place' : 'value' - 'start' + 1
 		increment ('collect counts' {'place'})
 
 	#list : { }
-	for each 'item' in 'collect counts' keeping 'index' do
+	for each 'item' in 'collect counts' keeping 'index'
 		repeat
 			append ('start' + 'index' - 1) to #list
 		… 'item' times

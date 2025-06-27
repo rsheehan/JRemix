@@ -7,10 +7,10 @@ using graphics lib
 	'triangle's 'position' : { 0, STD-HEIGHT ÷ 2 }
 	place 'triangle' in 'animation layer'
 
-	'rotation' : every 2 ticks do
+	'rotation' : every 2 ticks
 		change 'triangle' heading by 2 degrees
 
-	'movement' : every 1 tick do
+	'movement' : every 1 tick
 		change 'triangle' x-pos by 4
 
 	animate at 60 ticks per second

@@ -58,7 +58,7 @@ Graphics Operations and Objects
 	=-
 	a/an 'N' sided polygon :
 		'points' : { }
-		for each 'side' from 0 to ('N' - 1) do
+		for each 'side' from 0 to ('N' - 1)
 			append {
 				cosine (2π × 'side' ÷ 'N')
 				sine (2π × 'side' ÷ 'N')
@@ -258,7 +258,7 @@ Graphics Operations and Objects
 
 			update ME :
 				clear transient 'JGraphics' layers ; Java
-				for each 'layer' in 'layers' do
+				for each 'layer' in 'layers'
 					prepare 'layer' shapes for drawing on 'JGraphics'
 				refresh 'JGraphics' ; Java
 
@@ -305,7 +305,7 @@ Graphics Operations and Objects
 
 			place 'shape' in ME :
 				if ('shape' is a "list")
-					for each 'part' in 'shape' do
+					for each 'part' in 'shape'
 						append 'part' to 'shapes'
 				… otherwise
 					append 'shape' to 'shapes'
@@ -314,7 +314,7 @@ Graphics Operations and Objects
 				'shapes' : { }
 
 			prepare MY shapes for drawing on 'JGraphics' :
-				for each 'shape' in 'shapes' do
+				for each 'shape' in 'shapes'
 					add the 'shape' to the 'JGraphics' ; Java
 
 	=-
@@ -332,7 +332,7 @@ Graphics Operations and Objects
 
 			place 'shape' in ME :
 				if ('shape' is a "list")
-					for each 'part' in 'shape' do
+					for each 'part' in 'shape'
 						add the 'part' to the ('JGraphics panel' base-layer) image ; Java
 				… otherwise
 					add the 'shape' to the ('JGraphics panel' base-layer) image ; Java
@@ -352,7 +352,7 @@ Graphics Operations and Objects
 	=-
 	Create an animation object which executes 'changes' every 'N' ticks.
 	=-
-	every 'N' tick/ticks /do ['changes'] :
+	every 'N' tick/ticks ['changes'] :
 		create
 			'ticks' : 'N'
 			'counter' : 'N'

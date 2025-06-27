@@ -13,6 +13,9 @@ Need to allow the editor to control (i.e. stop) animation or other background th
 
 "create", "extend", "using" and "library" should only be keywords if in the correct syntax.
 They should be usable as ordinary words in other places.
+Also the editor should automatically indent after "create", "extend" if keywords.
+
+Editor doesn't allow easy typing of '/' since this becomes divide symbol.
 
 If X is not allocated a value (or is null) then
 	X + 1
@@ -29,7 +32,7 @@ Think about ranges being used in multidimensional ListMaps. See GetElementExpres
 Allow operations to modify blocks. e.g. concatenation
 Thus moving blocks into more first class object status.
 
-Check that method names can have optional words as function names can.
+Check that method names can have optional words as function names can. Currently not.
 
 Error messages required
 =======================

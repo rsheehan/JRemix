@@ -4,7 +4,7 @@ using graphics lib
 	'the window' : the graphics panel
 
 	'x' : 50
-	for each 'n' from 3 to 12 do
+	for each 'n' from 3 to 12
 		'polygon' : an 'n' sided polygon
 		'polygon'’s 'colour' : random colour
 		'polygon'’s 'size' : 40

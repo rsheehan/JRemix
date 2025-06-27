@@ -24,7 +24,7 @@ prime number 'n' :
 -----------
 
 #count stopping at 'n' filter #item from 'list' producing #more ['condition'] :
-	for each #item in 'list' do
+	for each #item in 'list'
 		if 'condition'
 			inc #count
 			if (#count = 'n')
@@ -33,7 +33,7 @@ prime number 'n' :
 		0
 
 'x' is not divisible by any number in 'list' up to 'limit' :
-	for each 'number' in 'list' do
+	for each 'number' in 'list'
 		if ('x' is divisible by 'number')
 			return false
 		if ('number' > 'limit')

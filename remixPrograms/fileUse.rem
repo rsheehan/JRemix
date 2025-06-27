@@ -16,15 +16,15 @@ using files lib
 	'write file' : open file "abcWrite.txt" in HOME for BOTH
 ↲
 'lines' ↲
-for each 'line' in 'lines' keeping 'count' do
+for each 'line' in 'lines' keeping 'count'
 	'count', ": ", 'line' ~
 ↲↲
 'words' ↲
-for each 'word' in 'words' do
+for each 'word' in 'words'
 	'word', " " ~
 ↲↲
 'chars' ↲
-for each 'char' in 'chars' do
+for each 'char' in 'chars'
 	'char', " " ~
 ↲↲
 'write file' ↲
@@ -32,6 +32,6 @@ for each 'char' in 'chars' do
 append "Hello world! " to 'write file'
 
 'words' : words from 'write file'
-for each 'word' in 'words' do
+for each 'word' in 'words'
 	'word' ↲
 

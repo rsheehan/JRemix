@@ -3,7 +3,7 @@ Asterisk Diamonds
 =================
 " ↲
 
-for each 'size' from 1 to 41 in steps of 2 do
+for each 'size' from 1 to 41 in steps of 2
 	'size', "." ↲
 	print a diamond of 'size'
 	↲
@@ -25,7 +25,7 @@ Fill in the 'lines' list at the same time.
 show top half of 'size' diamond and fill in #lines :
 	#lines : { }
 	if ('size' ≥ 3)
-		for each 'row' from 1 to ('size' ÷ 2) do
+		for each 'row' from 1 to ('size' ÷ 2)
 			'num spaces' : 'size' - 'row' × 2
 			'num stars'  : 'row' × 2 - 1
 			'spaces'     : SPACE 'num spaces' times
@@ -45,5 +45,5 @@ Uses the 'lines' list.
 =-
 show bottom half of 'size' diamond with 'lines' :
 	if ('size' ≥ 3)
-		for each 'row' from ('size' ÷ 2) to 1 do
+		for each 'row' from ('size' ÷ 2) to 1
 			'lines' {'row'} ↲

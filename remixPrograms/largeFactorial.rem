@@ -3,7 +3,7 @@
 		return 1
 	'N' × ('N' - 1)!
 
-for each 'N' from 1 to 20 do
+for each 'N' from 1 to 20
 	'N', "! = ", 'N'! ↲
 ↲
 'N' : 170.0

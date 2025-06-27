@@ -21,7 +21,7 @@ repeat
 filter #number from 'list' and show #gap where ['condition'] :
 	'new list' : { }
 	'prev' : first in 'list' - 1
-	for each #number in 'list' do
+	for each #number in 'list'
 		if 'condition'
 			append #number to 'new list'
 			if (#number - 'prev' > #gap)
@@ -31,7 +31,7 @@ filter #number from 'list' and show #gap where ['condition'] :
 	'new list'
 
 'x' is not divisible by any number in 'list' up to 'limit' :
-	for each 'number' in 'list' do
+	for each 'number' in 'list'
 		if ('x' is divisible by 'number')
 			return false
 		if ('number' > 'limit')

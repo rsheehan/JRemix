@@ -1,7 +1,7 @@
 - Test for function and method leaks -
 - Need to catch "expected" exceptions
 leaking function :
-	for each 'item' in {1,2,4} keeping 'count' do
+	for each 'item' in {1,2,4} keeping 'count'
 		'count', ":", 'item'↲
 
 leaking function2 :
@@ -11,7 +11,7 @@ leaking variable :
 	create
 
 		MY leaking method1 :
-			for each 'item' in {1,2,4} keeping 'count' do
+			for each 'item' in {1,2,4} keeping 'count'
 				'count', ":", 'item'↲
 
 		MY leaking method2 :

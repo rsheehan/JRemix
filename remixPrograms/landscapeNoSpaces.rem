@@ -34,7 +34,7 @@ add the sea on 'the back layer' :
 	place'sea'in'the back layer'
 
 add the islands on'the front layer' :
-	for each'location'from 650 to 680 in steps of 3 do
+	for each'location'from 650 to 680 in steps of 3
 		'island' : a GREY mountain with WHITE edges
 		… of height 250 based at'location'
 		place'island'in'the front layer'

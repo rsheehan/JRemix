@@ -47,44 +47,44 @@ make 'N' star sequence :
 'map' ↲
 'sequence' ↲
 
-for each 'item' in 'list' do
+for each 'item' in 'list'
 	'item' _
 ↲
-for each 'item' in 'range' do
+for each 'item' in 'range'
 	'item' _
 ↲
-for each 'item' in 'string' do
+for each 'item' in 'string'
 	'item' _
 ↲
-for each 'item' in 'map' do
+for each 'item' in 'map'
 	'item', ":", 'map' {'item'}, " " ~
 ↲
-for each 'item' in 'sequence' do
+for each 'item' in 'sequence'
 	'item' _
 ↲
-for each 'item' in 'list' from position 4 to 2 do
+for each 'item' in 'list' from position 4 to 2
 	'item' _
 ↲
-for each 'item' in 'range' from position 4 to 2 do
+for each 'item' in 'range' from position 4 to 2
 	'item' _
 ↲
-for each 'item' in 'string' from position 4 to 2 do
+for each 'item' in 'string' from position 4 to 2
 	'item' _
 ↲
-for each 'item' in 'sequence' from position 4 to 2 do
+for each 'item' in 'sequence' from position 4 to 2
 	'item' _
 ↲
-for each 'item' in 'list' keeping 'count' do
+for each 'item' in 'list' keeping 'count'
 	'count', ":", 'item', " " ~
 ↲
-for each 'item' in 'range' keeping 'count' do
+for each 'item' in 'range' keeping 'count'
 	'count', ":", 'item', " " ~
 ↲
-for each 'item' in 'string' keeping 'count' do
+for each 'item' in 'string' keeping 'count'
 	'count', ":", 'item', " " ~
 ↲
-for each 'item' in 'map' keeping 'count' do
+for each 'item' in 'map' keeping 'count'
 	'count', ":", 'item', ":", 'map'{'item'}, " " ~
 ↲
-for each 'item' in 'sequence' keeping 'count' do
+for each 'item' in 'sequence' keeping 'count'
 	'count', ":", 'item', " " ~

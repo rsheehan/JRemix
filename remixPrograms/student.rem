@@ -20,7 +20,7 @@
 
 "student data" ↲
 "============" ↲
-for each 'student' in 'students' do
+for each 'student' in 'students'
 	'student's 'name' ↲
 	'student's 'age' ↲
 	'student's 'languages' ↲
@@ -30,7 +30,7 @@ merge {"BASIC" : "Expert"} into ('students' {2}s 'languages')
 
 "Expertise" ↲
 "=========" ↲
-for each 'student' in 'students' do
+for each 'student' in 'students'
 	'student' ↲
 
 ----------------
@@ -55,7 +55,7 @@ for each 'student' in 'students' do
 			if (no 'expertise')
 				'result' ⊕ "nothing"
 			… otherwise
-				for each 'language' in 'expertise' keeping 'count' do
+				for each 'language' in 'expertise' keeping 'count'
 					when
 						['count' = 1] do
 							'result' : 'result' ⊕ 'language'

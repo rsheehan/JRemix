@@ -12,18 +12,18 @@ using graphics lib
 		place 'shape' in 'layer2'
 	… 50 times
 
-	for each 'y-pos' from 40 to (STD-HEIGHT - 20) in steps of 80 do
+	for each 'y-pos' from 40 to (STD-HEIGHT - 20) in steps of 80
 		'arrow' : a triangle
 		'arrow'’s 'size' : 20
 		'arrow'’s 'position' : { 0, 'y-pos' }
 		place 'arrow' in 'layer1'
 
-	'squares rotation' : every 1 tick do
-		for each 'square' in ('layer2'’s 'shapes') do
+	'squares rotation' : every 1 tick
+		for each 'square' in ('layer2'’s 'shapes')
 			change 'square' heading by 2 degrees
 
-	'arrows movement' : every 2 ticks do
-		for each 'arrow' in ('layer1'’s 'shapes') do
+	'arrows movement' : every 2 ticks
+		for each 'arrow' in ('layer1'’s 'shapes')
 			change 'arrow' x-pos by 5
 
 	animate at 50 ticks per second

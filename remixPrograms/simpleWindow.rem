@@ -14,7 +14,7 @@ using graphics lib
 	'turn' : 2
 	'degree' : 0
 	animate at 60 ticks per second
-		for each 'shape' in ('animation layer's 'shapes') do
+		for each 'shape' in ('animation layer's 'shapes')
 			change 'shape' heading by 'turn' degrees
 		update 'the window'
 		'degree' : 'degree' + 'turn'

@@ -6,6 +6,6 @@ each 'range'
 each "Hello"
 
 each 'sequence' :
-	for each 'number' from 1 to ('sequence' length) do
+	for each 'number' from 1 to ('sequence' length)
 		'number', ":", 'number' in 'sequence', " " ~
 	↲

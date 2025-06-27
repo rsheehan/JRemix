@@ -4,11 +4,11 @@
 
 'sentence' ↲
 
-for each 'char' in 'sentence' do
+for each 'char' in 'sentence'
 	'char' _
 ↲
 
-for each 'char' in 'sentence' do
+for each 'char' in 'sentence'
 	if ('char' = "z")
 		return
 	'char' _
@@ -16,7 +16,7 @@ for each 'char' in 'sentence' do
 
 'string' backwards :
 	'result' : ""
-	for each 'char' in 'string' from position ('string' length) to 1 do
+	for each 'char' in 'string' from position ('string' length) to 1
 		'result' : 'result' ⊕ 'char'
 	'result'
 

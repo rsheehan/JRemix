@@ -20,14 +20,14 @@ repeat
 
 filter and show #item from 'list' where ['condition'] :
 	'new list' : { }
-	for each #item in 'list' do
+	for each #item in 'list'
 		if 'condition'
 			#item _
 			append #item to 'new list'
 	'new list'
 
 'x' is not divisible by any number in 'list' up to 'limit' :
-	for each 'number' in 'list' do
+	for each 'number' in 'list'
 		if ('x' is divisible by 'number')
 			return false
 		if ('number' > 'limit')

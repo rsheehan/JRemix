@@ -67,7 +67,7 @@ The boolean "or" operation.
 Returns true if any block item in 'list' is true.
 =-
 any of 'list' :
-	for each 'block' in 'list' do
+	for each 'block' in 'list'
 		if 'block'
 			return true
 		false
@@ -76,7 +76,7 @@ any of 'list' :
 Returns true if each block item in 'list' is true.
 =-
 all of 'list' :
-	for each 'block' in 'list' do
+	for each 'block' in 'list'
 		if (not 'block')
 			return false
 		true
@@ -85,7 +85,7 @@ all of 'list' :
 Only returns true if each block item in 'list' is false.
 =-
 none of 'list' :
-	for each 'block' in 'list' do
+	for each 'block' in 'list'
 		if 'block'
 			return false
 		true
@@ -100,7 +100,7 @@ Run 'block' for each 'item' in the 'sequence'.
 Return either the last statement value or whatever is returned from 'block'.
 A sequence here is a list, range, map, string or sequence object.
 =-
-for each #item in /the 'sequence' /do ['block'] :
+for each #item in 'sequence' ['block'] :
 	'pos' : start 'sequence'
 	do
 		if (end 'pos')
@@ -113,14 +113,14 @@ for each #item in /the 'sequence' /do ['block'] :
 =-
 Run 'block' for each 'number' from 'start' to 'finish'.
 =-
-for each #number from 'start' to 'finish' /do ['block'] :
-	for each #number in ('start' to 'finish') do 'block'
+for each #number from 'start' to 'finish' ['block'] :
+	for each #number in ('start' to 'finish')'block'
 
 =-
 Run 'block' for each 'number' from 'start' to 'finish' in steps of 'step'.
 'step' is coerced to be positive if 'start' ≤ 'finish' otherwise negative.
 =-
-for each #number from 'start' to 'finish' in steps of 'step' /do ['block']:
+for each #number from 'start' to 'finish' in steps of 'step' ['block']:
 	if ('start' ≤ 'finish')
 		'test' : [#number ≤ 'finish']
 		'step' : absolute 'step'
@@ -128,7 +128,7 @@ for each #number from 'start' to 'finish' in steps of 'step' /do ['block']:
 		'test' : [#number ≥ 'finish']
 		'step' : -(absolute 'step')
 	#number : 'start'
-	while 'test' do
+	while 'test'
 		'last' : do 'block'
 		#number : #number + 'step'
 	'last'
@@ -139,8 +139,8 @@ Run 'block' for each 'item' in the 'sequence' at all positions from 'start' to '
 'block' will usually use the variable passed as 'item'.
 A sequence here is a list, range, string or sequence object with a 'pos' in 'sequence' method.
 =-
-for each #item in /the 'sequence' from position 'start' to 'finish' /do ['block'] :
-	for each 'pos' from 'start' to 'finish' do
+for each #item in 'sequence' from position 'start' to 'finish' ['block'] :
+	for each 'pos' from 'start' to 'finish'
 		#item : 'pos' in 'sequence'
 		do 'block'
 
@@ -148,9 +148,9 @@ for each #item in /the 'sequence' from position 'start' to 'finish' /do ['block'
 Run 'block' for each 'item' in the 'sequence' keeping count in 'count'.
 A sequence here is a list, range, map, string or sequence object.
 =-
-for each #item in /the 'sequence' keeping #count /do ['block'] :
+for each #item in 'sequence' keeping #count ['block'] :
 	#count : 0
-	for each #item in 'sequence' do
+	for each #item in 'sequence'
 		increment #count
 		do 'block'
 
@@ -161,7 +161,7 @@ repeat ['block'] forever :
 	do 'block'
 	redo
 
-=-
+=--
 Repeat the 'block' 'count' number of times.
 =-
 repeat ['block'] 'count' times :
@@ -189,7 +189,7 @@ repeat ['block'] until ['condition'] :
 =-
 While a 'condition' is true keep doing 'block'.
 =-
-while ['condition'] /do ['block'] :
+while ['condition'] ['block'] :
 	if (not 'condition')
 		return 'last'
 	'last' : do 'block'
@@ -205,7 +205,7 @@ The Blocks commonly refer to 'item'.
 =-
 filter 'list' by #item where ['condition block'] keeping ['keep block'] :
 	'new list' : { }
-	for each #item in 'list' do
+	for each #item in 'list'
 		if 'condition block'
 			append (do 'keep block') to 'new list'
 	'new list'
@@ -223,7 +223,7 @@ The 'condition' is checked before adding the 'item'.
 =-
 keep #item from 'list' until ['condition'] :
 	'new list' : { }
-	for each #item in 'list' do
+	for each #item in 'list'
 		if 'condition'
 			return
 		append #item to 'new list'
@@ -236,7 +236,7 @@ The conditions are checked before adding the 'item'.
 =-
 keep #item from 'list' where ['condition'] until ['termination'] :
 	'result' : { }
-	for each #item in 'list' do
+	for each #item in 'list'
 		if 'termination'
 			return
 		if 'condition'
@@ -249,7 +249,7 @@ Create a new 'list' by applying 'block' to each element of 'list'.
 =-
 apply ['block'] to each #item from 'list' :
 	'new list' : { }
-	for each #item in 'list' do
+	for each #item in 'list'
 		append (do 'block') to 'new list'
 	'new list'
 
@@ -275,7 +275,7 @@ A sequence here is a list, range, map, string or sequence object.
 =-
 starting with ['initial'] apply ['block'] on each #item in 'sequence' :
 	do 'initial'
-	for each #item in 'sequence' do 'block'
+	for each #item in 'sequence''block'
 
 =-
 'sum' the 'list' values.
@@ -379,7 +379,7 @@ Can reverse the order if 'start' > 'finish'.
 Inserts or overwrites 'this string' into 'string' at position 'pos'.
 Overwrites if 'overwrite' is true, otherwise inserts.
 =-
-place 'this string' into #string at 'pos' do 'overwrite' :
+place 'this string' into #string at 'pos' overwrite 'overwrite' :
 	'left' : if ('pos' > #string length)
 		#string
 	… otherwise
@@ -399,7 +399,7 @@ If the position is greater than the last position in the string it adds
 necessary spaces before concatenating the insertion.
 =-
 insert 'this string' into #string at 'pos' :
-	place 'this string' into #string at 'pos' do false
+	place 'this string' into #string at 'pos' overwrite false
 
 =-
 Overwrites 'this string' into 'string' starting at position 'pos'.
@@ -407,7 +407,7 @@ If the position is greater than the last position in the string it adds
 necessary spaces before concatenating the insertion.
 =-
 overwrite 'this string' into #string at 'pos' :
-	place 'this string' into #string at 'pos' do true
+	place 'this string' into #string at 'pos' overwrite true
 
 ==============================
  List string functions
@@ -418,7 +418,7 @@ Joins the string versions of the elements in 'list'.
 =-
 join 'list' :
 	'string' : EMPTY
-	for each 'item' in 'list' do
+	for each 'item' in 'list'
 		'string' : 'string' ⊕ 'item'
 
 =-
@@ -426,7 +426,7 @@ Joins the 'list' with 'separator' between elements.
 =-
 join 'list' with separator 'separator' :
 	'string' : EMPTY
-	for each 'item' in 'list' keeping 'count' do
+	for each 'item' in 'list' keeping 'count'
 		if ('count' = 'list' length)
 			return 'string' ⊕ ('item' as string)
 		'string' : 'string' ⊕ ('item' as string) ⊕ 'separator'
@@ -498,7 +498,7 @@ Merge the 'extra' map into 'map'.
 'map' is modified.
 =-
 merge 'extra' into 'map' :
-	for each 'item' in 'extra' do
+	for each 'item' in 'extra'
 		'map' {'item'} : 'extra' {'item'}
 
 ==============================
@@ -725,7 +725,7 @@ test 'list of tests' :
 
 		execute MY tests :
 			"Starting tests: " ↲
-			for each 'test' in 'tests' keeping 'test number' do
+			for each 'test' in 'tests' keeping 'test number'
 				assert test 'test number' ('test' {"description"})
 				… ('test' {"code"}) produces ('test' {"expected"})
 			↲
