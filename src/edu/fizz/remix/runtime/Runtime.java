@@ -96,7 +96,7 @@ public class Runtime {
         for (char ch : internalName.toCharArray()) {
             if (ch == ' ') {
                 screenName.append(ch);
-            } else if (ch == '|') {
+            } else if (ch == '⫾') {
                 String formal = function.formalParameters.get(param);
                 if (formal.startsWith("#"))
                     formal = formal.substring(1);
