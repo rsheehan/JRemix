@@ -1,0 +1,31 @@
+- DELTA -
+
+'number' with delta 'Δ' :
+	create
+		'number' : 'number'
+		'Δ' : 'Δ'
+
+		getter
+			'number'
+
+		'other' equals ME :
+			|('number' - 'other'’s 'number')| < 'Δ'
+
+		ME to string :
+			'number' ⊕ " with Δ " ⊕ 'Δ'
+
+'a' : 1.0 with delta 0.5
+'b' : 0.99 with delta 0.01
+
+'a'↲
+'b'↲
+↲
+
+test {
+	"small delta"
+		'a' = 'b'
+	… expected false,
+	"large delta"
+		'b' = 'a'
+	… expected true
+}

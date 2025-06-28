@@ -47,7 +47,7 @@ public class BinaryExpression implements Expression {
                 return result;
             } else if (val1 instanceof RemixObject object1 && val2 instanceof RemixObject object2) {
 //          To compare objects you need a (other) equals (me) method.
-                Method method = object2.findMethod("| equals |");
+                Method method = object2.findMethod("⫾ equals ⫾");
                 if (method != null) {
                     MethodContext methodContext = new MethodContext(null, object2);
                     String formal = method.getArgument(0);
