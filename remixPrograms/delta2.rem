@@ -1,0 +1,33 @@
+- DELTA -
+
+'number' with delta 'Δ' :
+	create
+		'number' : 'number'
+		'Δ' : 'Δ'
+
+		getter
+			'number'
+
+		'other' equals ME :
+			|'number' - 'other'’s 'number'| < 'Δ'
+
+		ME to string :
+			'number' ⊕ " with δ " ⊕ 'Δ'
+
+'a' : 1.0 with delta 0.5
+'b' : 0.99 with delta 0.01
+
+"a: ", 'a' ↲
+"b: ", 'b' ↲
+
+if ('b' = 'a')
+	"b is equal to a" ↲
+… otherwise
+	"b is not equal to a" ↲
+
+if ('a' = 'b')
+	"a is equal to b" ↲
+… otherwise
+	"a is not equal to b" ↲
+
+"Equality isn't always commutative." ↲

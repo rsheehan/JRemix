@@ -123,10 +123,10 @@ Run 'block' for each 'number' from 'start' to 'finish' in steps of 'step'.
 for each #number from 'start' to 'finish' in steps of 'step' ['block']:
 	if ('start' ≤ 'finish')
 		'test' : [#number ≤ 'finish']
-		'step' : absolute 'step'
+		'step' : |'step'|
 	… otherwise
 		'test' : [#number ≥ 'finish']
-		'step' : -(absolute 'step')
+		'step' : -|'step'|
 	#number : 'start'
 	while 'test'
 		'last' : do 'block'
@@ -597,7 +597,7 @@ divide #X by 'value' :
 =-
 The absolute value of 'number'.
 =-
-absolute 'number' :
+abs/| 'number' /| :
 	if ('number' < 0)
 		return -'number'
 	'number'
