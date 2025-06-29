@@ -632,7 +632,7 @@ coin toss heads :
 
 =-
 The Euclidean distance from 'A' to 'B'.
-'A' and 'B' are map values with keys "x" and "y".
+'A' and 'B' are 2 element lists or map values with keys "x" and "y".
 =-
 distance from 'A' to 'B' :
 	if ('A' is a "list")
