@@ -46,20 +46,20 @@ not 'value' :
 =-
 The boolean "and" operation.
 =-
-'A' and 'B' :
-	if (not 'A')
+'a' and 'b' :
+	if (not 'a')
 		return false
-	if (not 'B')
+	if (not 'b')
 		return false
 	true
 
 =-
 The boolean "or" operation.
 =-
-'A' or 'B' :
-	if 'A'
+'a' or 'b' :
+	if 'a'
 		return true
-	if 'B'
+	if 'b'
 		return true
 	false
 
@@ -254,13 +254,13 @@ apply ['block'] to each #item from 'list' :
 	'new list'
 
 =-
-Create a new 'list' by applying 'block' 'N' times.
+Create a new 'list' by applying 'block' 'n' times.
 =-
-apply ['block'] 'N' times :
+apply ['block'] 'n' times :
 	'new list' : { }
 	repeat
 		append (do 'block') to 'new list'
-	… 'N' times
+	… 'n' times
 	'new list'
 
 ==============================
@@ -336,19 +336,19 @@ join 'list 1' and 'list 2' :
 ==============================
 
 =-
-Concatenate the 'string' 'N' times.
+Concatenate the 'string' 'n' times.
 =-
-'string' 'N' times :
-	if ('N' < 1) ; useful if 'N' is zero
+'string' 'n' times :
+	if ('n' < 1) ; useful if 'n' is zero
 		return EMPTY
 	'result' : 'string'
 	repeat
 		'result' : 'result' ⊕ 'string'
-	… ('N' - 1) times
+	… ('n' - 1) times
 	'result'
 
 =-
-Adds an 's' to 'word' if plural, 'number' > 1.
+Adds an "s" to 'word' if plural, 'number' > 1.
 =-
 pluralize 'word' for 'number' :
 	if ('number' > 1)
@@ -527,80 +527,86 @@ The transparent return breaks out of the "when".
 ==============================
 
 =-
-Increment numeric variable "X".
+Increment numeric variable 'x'.
 =-
-inc/increment #X :
-	#X : #X + 1
+inc/increment #x :
+	#x : #x + 1
 
 =-
-Decrement numeric variable "X".
+Decrement numeric variable 'x'.
 =-
-dec/decrement #X :
-	#X : #X - 1
+dec/decrement #x :
+	#x : #x - 1
 
 =-
-Increment numeric variable "X".
+Increment numeric variable 'x'.
 Return the previous value.
 =-
-#X inc/increment :
-	#X : #X + 1
-	#X - 1
+#x inc/increment :
+	#x : #x + 1
+	#x - 1
 
 =-
-Increment numeric variable "X" by 'I'.
+Increment numeric variable 'x' by 'i'.
 Return the previous value.
 =-
-#X inc/increment by 'I' :
-	#X : #X + 'I'
-	#X - 'I'
+#x inc/increment by 'i' :
+	#x : #x + 'i'
+	#x - 'i'
 
 =-
-Decrement numeric variable "X".
+Decrement numeric variable 'x'.
 Return the previous value.
 =-
-#X dec/decrement :
-	#X : #X - 1
-	#X + 1
+#x dec/decrement :
+	#x : #x - 1
+	#x + 1
 
 =-
-Decrement numeric variable "X" by 'I'.
+Decrement numeric variable 'x' by 'i'.
 Return the previous value.
 =-
-#X dec/decrement by 'I' :
-	#X : #X - 'I'
-	#X + 'I'
+#x dec/decrement by 'i' :
+	#x : #x - 'i'
+	#x + 'i'
 
 =-
-Add 'value' to variable "X".
+Add 'value' to variable 'x'.
 =-
-add 'value' to #X :
-	#X : #X + 'value'
+add 'value' to #x :
+	#x : #x + 'value'
 
 =-
-Subtract 'value' from variable "X".
+Subtract 'value' from variable 'x'.
 =-
-subtract 'value' from #X :
-	#X : #X - 'value'
+subtract 'value' from #x :
+	#x : #x - 'value'
 
 =-
-Multiply variable "X" by 'value'.
+Multiply variable 'x' by 'value'.
 =-
-multiply #X by 'value' :
-	#X : #X × 'value'
+multiply #x by 'value' :
+	#x : #x × 'value'
 
 =-
-Divide variable "X" by 'value'.
+Divide variable 'x' by 'value'.
 =-
-divide #X by 'value' :
-	#X : #X ÷ 'value'
+divide #x by 'value' :
+	#x : #x ÷ 'value'
 
 =-
 The absolute value of 'number'.
 =-
-abs/| 'number' /| :
+abs 'number' :
 	if ('number' < 0)
 		return -'number'
 	'number'
+
+=-
+The absolute value of 'number'.
+=-
+| 'number' | :
+	abs 'number'
 
 =-
 Is 'number' divisible by 'div'?
@@ -631,16 +637,16 @@ coin toss heads :
 	false
 
 =-
-The Euclidean distance from 'A' to 'B'.
-'A' and 'B' are 2 element lists or map values with keys "x" and "y".
+The Euclidean distance from 'a' to 'b'.
+'a' and 'b' are 2 element lists or map values with keys "x" and "y".
 =-
-distance from 'A' to 'B' :
-	if ('A' is a "list")
-		'A' : xy map from 'A'
-	if ('B' is a "list")
-		'B' : xy map from 'B'
-	'δx' : 'B' {"x"} - 'A' {"x"}
-	'δy' : 'B' {"y"} - 'A' {"y"}
+distance from 'a' to 'b' :
+	if ('a' is a "list")
+		'a' : xy map from 'a'
+	if ('b' is a "list")
+		'b' : xy map from 'b'
+	'δx' : 'b' {"x"} - 'a' {"x"}
+	'δy' : 'b' {"y"} - 'a' {"y"}
 	√('δx'² + 'δy'²)
 
 =-
@@ -666,12 +672,12 @@ Degree equivalent of 'angle' radians.
 ==============================
 
 =-
-Swap 'A' with 'B'.
+Swap 'a' with 'b'.
 =-
-#A swap #B :
+#a swap #b :
 	'temp' : #A
-	#A : #B
-	#B : 'temp'
+	#a : #b
+	#b : 'temp'
 
 =
 Swap 'list' element 'this' with 'that'.
