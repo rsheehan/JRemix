@@ -23,7 +23,8 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             Map.entry("sqrd", "²"),
             Map.entry("\\n", "↲"),
             Map.entry("...", "…"),
-            Map.entry(" (+", " ⊕")
+            Map.entry(" (+", " ⊕"),
+            Map.entry("using", "using  lib []")
     );
     private final Map<String, String> matchingPairs = Map.of(
             "(", ")",
@@ -48,6 +49,11 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         insertStringNoLex(getLength(), line, null);
     }
 
+    /*
+    This is where characters typed by the user get sent.
+    So I can attach checks at newlines here if I want.
+    But probably in the CatchKeys class in RemixEditor.
+     */
     @Override
     public void insertString(int offset, String text, AttributeSet style) throws BadLocationException {
         insertStringNoLex(offset, text, style);
@@ -132,8 +138,13 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         }
         // magic replace some operators
         for (String target : operators.keySet()) {
-            if (replaceOperator(target, input, offset))
+            if (replaceOperator(target, input, offset)) {
+                if (target.equals("using")) {
+                    textPane.setSelectionStart(offset + 2);
+                    textPane.setSelectionEnd(offset + 2);
+                }
                 return false;
+            }
         }
         // add "’s " instead of "s" if immediately following "'"
         // or if after a CAPITAL letter or a closing "}"
@@ -450,7 +461,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         StringBuilder word = new StringBuilder();
         while (--pos >= 0) {
             String ch = getText(pos, 1);
-            if (".()[\\]{,}:—|§@…'’0123456789\"\t\n".contains(ch)) // ⊕+*×÷%=≠<≤>≥
+            if (".()[\\]{,}:—§@…'’0123456789\"\t\n".contains(ch)) // ⊕+*×÷%=≠<≤>≥
                 break;
             word.append(ch);
         }
