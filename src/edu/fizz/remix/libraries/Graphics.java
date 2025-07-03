@@ -101,7 +101,7 @@ public class Graphics extends LibraryExpression {
                     List.of("title", "width", "height"),
                     List.of(false, false, false),
                     false,
-                    "Create window with \"title\" of size \"width\" by \"height\"."
+                    "Create window with 'title' of size 'width' by 'height'."
             );
         }
 
@@ -122,7 +122,7 @@ public class Graphics extends LibraryExpression {
                     List.of("JWindow"),
                     List.of(false),
                     false,
-                    "The \"JWindow\" graphics panel."
+                    "The 'JWindow' graphics panel."
             );
         }
 
@@ -141,7 +141,7 @@ public class Graphics extends LibraryExpression {
                     List.of("graphics panel"),
                     List.of(false),
                     false,
-                    "The base-layer of \"graphics panel\"."
+                    "The base-layer of 'graphics panel'."
             );
         }
 
@@ -160,7 +160,7 @@ public class Graphics extends LibraryExpression {
                     List.of("graphics panel"),
                     List.of(false),
                     false,
-                    "Clear the base-layer of \"graphics panel\"."
+                    "Clear the base-layer of 'graphics panel'."
             );
         }
 
@@ -180,7 +180,7 @@ public class Graphics extends LibraryExpression {
                     List.of("graphics panel", "colour"),
                     List.of(false, false),
                     false,
-                    "Make the background of \"graphics panel\" \"colour\"."
+                    "Make the background of 'graphics panel' 'colour'."
             );
         }
 
@@ -200,7 +200,7 @@ public class Graphics extends LibraryExpression {
                     List.of("window"),
                     List.of(false),
                     false,
-                    "Show the \"window\"."
+                    "Show the 'window'."
             );
         }
 
@@ -219,7 +219,7 @@ public class Graphics extends LibraryExpression {
                     List.of("graphics panel"),
                     List.of(false),
                     false,
-                    "Refresh the \"graphics panel\"."
+                    "Refresh the 'graphics panel'."
             );
         }
 
@@ -231,26 +231,6 @@ public class Graphics extends LibraryExpression {
         }
     }
 
-//    public static final class ClearLayersFunction extends Function {
-//        public ClearLayersFunction() {
-//            super(
-//                    List.of("clear all ⫾ layers", "clear ⫾ layer"),
-//                    List.of("Graphics-Panel"),
-//                    List.of(false),
-//                    false,
-//                    "Remove current shapes from the \"Graphics-Panel\"."
-//            );
-//        }
-//
-//        @Override
-//        public Object execute(Context context) throws ReturnException, InterruptedException {
-//            GraphicsPanel panel = (GraphicsPanel) context.retrieve("Graphics-Panel");
-//            panel.clearBaseLayer();
-//            panel.removeShapes();
-//            return null;
-//        }
-//    }
-
     public static final class ClearTransientLayersFunction extends Function {
         public ClearTransientLayersFunction() {
             super(
@@ -258,7 +238,7 @@ public class Graphics extends LibraryExpression {
                     List.of("graphics panel"),
                     List.of(false),
                     false,
-                    "Remove current shapes from the \"graphics panel\" leaving the base-layer."
+                    "Remove current shapes from the 'graphics panel' leaving the base-layer."
             );
         }
 
@@ -335,7 +315,7 @@ public class Graphics extends LibraryExpression {
                     List.of("shape", "base-layer"),
                     List.of(false, false),
                     false,
-                    "Add the \"shape\" to the \"base-layer\"."
+                    "Add the 'shape' to the 'base-layer'."
             );
         }
 
@@ -373,7 +353,7 @@ public class Graphics extends LibraryExpression {
                     List.of("shape", "graphics panel"),
                     List.of(false, false),
                     false,
-                    "Add the \"shape\" to the \"graphics panel\"."
+                    "Add the 'shape' to the 'graphics panel'."
             );
         }
         @Override
@@ -410,7 +390,7 @@ public class Graphics extends LibraryExpression {
                     List.of("animation", "time"),
                     List.of(false, false),
                     false,
-                    "Pause \"animation\" for \"time\" seconds."
+                    "Pause 'animation' for 'time' seconds."
             );
         }
 
@@ -433,8 +413,8 @@ public class Graphics extends LibraryExpression {
                     List.of("rate", "animation", "condition"),
                     List.of(false, true, true),
                     false,
-                    "Animate the \"animation\" \"rate\" times per second,\n" +
-                    "stopping when \"condition\" is true."
+                    "Animate the 'animation' 'rate' times per second,\n" +
+                    "stopping when 'condition' is true."
             );
         }
 

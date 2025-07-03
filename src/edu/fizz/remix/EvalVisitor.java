@@ -224,7 +224,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** IDENTIFIER COLON expression EOL+ */
     @Override
     public Expression visitField(RemixParser.FieldContext ctx) {
-        String varName = ctx.IDENTIFIER().getText();
+        String varName = identifier(ctx.IDENTIFIER().getText());
         Expression expression = (Expression) visit(ctx.expression());
         return new FieldAssignmentStatement(varName, expression);
     }
@@ -264,7 +264,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** IDENTIFIER */
     @Override
     public String visitFieldId(RemixParser.FieldIdContext ctx) {
-        return ctx.IDENTIFIER().getText();
+        return identifier(ctx.IDENTIFIER().getText());
     }
 
     /** (setterSignature | getterSignature | methodSignature) COLON EOL? blockOfStatements */
@@ -304,7 +304,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     public MethodName visitGetterSignature(RemixParser.GetterSignatureContext ctx) {
         MethodName methodSig = new MethodName();
         methodSig.setSelfRefNow();
-        methodSig.addToName(ctx.IDENTIFIER().getText());
+        methodSig.addToName(identifier(ctx.IDENTIFIER().getText()));
         return methodSig;
     }
 
@@ -313,40 +313,40 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     public MethodName visitSetterSignature(RemixParser.SetterSignatureContext ctx) {
         MethodName methodSig = new MethodName();
         methodSig.setSelfRefNow();
-        methodSig.addToName(ctx.IDENTIFIER(0).getText());
-        methodSig.addParam(ctx.IDENTIFIER(1).getText());
+        methodSig.addToName(identifier(ctx.IDENTIFIER(0).getText()));
+        methodSig.addParam(identifier(ctx.IDENTIFIER(1).getText()));
         return methodSig;
     }
 
-//    private String identifier(String varName) {
-//        if (!varName.startsWith("#")) {
-//            varName = varName.substring(1, varName.length() - 1);
-//        }
-//        return varName;
-//    }
+    private String identifier(String varName) {
+        if (varName.startsWith("'")) {
+            varName = varName.substring(1, varName.length() - 1);
+        }
+        return varName;
+    }
 
     /** LPAREN IDENTIFIER RPAREN */
     @Override
     public String visitMethSigParam(RemixParser.MethSigParamContext ctx) {
-        return ctx.IDENTIFIER().getText();
+        return identifier(ctx.IDENTIFIER().getText());
     }
 
     /** LBLOCK IDENTIFIER RBLOCK */
     @Override
     public String visitMethSigBlock(RemixParser.MethSigBlockContext ctx) {
-        return ctx.IDENTIFIER().getText();
+        return identifier(ctx.IDENTIFIER().getText());
     }
 
     /** IDENTIFIER | LPAREN IDENTIFIER RPAREN */
     @Override
     public String visitSigParam(RemixParser.SigParamContext ctx) {
-        return ctx.IDENTIFIER().getText();
+        return identifier(ctx.IDENTIFIER().getText());
     }
 
     /** LBLOCK IDENTIFIER RBLOCK */
     @Override
     public String visitSigBlock(RemixParser.SigBlockContext ctx) {
-        return ctx.IDENTIFIER().getText();
+        return identifier(ctx.IDENTIFIER().getText());
     }
 
     /** LBLOCK statement* RBLOCK */
@@ -358,7 +358,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** IDENTIFIER COLON expression */
     @Override
     public AssignmentStatement visitSetVariable(RemixParser.SetVariableContext ctx) {
-        String varName = ctx.IDENTIFIER().getText();
+        String varName = identifier(ctx.IDENTIFIER().getText());
         Expression expression = (Expression) visit(ctx.expression());
         return new AssignmentStatement(varName, expression);
     }
@@ -485,7 +485,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** IDENTIFIER (from expression) */ // this should be a variable reference
     @Override
     public Expression  visitExprVar(RemixParser.ExprVarContext ctx) {
-        String varName = ctx.IDENTIFIER().getText();
+        String varName = identifier(ctx.IDENTIFIER().getText());
         return new VarValueExpression(varName);
     }
 
@@ -595,7 +595,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         int lineOffset = ctx.getStart().getCharPositionInLine();
         FunctionCallExpression getterCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
         getterCall.addParam((Expression)visit(ctx.getterSetterObject()));
-        getterCall.addToName(ctx.IDENTIFIER().getText());
+        getterCall.addToName(identifier(ctx.IDENTIFIER().getText()));
         return getterCall;
     }
 
@@ -607,7 +607,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         int lineOffset = ctx.getStart().getCharPositionInLine();
         FunctionCallExpression setterCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
         setterCall.addParam((Expression)visit(ctx.getterSetterObject()));
-        setterCall.addToName(ctx.IDENTIFIER().getText());
+        setterCall.addToName(identifier(ctx.IDENTIFIER().getText()));
         // now add the expression
         setterCall.addParam((Expression) visit(ctx.expression()));
         return setterCall;
@@ -616,7 +616,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** IDENTIFIER (from getterSetterObject) */
     @Override
     public Expression visitIdentifierGetterSetter(RemixParser.IdentifierGetterSetterContext ctx) {
-        String varName = ctx.IDENTIFIER().getText();
+        String varName = identifier(ctx.IDENTIFIER().getText());
         return new VarValueExpression(varName);
     }
 
@@ -630,7 +630,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** IDENTIFIER (from callPart) */
     @Override
     public Expression visitCallVar(RemixParser.CallVarContext ctx) {
-        String varName = ctx.IDENTIFIER().getText();
+        String varName = identifier(ctx.IDENTIFIER().getText());
         return new VarValueExpression(varName);
     }
 
@@ -810,7 +810,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
      */
     @Override
     public GetElementExpression visitListElement(RemixParser.ListElementContext ctx) {
-        String listName = ctx.IDENTIFIER().getText();
+        String listName = identifier(ctx.IDENTIFIER().getText());
         // need to loop through possibly multiple listParts
         int n = ctx.getChildCount();
         List listParts = new ArrayList<>();
@@ -829,7 +829,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
      */
     @Override
     public SetElementExpression visitSetListElement(RemixParser.SetListElementContext ctx) {
-        String listName = ctx.IDENTIFIER().getText();
+        String listName = identifier(ctx.IDENTIFIER().getText());
         // need to loop through possibly multiple listParts
         List listParts = new ArrayList<>();
         int i = 1;
