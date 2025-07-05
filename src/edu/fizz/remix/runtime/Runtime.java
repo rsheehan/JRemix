@@ -46,14 +46,14 @@ public class Runtime {
     /** Print the names of all the functions. */
     public static void printFunctionNames() {
         for (String name : programLibrary.functionTable.keySet()) {
-            System.out.println(name + ": " + completionNames(name));
+            System.out.println(name + ": " + completionNames(name, baseLibrary));
         }
     }
 
     /** Build the completion table from built-in and standard-lib. */
     public static void buildOriginalCompletions() {
         for (String name : baseLibrary.functionTable.keySet()) {
-            CompletionNamesAndDoc namesAndDoc = completionNames(name);
+            CompletionNamesAndDoc namesAndDoc = completionNames(name, baseLibrary);
             int uniquifier = 0;
             // for functions with same string e.g. "average of ()", "average () of ()" both
             // have string of "averageof".
@@ -68,18 +68,19 @@ public class Runtime {
         originalFunctionList.sort(null);
     }
 
-//    /*
-//    * Should really be done when function signatures are entered in the editor
-//      When evaluating the parse tree after every newline we can do this then.
-//    */
-//    public static void buildAdditionalCompletions() {
-//        for (String name : functionTable.keySet()) {
-//            CompletionNames bothNames = completionNames(name);
-//            completionTable.put(bothNames.completionString, bothNames.displayName);
-//            functionList.add(bothNames.completionString);
-//        }
-//        functionList.sort(null);
-//    }
+    /*
+    * Should really be done when function signatures are entered in the editor
+      When evaluating the parse tree after every newline we can do this then.
+      See CatchKeys in RemixEditor.
+    */
+    public static void buildAdditionalCompletions(LibraryExpression program) {
+        for (String name : program.functionTable.keySet()) {
+            CompletionNamesAndDoc bothNames = completionNames(name, program);
+            completionTable.put(bothNames.completionString, bothNames);
+            functionList.add(bothNames.completionString);
+        }
+        functionList.sort(null);
+    }
 
     public record CompletionNamesAndDoc(
             String displayName, // the full name with formal parameters
@@ -87,9 +88,11 @@ public class Runtime {
             String functionComment
     ){}
 
-    // TODO: choose a method to connect the completionNames to the functionComment
-    private static CompletionNamesAndDoc completionNames(String internalName) {
-        Function function = baseLibrary.functionTable.get(internalName);
+    /*
+    Create a record of the name (with parameters), the shortened completion string and the function comment.
+     */
+    private static CompletionNamesAndDoc completionNames(String internalName, LibraryExpression library) {
+        Function function = library.functionTable.get(internalName);
         StringBuilder screenName = new StringBuilder();
         StringBuilder completionName = new StringBuilder();
         int param = 0;
@@ -119,15 +122,15 @@ public class Runtime {
     *  inside the function name work.
     *  Currently only works on originalCompletionTable and FunctionList. */
     public static ArrayList<CompletionNamesAndDoc> createCompletions(String searchWord){
-        int i = Collections.binarySearch(Runtime.originalFunctionList, searchWord);
+        int i = Collections.binarySearch(Runtime.functionList, searchWord);
         if (i < 0) {
             i = Math.abs(i) - 1;
         }
         ArrayList<CompletionNamesAndDoc> completions = new ArrayList<>();
-        while (i >= 0 && i < Runtime.originalFunctionList.size()) {
-            String completion = Runtime.originalFunctionList.get(i);
+        while (i >= 0 && i < Runtime.functionList.size()) {
+            String completion = Runtime.functionList.get(i);
             if (completion.startsWith(searchWord)) {
-                completions.add(Runtime.originalCompletionTable.get(completion));
+                completions.add(Runtime.completionTable.get(completion));
             } else
                 break;
             i++;
@@ -156,6 +159,12 @@ public class Runtime {
         // have an original which gets extended just like the function table.
         // when a new function is defined I should add it.
         // Completions should also include in scope variable names (a bit trickier)
+    }
+
+    public static void addFunctionsWhileEditing(LibraryExpression program) {
+        resetToStandard();
+        programLibrary.functionTable.putAll(program.functionTable);
+        buildAdditionalCompletions(program);
     }
 
     /**

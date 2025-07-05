@@ -38,22 +38,26 @@ public class RemixREPL {
         return fileName;
     }
 
-//    public static void checkEditorText(String editorText) {
-//        // to be filled in with the reduced code, similar to run but without running.
-//    }
-
     public static RemixSwingWorker remixRunner;
 
-    public static void runEditorText(String editorText, RemixSwingWorker remixSwingWorker) {
+    public static void runEditorText(RemixSwingWorker remixSwingWorker) {
         remixRunner = remixSwingWorker; // so it can be cancelled
         // need to preprocess the string
         // then create CharStream fromString
         // then lexer, tokens, parse, tree, eval.visit
         // then run and return the string output
+        final ParseTree tree = processParse(remixSwingWorker.getEditor());
+        EvalVisitor eval = new EvalVisitor();
+
+        Runtime.resetToStandard();
+        Runtime.run((LibraryExpression)eval.visit(tree));
+    }
+
+    public static ParseTree processParse(RemixEditor editor) {
         fileName = EDITORTEXT;
         String processedText;
         try {
-            processedText = PreProcessREPL.processContents(editorText);
+            processedText = PreProcessREPL.processContents(editor.getProgramText());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -63,13 +67,10 @@ public class RemixREPL {
         RemixParser parser = new RemixParser(tokens);
         parser.removeErrorListeners();
         final RemixErrorListener listener = new RemixErrorListener();
-        listener.setEditorTextPane(remixSwingWorker.getTextPane());
+        listener.setEditorTextPane(editor.getEditorTextPane());
         parser.addErrorListener(listener);
-        ParseTree tree = parser.program(); // parse
-        EvalVisitor eval = new EvalVisitor();
-
-        Runtime.resetToStandard();
-        Runtime.run((LibraryExpression)eval.visit(tree));
+        // parse
+        return parser.program();
     }
 
 }

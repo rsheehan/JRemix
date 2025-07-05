@@ -7,18 +7,20 @@ import java.util.List;
 
 public class RemixSwingWorker extends SwingWorker<Boolean, String> {
 
-    private final String programText;
     private final RemixEditor editor;
 
-    public RemixSwingWorker(RemixEditor editor, String programText) {
+    public RemixSwingWorker(RemixEditor editor) { //, String programText) {
         this.editor = editor;
-        this.programText = programText;
+    }
+
+    protected RemixEditor getEditor() {
+        return editor;
     }
 
     @Override
     protected Boolean doInBackground() {
         Runtime.resetToStandard();
-        RemixREPL.runEditorText(programText, this);
+        RemixREPL.runEditorText(this);
         return true; // can make it false on an error in the program
     }
 
@@ -41,7 +43,4 @@ public class RemixSwingWorker extends SwingWorker<Boolean, String> {
         }
     }
 
-    public JTextPane getTextPane() {
-        return editor.getEditorTextPane();
-    }
 }

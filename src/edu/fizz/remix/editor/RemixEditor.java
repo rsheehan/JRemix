@@ -4,8 +4,11 @@ package edu.fizz.remix.editor;
  *   DocumentSizeFilter.java
  */
 
+import edu.fizz.remix.EvalVisitor;
 import edu.fizz.remix.libraries.GraphicsPanel;
+import edu.fizz.remix.runtime.LibraryExpression;
 import edu.fizz.remix.runtime.Runtime;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -65,6 +68,12 @@ public class RemixEditor extends JFrame {
             switch (e.getKeyChar()) {
                 case '\t':
                     break;
+                case '\n':
+                    systemOutput.setText("");
+                    ParseTree tree = RemixREPL.processParse(RemixEditor.this);
+                    EvalVisitor eval = new EvalVisitor();
+                    Runtime.addFunctionsWhileEditing((LibraryExpression) eval.visit(tree));
+                    // also need to add completions
                 default :
                     if (docPopup != null)
                         docPopup.hide();
@@ -188,6 +197,10 @@ public class RemixEditor extends JFrame {
         docPanel.add(docArea);
     }
 
+    public String getProgramText() {
+        return editorTextPane.getText();
+    }
+
     public static GraphicsPanel getGraphicsPanel() {
         return graphicOutput;
     }
@@ -286,20 +299,15 @@ public class RemixEditor extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            try {
-//                hideGraphicsPanel(); // uncomment if you want the graphics panel hidden
-                systemOutput.setText("");
-                remixOutput.setText("");
-                remixRunner = new RemixSwingWorker(
-                        RemixEditor.this,
-                        doc.getText(0,doc.getLength())
-                );
-                stopAction.setEnabled(true);
-                setEnabled(false); // changed back when running finishes or is terminated
-                remixRunner.execute();
-            } catch (BadLocationException ex) {
-                throw new RuntimeException(ex);
-            }
+            //                hideGraphicsPanel(); // uncomment if you want the graphics panel hidden
+            systemOutput.setText("");
+            remixOutput.setText("");
+            remixRunner = new RemixSwingWorker(
+                    RemixEditor.this //,
+            );
+            stopAction.setEnabled(true);
+            setEnabled(false); // changed back when running finishes or is terminated
+            remixRunner.execute();
         }
     }
 
@@ -578,6 +586,7 @@ public class RemixEditor extends JFrame {
         // setup the Remix runtime
         try {
             Runtime.prepareEnvironment();
+            Runtime.resetToStandard();
             // after this the currentLibrary is the program library
         } catch (Exception e) {
             System.err.println("Error: initializing REPL");
