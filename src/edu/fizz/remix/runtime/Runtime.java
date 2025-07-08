@@ -3,7 +3,6 @@ package edu.fizz.remix.runtime;
 import edu.fizz.remix.editor.RemixREPL;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 /** A Runtime includes the current library which has
@@ -39,7 +38,6 @@ public class Runtime {
         programLibrary = baseLibrary.copyFunctionsMethods();
         constants = (HashMap<String, Object>) stdlibConstants.clone();
         completionTable = new HashMap<>(originalCompletionTable);
-        // I don't use this yet see buildAdditionalCompletions()
         functionList = new ArrayList<>(originalFunctionList);
     }
 
@@ -116,24 +114,27 @@ public class Runtime {
         return new CompletionNamesAndDoc(screenName.toString(), completionName.toString(), function.functionComment);
     }
 
-    /* Initially the completions are only on the first characters.
-    *  So we can use a binary search to quickly find the starting position.
-    *  I could change this to a linear search so that matches anywhere
-    *  inside the function name work.
-    *  Currently only works on originalCompletionTable and FunctionList. */
+    /* The completions are now any function which matches the searchWord
+    *  with all the letters and in the order from left to right.
+    *  Currently works on originalCompletionTable and FunctionList
+    *  and the functions defined in the editor window itself. */
     public static ArrayList<CompletionNamesAndDoc> createCompletions(String searchWord){
-        int i = Collections.binarySearch(Runtime.functionList, searchWord);
-        if (i < 0) {
-            i = Math.abs(i) - 1;
-        }
         ArrayList<CompletionNamesAndDoc> completions = new ArrayList<>();
-        while (i >= 0 && i < Runtime.functionList.size()) {
-            String completion = Runtime.functionList.get(i);
-            if (completion.startsWith(searchWord)) {
-                completions.add(Runtime.completionTable.get(completion));
-            } else
-                break;
-            i++;
+        for (String functionName : Runtime.functionList) {
+            boolean found = false;
+            int i = 0;
+            for (char ch : searchWord.toCharArray()) {
+                found = false;
+                while (i < functionName.length() && !found) {
+                    if (functionName.charAt(i) == ch) {
+                        found = true;
+                    }
+                    i++;
+                }
+            }
+            if (found) {
+                completions.add(Runtime.completionTable.get(functionName));
+            }
         }
         return completions;
     }
