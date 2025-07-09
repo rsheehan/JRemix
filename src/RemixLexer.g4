@@ -90,3 +90,5 @@ fragment FIRSTCHAR	: ~[.()[\]{,};:—⫾…'’\-0-9" ~\t\n↲] ; // ⊕+\-*×÷
 fragment CHARACTER	: ~[.()[\]{,};:—⫾…'’" ~\t\n↲] ; // ⊕+*×÷%=≠<≤>≥
 
 fragment CAPITAL 	: [A-Z\u0391-\u03A9] ; // Roman and Greek capital letters
+
+EMPTYIDENTIFIER		: ('\'\'') -> skip ; // only used to prevent lex error in the editor

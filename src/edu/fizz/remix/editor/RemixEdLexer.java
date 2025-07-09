@@ -43,11 +43,11 @@ public class RemixEdLexer {
         return "ABCDEFGHIJKLMNOPQRSTUVWXYZΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ".contains(c);
     }
     private static boolean firstWordChar(char c) {
-        return !".()[\\]{,}:;—|…'’⊕+-*×÷%=≠<≤>≥0123456789π\" \t\n".contains(Character.toString(c));
+        return !".()[\\]{,}:;—…'’⊕+-*×÷%=≠<≤>≥0123456789π\" \t\n".contains(Character.toString(c));
     }
     // no longer allow "-" in
     private static boolean wordChar(char c) {
-        return !".()[\\]{,}:;—|…'’⊕+*×÷%=≠<≤>≥π\" \t\n".contains(Character.toString(c));
+        return !".()[\\]{,}:;—…'’⊕+*×÷%=≠<≤>≥π\" \t\n".contains(Character.toString(c));
     }
     private static boolean isSeparator(char c) {
         return ".:,({[)}]".contains(Character.toString(c));
@@ -66,31 +66,31 @@ public class RemixEdLexer {
         StyleConstants.setForeground(attr, Color.white);
         defaultStyle.addAttributes(attr);
         // variables
-        variable = makeStyle("variable", Color.white, false, true, RemixEditor.SIZE, defaultStyle); // was italic
+        variable = makeStyle("variable", new Color(255,255,200), false, true, defaultStyle); // was italic
         // singleQuote
-        singleQuote = makeStyle("singleQuote", new Color(70,70,70), false, false, RemixEditor.SIZE / 2, defaultStyle);
+        singleQuote = makeStyle("singleQuote", new Color(70,70,70), false, false, defaultStyle);
         // parentheses
-        parentheses = makeStyle("parentheses", new Color(150,150,250), false, false, RemixEditor.SIZE, defaultStyle);
+        parentheses = makeStyle("parentheses", new Color(150,150,250), false, false, defaultStyle);
         // comments, all sorts
-        comment = makeStyle("comment",new Color(170,121,66), true, false, RemixEditor.SIZE, defaultStyle);
+        comment = makeStyle("comment",new Color(170,121,66), true, false, defaultStyle);
         // operator text
-        operator = makeStyle("operator", Color.green, false, false, RemixEditor.SIZE, defaultStyle); // was italic
+        operator = makeStyle("operator", Color.green, false, false, defaultStyle); // was italic
         // literals
-        literal = makeStyle("literal", Color.cyan, true, false, RemixEditor.SIZE, defaultStyle);
+        literal = makeStyle("literal", Color.cyan, true, false, defaultStyle);
         // string - just a version of literal for the RemixStyleDocument code
-        string = makeStyle("string", new Color(255,200,200), true, false, RemixEditor.SIZE, defaultStyle);
+        string = makeStyle("string", new Color(255,200,200), true, false, defaultStyle);
         // keywords
-        keyword = makeStyle("keyword", Color.red, false, false, RemixEditor.SIZE, defaultStyle);
+        keyword = makeStyle("keyword", Color.red, false, false, defaultStyle);
         // separator
-        separator = makeStyle("separator", Color.magenta, false, false, RemixEditor.SIZE, defaultStyle);
+        separator = makeStyle("separator", Color.magenta, false, false, defaultStyle);
     }
 
-    private static Style makeStyle(String name, Color colour, boolean italic, boolean underline, int size, Style base) {
+    private static Style makeStyle(String name, Color colour, boolean italic, boolean underline, Style base) {
         Style newStyle = document.addStyle(name, base);
         SimpleAttributeSet attr = new SimpleAttributeSet();
         if (colour != null)
             StyleConstants.setForeground(attr, colour);
-        StyleConstants.setFontSize(attr, size);
+        StyleConstants.setFontSize(attr, RemixEditor.SIZE);
         StyleConstants.setItalic(attr, italic);
         StyleConstants.setUnderline(attr, underline);
         newStyle.addAttributes(attr);
@@ -103,6 +103,7 @@ public class RemixEdLexer {
         while (pos < document.getLength()) {
             pos = processChar(pos);
         }
+        document.editor.reparseProgramText(); // probably overkill too
     }
 
     private static char getChar(int pos) throws BadLocationException {
