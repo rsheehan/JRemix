@@ -1,0 +1,36 @@
+=================
+Calculate primes.
+=================
+
+'primes' : { 2, 3 }
+
+for each 'number' in 'primes' ['number' _]
+
+repeat
+	'biggest prime' : last in 'primes'
+	'start' : 'biggest prime' + 2
+	'finish' : 'biggest prime'² + 1
+
+	'more primes' : filter and show 'x' from ('start' to 'finish') where
+		'x' is not divisible by any number in 'primes' up to (√'x')
+
+	'primes' : join 'primes' and 'more primes'
+… 3 times
+
+-----------
+
+filter and show #item from 'list' where ['condition'] :
+	'new list' : { }
+	for each #item in 'list'
+		if 'condition'
+			#item _
+			append #item to 'new list'
+	'new list'
+
+'x' is not divisible by any number in 'list' up to 'limit' :
+	for each 'number' in 'list'
+		if ('x' is divisible by 'number')
+			return false
+		if ('number' > 'limit')
+			return true
+		true
