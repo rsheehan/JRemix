@@ -54,14 +54,14 @@ Graphics Operations and Objects
 		a 4 sided polygon
 
 	=-
-	Create an 'N' sided polygon.
+	Create an 'n' sided polygon.
 	=-
-	a/an 'N' sided polygon :
+	a/an 'n' sided polygon :
 		'points' : { }
-		for each 'side' from 0 to ('N' - 1)
+		for each 'side' from 0 to ('n' - 1)
 			append {
-				cosine (2π × 'side' ÷ 'N')
-				sine (2π × 'side' ÷ 'N')
+				cosine (2π × 'side' ÷ 'n')
+				sine (2π × 'side' ÷ 'n')
 			} to 'points'
 		a shape from 'points' scaled by 20
 
@@ -350,12 +350,12 @@ Graphics Operations and Objects
 	=========
 
 	=-
-	Create an animation object which executes 'changes' every 'N' ticks.
+	Create an animation object which executes 'changes' every 'n' ticks.
 	=-
-	every 'N' tick/ticks ['changes'] :
+	every 'n' tick/ticks ['changes'] :
 		create
-			'ticks' : 'N'
-			'counter' : 'N'
+			'ticks' : 'n'
+			'counter' : 'n'
 			'changes' : 'changes'
 
 			animate ME :
@@ -366,7 +366,7 @@ Graphics Operations and Objects
 
 	=======================================================================
 	The Java animation function is
-	animate at 'N' ticks per second [Animation-block] until [Condition-block]
+	animate at 'n' ticks per second [Animation-block] until [Condition-block]
 	=======================================================================
 
 	=-
