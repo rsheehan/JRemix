@@ -120,7 +120,10 @@ public class Runtime {
     *  and the functions defined in the editor window itself. */
     public static ArrayList<CompletionNamesAndDoc> createCompletions(String searchWord){
         ArrayList<CompletionNamesAndDoc> completions = new ArrayList<>();
+        ArrayList<CompletionNamesAndDoc> completionsAtStart = new ArrayList<>();
+        ArrayList<CompletionNamesAndDoc> completionsConsecutive = new ArrayList<>();
         for (String functionName : Runtime.functionList) {
+            int finish = 0;
             boolean found = false;
             int i = 0;
             for (char ch : searchWord.toCharArray()) {
@@ -128,15 +131,42 @@ public class Runtime {
                 while (i < functionName.length() && !found) {
                     if (functionName.charAt(i) == ch) {
                         found = true;
+                        finish = i;
                     }
                     i++;
                 }
             }
+            /*
+            Puts the completions in order from consecutive at start,
+            then consecutive, then non-consecutive.
+             */
             if (found) {
-                completions.add(Runtime.completionTable.get(functionName));
+                int position = consecutiveLetters(searchWord, functionName, finish);
+                if (position == 0)
+                    completionsAtStart.add(Runtime.completionTable.get(functionName));
+                else if (position > 0)
+                    completionsConsecutive.add(Runtime.completionTable.get(functionName));
+                else
+                    completions.add(Runtime.completionTable.get(functionName));
             }
         }
-        return completions;
+        completionsAtStart.addAll(completionsConsecutive);
+        completionsAtStart.addAll(completions);
+        return completionsAtStart;
+    }
+
+    /*
+    Checks to see if the found letters are in consecutive order in the
+    function name.
+    Returns the first position if so. -1 if not.
+     */
+    public static int consecutiveLetters(String searchWord, String functionName, int finish) {
+        int end = searchWord.length() - 1;
+        for (int i = 0; i < searchWord.length(); i++) {
+            if (functionName.charAt(finish - i) != searchWord.charAt(end - i))
+                return -1;
+        }
+        return finish - searchWord.length() + 1;
     }
 
     /** Run the standard library setting up functions. No longer objects and global data */

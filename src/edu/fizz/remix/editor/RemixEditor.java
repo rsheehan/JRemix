@@ -4,7 +4,7 @@ package edu.fizz.remix.editor;
  *   DocumentSizeFilter.java
  */
 
-import edu.fizz.remix.EvalVisitor;
+import edu.fizz.remix.EvalVisitorForEditor;
 import edu.fizz.remix.libraries.GraphicsPanel;
 import edu.fizz.remix.runtime.LibraryExpression;
 import edu.fizz.remix.runtime.Runtime;
@@ -68,18 +68,21 @@ public class RemixEditor extends JFrame {
             switch (e.getKeyChar()) {
                 case '\t':
                     break;
-                case '\n':
-                    systemOutput.setText("");
-                    ParseTree tree = RemixREPL.processParse(RemixEditor.this);
-                    EvalVisitor eval = new EvalVisitor();
-                    Runtime.addFunctionsWhileEditing((LibraryExpression) eval.visit(tree));
-                    // also need to add completions
+                case 27:
+                    doc.cancelCompletionHandling();
                 default :
                     if (docPopup != null)
                         docPopup.hide();
             }
             super.keyTyped(e);
         }
+    }
+
+    protected void reparseProgramText() {
+        systemOutput.setText("");
+        ParseTree tree = RemixREPL.processParse(RemixEditor.this);
+        EvalVisitorForEditor eval = new EvalVisitorForEditor();
+        Runtime.addFunctionsWhileEditing((LibraryExpression) eval.visit(tree));
     }
 
     public RemixEditor() {
@@ -95,7 +98,7 @@ public class RemixEditor extends JFrame {
 
         // the base font
         editorTextPane.setFont(new Font("monospaced", Font.PLAIN, SIZE)); // previously "Monaco" on Mac
-        doc = new RemixStyledDocument(editorTextPane);
+        doc = new RemixStyledDocument(this);
         editorTextPane.setStyledDocument(doc);
         RemixEdLexer.initStyles(doc);
 

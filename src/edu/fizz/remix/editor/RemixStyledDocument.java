@@ -34,11 +34,12 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             "'", "'"
     );
     private CompletionInfo completionsHere = null;
-
+    protected final RemixEditor editor;
     private final Style defaultStyle = getStyle("default");
 
-    public RemixStyledDocument(JTextPane textPane) {
-        this.textPane = textPane;
+    public RemixStyledDocument(RemixEditor editor) {
+        this.editor = editor;
+        this.textPane = editor.getEditorTextPane();
     }
 
     /* Insert a line.
@@ -354,6 +355,21 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         return count;
     }
 
+    public void cancelCompletionHandling() {
+        Runtime.CompletionNamesAndDoc completion;
+        if (completionsHere != null) {
+            int completionLength = completionsHere.currentLength();
+            completion = completionsHere.originalCompletion();
+            try {
+                super.remove(completionsHere.offset, completionLength);
+                super.insertString(completionsHere.offset, completion.displayName(), defaultStyle);
+            } catch (BadLocationException e) {
+                System.err.println("Bad location when cancelling completions.");
+            }
+        }
+        completionsHere = null;
+    }
+
     // Called from keystroke event handler set up in RemixEditor.
     public String completionHandling(int offset) throws BadLocationException {
         Runtime.CompletionNamesAndDoc completion = null;
@@ -637,6 +653,10 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             if (currentIndex >= completionList.size())
                 currentIndex = 0;
             return completionList.get(currentIndex);
+        }
+
+        private Runtime.CompletionNamesAndDoc originalCompletion() {
+            return completionList.getLast();
         }
     }
 
