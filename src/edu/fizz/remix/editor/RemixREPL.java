@@ -67,7 +67,6 @@ public class RemixREPL {
         RemixParser parser = new RemixParser(tokens);
         parser.removeErrorListeners();
         final RemixErrorListener listener = new RemixErrorListener();
-        listener.setEditorTextPane(editor.getEditorTextPane());
         parser.addErrorListener(listener);
         // parse
         return parser.program();
