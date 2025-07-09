@@ -150,7 +150,7 @@ public class BinaryExpression implements Expression {
                 };
             }
         } catch (RuntimeException e) {
-            System.err.printf("Error in binary expression, %s %s %s.%n", val1, operator, val2);
+            System.err.printf("Error in binary expression: %s : %s %s %s.%n", this.toString(), val1, operator, val2);
             return false;
         }
     }
