@@ -675,7 +675,7 @@ Degree equivalent of 'angle' radians.
 Swap 'a' with 'b'.
 =-
 #a swap #b :
-	'temp' : #A
+	'temp' : #a
 	#a : #b
 	#b : 'temp'
 
