@@ -1,7 +1,7 @@
 =============================
 'turtle' Operations and Objects
 =============================
-'turtle library' : library
+library
 
 	=-
 	Create a turtle space in 'the window'.
@@ -361,5 +361,3 @@
 
 -==================================================================================================-
 
-"Turtle library loaded." ↲
-'turtle library'

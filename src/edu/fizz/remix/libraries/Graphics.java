@@ -349,7 +349,7 @@ public class Graphics extends LibraryExpression {
 
         public AddShapeFunction() {
             super(
-                    List.of("add the ⫾ to the ⫾"),
+                    List.of("add the ⫾ to the ⫾", "add ⫾ to the ⫾"),
                     List.of("shape", "graphics panel"),
                     List.of(false, false),
                     false,

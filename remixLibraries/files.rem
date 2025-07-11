@@ -1,7 +1,7 @@
 ===========================
 File Operations and Objects
 ===========================
-'files library' : library "edu.fizz.remix.libraries.RemixFiles"
+library "edu.fizz.remix.libraries.RemixFiles"
 
 	HOME : file directory (home)
 
@@ -198,5 +198,3 @@ File Operations and Objects
 
 -============================================================================-
 
-"Files library loaded." ↲
-'files library'
