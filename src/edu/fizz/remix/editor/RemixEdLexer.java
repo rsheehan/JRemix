@@ -217,7 +217,6 @@ public class RemixEdLexer {
     starting location. Just style consistency things which needs correcting.
      */
     private static int dealWithTabs(int pos) throws BadLocationException {
-//        String prevStyle = pos > 0 ? getStyleName(pos - 1) : "default"; // should just get Style
         char ch = 0;
         int tabStart = pos;
         for (pos++; pos < document.getLength(); pos++) {

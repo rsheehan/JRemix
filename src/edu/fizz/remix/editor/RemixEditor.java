@@ -7,7 +7,7 @@ package edu.fizz.remix.editor;
 import edu.fizz.remix.EvalVisitorForEditor;
 import edu.fizz.remix.libraries.GraphicsPanel;
 import edu.fizz.remix.runtime.LibraryExpression;
-import edu.fizz.remix.runtime.Runtime;
+import edu.fizz.remix.runtime.LibrariesAndCompletions;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import javax.swing.*;
@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+import static edu.fizz.remix.runtime.LibrariesAndCompletions.resetToEditorStandard;
+
 public class RemixEditor extends JFrame {
 
     public static final int SIZE = 14;
@@ -50,6 +52,7 @@ public class RemixEditor extends JFrame {
     private Popup docPopup;
     private final JPanel docPanel = new JPanel();
     protected final JTextArea docArea;
+    private static int currentLine = 0;
     static String currentDirectory = "remixPrograms";
 
     private final HashMap<Object, Action> actions;
@@ -80,9 +83,12 @@ public class RemixEditor extends JFrame {
 
     protected void reparseProgramText() {
         systemOutput.setText("");
+        resetToEditorStandard();
         ParseTree tree = RemixREPL.processParse(RemixEditor.this);
         EvalVisitorForEditor eval = new EvalVisitorForEditor();
-        Runtime.addFunctionsWhileEditing((LibraryExpression) eval.visit(tree));
+        LibrariesAndCompletions.addFunctionsWhileEditing((LibraryExpression) eval.visit(tree));
+        // the visit above fills in addedLibraries in LibrariesAndCompletions
+        // this the result program is added as well.
     }
 
     public RemixEditor() {
@@ -226,7 +232,10 @@ public class RemixEditor extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
             try {
-                String docText = doc.completionHandling(editorTextPane.getCaretPosition());
+                Element root = doc.getDefaultRootElement();
+                int mark = editorTextPane.getCaretPosition();
+                int lineNumber = root.getElementIndex(mark) + 1;
+                String docText = doc.completionHandling(mark, lineNumber);
                 if (docPopup != null)
                     docPopup.hide();
                 if (docText != null && !docText.isEmpty()) {
@@ -235,7 +244,7 @@ public class RemixEditor extends JFrame {
                     docPopup = popupFactory.getPopup(editorTextPane, docPanel, location.x, location.y);
                     docPopup.show();
                 }
-                RemixEdLexer.fullLex(); // overkill, needs to change
+//                RemixEdLexer.fullLex(); // overkill, needs to change
             } catch (BadLocationException ex) {
                 throw new RuntimeException(ex);
             }
@@ -588,8 +597,8 @@ public class RemixEditor extends JFrame {
     public static void main(String[] args) {
         // setup the Remix runtime
         try {
-            Runtime.prepareEnvironment();
-            Runtime.resetToStandard();
+            LibrariesAndCompletions.prepareEnvironment();
+            resetToEditorStandard();
             // after this the currentLibrary is the program library
         } catch (Exception e) {
             System.err.println("Error: initializing REPL");

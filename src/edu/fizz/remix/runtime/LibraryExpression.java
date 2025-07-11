@@ -16,6 +16,8 @@ import java.util.HashMap;
 public class LibraryExpression implements Expression {
 
     boolean loaded = false; // set to true when first evaluated
+    public int startLine = 0;  // these two values are used by the editor for completions
+    public int finishLine = Integer.MAX_VALUE;
     public Block block = new Block();
     HashMap<String, Function> functionTable = new HashMap<>();
     static HashMap<String, Integer> methodTable = new HashMap<>(); // one table used by all
@@ -30,6 +32,11 @@ public class LibraryExpression implements Expression {
 
     public LibraryExpression() {
         setUpBuiltIns();
+    }
+
+    public void setValidLines(int start, int finish) {
+        startLine = start;
+        finishLine = finish;
     }
 
     /** Add all Function classes in this library as Remix functions.

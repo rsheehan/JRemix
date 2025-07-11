@@ -171,7 +171,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
     }
 
     public String toString() {
-        String call = functionNames.get(0);
+        String call = functionNames.getFirst();
         //call = call.replaceAll("_", " ");
         String[] callArr = call.split("");
         ListIterator<Expression> paramIter = parameters.listIterator();

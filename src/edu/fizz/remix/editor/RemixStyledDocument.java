@@ -1,6 +1,6 @@
 package edu.fizz.remix.editor;
 
-import edu.fizz.remix.runtime.Runtime;
+import edu.fizz.remix.runtime.LibrariesAndCompletions;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
@@ -356,7 +356,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     }
 
     public void cancelCompletionHandling() {
-        Runtime.CompletionNamesAndDoc completion;
+        LibrariesAndCompletions.CompletionNamesAndDoc completion;
         if (completionsHere != null) {
             int completionLength = completionsHere.currentLength();
             completion = completionsHere.originalCompletion();
@@ -371,16 +371,17 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     }
 
     // Called from keystroke event handler set up in RemixEditor.
-    public String completionHandling(int offset) throws BadLocationException {
-        Runtime.CompletionNamesAndDoc completion = null;
+    public String completionHandling(int offset, int lineNumber) throws BadLocationException {
+        LibrariesAndCompletions.CompletionNamesAndDoc completion = null;
         String completionText;
         if (completionsHere == null) {
             String seedWord = wordSoFar(offset);
             seedWord = seedWord.stripLeading();
-            ArrayList<Runtime.CompletionNamesAndDoc> completions = Runtime.createCompletions(seedWord.replace(" ", ""));
+            ArrayList<LibrariesAndCompletions.CompletionNamesAndDoc> completions = LibrariesAndCompletions.createCompletions(
+                    seedWord.replace(" ", ""), lineNumber);
             if (!seedWord.isEmpty() && !completions.isEmpty()) {
                 int seedLength = seedWord.length();
-                completions.add(new Runtime.CompletionNamesAndDoc(seedWord, "", "")); // so we can cycle back to the start
+                completions.add(new LibrariesAndCompletions.CompletionNamesAndDoc(seedWord, "", "", 0, Integer.MAX_VALUE)); // so we can cycle back to the start
                 completionsHere = new CompletionInfo(completions, offset - seedLength);
                 completion = completionsHere.nextCompletion();
                 completionText = completion.displayName();
@@ -635,11 +636,11 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
     private static class CompletionInfo {
 
-        private final ArrayList<Runtime.CompletionNamesAndDoc> completionList;
+        private final ArrayList<LibrariesAndCompletions.CompletionNamesAndDoc> completionList;
         private final int offset;
         private int currentIndex = -1;
 
-        private CompletionInfo(ArrayList<Runtime.CompletionNamesAndDoc> completionList, int offset) {
+        private CompletionInfo(ArrayList<LibrariesAndCompletions.CompletionNamesAndDoc> completionList, int offset) {
             this.completionList = completionList;
             this.offset = offset;
         }
@@ -648,14 +649,14 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             return completionList.get(currentIndex).displayName().length();
         }
 
-        private Runtime.CompletionNamesAndDoc nextCompletion() {
+        private LibrariesAndCompletions.CompletionNamesAndDoc nextCompletion() {
             currentIndex++;
             if (currentIndex >= completionList.size())
                 currentIndex = 0;
             return completionList.get(currentIndex);
         }
 
-        private Runtime.CompletionNamesAndDoc originalCompletion() {
+        private LibrariesAndCompletions.CompletionNamesAndDoc originalCompletion() {
             return completionList.getLast();
         }
     }

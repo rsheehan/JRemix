@@ -3,6 +3,7 @@ package edu.fizz.remix;
 import edu.fizz.remix.parser.RemixLexer;
 import edu.fizz.remix.parser.RemixParser;
 import edu.fizz.remix.runtime.LibraryExpression;
+import edu.fizz.remix.runtime.LibrariesAndCompletions;
 import edu.fizz.remix.runtime.Runtime;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -29,8 +30,8 @@ public class Remix {
     }
 
     public static void main(String[] args) throws Exception {
-        Runtime.prepareEnvironment();
-        Runtime.resetToStandard();
+        LibrariesAndCompletions.prepareEnvironment();
+        LibrariesAndCompletions.resetToEditorStandard();
         if (args.length > 0 && isRemFile(args[0])) {
             LibraryExpression program = loadPackage(args[0]);
             Runtime.run(program);

@@ -6,6 +6,7 @@ import edu.fizz.remix.parser.RemixErrorListener;
 import edu.fizz.remix.parser.RemixLexer;
 import edu.fizz.remix.parser.RemixParser;
 import edu.fizz.remix.runtime.LibraryExpression;
+import edu.fizz.remix.runtime.LibrariesAndCompletions;
 import edu.fizz.remix.runtime.Runtime;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -49,8 +50,9 @@ public class RemixREPL {
         final ParseTree tree = processParse(remixSwingWorker.getEditor());
         EvalVisitor eval = new EvalVisitor();
 
-        Runtime.resetToStandard();
+        LibrariesAndCompletions.resetToRunStandard();
         Runtime.run((LibraryExpression)eval.visit(tree));
+        LibrariesAndCompletions.resetToEditorStandard();
     }
 
     public static ParseTree processParse(RemixEditor editor) {

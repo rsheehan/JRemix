@@ -22,7 +22,10 @@ public abstract class Function {
         formalParameters = parameters;
         blockParameters = blockParams;
         this.transparent = transparent;
-        functionComment = comment;
+        if (comment != null)
+            functionComment = comment.replaceAll("\t", "").strip();
+        else
+            functionComment = null;
     }
 
     public Function(List<String> names, List<String> parameters, List<Boolean> blockParams) {
