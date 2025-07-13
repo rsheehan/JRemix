@@ -557,8 +557,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         }
         if (productWord.substring(i).equals("π"))
             word = "π";
-        else
-            word = productWord.substring(i);
+        else // take off the single quotes
+            word = productWord.substring(i + 1, productWord.length() - 1);
         return new String[] {product.toString(), word};
     }
 
