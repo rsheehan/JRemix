@@ -2,7 +2,7 @@
 
 MIN : 0
 MAX : 100
-'list' : a random list of 1000 numbers from MIN to MAX
+'list' : random list of 1000 numbers from MIN to MAX
 
 'list' ↲
 
@@ -12,7 +12,7 @@ sort 'list' with values from MIN to MAX
 
 ---------------------------------------------
 
-a random list of 'size' numbers from 'start' to 'finish' :
+random list of 'size' numbers from 'start' to 'finish' :
 	apply
 		random from 'start' to 'finish'
 	… 'size' times

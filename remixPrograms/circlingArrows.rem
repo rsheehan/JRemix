@@ -20,13 +20,13 @@ using graphics lib
 		append 'the arrow' to 'arrows'
 
 an arrow:
-	'arrow' : a shape from {
+	'arrow' : shape from {
 		{ 0, 1 }
 		{-2, 2 }
 		{ 0,-2 }
 		{ 2, 2 }
 	}
-	'arrow'’s 'colour' : a random colour
+	'arrow'’s 'colour' : random colour
 	'arrow'
 
 position 'the arrow' at 'angle' :

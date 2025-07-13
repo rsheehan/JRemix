@@ -3,6 +3,6 @@
 using graphics lib
 	'the window' : the graphics panel
 	repeat
-		place (a random circle) in 'the window'
+		place (random circle) in 'the window'
 	… 100 times
 	update 'the window'

@@ -2,7 +2,7 @@ using graphics lib
 	'the window' : the graphics panel
 
 	repeat
-		place (a random line) in 'the window'
+		place (random line) in 'the window'
 	… 100 times
 
 	update 'the window'

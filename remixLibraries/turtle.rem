@@ -68,7 +68,7 @@ library
 	Create a turtle.
 	=-
 	a turtle :
-		'turtle shape' : a shape from {
+		'turtle shape' : shape from {
 			{ 0, 1 }
 			{-2, 2 }
 			{ 0,-2 }
@@ -161,7 +161,7 @@ library
 			instantly move ME from 'start' to 'finish' in 'destination layer' :
 				clear 'animation layer' shapes
 				if ('pen down')
-					'line' : a 'colour' line from 'start' to 'finish'
+					'line' : 'colour' line from 'start' to 'finish'
 					place 'line' in 'destination layer'
 				'position' : 'finish'
 				if ('visible')
@@ -298,7 +298,6 @@ library
 						instantly move 'turtle' from 'start' to 'finish' in ('turtle'’s 'animation layer')
 					'remaining' : 'remaining' - 'speed'
 					pause (1.0 ÷ 'turtle space'’s 'turtle rate') seconds
-
 				- now add the "permanent" layer
 				for each 'turtle' in 'turtles' keeping 'index'
 					'start' : 'starting' {'index'}

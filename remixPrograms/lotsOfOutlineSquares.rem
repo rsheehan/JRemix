@@ -8,12 +8,13 @@ using graphics lib
 		{-1,  1}
 	}
 
-	'square' : (random colour) shape from 'square pts' scaled by 200 at THE-CENTRE-POINT
+	'square' : shape from 'square pts' scaled by 200
+	'square'’s 'colour' : null
 
 	for each 'angle' from 0 to 80 in steps of 10
 		's' : copy 'square'
 		's'’s 'heading' : 'angle' degrees as radians
-		's'’s 'colour' : random colour
+		's'’s 'outline colour' : random colour
 		place 's' in 'the window'
 
 	'arrow pts' : {

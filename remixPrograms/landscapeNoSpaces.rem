@@ -27,7 +27,7 @@ add the mountains on'the back layer' :
 		place'mountain'in'the back layer'
 
 add the sea on 'the back layer' :
-	'sea' : a DARK-BLUE box of STD-WIDTH x 200 at {
+	'sea' : DARK-BLUE box of STD-WIDTH x 200 at {
 		STD-WIDTH ÷ 2
 		STD-HEIGHT - 100
 	}
@@ -54,7 +54,7 @@ a'colour'mountain with'outline colour'edges
 	'centre' : random STD-WIDTH
 	'height' : random'max height' + 20
 	'width'  : random 150 + 300
-	'mountain' : a'colour'shape from {
+	'mountain' : 'colour'shape from {
 		{ 0, -'height' }
 		{ 'width' ÷ 2, 0 }
 		{ -'width' ÷ 2, 0 }
@@ -89,9 +89,9 @@ a cloud :
 	'y1' : 'base' - 'r1'
 	'y2' : 'base' - 'r2'
 
-	'circle A' : a WHITE circle of radius'r1'at { 'x1', 'y1' }
+	'circle A' : WHITE circle of radius'r1'at { 'x1', 'y1' }
 	'circle A'’s'outline colour' : BLACK
-	'circle B' : a WHITE circle of radius'r2'at { 'x2', 'y2' }
+	'circle B' : WHITE circle of radius'r2'at { 'x2', 'y2' }
 	'circle B'’s'outline colour' : BLACK
 
 	'width' : 'x2' - 'x1'
@@ -101,8 +101,8 @@ a cloud :
 		('y1' + 'r1' + 'y2' + 1) ÷ 2
 	}
 
-	'box' : a WHITE box of'width'x'height'at'position'
-	'line' : a BLACK line from {'x1', 'y1' + 'r1'} to {'x2', 'y1' + 'r1'}
+	'box' : WHITE box of'width'x'height'at'position'
+	'line' : BLACK line from {'x1', 'y1' + 'r1'} to {'x2', 'y1' + 'r1'}
 	'line'’s'width' : 2
 
 	- creating the object

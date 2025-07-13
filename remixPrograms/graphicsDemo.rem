@@ -2,11 +2,11 @@ using graphics lib
 
 	'the window' : the graphics panel
 
-	'current' : a random point
+	'current' : random point
 	repeat
-		'new' : a random point
-		'colour' : a random colour
-		place (a 'colour' line from 'current' to 'new') in 'the window'
+		'new' : random point
+		'colour' : random colour
+		place ('colour' line from 'current' to 'new') in 'the window'
 		'current' : 'new'
 	… 50 times
 	update 'the window'

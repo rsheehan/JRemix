@@ -42,7 +42,7 @@ Graphics stuff
 square at 'position' in 'window' :
 	'x' : 'position'{1} × DOT-SPACE
 	'y' : 'position'{2} × DOT-SPACE
-	'square' : a RED box of DOT-SIZE x DOT-SIZE at { 'x', 'y' }
+	'square' : RED box of DOT-SIZE x DOT-SIZE at { 'x', 'y' }
 	place 'square' in 'window'
 	update 'window'
 	

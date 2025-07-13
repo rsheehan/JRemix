@@ -7,5 +7,5 @@ using graphics lib
 	'square's 'colour' : GREEN
 	place 'square' in 'the window'
 
-	'rectangle' : a BLUE box of 200 x 200 at THE-CENTRE-POINT
+	'rectangle' : BLUE box of 200 x 200 at THE-CENTRE-POINT
 	place 'rectangle' in 'the window'

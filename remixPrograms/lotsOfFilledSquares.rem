@@ -1,6 +1,6 @@
 - Lots of filled squares -
 
-a random square :
+random square :
 	'shape' : a square
 	'shape'’s 'colour'   : random colour
 	'shape'’s 'size'     : random from 5 to 100
@@ -11,6 +11,6 @@ a random square :
 using graphics lib
 	'the window' : the graphics panel
 	repeat
-		place (a random square) in 'the window'
+		place (random square) in 'the window'
 	… 100 times
 	update 'the window'

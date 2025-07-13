@@ -10,7 +10,7 @@ with turtle graphics
 	'angle' : 0
 	for each 'arrow' in 'arrows'
 		'arrow' pen down
-		'arrow's 'colour' : a random colour
+		'arrow's 'colour' : random colour
 		'arrow's 'heading' : 'angle'
 		add 10 to 'angle'
 
