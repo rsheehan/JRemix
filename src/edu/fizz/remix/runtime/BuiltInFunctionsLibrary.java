@@ -1,9 +1,6 @@
 package edu.fizz.remix.runtime;
 
-import edu.fizz.remix.Remix;
 import edu.fizz.remix.editor.RemixREPL;
-import edu.fizz.remix.editor.RemixSwingWorker;
-import edu.fizz.remix.libraries.Graphics;
 
 import java.util.*;
 
