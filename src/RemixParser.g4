@@ -11,7 +11,7 @@ program				: ( functionDefinition | statement )* EOF ;
 
 library				: LIBRARY STRING? LBLOCK EOL* ( functionDefinition | statement )* RBLOCK ;
 
-usingLibrary		: USING expression (COMMA expression)* blockOfStatements ;
+usingLibrary		: USING expression (COMMA expression)* libraryBlock ;
 
 functionDefinition	: functionComment? functionSignature COLON COLON? EOL? blockOfStatements ;
 
@@ -58,6 +58,8 @@ methodSigPart		: WORD						# methSigWord
 					| LPAREN SELFREF RPAREN		# methSigSelf
 					| LBLOCK IDENTIFIER RBLOCK	# methSigBlock
 					;
+
+libraryBlock		: LBLOCK (functionDefinition | statement)* RBLOCK;
 
 blockOfStatements	: LBLOCK statement* RBLOCK ;
 

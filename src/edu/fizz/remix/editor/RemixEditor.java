@@ -110,7 +110,7 @@ public class RemixEditor extends JFrame {
 
         // set up the tabs
         StyleContext sc = StyleContext.getDefaultStyleContext();
-        float tabDiff = 32; // 40 matches 4 characters of new courier 16 font width
+        float tabDiff = 24; // 40 matches 4 characters of new courier 16 font width
         List<TabStop> tabList = new ArrayList<>();
         for (int i = 1; i <= 40; i++) {
             tabList.add(new TabStop(tabDiff * i));

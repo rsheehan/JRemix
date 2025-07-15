@@ -15,6 +15,7 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
         if (LibrariesAndCompletions.runningConstants.get(variableName) == null) {
             // local context but this is never accessed?
             result = super.evaluate(context); // as a side effect this puts the name into the
+            // TODO: put the constant into the corresponding library
             LibrariesAndCompletions.runningConstants.put(variableName, result);
         } else
             System.err.format("Attempt to reassign constant %s%n", variableName);

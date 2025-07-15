@@ -77,10 +77,10 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         Function function = null;
         ListIterator<LibraryExpression> stackIterator = context.libraryStack.listIterator(context.libraryStack.size());
         try {
-            while (function == null) {
+            do {
                 LibraryExpression library = stackIterator.previous();
                 function = library.searchFunctionTable(routineName);
-            }
+            } while (function == null);
         } catch (NoSuchElementException ignored) {
         }
 

@@ -14,6 +14,7 @@ public class ConstantValueExpression implements Expression {
 
     @Override
     public Object evaluate(Context context) {
+        // TODO: get constant from corresponding library
         Object result = LibrariesAndCompletions.runningConstants.get(constantName);
         if (result == null)
             System.err.format("Constant \"%s\" has no value.%n", constantName);

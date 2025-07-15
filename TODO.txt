@@ -1,3 +1,9 @@
+Nasty bug if a non-existent ref var is accessed e.g.
+#a swap #b :
+	'temp' : #A <- this goes unnoticed but doesn't work
+	#a : #b
+	#b : 'temp'
+
 I could add a string following "create" and "extend" to store a type name with a Remix object.
 Currently there is no unified way to determine the type except RemixObject.
 

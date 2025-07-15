@@ -174,6 +174,12 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMethSigBlock(RemixParser.MethSigBlockContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link RemixParser#libraryBlock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLibraryBlock(RemixParser.LibraryBlockContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link RemixParser#blockOfStatements}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

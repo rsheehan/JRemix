@@ -50,7 +50,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return library;
     }
 
-    /** LIBRARY STRING? LBLOCK EOL* (functionDefinition EOL*)* RBLOCK */
+    /** LIBRARY STRING? LBLOCK EOL* (functionDefinition | statement)* RBLOCK */
     @Override
     public Object visitLibrary(RemixParser.LibraryContext ctx) {
         LibraryExpression library;
@@ -86,6 +86,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     }
 
     /** USING expression (COMMA expression)* blockOfStatements */
+    /** USING expression (COMMA expression)* libraryBlock */
     @Override
     public UsingLibBlock visitUsingLibrary(RemixParser.UsingLibraryContext ctx) {
         ArrayList<Expression> libraryExpressions = new ArrayList<>();

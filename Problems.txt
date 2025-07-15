@@ -17,3 +17,18 @@ using graphics lib
 	… until [degree ≥ 90]
 
 Because the body of the animate routine is called in a separate thread
+
+Now:
+using graphics lib
+	'window' : a graphics window
+	'shape' : a square
+	'shape'’s 'size' : 100
+	place ('shape') in ('window' next layer)
+
+	'turn' : 3
+	animate at 1 tick per second
+		change 'shape' heading by 'turn' degrees
+		update 'window'
+		'degree' : ('shape'’s 'heading') radians as degrees
+		'degree'↲
+	… until ['degree' ≥ 90]

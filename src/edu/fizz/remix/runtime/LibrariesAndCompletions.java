@@ -27,6 +27,7 @@ public class LibrariesAndCompletions {
 
     private static HashMap<String, Object> stdlibConstants;
     /* This is where all constants are stored for a running program. */
+    // TODO: get rid of this since constants need to be part of a LibraryExpression
     public static HashMap<String, Object> runningConstants = new HashMap<String, Object>();
 
     // maps the completion name to the display name

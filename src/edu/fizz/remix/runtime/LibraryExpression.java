@@ -20,6 +20,8 @@ public class LibraryExpression implements Expression {
     public int finishLine = Integer.MAX_VALUE;
     public Block block = new Block();
     HashMap<String, Function> functionTable = new HashMap<>();
+    // TODO: unstatic the methodTable since methods are going to be per library
+    // TODO: probably add a constants table to the library too
     static HashMap<String, Integer> methodTable = new HashMap<>(); // one table used by all
 
     public static Integer searchMethodTable(String methodName) {
@@ -74,7 +76,8 @@ public class LibraryExpression implements Expression {
         // not really a clone, doesn't copy the block.
         LibraryExpression copy = new LibraryExpression();
         copy.functionTable = new HashMap<>(functionTable);
-        methodTable = new HashMap<>(methodTable);
+        // TODO: new copy of methodTable?
+        //methodTable = new HashMap<>(methodTable);
         return copy;
     }
 

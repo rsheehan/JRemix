@@ -76,11 +76,12 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
-            if (node instanceof RemixParser.StatementContext) {
-                Expression statement = (Expression)visit(node);
-                if (statement != null) // can be blank statements
-                    library.block.addStatement(statement);
-            } else if (node instanceof RemixParser.FunctionDefinitionContext) {
+//            if (node instanceof RemixParser.StatementContext) {
+//                Expression statement = (Expression)visit(node);
+//                if (statement != null) // can be blank statements
+//                    library.block.addStatement(statement);
+//            } else
+            if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 library.addFunction(function);
             }
@@ -89,6 +90,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     }
 
     /** USING expression (COMMA expression)* blockOfStatements */
+    /** USING expression (COMMA expression)* libraryBlock */
     @Override
     public UsingLibBlock visitUsingLibrary(RemixParser.UsingLibraryContext ctx) {
         LibraryExpression libraryExpression = null;
@@ -100,7 +102,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                 Expression libExp = (Expression) visit(node);
                 try {
                         libraryExpression = (LibraryExpression) libExp.evaluate(new Context(LibrariesAndCompletions.getProgramLibrary()));
-                } catch (NullPointerException | ReturnException | InterruptedException e) {
+                } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException e) {
                     //throw new RuntimeException(e);
                 }
                 if (libraryExpression != null)
