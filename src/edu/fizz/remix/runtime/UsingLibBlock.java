@@ -21,13 +21,19 @@ public class UsingLibBlock implements Expression {
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         LibraryExpression library;
         for (Expression libraryExpression : libraryExpressions) {
-            library = (LibraryExpression) libraryExpression.evaluate(context);
-            context.pushLibrary(library);
+            Object exp = libraryExpression.evaluate(context);
+            try {
+                library = (LibraryExpression) exp;
+                context.pushLibrary(library);
+            } catch (ClassCastException e) {
+                System.err.printf("%s is not a library.%n", exp);
+            }
         }
 
         Object result = usingBlock.evaluate(context);
 
         for (Expression ignored : libraryExpressions) {
+            // TODO: should not pop any "non-libraries". Thee were not added.
             context.popLibrary();
         }
         return result;
