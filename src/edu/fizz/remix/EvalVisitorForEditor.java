@@ -89,19 +89,20 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         return library;
     }
 
-    /** USING expression (COMMA expression)* blockOfStatements */
-    /** USING expression (COMMA expression)* libraryBlock */
+    /** USING expression (COMMA expression)* usingBlock */
     @Override
     public UsingLibBlock visitUsingLibrary(RemixParser.UsingLibraryContext ctx) {
         LibraryExpression libraryExpression = null;
         ArrayList<LibraryExpression> libraryExpressions = new ArrayList<>();
+        int[]  usingBlock = new int [2];
+
         int n = ctx.getChildCount();
-        for (int i = 1; i < n - 1; i++) { // first node = "using", last = "block"
+        for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.ExpressionContext) {
                 Expression libExp = (Expression) visit(node);
                 try {
-                        libraryExpression = (LibraryExpression) libExp.evaluate(new Context(LibrariesAndCompletions.getProgramLibrary()));
+                    libraryExpression = (LibraryExpression) libExp.evaluate(new Context(LibrariesAndCompletions.getProgramLibrary()));
                 } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException e) {
                     //throw new RuntimeException(e);
                 }
@@ -109,17 +110,18 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                     libraryExpressions.add(libraryExpression);
             }
         }
-        Block usingLibBlock = null;
-        if (ctx.blockOfStatements() != null) {
-            int blockLineStart = ctx.blockOfStatements().getStart().getLine() - 1;
-            int blockLineFinish = ctx.blockOfStatements().getStop().getLine() - 1;
-
-            for (LibraryExpression lib : libraryExpressions) {
-                lib.setValidLines(blockLineStart, blockLineFinish);
-                LibrariesAndCompletions.addLibrary(lib);
-            }
+        usingBlock = (int[]) visit(ctx.usingBlock());
+        for (LibraryExpression lib : libraryExpressions) {
+            lib.setValidLines(usingBlock[0], usingBlock[1]);
+            LibrariesAndCompletions.addLibrary(lib);
         }
-        return null; // new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingLibBlock);
+        return null;
+    }
+
+    public int[] visitUsingBlock(RemixParser.UsingBlockContext ctx) {
+        int blockLineStart = ctx.getStart().getLine() - 1;
+        int blockLineFinish = ctx.getStop().getLine() - 1;
+        return new int[]{blockLineStart, blockLineFinish};
     }
 
     /** RETURN expression? */

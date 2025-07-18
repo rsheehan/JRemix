@@ -89,7 +89,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             readable = readable.replace("⫾", "()");
             if (!fileName.equals(RemixREPL.EDITORTEXT))
                 System.err.format("file: %s, ", fileName);
-            else System.err.format("line: %d, offset: %d%n\t\"%s\" does not exist or is a method with a null receiver.%n",
+            System.err.format("line: %d, offset: %d%n\t\"%s\" does not exist or is a method with a null receiver.%n",
                     lineNumber, lineOffset, readable);
             return null;
         }

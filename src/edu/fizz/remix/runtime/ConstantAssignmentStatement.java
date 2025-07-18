@@ -11,12 +11,20 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
      */
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
+        LibraryExpression library;
         Object result = null;
-        if (LibrariesAndCompletions.runningConstants.get(variableName) == null) {
+        int i = context.libraryStack.size() - 1;
+        do {
+            library = context.libraryStack.get(i);
+            result = library.constantTable.get(variableName);
+            i--;
+        } while (result == null && i >= 0);
+
+        if (result == null) {
             // local context but this is never accessed?
             result = super.evaluate(context); // as a side effect this puts the name into the
             // TODO: put the constant into the corresponding library
-            LibrariesAndCompletions.runningConstants.put(variableName, result);
+            library.constantTable.put(variableName, result);
         } else
             System.err.format("Attempt to reassign constant %s%n", variableName);
         return result;

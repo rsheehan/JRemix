@@ -25,11 +25,6 @@ public class LibrariesAndCompletions {
      */
     private static LibraryExpression programLibrary; // = new LibraryExpression();
 
-    private static HashMap<String, Object> stdlibConstants;
-    /* This is where all constants are stored for a running program. */
-    // TODO: get rid of this since constants need to be part of a LibraryExpression
-    public static HashMap<String, Object> runningConstants = new HashMap<String, Object>();
-
     // maps the completion name to the display name
     public static HashMap<String, CompletionNamesAndDoc> originalCompletionTable;
     public static HashMap<String, CompletionNamesAndDoc> completionTable;
@@ -56,7 +51,7 @@ public class LibrariesAndCompletions {
      */
     public static void resetToEditorStandard() {
         // probably only needs to copy functions as methods not used for completions yet
-        programLibrary = baseLibrary.copyFunctionsMethods();
+        programLibrary = baseLibrary.copyFunctionsConstants();
 //        runningConstants = (HashMap<String, Object>) stdlibConstants.clone();
         completionTable = new HashMap<>(originalCompletionTable);
         functionList = new ArrayList<>(originalFunctionList);
@@ -69,8 +64,7 @@ public class LibrariesAndCompletions {
      * running.
      */
     public static void resetToRunStandard() {
-        programLibrary = baseLibrary.copyFunctionsMethods();
-        runningConstants = (HashMap<String, Object>) stdlibConstants.clone();
+        programLibrary = baseLibrary.copyFunctionsConstants();
     }
 
     /** Print the names of all the functions. */
@@ -217,7 +211,6 @@ public class LibrariesAndCompletions {
             // this means this is only useful for loading other libraries, printing etc.
             // But they may contain CONSTANTS.
             standardLibrary.block.evaluate(new Context(baseLibrary));
-            stdlibConstants = (HashMap<String, Object>) runningConstants.clone();
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in program.");
         }

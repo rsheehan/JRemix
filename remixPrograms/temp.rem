@@ -1,4 +1,17 @@
-do 
-	"hi" ↲
-ABC : 23
-ABC ↲
+using include "remixPrograms/tempLib.rem"
+	function ↲
+	outside
+	inside
+
+	inside :
+		function ↲
+
+function ↲
+outside
+inside
+
+function :
+	"program level"
+
+outside :
+	function ↲

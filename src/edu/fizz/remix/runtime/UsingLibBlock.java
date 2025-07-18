@@ -8,12 +8,15 @@ public class UsingLibBlock implements Expression {
     // The libraries which are to be added to the library stack when the block of statements is evaluated.
     Expression[] libraryExpressions;
     // The statements to be executed in the context of the libraries.
-    Block usingStatements;
+    LibraryExpression usingBlock;
+//    Block usingStatements;
+//    HashMap<String, Function> functionTable = new HashMap<>();
 
-    public UsingLibBlock(Expression[] libraries, Block statements) {
+    public UsingLibBlock(Expression[] libraries, LibraryExpression functionsAndStatements) {
         libraryExpressions = libraries;
-        usingStatements = statements;
+        usingBlock = functionsAndStatements;
     }
+
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         LibraryExpression library;
@@ -22,7 +25,7 @@ public class UsingLibBlock implements Expression {
             context.pushLibrary(library);
         }
 
-        Object result = usingStatements.evaluate(context);
+        Object result = usingBlock.evaluate(context);
 
         for (Expression ignored : libraryExpressions) {
             context.popLibrary();

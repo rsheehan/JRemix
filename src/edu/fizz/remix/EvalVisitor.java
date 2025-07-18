@@ -85,20 +85,39 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return library;
     }
 
-    /** USING expression (COMMA expression)* blockOfStatements */
-    /** USING expression (COMMA expression)* libraryBlock */
+    /** USING expression (COMMA expression)* usingBlock */
     @Override
     public UsingLibBlock visitUsingLibrary(RemixParser.UsingLibraryContext ctx) {
         ArrayList<Expression> libraryExpressions = new ArrayList<>();
+        LibraryExpression usingBlock = new LibraryExpression();
+
         int n = ctx.getChildCount();
-        for (int i = 1; i < n - 1; i++) { // first node = "using", last = "block"
+        for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.ExpressionContext) {
                 libraryExpressions.add((Expression) visit(node));
             }
         }
-        Block usingLibBlock = (Block) visit(ctx.blockOfStatements());
-        return new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingLibBlock);
+        usingBlock = (LibraryExpression) visit(ctx.usingBlock());
+        return new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
+    }
+
+    /** LBLOCK (functionDefinition | statement)* RBLOCK */
+    @Override
+    public LibraryExpression visitUsingBlock(RemixParser.UsingBlockContext ctx) {
+        LibraryExpression usingBlock = new LibraryExpression();
+        for (int i = 0; i < ctx.getChildCount(); i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixParser.StatementContext) {
+                Expression statement = (Expression)visit(node);
+                if (statement != null) // can be blank statements
+                    usingBlock.block.addStatement(statement);
+            } else if (node instanceof RemixParser.FunctionDefinitionContext) {
+                RemixFunction function = (RemixFunction)visit(node);
+                usingBlock.addFunction(function);
+            }
+        }
+        return usingBlock;
     }
 
     /** RETURN expression? */
