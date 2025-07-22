@@ -49,17 +49,20 @@ using LIB1
 test {
 	"Simple function from library again"
 		using LIB1
-			4 plus 5
+			'result' : 4 plus 5
+		'result'
 	… expected 9
 
 	"Method call from library"
 		using LIB1
-			(name "Peter" age 50) to string
+			'result' : (name "Peter" age 50) to string
+		'result'
 	… expected "50, Peter years old"
 
 	"Method call same signature different library"
 		using LIB2
-			(name "Peter" age 50) to string
+			'result' : (name "Peter" age 50) to string
+		'result'
 	… expected "Peter, 50 years old"
 }
 ↲
