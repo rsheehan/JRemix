@@ -24,6 +24,7 @@ public class LibraryExpression implements Expression {
     HashMap<String, Object> constantTable = new HashMap<String, Object>();
 
     static HashMap<String, Integer> methodTable = new HashMap<>(); // one table used by all
+    static HashMap<String, Method> methodTableForCompletions = new HashMap<>();
 
     public static Integer searchMethodTable(String methodName) {
         return methodTable.get(methodName);
@@ -63,11 +64,13 @@ public class LibraryExpression implements Expression {
     }
 
     /** Add a name of method and the reference parameter position. */
-    public static void addMethodName(String name, int refPos) {
+    public static void addMethodName(String name, int refPos, Method method) {
         Integer pos;
         pos = methodTable.get(name);
         if (pos == null) { // new method name
             methodTable.put(name, refPos);
+            if (method != null)
+                methodTableForCompletions.put(name, method);
         } else if (pos != refPos) {
             System.err.format("Conflicting method definition: %s%n", name);
         }
@@ -94,4 +97,5 @@ public class LibraryExpression implements Expression {
         }
         return this;
     }
+
 }
