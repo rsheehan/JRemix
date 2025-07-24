@@ -13,9 +13,9 @@ public class Method extends RemixFunction {
      * from within other methods in the same object.
      */
 
-    public Method(List<String> names, Block block, List<String> parameters, List<Boolean> blockParams, int self) {
+    public Method(List<String> names, Block block, List<String> parameters, List<Boolean> blockParams, int self, String comment) {
         // TODO: need to add methodComments to methods
-        super(names, block, parameters, blockParams, false, null);
+        super(names, block, parameters, blockParams, false, comment);
         // the list of names should have the me/my removed
         // and if so the parameter value of where the object reference goes
         // when called must be stored in selfRef.

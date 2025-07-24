@@ -45,7 +45,7 @@ setter              : SETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* ;
 
 fieldId				: IDENTIFIER ;
 
-methodDefinition	: (setterSignature | getterSignature | methodSignature) COLON EOL? blockOfStatements EOL* ;
+methodDefinition	: functionComment? (setterSignature | getterSignature | methodSignature) COLON EOL? blockOfStatements EOL* ;
 
 // add getterSignature and setterSignature
 // to deal with user defined getters and setters

@@ -135,7 +135,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new RedoStatement();
     }
 
-    /** functionSignature COLON COLON? blockOfStatements */
+    /** functionComment? functionSignature COLON COLON? EOL? blockOfStatements */
     @Override
     public RemixFunction visitFunctionDefinition(RemixParser.FunctionDefinitionContext ctx) {
         int colonPosition = 2;
@@ -161,6 +161,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     @Override
     public String visitFunctionComment(RemixParser.FunctionCommentContext ctx) {
         String comment = ctx.DOC_COMMENT().getText();
+        comment = comment.replace("\t", "");
         return comment.substring(4,comment.length()-3);
     }
 
@@ -213,28 +214,28 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 List<String> getSetNames = (List<String>)visit(node);
                 for (String name : getSetNames) {
                     String getMethodName = methodTable.createGetter(name);
-                    LibraryExpression.addMethodName(getMethodName, 1);
+                    LibraryExpression.addMethodName(getMethodName, 1, null);
                     String setMethodName = methodTable.createSetter(name);
-                    LibraryExpression.addMethodName(setMethodName, 1);
+                    LibraryExpression.addMethodName(setMethodName, 1, null);
                 }
             } else if (node instanceof RemixParser.GetterContext) {
                 List<String> getterNames = (List<String>)visit(node);
                 for (String name : getterNames) {
                     String methodName = methodTable.createGetter(name);
-                    LibraryExpression.addMethodName(methodName, 1);
+                    LibraryExpression.addMethodName(methodName, 1, null);
                 }
             }else if (node instanceof RemixParser.SetterContext) {
                 List<String> setterNames = (List<String>)visit(node);
                 for (String name : setterNames) {
                     String methodName = methodTable.createSetter(name);
-                    LibraryExpression.addMethodName(methodName, 1);
+                    LibraryExpression.addMethodName(methodName, 1, null);
                 }
             } else if (node instanceof RemixParser.MethodDefinitionContext) {
                 Method method = (Method)visit(node);
                 // add it to the methodTable for the object
                 methodTable.addMethod(method);
                 // add it to the global table
-                LibraryExpression.addMethodName(method.getName(), method.getSelfRef());
+                LibraryExpression.addMethodName(method.getName(), method.getSelfRef(), method);
             }
         }
         objectExpr.addMethodTable(methodTable);
@@ -287,16 +288,22 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return identifier(ctx.IDENTIFIER().getText());
     }
 
-    /** (setterSignature | getterSignature | methodSignature) COLON EOL? blockOfStatements */
+    /** functionComment? (setterSignature | getterSignature | methodSignature) COLON EOL? blockOfStatements EOL* */
     @Override
     public Method visitMethodDefinition(RemixParser.MethodDefinitionContext ctx) {
         // doesn't deal with pass through "::" methods yet
         // I don't see a need for transparent methods
+        int i = 0;
+        String methodComment = null;
+        if (ctx.getChild(i) instanceof RemixParser.FunctionCommentContext) {
+            methodComment = (String)visit(ctx.functionComment());
+            i++;
+        }
         MethodName methSig;
-        ParseTree node = ctx.getChild(0);
+        ParseTree node = ctx.getChild(i);
         methSig = (MethodName)visit(node);
         Block block = (Block)visit(ctx.blockOfStatements());
-        return new Method(methSig.getAllNames(), block, methSig.getParameters(), methSig.getBlockParams(), methSig.getSelfRef());
+        return new Method(methSig.getAllNames(), block, methSig.getParameters(), methSig.getBlockParams(), methSig.getSelfRef(), methodComment);
     }
 
     /** methodSigPart methodSigPart+ */
