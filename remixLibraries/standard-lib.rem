@@ -679,16 +679,6 @@ Swap 'a' with 'b'.
 	#a : #b
 	#b : 'temp'
 
-=
-Swap 'list' element 'this' with 'that'.
-'list' can be a list or map.
-'this' and 'that' are indexes or keys.
--
-swap 'list' element 'this' with 'that' :
-	'temp' : 'list' {'this'}
-	'list' {'this'} : 'list' {'that'}
-=	'list' {'that'} : 'temp'
-
 ==============================
  Testing functions
 ==============================
@@ -729,6 +719,9 @@ test 'list of tests' :
 				increment 'failing'
 				"  Failed: produces ", 'result', ", should be ", 'expected' ↲
 
+		=-
+		Execute the tests of a test OBJECT.
+		=-
 		execute MY tests :
 			"Starting tests: " ↲
 			for each 'test' in 'tests' keeping 'test number'

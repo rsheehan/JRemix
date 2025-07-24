@@ -7,6 +7,7 @@ using graphics lib
 	'cloud layer' : 'window' next layer
 	'front layer' : 'window' next layer
 	
+	add the sun on the 'back layer'
 	add the mountains on the 'back layer'
 	add the sea on the 'back layer'
 	add the islands on the 'front layer'
@@ -14,12 +15,16 @@ using graphics lib
 
 	'the clouds' : 10 clouds in the 'cloud layer'
 
-	animate 'window' 300 times at 30 ticks per second
+	animate 'window' 600 times at 30 ticks per second
 		for each 'cloud' in 'the clouds'
 			move 'cloud'
 
 -============================================================================-
 
+	add the sun on the 'layer' :
+		'sun' : YELLOW circle of radius 40 at {800, 100}
+		place 'sun' in 'layer'
+		
 	add the mountains on the 'layer' :
 		repeat 20 times
 			'mountain' : a DARK-GREY mountain with BLACK edges
@@ -106,7 +111,7 @@ using graphics lib
 		'line'’s 'width' : 2
 
 		- creating the object
-
+		
 		create
 			- these are fields
 
