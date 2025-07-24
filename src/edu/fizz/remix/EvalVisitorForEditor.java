@@ -94,7 +94,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     public UsingLibBlock visitUsingLibrary(RemixParser.UsingLibraryContext ctx) {
         LibraryExpression libraryExpression = null;
         ArrayList<LibraryExpression> libraryExpressions = new ArrayList<>();
-        int[]  usingBlock = new int [2];
+        int[]  usingBlock;
 
         int n = ctx.getChildCount();
         for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
@@ -110,10 +110,14 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                     libraryExpressions.add(libraryExpression);
             }
         }
-        usingBlock = (int[]) visit(ctx.usingBlock());
-        for (LibraryExpression lib : libraryExpressions) {
-            lib.setValidLines(usingBlock[0], usingBlock[1]);
-            LibrariesAndCompletions.addLibrary(lib);
+        try {
+            usingBlock = (int[]) visit(ctx.usingBlock());
+            for (LibraryExpression lib : libraryExpressions) {
+                lib.setValidLines(usingBlock[0], usingBlock[1]);
+                LibrariesAndCompletions.addLibrary(lib);
+            }
+        } catch (NullPointerException ex) {
+            // just incomplete error while editing
         }
         return null;
     }
