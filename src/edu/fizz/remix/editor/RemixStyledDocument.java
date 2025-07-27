@@ -381,7 +381,9 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                     seedWord.replace(" ", ""), lineNumber);
             if (!seedWord.isEmpty() && !completions.isEmpty()) {
                 int seedLength = seedWord.length();
-                completions.add(new LibrariesAndCompletions.CompletionNamesAndDoc(seedWord, "", "", 0, Integer.MAX_VALUE)); // so we can cycle back to the start
+                ArrayList<int[]> activeLines = new ArrayList<>();
+                activeLines.add(new int[] {0, Integer.MAX_VALUE});
+                completions.add(new LibrariesAndCompletions.CompletionNamesAndDoc(seedWord, "", "", activeLines)); // so we can cycle back to the start
                 completionsHere = new CompletionInfo(completions, offset - seedLength);
                 completion = completionsHere.nextCompletion();
                 completionText = completion.displayName();

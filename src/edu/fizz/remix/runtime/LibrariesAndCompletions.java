@@ -103,8 +103,7 @@ public class LibrariesAndCompletions {
             String displayName, // the full name with formal parameters
             String completionString, // the name with parameters and spaces removed
             String functionComment,
-            int startLine,
-            int finishLine
+            ArrayList<int[]> activeLines
     ){}
 
     /*
@@ -133,11 +132,12 @@ public class LibrariesAndCompletions {
                 completionName.append(ch);
             }
         }
-        return new CompletionNamesAndDoc(screenName.toString(),
+        return new CompletionNamesAndDoc(
+                screenName.toString(),
                 completionName.toString(),
                 function.functionComment,
-                library.startLine,
-                library.finishLine);
+                library.activeLines
+        );
     }
 
     /* The completions are now any function which matches the searchWord
@@ -169,7 +169,14 @@ public class LibrariesAndCompletions {
              */
             if (found) {
                 final CompletionNamesAndDoc thisCompletion = LibrariesAndCompletions.completionTable.get(functionName);
-                if (thisCompletion.startLine < lineNumber && lineNumber <= thisCompletion.finishLine) {
+                boolean activeHere = false;
+                for (int[] startAndFinish : thisCompletion.activeLines) {
+                    if (startAndFinish[0] < lineNumber && lineNumber <= startAndFinish[1]) {
+                        activeHere = true;
+                        break;
+                    }
+                }
+                if (activeHere) {
                     int position = consecutiveLetters(searchWord, functionName, finish);
                     if (position == 0)
                         completionsAtStart.add(thisCompletion);

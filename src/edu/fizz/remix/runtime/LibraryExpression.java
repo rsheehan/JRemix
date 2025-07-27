@@ -1,6 +1,7 @@
 package edu.fizz.remix.runtime;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -16,6 +17,7 @@ import java.util.HashMap;
 public class LibraryExpression implements Expression {
 
     boolean loaded = false; // set to true when first evaluated
+    ArrayList<int[]> activeLines = new ArrayList<>(); // editor lines where this library is active
     public int startLine = 0;  // these two values are used by the editor for completions
     public int finishLine = Integer.MAX_VALUE;
     public Block block = new Block();
@@ -39,6 +41,7 @@ public class LibraryExpression implements Expression {
     }
 
     public void setValidLines(int start, int finish) {
+        activeLines.add(new int[]{start, finish});
         startLine = start;
         finishLine = finish;
     }
