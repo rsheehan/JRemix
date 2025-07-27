@@ -113,7 +113,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         try {
             usingBlock = (int[]) visit(ctx.usingBlock());
             for (LibraryExpression lib : libraryExpressions) {
-                lib.setValidLines(usingBlock[0], usingBlock[1]);
+                lib.setValidLines(usingBlock);
                 LibrariesAndCompletions.addLibrary(lib);
             }
         } catch (NullPointerException ex) {

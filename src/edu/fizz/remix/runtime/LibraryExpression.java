@@ -38,8 +38,8 @@ public class LibraryExpression implements Expression {
         setUpBuiltIns();
     }
 
-    public void setValidLines(int start, int finish) {
-        activeLines.add(new int[]{start, finish});
+    public void setValidLines(int[] lines) {
+        activeLines.add(lines);
     }
 
     /** Add all Function classes in this library as Remix functions.
