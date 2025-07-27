@@ -52,7 +52,6 @@ public class RemixEditor extends JFrame {
     private Popup docPopup;
     private final JPanel docPanel = new JPanel();
     protected final JTextArea docArea;
-    private static int currentLine = 0;
     static String currentDirectory = "remixPrograms";
 
     private final HashMap<Object, Action> actions;

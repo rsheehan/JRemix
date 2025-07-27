@@ -18,8 +18,6 @@ public class LibraryExpression implements Expression {
 
     boolean loaded = false; // set to true when first evaluated
     ArrayList<int[]> activeLines = new ArrayList<>(); // editor lines where this library is active
-    public int startLine = 0;  // these two values are used by the editor for completions
-    public int finishLine = Integer.MAX_VALUE;
     public Block block = new Block();
     HashMap<String, Function> functionTable = new HashMap<>();
     // TODO: probably add a constants table to the library too
@@ -42,8 +40,6 @@ public class LibraryExpression implements Expression {
 
     public void setValidLines(int start, int finish) {
         activeLines.add(new int[]{start, finish});
-        startLine = start;
-        finishLine = finish;
     }
 
     /** Add all Function classes in this library as Remix functions.
@@ -84,6 +80,7 @@ public class LibraryExpression implements Expression {
         LibraryExpression copy = new LibraryExpression();
         copy.functionTable = new HashMap<>(functionTable);
         copy.constantTable = new HashMap<>(constantTable);
+        copy.activeLines = new ArrayList<>(activeLines);
         return copy;
     }
 

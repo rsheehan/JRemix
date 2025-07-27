@@ -108,6 +108,7 @@ public class LibrariesAndCompletions {
 
     /*
     Create a record of the name (with parameters), the shortened completion string and the function comment.
+    Now also includes the active lines in the editor for this library.
      */
     private static CompletionNamesAndDoc completionNames(String internalName, LibraryExpression library) {
         Function function = library.functionTable.get(internalName);
@@ -115,9 +116,6 @@ public class LibrariesAndCompletions {
         StringBuilder completionName = new StringBuilder();
         int param = 0;
         for (char ch : internalName.toCharArray()) {
-//            if (ch == ' ') {
-//                screenName.append(ch);
-//            } else
             if (ch == '⫾') {
                 String formal = function.formalParameters.get(param);
                 if (formal.startsWith("#"))
@@ -230,7 +228,6 @@ public class LibrariesAndCompletions {
      * Currently after every editor change.
      */
     public static void addFunctionsWhileEditing(LibraryExpression program) {
-//programLibrary.functionTable.putAll(program.functionTable);
         for (LibraryExpression lib : addedLibraries) {
             buildAdditionalCompletions(lib);
         }
