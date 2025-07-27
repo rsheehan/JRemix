@@ -211,6 +211,7 @@ public class LibrariesAndCompletions {
         // this also makes the currentLibrary the program one
         // merge the standardLibrary into the baseLibrary
         baseLibrary.functionTable.putAll(standardLibrary.functionTable);
+        baseLibrary.activeLines.add(new int[] {0, Integer.MAX_VALUE});
         try {
             // currently libraries no longer maintain state in contexts (variables)
             // this means this is only useful for loading other libraries, printing etc.
