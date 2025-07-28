@@ -64,6 +64,8 @@ public class RemixEditor extends JFrame {
     private RedoAction redoAction;
     private final UndoManager undo = new UndoManager();
 
+    private static boolean editing = true;
+
     class CatchKeys extends KeyAdapter {
         @Override
         public void keyTyped(KeyEvent e) {
@@ -80,12 +82,22 @@ public class RemixEditor extends JFrame {
         }
     }
 
+    public static boolean isEditing() {
+        return editing;
+    }
+
+    public static void setEditing(boolean editing) {
+        RemixEditor.editing = editing;
+    }
+
     protected void reparseProgramText() {
         systemOutput.setText("");
         resetToEditorStandard();
         ParseTree tree = RemixREPL.processParse(RemixEditor.this);
         EvalVisitorForEditor eval = new EvalVisitorForEditor();
-        LibrariesAndCompletions.addFunctionsWhileEditing((LibraryExpression) eval.visit(tree));
+        LibraryExpression programLib = (LibraryExpression) eval.visit(tree);
+        programLib.setValidLines(new int[] {0, Integer.MAX_VALUE});
+        LibrariesAndCompletions.addFunctionsWhileEditing(programLib);
         // the visit above fills in addedLibraries in LibrariesAndCompletions
         // this the result program is added as well.
     }

@@ -17,7 +17,9 @@ public class RemixSwingWorker extends SwingWorker<Boolean, String> {
 
     @Override
     protected Boolean doInBackground() {
+        RemixEditor.setEditing(false);
         RemixREPL.runEditorText(this);
+        RemixEditor.setEditing(true);
         return true; // can make it false on an error in the program
     }
 

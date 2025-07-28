@@ -1,5 +1,3 @@
-"Read includeLibrary.rem" ↲
-
 - Accessible at the top-level. No need for "uses".
 'A' times 'B' :
 	'A' * 'B'

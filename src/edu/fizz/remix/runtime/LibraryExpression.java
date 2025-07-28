@@ -68,7 +68,7 @@ public class LibraryExpression implements Expression {
         pos = methodTable.get(name);
         if (pos == null) { // new method name
             methodTable.put(name, refPos);
-            if (method != null)
+            if (method != null && refPos > 0)
                 methodTableForCompletions.put(name, method);
         } else if (pos != refPos) {
             System.err.format("Conflicting method definition: %s%n", name);

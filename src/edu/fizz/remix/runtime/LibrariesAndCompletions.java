@@ -1,5 +1,6 @@
 package edu.fizz.remix.runtime;
 
+import edu.fizz.remix.editor.RemixEditor;
 import edu.fizz.remix.editor.RemixREPL;
 
 import java.util.ArrayList;
@@ -207,7 +208,9 @@ public class LibrariesAndCompletions {
     /** Run the standard library setting up functions. No longer objects and global data */
     public static void prepareEnvironment() throws Exception {
         initFunctionsAndCompletions();
+        RemixEditor.setEditing(false);
         LibraryExpression standardLibrary = RemixREPL.loadPackage("remixLibraries/standard-lib.rem");
+        RemixEditor.setEditing(true);
         // this also makes the currentLibrary the program one
         // merge the standardLibrary into the baseLibrary
         baseLibrary.functionTable.putAll(standardLibrary.functionTable);

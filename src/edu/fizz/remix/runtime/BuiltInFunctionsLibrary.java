@@ -1,5 +1,6 @@
 package edu.fizz.remix.runtime;
 
+import edu.fizz.remix.editor.RemixEditor;
 import edu.fizz.remix.editor.RemixREPL;
 
 import java.util.*;
@@ -79,6 +80,10 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
              */
             LibraryExpression topOfStackLibrary = (LibraryExpression)context.libraryStack.get(context.libraryStack.size()-1);
             topOfStackLibrary.functionTable.putAll(included.functionTable);
+            if (RemixEditor.isEditing()) {
+                included.activeLines = topOfStackLibrary.activeLines;
+                LibrariesAndCompletions.buildAdditionalCompletions(included);
+            }
 
             Object result = null;
             try {
