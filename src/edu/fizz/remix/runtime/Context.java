@@ -72,6 +72,7 @@ public class Context {
     }
 
     public Object retrieve(String varName) {
+        Object result;
         if (varName.startsWith("#")) {
             /*
             This is where I need to deal with a listMap element reference.
@@ -79,17 +80,21 @@ public class Context {
             Object value = variables.get(varName);
             if (value instanceof GetElementExpression getElementExpression) {
                 try {
-                    return getElementExpression.evaluate(null);
+                    result = getElementExpression.evaluate(null);
                 } catch (InterruptedException | ReturnException e) {
                     throw new RuntimeException(e);
                 }
             } else {
                 RefParameter refValue = (RefParameter) value;
-                return refValue.getRefValue();
+                result = refValue.getRefValue();
             }
         } else {
-            return variables.get(varName);
+            result = variables.get(varName);
+            if (result == null) {
+                System.err.printf("%s has no value.%n", varName);
+            }
         }
+        return result;
     }
 
     // Find the original Context of a variable, necessary for reference vars.

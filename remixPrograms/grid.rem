@@ -1,0 +1,19 @@
+using graphics lib 
+	'panel': open graphics panel
+	make 'panel' background WHITE
+	across lines in 'panel'
+	down lines in 'panel'
+	refresh 'panel'
+
+	across lines in 'panel':
+		"starting"↲
+		for each 'row' from 10 to (STD-HEIGHT - 10) in steps of 10
+			'line': BLUE line from {10, 'row'} to {STD-WIDTH - 10, 'row'}
+			'line'’s 'width': 1
+			add 'line' to the 'panel'
+
+	down lines in 'panel':
+		for each 'col' from 10 to (STD-WIDTH - 10) in steps of 10
+			'line': BLUE line from {'col', 10} to {'col', STD-HEIGHT - 10}
+			'line'’s 'width': 1
+			add 'line' to the 'panel'

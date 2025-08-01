@@ -123,6 +123,9 @@ library "edu.fizz.remix.libraries.Graphics"
 			getter
 				'type'
 
+			=-
+			Change shape 'OBJECT' heading by 'δd' degrees.
+			=-
 			change MY heading by 'δd' degrees :
 				add ('δd' degrees as radians) to 'heading'
 
@@ -142,9 +145,15 @@ library "edu.fizz.remix.libraries.Graphics"
 			MY 'y-pos' : ; a fake getter
 				'position'{2}
 
+			=-
+			Change shape 'OBJECT' x-position by 'δx'.
+			=-
 			change MY x-pos by 'δx' :
 				add 'δx' to ('position'{1})
 
+			=-
+			Change shape 'OBJECT' y-position by 'δy'.
+			=-
 			change MY y-pos by 'δy' :
 				add 'δy' to ('position'{2})
 

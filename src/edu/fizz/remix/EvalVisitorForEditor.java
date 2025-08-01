@@ -76,11 +76,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
-//            if (node instanceof RemixParser.StatementContext) {
-//                Expression statement = (Expression)visit(node);
-//                if (statement != null) // can be blank statements
-//                    library.block.addStatement(statement);
-//            } else
+            // Checking for statements removed.
             if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 library.addFunction(function);
@@ -125,6 +121,14 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     public int[] visitUsingBlock(RemixParser.UsingBlockContext ctx) {
         int blockLineStart = ctx.getStart().getLine() - 1;
         int blockLineFinish = ctx.getStop().getLine() - 1;
+        for (int i = 0; i < ctx.getChildCount(); i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixParser.StatementContext) {
+                Expression statement = (Expression)visit(node);
+            } else if (node instanceof RemixParser.FunctionDefinitionContext) {
+                RemixFunction function = (RemixFunction)visit(node);
+            }
+        }
         return new int[]{blockLineStart, blockLineFinish};
     }
 
@@ -151,6 +155,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             funcComment = (String)visit(ctx.functionComment());
         }
         FunctionName<String> funcSig = (FunctionName<String>)visit(ctx.functionSignature());
+        Block block = (Block)visit(ctx.blockOfStatements()); // need to visit to find create and extend expressions
         return new RemixFunction(
                 funcSig.getAllNames(),
                 null, // block,
@@ -215,32 +220,34 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             if (node instanceof RemixParser.FieldContext) {
                 FieldAssignmentStatement initStmnt = (FieldAssignmentStatement)visit(node);
                 objectExpr.addVarInitialization(initStmnt);
-            } else if (node instanceof RemixParser.GetterSetterContext) {
-                List<String> getSetNames = (List<String>)visit(node);
-                for (String name : getSetNames) {
-                    String getMethodName = methodTable.createGetter(name);
-                    LibraryExpression.addMethodName(getMethodName, 1, null);
-                    String setMethodName = methodTable.createSetter(name);
-                    LibraryExpression.addMethodName(setMethodName, 1, null);
-                }
-            } else if (node instanceof RemixParser.GetterContext) {
-                List<String> getterNames = (List<String>)visit(node);
-                for (String name : getterNames) {
-                    String methodName = methodTable.createGetter(name);
-                    LibraryExpression.addMethodName(methodName, 1, null);
-                }
-            }else if (node instanceof RemixParser.SetterContext) {
-                List<String> setterNames = (List<String>)visit(node);
-                for (String name : setterNames) {
-                    String methodName = methodTable.createSetter(name);
-                    LibraryExpression.addMethodName(methodName, 1, null);
-                }
+//            } else if (node instanceof RemixParser.GetterSetterContext) {
+//                List<String> getSetNames = (List<String>)visit(node);
+//                for (String name : getSetNames) {
+//                    String getMethodName = methodTable.createGetter(name);
+//                    LibraryExpression.addMethodName(getMethodName, 1, null);
+//                    String setMethodName = methodTable.createSetter(name);
+//                    LibraryExpression.addMethodName(setMethodName, 1, null);
+//                }
+//            } else if (node instanceof RemixParser.GetterContext) {
+//                List<String> getterNames = (List<String>)visit(node);
+//                for (String name : getterNames) {
+//                    String methodName = methodTable.createGetter(name);
+//                    LibraryExpression.addMethodName(methodName, 1, null);
+//                }
+//            } else if (node instanceof RemixParser.SetterContext) {
+//                List<String> setterNames = (List<String>)visit(node);
+//                for (String name : setterNames) {
+//                    String methodName = methodTable.createSetter(name);
+//                    LibraryExpression.addMethodName(methodName, 1, null);
+//                }
             } else if (node instanceof RemixParser.MethodDefinitionContext) {
                 Method method = (Method)visit(node);
-                // add it to the methodTable for the object
-                methodTable.addMethod(method);
-                // add it to the global table
-                LibraryExpression.addMethodName(method.getName(), method.getSelfRef(), method);
+                if (method != null) { // visiting an incomplete method definition returns null
+                    // add it to the methodTable for the object
+                    // methodTable.addMethod(method);
+                    // add it to the global table
+                    LibraryExpression.addMethodName(method.getName(), method.getSelfRef(), method);
+                }
             }
         }
         objectExpr.addMethodTable(methodTable);
@@ -307,8 +314,10 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         MethodName methSig;
         ParseTree node = ctx.getChild(i);
         methSig = (MethodName)visit(node);
-//        Block block = (Block)visit(ctx.blockOfStatements());
-        return new Method(methSig.getAllNames(), null, methSig.getParameters(), methSig.getBlockParams(), methSig.getSelfRef(), methodComment);
+        if (ctx.blockOfStatements() == null)
+            return null;
+        Block block = (Block)visit(ctx.blockOfStatements());
+        return new Method(methSig.getAllNames(), block, methSig.getParameters(), methSig.getBlockParams(), methSig.getSelfRef(), methodComment);
     }
 
     /** methodSigPart methodSigPart+ */

@@ -1,6 +1,7 @@
 package edu.fizz.remix.editor;
 
 import edu.fizz.remix.runtime.LibrariesAndCompletions;
+import edu.fizz.remix.runtime.LibraryExpression;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
@@ -392,9 +393,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                     seedWord.replace(" ", ""), lineNumber);
             if (!seedWord.isEmpty() && !completions.isEmpty()) {
                 int seedLength = seedWord.length();
-                ArrayList<int[]> activeLines = new ArrayList<>();
-                activeLines.add(new int[] {0, Integer.MAX_VALUE});
-                completions.add(new LibrariesAndCompletions.CompletionNamesAndDoc(seedWord, "", "", activeLines)); // so we can cycle back to the start
+                completions.add(new LibrariesAndCompletions.CompletionNamesAndDoc(seedWord, "", "", LibraryExpression.ALLLINES)); // so we can cycle back to the start
                 completionsHere = new CompletionInfo(completions, offset - seedLength);
                 completion = completionsHere.nextCompletion();
                 completionText = completion.displayName();

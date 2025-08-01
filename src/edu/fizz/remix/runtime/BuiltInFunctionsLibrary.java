@@ -81,7 +81,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             LibraryExpression topOfStackLibrary = (LibraryExpression)context.libraryStack.get(context.libraryStack.size()-1);
             topOfStackLibrary.functionTable.putAll(included.functionTable);
             if (RemixEditor.isEditing()) {
-                included.activeLines = topOfStackLibrary.activeLines;
+                included.setActiveLines(topOfStackLibrary.getActiveLines());
                 LibrariesAndCompletions.buildAdditionalCompletions(included);
             }
 

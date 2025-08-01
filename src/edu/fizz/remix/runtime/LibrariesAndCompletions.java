@@ -51,9 +51,7 @@ public class LibrariesAndCompletions {
      * Sets the functions, methods, and context back to the standard version.
      */
     public static void resetToEditorStandard() {
-        // probably only needs to copy functions as methods not used for completions yet
         programLibrary = baseLibrary.copyFunctionsConstants();
-//        runningConstants = (HashMap<String, Object>) stdlibConstants.clone();
         completionTable = new HashMap<>(originalCompletionTable);
         functionList = new ArrayList<>(originalFunctionList);
         addedLibraries.clear();
@@ -68,21 +66,29 @@ public class LibrariesAndCompletions {
         programLibrary = baseLibrary.copyFunctionsConstants();
     }
 
-    /** Print the names of all the functions. */
-    public static void printFunctionNames() {
-        for (String name : programLibrary.functionTable.keySet()) {
-            System.out.println(name + ": " + completionNames(name, baseLibrary));
-        }
-    }
+//    /** Print the names of all the functions. */
+//    public static void printFunctionNames() {
+//        for (String name : programLibrary.functionTable.keySet()) {
+//            System.out.println(name + ": " + completionNames(name, baseLibrary));
+//        }
+//    }
 
     /** Build the completion table from built-in and standard-lib. */
     public static void buildOriginalCompletions() {
         for (String name : baseLibrary.functionTable.keySet()) {
-            CompletionNamesAndDoc namesAndDoc = completionNames(name, baseLibrary);
+            Function function = baseLibrary.functionTable.get(name);
+            CompletionNamesAndDoc namesAndDoc = completionNames(name, function, LibraryExpression.ALLLINES);
             String completionString = namesAndDoc.completionString();
             originalCompletionTable.put(completionString, namesAndDoc);
             originalFunctionList.add(completionString);
         }
+        // at this stage the methodTableForCompletions only has standard-lib methods
+        LibraryExpression.methodTableForCompletions.forEach((name, method) -> {
+            CompletionNamesAndDoc namesAndDoc = completionNames(name, method, LibraryExpression.ALLLINES);
+            String completionString = namesAndDoc.completionString();
+            originalCompletionTable.put(completionString, namesAndDoc);
+            originalFunctionList.add(completionString);
+        });
         originalFunctionList.sort(null);
     }
 
@@ -93,10 +99,18 @@ public class LibrariesAndCompletions {
     */
     public static void buildAdditionalCompletions(LibraryExpression library) {
         for (String name : library.functionTable.keySet()) {
-            CompletionNamesAndDoc bothNames = completionNames(name, library);
-            completionTable.put(bothNames.completionString, bothNames);
-            functionList.add(bothNames.completionString);
+            Function function = library.functionTable.get(name);
+            CompletionNamesAndDoc namesAndDoc = completionNames(name, function, library.getActiveLines());
+            String completionString = namesAndDoc.completionString();
+            completionTable.put(completionString, namesAndDoc);
+            functionList.add(completionString);
         }
+        LibraryExpression.methodTableForCompletions.forEach((name, method) -> {
+            CompletionNamesAndDoc namesAndDoc = completionNames(name, method, LibraryExpression.ALLLINES);
+            String completionString = namesAndDoc.completionString();
+            if (completionTable.put(completionString, namesAndDoc) == null)
+                functionList.add(completionString);
+        });
         functionList.sort(null);
     }
 
@@ -111,15 +125,16 @@ public class LibrariesAndCompletions {
     Create a record of the name (with parameters), the shortened completion string and the function comment.
     Now also includes the active lines in the editor for this library.
      */
-    private static CompletionNamesAndDoc completionNames(String internalName, LibraryExpression library) {
-        Function function = library.functionTable.get(internalName);
+    private static CompletionNamesAndDoc completionNames(String internalName, Function function, ArrayList<int []> activeLines) {
         StringBuilder screenName = new StringBuilder();
         StringBuilder completionName = new StringBuilder();
         int param = 0;
         for (char ch : internalName.toCharArray()) {
             if (ch == '⫾') {
                 String formal = function.formalParameters.get(param);
-                if (formal.startsWith("#"))
+                if (formal.equals("ME"))
+                    formal = "OBJECT";
+                else if (formal.startsWith("#"))
                     formal = formal.substring(1);
                 if (function.blockParameters.get(param))
                     screenName.append("[").append(formal).append("]");
@@ -135,7 +150,7 @@ public class LibrariesAndCompletions {
                 screenName.toString(),
                 completionName.toString(),
                 function.functionComment,
-                library.activeLines
+                activeLines
         );
     }
 
@@ -214,7 +229,7 @@ public class LibrariesAndCompletions {
         // this also makes the currentLibrary the program one
         // merge the standardLibrary into the baseLibrary
         baseLibrary.functionTable.putAll(standardLibrary.functionTable);
-        baseLibrary.activeLines.add(new int[] {0, Integer.MAX_VALUE});
+        baseLibrary.setActiveLines(LibraryExpression.ALLLINES);
         try {
             // currently libraries no longer maintain state in contexts (variables)
             // this means this is only useful for loading other libraries, printing etc.

@@ -96,7 +96,7 @@ public class RemixEditor extends JFrame {
         ParseTree tree = RemixREPL.processParse(RemixEditor.this);
         EvalVisitorForEditor eval = new EvalVisitorForEditor();
         LibraryExpression programLib = (LibraryExpression) eval.visit(tree);
-        programLib.setValidLines(new int[] {0, Integer.MAX_VALUE});
+        programLib.setActiveLines(LibraryExpression.ALLLINES);
         LibrariesAndCompletions.addFunctionsWhileEditing(programLib);
         // the visit above fills in addedLibraries in LibrariesAndCompletions
         // this the result program is added as well.

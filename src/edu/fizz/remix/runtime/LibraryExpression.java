@@ -2,6 +2,7 @@ package edu.fizz.remix.runtime;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -16,8 +17,19 @@ import java.util.HashMap;
  */
 public class LibraryExpression implements Expression {
 
+    public static final ArrayList<int []> ALLLINES = new ArrayList<>(Collections.singleton(new int[]{0, Integer.MAX_VALUE}));
+
     boolean loaded = false; // set to true when first evaluated
-    ArrayList<int[]> activeLines = new ArrayList<>(); // editor lines where this library is active
+
+    public ArrayList<int[]> getActiveLines() {
+        return activeLines;
+    }
+
+    public void setActiveLines(ArrayList<int[]> activeLines) {
+        this.activeLines = activeLines;
+    }
+
+    private ArrayList<int[]> activeLines = new ArrayList<>(); // editor lines where this library is active
     public Block block = new Block();
     HashMap<String, Function> functionTable = new HashMap<>();
     // TODO: probably add a constants table to the library too
@@ -41,6 +53,7 @@ public class LibraryExpression implements Expression {
     public void setValidLines(int[] lines) {
         activeLines.add(lines);
     }
+
 
     /** Add all Function classes in this library as Remix functions.
      *  Used by subclasses. */
