@@ -33,7 +33,7 @@ public class GetElementExpression implements Expression {
         if (originalContext != null)
             context = originalContext; // must be passed as a reference parameter
         Object id;
-        Object listOrMapPart = context.retrieve(listName);
+        Object listOrMapPart = context.retrieve(listName, false);
         if (listOrMapPart instanceof ArrayList<?> ||
                 listOrMapPart instanceof HashMap<?, ?> ||
                 listOrMapPart instanceof RangeExpression) {

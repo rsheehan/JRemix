@@ -14,7 +14,7 @@ public class RefParameter {
      * defining context.
      */
     public Object getRefValue() {
-        return originalContext.retrieve(nameInContext);
+        return originalContext.retrieve(nameInContext, false);
     }
 
     /*

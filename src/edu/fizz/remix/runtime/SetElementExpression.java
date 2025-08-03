@@ -43,7 +43,7 @@ public class SetElementExpression implements Expression {
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in element of set element statement.");
         }
-        Object listMap = context.retrieve(listName);
+        Object listMap = context.retrieve(listName, false);
         try {
             if (listMap == null || // nothing stored in the ListMap yet
                     listMap instanceof RemixNull ||

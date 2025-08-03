@@ -20,7 +20,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         public Object execute(Context context) {
-            String message = context.retrieve("message").toString();
+            String message = context.retrieve("message", false).toString();
             System.err.println(message);
             System.exit(1);
             return null;
@@ -40,7 +40,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         public Object execute(Context context) {
-            Object object = context.retrieve("object");
+            Object object = context.retrieve("object", false);
             System.out.println(object);
             return null;
         }
@@ -60,7 +60,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            String filename = context.retrieve("file-name").toString();
+            String filename = context.retrieve("file-name", false).toString();
             LibraryExpression included;
             try {
                 included = RemixREPL.loadPackage(filename);
@@ -114,7 +114,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         @Override
         public Object execute(Context context) {
-            Object original = context.retrieve("original");
+            Object original = context.retrieve("original", false);
             return copy(original);
         }
 
@@ -155,7 +155,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         public Object execute(Context context) {
-            Object value = context.retrieve("value");
+            Object value = context.retrieve("value", false);
             return value.getClass().toString();
         }
     }
@@ -174,8 +174,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         @Override
         public Object execute(Context context) {
-            Object value = context.retrieve("value");
-            String typeString = (String)context.retrieve("type-string");
+            Object value = context.retrieve("value", false);
+            String typeString = (String)context.retrieve("type-string", false);
             if ((value instanceof Long || value instanceof Double) && typeString.equals("number"))
                 return true;
             if (value instanceof Boolean && typeString.equals("boolean"))
@@ -207,7 +207,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            Block block = (Block)context.retrieve("block");
+            Block block = (Block)context.retrieve("block", false);
             return block.evaluate(context);
         }
     }
@@ -225,7 +225,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            Block block = (Block)context.retrieve("block");
+            Block block = (Block)context.retrieve("block", false);
             block.clearContext();
             return block.evaluate(context);
         }
@@ -246,7 +246,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         public Object execute(Context context) {
-            Object value = context.retrieve("value");
+            Object value = context.retrieve("value", false);
             printValue(value);
             return RemixNull.value();
         }
@@ -318,13 +318,13 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         /* The condition can be either a boolean expression or a block which returns one. */
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            Object condition = context.retrieve("condition");
+            Object condition = context.retrieve("condition", false);
             if (condition instanceof Block) {
                 condition = ((Block)condition).evaluate(context);
             }
             if ((Boolean)condition) {
                 // this is when the block is evaluated
-                Expression consequence = (Expression) context.retrieve("consequence");
+                Expression consequence = (Expression) context.retrieve("consequence", false);
                 return consequence.evaluate(context);
             }
             return RemixNull.value();
@@ -345,16 +345,16 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         /* The condition can be either a boolean expression or a block which returns one. */
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            Object condition = context.retrieve("condition");
+            Object condition = context.retrieve("condition", false);
             if (condition instanceof Block) {
                 condition = ((Block)condition).evaluate(context);
             }
             if ((Boolean)condition) {
                 // this is when the block is evaluated
-                Expression consequence = (Expression) context.retrieve("consequence");
+                Expression consequence = (Expression) context.retrieve("consequence", false);
                 return consequence.evaluate(context);
             } else {
-                Expression alternative = (Expression) context.retrieve("alternative");
+                Expression alternative = (Expression) context.retrieve("alternative", false);
                 return alternative.evaluate(context);
             }
         }
@@ -376,7 +376,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         @Override
         public Iterator<?> execute(Context context) {
             Iterator<?> iterator = null;
-            Object listMapOrString = context.retrieve("list");
+            Object listMapOrString = context.retrieve("list", false);
             if (listMapOrString instanceof List)
                 iterator = ((List<?>)listMapOrString).iterator();
             else if (listMapOrString instanceof Map)
@@ -420,7 +420,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         @Override
         public Object execute(Context context) {
-            Iterator<?> iterator = (Iterator<?>)context.retrieve("position");
+            Iterator<?> iterator = (Iterator<?>)context.retrieve("position", false);
             return iterator.next();
         }
     }
@@ -440,7 +440,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         @Override
         public Boolean execute(Context context) {
-            Iterator<?> iterator = (Iterator<?>)context.retrieve("position");
+            Iterator<?> iterator = (Iterator<?>)context.retrieve("position", false);
             return !iterator.hasNext();
         }
     }
@@ -461,8 +461,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         @Override
         public RangeExpression execute(Context context) {
-            long start = ((Number)context.retrieve("start")).longValue();
-            long finish = ((Number)context.retrieve("finish")).longValue();
+            long start = ((Number)context.retrieve("start", false)).longValue();
+            long finish = ((Number)context.retrieve("finish", false)).longValue();
             return new RangeExpression(start, finish);
         }
     }
@@ -482,8 +482,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         @Override
         public String execute(Context context) {
-            Object first = context.retrieve("first");
-            Object second = context.retrieve("second");
+            Object first = context.retrieve("first", false);
+            Object second = context.retrieve("second", false);
             String s1; String s2;
             if (!(first instanceof String))
                 first = first.toString();
@@ -512,8 +512,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         @Override
         public Object execute(Context context) {
-            Object object = context.retrieve("sequence");
-            int index = ((Long) context.retrieve("index")).intValue();
+            Object object = context.retrieve("sequence", false);
+            int index = ((Long) context.retrieve("index", false)).intValue();
             //noinspection rawtypes
             if (object instanceof ArrayList list) { // includes RangeExpressions
                 if (index < 1 || index > list.size()) {
@@ -560,9 +560,9 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         @Override
         public Object execute(Context context) {
-            Object value = context.retrieve("value");
+            Object value = context.retrieve("value", false);
             @SuppressWarnings ("unchecked")
-            List<Object> list = (List<Object>)context.retrieve("list");
+            List<Object> list = (List<Object>)context.retrieve("list", false);
             list.add(value);
             return list;
         }
@@ -584,7 +584,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         @Override
         public Long execute(Context context) {
             long length = 0;
-            Object object = context.retrieve("list");
+            Object object = context.retrieve("list", false);
             if (object instanceof List<?> list) { // includes RangeExpressions
                 length = list.size();
             } else if (object instanceof String string) {
@@ -613,7 +613,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         @Override
         public Long execute(Context context) {
-            long max = (Long)context.retrieve("max");
+            long max = (Long)context.retrieve("max", false);
             return Math.round(Math.random() * (max - 1)) + 1;
         }
     }
@@ -632,7 +632,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         @Override
         public Double execute(Context context) {
             double d = 0;
-            Object value = context.retrieve("number");
+            Object value = context.retrieve("number", false);
             if (value instanceof Double)
                     d = (Double)value;
             else if (value instanceof Long)
@@ -657,12 +657,12 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public Double execute(Context context) {
             double d = 0;
             double p = 0;
-            Object value = context.retrieve("number");
+            Object value = context.retrieve("number", false);
             if (value instanceof Double)
                 d = (Double)value;
             else if (value instanceof Long)
                 d = ((Long)value).doubleValue();
-            Object power = context.retrieve("power");
+            Object power = context.retrieve("power", false);
             if (power instanceof Double)
                 p = (Double)power;
             else if (power instanceof Long)
@@ -686,7 +686,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         @Override
         public Double execute(Context context) {
             double d = 0;
-            Object value = context.retrieve("number");
+            Object value = context.retrieve("number", false);
             if (value instanceof Double)
                 d = (Double)value;
             else if (value instanceof Long)
@@ -709,7 +709,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         @Override
         public Double execute(Context context) {
             double d = 0;
-            Object value = context.retrieve("number");
+            Object value = context.retrieve("number", false);
             if (value instanceof Double)
                 d = (Double)value;
             else if (value instanceof Long)
@@ -733,12 +733,12 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public Double execute(Context context) {
             double y = 0;
             double x = 0;
-            Object value = context.retrieve("change-y");
+            Object value = context.retrieve("change-y", false);
             if (value instanceof Double)
                 y = (Double)value;
             else if (value instanceof Long)
                 y = ((Long)value).doubleValue();
-            value = context.retrieve("change-x");
+            value = context.retrieve("change-x", false);
             if (value instanceof Double)
                 x = (Double)value;
             else if (value instanceof Long)
@@ -761,7 +761,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            double seconds = ((Number) context.retrieve("time")).doubleValue();
+            double seconds = ((Number) context.retrieve("time", false)).doubleValue();
             Thread.sleep((int)(seconds * 1000));
             return null;
         }

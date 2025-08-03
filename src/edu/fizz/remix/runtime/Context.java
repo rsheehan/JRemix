@@ -71,7 +71,7 @@ public class Context {
         }
     }
 
-    public Object retrieve(String varName) {
+    public Object retrieve(String varName, boolean formalReference) {
         Object result;
         if (varName.startsWith("#")) {
             /*
@@ -90,7 +90,8 @@ public class Context {
             }
         } else {
             result = variables.get(varName);
-            if (result == null) {
+            if (result == null && !formalReference) {
+                // if the formal is a reference variable then it is allowed to be null.
                 System.err.printf("%s has no value.%n", varName);
             }
         }

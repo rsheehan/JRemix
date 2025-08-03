@@ -63,7 +63,7 @@ public class RemixFiles extends LibraryExpression {
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            String fileName = (String)context.retrieve("name");
+            String fileName = (String)context.retrieve("name", false);
             String result = "";
             try {
                 result = Files.readString(Path.of(fileName));
@@ -90,8 +90,8 @@ public class RemixFiles extends LibraryExpression {
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            String data = (String)context.retrieve("contents");
-            String fileName = (String)context.retrieve("name");
+            String data = (String)context.retrieve("contents", false);
+            String fileName = (String)context.retrieve("name", false);
             try {
                 // returns the path
                 return Files.writeString(Path.of(fileName), data);
@@ -116,7 +116,7 @@ public class RemixFiles extends LibraryExpression {
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            String fileName = (String)context.retrieve("name");
+            String fileName = (String)context.retrieve("name", false);
             byte[] result;
             try {
                 result = Files.readAllBytes(Path.of(fileName));

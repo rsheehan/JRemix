@@ -76,7 +76,7 @@ public class MethodContext extends Context {
     then check the local context.
 
     */
-    public Object retrieve(String varName) {
+    public Object retrieve(String varName, boolean formalReference) {
         if (varName.startsWith("#")) {
             if (localContext.variables.containsKey(varName)) {
                 RefParameter refValue = (RefParameter) localContext.variables.get(varName);
@@ -88,7 +88,7 @@ public class MethodContext extends Context {
         } else if (variables.containsKey(varName)) { // instance variables
             return variables.get(varName);
         } else if (localContext.variables.containsKey((varName))) { // method local variables
-            return localContext.retrieve(varName);
+            return localContext.retrieve(varName, false);
         } else {
             return null;
         }
