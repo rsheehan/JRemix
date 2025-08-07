@@ -4,7 +4,7 @@ public final class RemixNull implements Expression {
 
     private static final RemixNull nullExpression = new RemixNull();
 
-    public RemixNull() {
+    private RemixNull() {
     }
 
     public static RemixNull value() {
@@ -18,7 +18,7 @@ public final class RemixNull implements Expression {
 
     @Override
     public String toString() {
-        return "null";
+        return "RemixNull";
     }
 
 }

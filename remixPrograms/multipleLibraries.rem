@@ -14,12 +14,14 @@ LIB2 : library
 test {
 	"single library"
 		using LIB1
-			"a" with "b"
+			'result' : "a" with "b"
+		'result'
 	… expected "a from LIB1 b"
 
 	"single library same name function"
 		using LIB2
-			"a" with "b"
+			'result' : "a" with "b"
+		'result'
 	… expected "a from LIB2 b"
 }
 ↲

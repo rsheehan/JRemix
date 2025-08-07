@@ -167,7 +167,10 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             }
             functionContext.assignParam(formal, value); // needs to really be in this context
         }
-        return routine.execute(functionContext);
+        Object result = routine.execute(functionContext);
+        if (result == null)
+            result = RemixNull.value();
+        return result;
     }
 
     public String toString() {

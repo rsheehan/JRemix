@@ -46,7 +46,7 @@ public class GetElementExpression implements Expression {
                     try {
                         listOrMapPart = ((List<?>) listOrMapPart).get(i - 1); // java zero based, Remix one based
                     } catch (IndexOutOfBoundsException ex) {
-                        listOrMapPart = new RemixNull();
+                        listOrMapPart = RemixNull.value();
                     }
                 } else if (id instanceof String stringId)
                     listOrMapPart = ((Map<?, ?>) listOrMapPart).get(stringId);
@@ -55,7 +55,7 @@ public class GetElementExpression implements Expression {
                 System.err.printf("Variable \"%s\" is neither a list or a map.%n", listName);
         }
         if (listOrMapPart == null)
-            listOrMapPart = new RemixNull();
+            listOrMapPart = RemixNull.value();
         return listOrMapPart;
     }
 

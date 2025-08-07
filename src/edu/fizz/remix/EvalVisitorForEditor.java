@@ -90,7 +90,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     public UsingLibBlock visitUsingLibrary(RemixParser.UsingLibraryContext ctx) {
         LibraryExpression libraryExpression = null;
         ArrayList<LibraryExpression> libraryExpressions = new ArrayList<>();
-        int[]  usingBlock;
+        LibraryExpression usingBlockLib;
 
         int n = ctx.getChildCount();
         for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
@@ -107,29 +107,37 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             }
         }
         try {
-            usingBlock = (int[]) visit(ctx.usingBlock());
+            usingBlockLib = (LibraryExpression) visit(ctx.usingBlock());
             for (LibraryExpression lib : libraryExpressions) {
-                lib.setValidLines(usingBlock);
+                lib.setValidLines(usingBlockLib.getActiveLines().getFirst());
                 LibrariesAndCompletions.addLibrary(lib);
             }
+            LibrariesAndCompletions.addLibrary(usingBlockLib);
         } catch (NullPointerException ex) {
             // just incomplete error while editing
         }
         return null;
     }
 
-    public int[] visitUsingBlock(RemixParser.UsingBlockContext ctx) {
+    /*
+     The library produced here is only for completions. It includes the functions
+     declared in the using block of a library.
+     */
+    public Object visitUsingBlock(RemixParser.UsingBlockContext ctx) {
         int blockLineStart = ctx.getStart().getLine() - 1;
         int blockLineFinish = ctx.getStop().getLine() - 1;
+        LibraryExpression usingBlockLibrary = new LibraryExpression();
+        usingBlockLibrary.setValidLines(new int[]{blockLineStart, blockLineFinish});
         for (int i = 0; i < ctx.getChildCount(); i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.StatementContext) {
                 Expression statement = (Expression)visit(node);
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
+                usingBlockLibrary.addFunction(function);
             }
         }
-        return new int[]{blockLineStart, blockLineFinish};
+        return usingBlockLibrary;
     }
 
     /** RETURN expression? */
@@ -606,7 +614,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     /** NULL (from expression) */
     @Override
     public Expression visitExprNull(RemixParser.ExprNullContext ctx) {
-        return new RemixNull();
+        return RemixNull.value();
     }
 
     /** BOOLEAN (from expression) */
@@ -767,7 +775,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     /** NULL (from callPart) */
     @Override
     public Expression visitCallNull(RemixParser.CallNullContext ctx) {
-        return new RemixNull();
+        return RemixNull.value();
     }
 
     /** BOOLEAN (from callPart) */

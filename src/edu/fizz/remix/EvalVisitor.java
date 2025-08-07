@@ -592,7 +592,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** NULL (from expression) */
     @Override
     public Expression visitExprNull(RemixParser.ExprNullContext ctx) {
-        return new RemixNull();
+        return RemixNull.value();
     }
 
     /** BOOLEAN (from expression) */
@@ -753,7 +753,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** NULL (from callPart) */
     @Override
     public Expression visitCallNull(RemixParser.CallNullContext ctx) {
-        return new RemixNull();
+        return RemixNull.value();
     }
 
     /** BOOLEAN (from callPart) */

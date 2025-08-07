@@ -27,7 +27,7 @@ test {
 	"leaks into function"
 		'count' : 4
 		leaking function2
-	… expected "null"
+	… expected null
 
 	"leaks from method"
 		'count' : 7
@@ -40,5 +40,5 @@ test {
 		'count' : 4
 		'X' : leaking variable
 		'X' leaking method2
-	… expected "null"
+	… expected null
 }

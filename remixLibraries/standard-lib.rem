@@ -102,6 +102,7 @@ A sequence here is a list, range, map, string or sequence object.
 =-
 for each #item in 'sequence' ['block'] :
 	'pos' : start 'sequence'
+	'last' : null
 	do
 		if (end 'pos')
 			return 'last'
@@ -128,6 +129,7 @@ for each #number from 'start' to 'finish' in steps of 'step' ['block']:
 		'test' : [#number ≥ 'finish']
 		'step' : -|'step'|
 	#number : 'start'
+	'last' : null
 	while 'test'
 		'last' : do 'block'
 		#number : #number + 'step'
@@ -165,11 +167,13 @@ repeat ['block'] forever :
 Repeat the 'block' 'count' number of times.
 =-
 repeat ['block'] 'count' times :
-	if ('count' ≤ 0)
-		return 'last' ; none if unassigned
-	'last' : do 'block'
-	'count' : 'count' - 1
-	redo
+	'last' : null
+	do
+		if ('count' ≤ 0)
+			return 'last' ; none if unassigned
+		'last' : do 'block'
+		'count' : 'count' - 1
+		redo
 
 =-
 Repeat the 'block' 'count' number of times.
@@ -190,10 +194,12 @@ repeat ['block'] until ['condition'] :
 While a 'condition' is true keep doing 'block'.
 =-
 while ['condition'] ['block'] :
-	if (not 'condition')
-		return 'last'
-	'last' : do 'block'
-	redo
+	'last' : null
+	do
+		if (not 'condition')
+			return 'last'
+		'last' : do 'block'
+		redo
 
 ==============================
  List create functions
@@ -518,7 +524,7 @@ If 'option' 'block' is true, return executed 'result'.
 Used in a "when" 'block'.
 The transparent return breaks out of the "when".
 =-
-/this ['option'] do ['result'] ::
+['option'] do ['result'] ::
 	if (do 'option')
 		return do 'result'
 

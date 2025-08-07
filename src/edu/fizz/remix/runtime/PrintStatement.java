@@ -28,7 +28,7 @@ public class PrintStatement implements Expression {
         }
         if (newline)
             BuiltInFunctionsLibrary.PrintFunction.publish("\n");
-        return new RemixNull();
+        return RemixNull.value();
     }
 
     @Override

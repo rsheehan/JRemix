@@ -17,7 +17,7 @@ public class VarValueExpression implements Expression {
     public Object evaluate(Context context) {
         Object value = context.retrieve(varName, false);
         if (value == null)
-            value = new RemixNull();
+            value = RemixNull.value();
         return value;
     }
 
