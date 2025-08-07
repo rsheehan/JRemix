@@ -92,7 +92,7 @@ public class Context {
             result = variables.get(varName);
             if (result == null && !formalReference) {
                 // if the formal is a reference variable then it is allowed to be null.
-                System.err.printf("%s has no value.%n", varName);
+                System.err.printf("'%s' has no value.%n", varName);
             }
         }
         return result;

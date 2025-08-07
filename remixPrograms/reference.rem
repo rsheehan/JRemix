@@ -15,11 +15,11 @@ d #I :
 
 'B' : 5
 a 'B'
-'B' ↲
+'B' ↲ ; should be 15
 
 'L' : { 7 }
 a ('L' {1})
-'L' ↲
+'L' ↲ ; should be {17}
 
 
 'X' : create
@@ -28,17 +28,19 @@ a ('L' {1})
 	add MY i to #Outside :
 		#Outside : #Outside + 'I'
 
-'X' ↲
+'X' ↲ ; should be Object(I: 8)
 add 'X' i to 'B'
-'B' ↲
+'B' ↲ ; should be 23
 
 e #X :
 	#X : #X + 1
 
+'b' : {}
 'b' {1}{2} : 3
 'b' {2}{1} : 5
-'b' ↲
+'b' ↲ ; should be {{null, 3}, {5}}
 e ('b' {1}{2})
-'b' ↲
+'b' ↲ ; should be {{null, 4}, {5}}
 ('b' {1}{2}) swap ('b' {2}{1})
-'b' ↲
+'b' ↲ ; should be {{null, 5}, {4}}
+type of ('b' {1}{1}) ↲

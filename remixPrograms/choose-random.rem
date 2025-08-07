@@ -6,6 +6,6 @@
 'n' random values from 'list' :
 	"Generating ", 'n', " random values from ", 'list' ↲
 
-	repeat
+	repeat 'n' times
 		choose from 'list', " " ~
-	… 'n' times. ↲
+	↲
