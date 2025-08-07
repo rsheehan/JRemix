@@ -1,4 +1,4 @@
-with turtle graphics
+using graphics lib, turtle lib
 	'space' : turtle space in (the graphics panel)
 	TURTLE : a turtle
 	TURTLE’s 'position' : { -350, -350 }

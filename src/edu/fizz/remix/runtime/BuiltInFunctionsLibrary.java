@@ -212,24 +212,24 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
     }
 
-    /** The "do" function but in the context of the "do" not of the block. Evaluates the block parameter. */
-    public static final class DoInContextFunction extends Function {
-        public DoInContextFunction() {
-            super(
-                    List.of("do ⫾ in lib context"),
-                    List.of("block"),
-                    List.of(true),
-                    false,
-                    "Execute the 'block' in library contexts."
-            );
-        }
-
-        public Object execute(Context context) throws ReturnException, InterruptedException {
-            Block block = (Block)context.retrieve("block", false);
-            block.clearContext();
-            return block.evaluate(context);
-        }
-    }
+//    /** The "do" function but in the context of the "do" not of the block. Evaluates the block parameter. */
+//    public static final class DoInContextFunction extends Function {
+//        public DoInContextFunction() {
+//            super(
+//                    List.of("do ⫾ in lib context"),
+//                    List.of("block"),
+//                    List.of(true),
+//                    false,
+//                    "Execute the 'block' in library contexts."
+//            );
+//        }
+//
+//        public Object execute(Context context) throws ReturnException, InterruptedException {
+//            Block block = (Block)context.retrieve("block", false);
+//            block.clearContext();
+//            return block.evaluate(context);
+//        }
+//    }
 
     /** The "print" function. Prints the string version of the value.
      *  Now prints lists as real lists.
@@ -248,7 +248,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public Object execute(Context context) {
             Object value = context.retrieve("value", false);
             printValue(value);
-            return RemixNull.value();
+            return null;
         }
 
         static void printValue(Object value) {
@@ -327,7 +327,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 Expression consequence = (Expression) context.retrieve("consequence", false);
                 return consequence.evaluate(context);
             }
-            return RemixNull.value();
+            return null;
         }
     }
 
@@ -517,7 +517,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             //noinspection rawtypes
             if (object instanceof ArrayList list) { // includes RangeExpressions
                 if (index < 1 || index > list.size()) {
-                    return new RemixNull();
+                    return null;
                 } else {
                     return list.get(index - 1);
                 }
@@ -529,18 +529,18 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 }
             } else if (object instanceof RangeExpression range) {
                 if (index < 1 || index > range.size()) {
-                    return new RemixNull();
+                    return null;
                 } else {
                     return range.get(index - 1 );
                 }
             } else if (object instanceof byte[] array) {
                 if (index < 1 || index > array.length) {
-                    return new RemixNull();
+                    return null;
                 } else {
                     return (long)array[index - 1]; // converts to long
                 }
             }
-            return new RemixNull();
+            return null;
         }
     }
 
