@@ -31,7 +31,7 @@ using LIB
 test {
 	"function call at top-level"
 		a
-	… expected "null"
+	… expected null
 
 	"variable at top-level"
 		'A'

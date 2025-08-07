@@ -87,7 +87,7 @@ using LIB3
 test {
 	"Calling function out of scope."
 		3 plus 8
-	... expected "null"
+	... expected null
 }
 
 ↲
