@@ -108,7 +108,7 @@ library "edu.fizz.remix.libraries.Graphics"
 	=-
 	'colour' shape from 'points' scaled by 'size' at 'position':
 
-		extend a shape at 'position'
+		extend shape at 'position'
 			'type'           : "shape"
 			'colour'         : 'colour'
 			'outline colour' : null ; no outline
@@ -132,7 +132,7 @@ library "edu.fizz.remix.libraries.Graphics"
 	=-
 	Create an object with a position.
 	=-
-	a shape at 'position' :
+	shape at 'position' :
 		create
 			'position' : 'position'
 
@@ -204,7 +204,7 @@ library "edu.fizz.remix.libraries.Graphics"
 	Create a 'colour' circle of radius 'radius' at 'position'.
 	=-
 	'colour' circle of radius 'radius' at 'position' :
-		extend a shape at 'position'
+		extend shape at 'position'
 			'type'     : "circle"
 			'colour'   : 'colour'
 			'outline colour' : null ; no outline
@@ -232,7 +232,7 @@ library "edu.fizz.remix.libraries.Graphics"
 	Return the graphics panel.
 	=-
 	the graphics panel :
-		an (open graphics panel) with layers
+		(open graphics panel) with layers
 
 	===========================================================
 	The Remix 'panel' for drawing in.
@@ -245,7 +245,7 @@ library "edu.fizz.remix.libraries.Graphics"
 	=-
 	Return a panel with multiple layers based on 'JGraphics panel'.
 	=-
-	a/an 'JGraphics panel' with layers :
+	'JGraphics panel' with layers :
 		'panel' : create
 			'JGraphics' : 'JGraphics panel'
 			'layers' : { a base-layer for 'JGraphics panel' }
@@ -258,20 +258,30 @@ library "edu.fizz.remix.libraries.Graphics"
 				'colour' : 'the colour'
 				make the 'JGraphics' background 'colour' ; Java
 
+			=-
+			Add and return a new shape layer for the panel 'OBJECT'.
+			=-
 			MY next layer :
 				'new layer' : a shape layer
 				append 'new layer' to 'layers'
 				'new layer'
 
-			MY 'base-layer' :
+			=-
+			Get the permanent base-layer for the panel 'OBJECT'.
+			=-
+			MY 'base-layer' : ; a fake getter
 				'layers' {1}
 
-			==========================================
-			Useful to place a shape in the base-layer.
-			==========================================
+			=-
+			Place the 'shape' in the base-layer of the panel 'OBJECT'.
+			=-
 			place 'shape' in ME :
 				place 'shape' in ('layers' {1})
 
+			=-
+			Update the panel 'OBJECT'.
+			This redraws all layers.
+			=-
 			update ME :
 				clear transient 'JGraphics' layers ; Java
 				for each 'layer' in 'layers'
@@ -281,17 +291,23 @@ library "edu.fizz.remix.libraries.Graphics"
 			==================
 			Clears all layers.
 			==================
+			=-
+			Clear all layers of the panel 'OBJECT' including the base-layer.
+			=-
 			clear ME :
 				clear 'JGraphics' base-layer
 				clear ME leaving the base-layer
 
+			=-
+			Clear all layers of the panel 'OBJECT' keeping the base-layer.
+			=-
 			clear ME leaving the base-layer :
 				make the 'JGraphics' background 'colour'
 				'layers' : { 'layers' {1} }
 				update ME
 
 		clear 'panel'
-		return 'panel'
+		'panel'
 
 	================
 	Graphics Windows
@@ -304,7 +320,7 @@ library "edu.fizz.remix.libraries.Graphics"
 		'JWindow' : a "Drawing" window of STD-WIDTH by STD-HEIGHT
 		show 'JWindow' ; Java
 		'JGraphics panel' : the 'JWindow' graphics panel ; Java
-		a 'JGraphics panel' with layers
+		'JGraphics panel' with layers
 
 	=-
 	Create a shape layer.
@@ -319,6 +335,9 @@ library "edu.fizz.remix.libraries.Graphics"
 			getter
 				'shapes'
 
+			=-
+			Place the 'shape' in the shape layer 'OBJECT'.
+			=-
 			place 'shape' in ME :
 				if ('shape' is a "list")
 					for each 'part' in 'shape'
@@ -326,9 +345,17 @@ library "edu.fizz.remix.libraries.Graphics"
 				… otherwise
 					append 'shape' to 'shapes'
 
+			=-
+			Clear all shapes from the shape layer 'OBJECT'.
+			Does nothing to a base-layer.
+			=-
 			clear MY shapes :
 				'shapes' : { }
 
+			=-
+			Prepare and show the shapes of the shape layer 'OBJECT' on the 'JGraphics' panel.
+			Does nothing to a base-layer.
+			=-
 			prepare MY shapes for drawing on 'JGraphics' :
 				for each 'shape' in 'shapes'
 					add the 'shape' to the 'JGraphics' ; Java

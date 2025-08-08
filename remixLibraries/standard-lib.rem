@@ -726,7 +726,7 @@ test 'list of tests' :
 				"  Failed: produces ", 'result', ", should be ", 'expected' ↲
 
 		=-
-		Execute the tests of a test OBJECT.
+		Execute the tests of a test 'OBJECT'.
 		=-
 		execute MY tests :
 			"Starting tests: " ↲
@@ -751,11 +751,6 @@ graphics lib :
 
 turtle lib :
 	include "remixLibraries/turtle.rem"
-
-- Can be used instead of "using graphics lib, turtle lib"
-with turtle graphics ['block'] :
-	using graphics lib, turtle lib
-		do 'block' in lib context
 
 files lib :
 	include "remixLibraries/files.rem"
