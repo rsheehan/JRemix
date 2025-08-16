@@ -1,7 +1,6 @@
 package edu.fizz.remix.editor;
 
 import edu.fizz.remix.runtime.LibrariesAndCompletions;
-import edu.fizz.remix.runtime.LibraryExpression;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
@@ -368,13 +367,13 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     }
 
     public void cancelCompletionHandling() {
-        LibrariesAndCompletions.CompletionNamesAndDoc completion;
+        String completion;
         if (completionsHere != null) {
             int completionLength = completionsHere.currentLength();
             completion = completionsHere.originalCompletion();
             try {
                 super.remove(completionsHere.offset, completionLength);
-                super.insertString(completionsHere.offset, completion.displayName(), defaultStyle);
+                super.insertString(completionsHere.offset, completion.substring(0, completion.length() - 1), defaultStyle);
             } catch (BadLocationException e) {
                 System.err.println("Bad location when cancelling completions.");
             }
@@ -384,19 +383,23 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
     // Called from keystroke event handler set up in RemixEditor.
     public String completionHandling(int offset, int lineNumber) throws BadLocationException {
-        LibrariesAndCompletions.CompletionNamesAndDoc completion = null;
-        String completionText;
+        ArrayList<String>completions = new ArrayList<>();
+        String completionAndDoc;
+        String completionText = "";
+        String completionComment = "";
+        int splitPos;
         if (completionsHere == null) {
             String seedWord = wordSoFar(offset);
             seedWord = seedWord.stripLeading();
-            ArrayList<LibrariesAndCompletions.CompletionNamesAndDoc> completions = LibrariesAndCompletions.createCompletions(
-                    seedWord.replace(" ", ""), lineNumber);
+            completions = LibrariesAndCompletions.createCompletionsFrom(seedWord, lineNumber);
             if (!seedWord.isEmpty() && !completions.isEmpty()) {
                 int seedLength = seedWord.length();
-                completions.add(new LibrariesAndCompletions.CompletionNamesAndDoc(seedWord, "", "", LibraryExpression.ALLLINES)); // so we can cycle back to the start
+                completions.add(seedWord + "\n");
                 completionsHere = new CompletionInfo(completions, offset - seedLength);
-                completion = completionsHere.nextCompletion();
-                completionText = completion.displayName();
+                completionAndDoc = completionsHere.nextCompletion();
+                splitPos = completionAndDoc.indexOf('\n');
+                completionText = completionAndDoc.substring(0, splitPos);
+                completionComment = completionAndDoc.substring(splitPos + 1);
                 // couldn't call super.replace as that calls back into this class
                 super.remove(completionsHere.offset, seedLength);
                 super.insertString(completionsHere.offset, completionText, defaultStyle);
@@ -405,8 +408,10 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             }
         } else {
             int completionLength = completionsHere.currentLength();
-            completion = completionsHere.nextCompletion();
-            completionText = completion.displayName();
+            completionAndDoc = completionsHere.nextCompletion();
+            splitPos = completionAndDoc.indexOf('\n');
+            completionText = completionAndDoc.substring(0, splitPos);
+            completionComment = completionAndDoc.substring(splitPos + 1);
             // see comment above
             super.remove(completionsHere.offset, completionLength);
             super.insertString(completionsHere.offset, completionText, defaultStyle);
@@ -415,7 +420,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             if (completionText.contains("(") || completionText.contains("["))
                 moveCursorToNextParam(completionsHere.offset);
         }
-        return completion == null ? null : completion.functionComment();
+        return completionComment.isEmpty() ? null : completionComment;
     }
 
     private void moveCursorToNextParam(int pos) throws BadLocationException {
@@ -648,27 +653,28 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
     private static class CompletionInfo {
 
-        private final ArrayList<LibrariesAndCompletions.CompletionNamesAndDoc> completionList;
+        private final ArrayList<String> completionList;
         private final int offset;
         private int currentIndex = -1;
 
-        private CompletionInfo(ArrayList<LibrariesAndCompletions.CompletionNamesAndDoc> completionList, int offset) {
+        private CompletionInfo(ArrayList<String> completionList, int offset) {
             this.completionList = completionList;
             this.offset = offset;
         }
 
         private int currentLength() {
-            return completionList.get(currentIndex).displayName().length();
+            String completion = completionList.get(currentIndex);
+            return completion.substring(0, completion.indexOf('\n')).length();
         }
 
-        private LibrariesAndCompletions.CompletionNamesAndDoc nextCompletion() {
+        private String nextCompletion() {
             currentIndex++;
             if (currentIndex >= completionList.size())
                 currentIndex = 0;
             return completionList.get(currentIndex);
         }
 
-        private LibrariesAndCompletions.CompletionNamesAndDoc originalCompletion() {
+        private String originalCompletion() {
             return completionList.getLast();
         }
     }

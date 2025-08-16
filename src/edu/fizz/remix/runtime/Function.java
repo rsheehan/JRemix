@@ -25,7 +25,7 @@ public abstract class Function {
         if (comment != null)
             functionComment = comment.replaceAll("\t", "").strip();
         else
-            functionComment = null;
+            functionComment = "";
     }
 
     public Function(List<String> names, List<String> parameters, List<Boolean> blockParams) {
@@ -35,8 +35,8 @@ public abstract class Function {
     }
 
     /** Returns the first function name. */
-    public String getName() {
-        return functionNames.get(0);
+    public String getFirstName() {
+        return functionNames.getFirst();
     }
 
     public List<String> getAllNames() {
@@ -59,6 +59,34 @@ public abstract class Function {
     // each element corresponds to a parameter.
     // If true then the parameter was defined as a block.
     // This is useful for autocompletion.
+
+    public String displayName(String name) {
+        StringBuilder screenName = new StringBuilder();
+        int param = 0;
+        for (char ch : name.toCharArray()) {
+            if (ch == '⫾') {
+                String formal = formalParameters.get(param);
+                if (formal.equals("ME"))
+                    formal = "OBJECT";
+                else if (formal.startsWith("#"))
+                    formal = formal.substring(1);
+                if (blockParameters.get(param))
+                    screenName.append("[").append(formal).append("]");
+                else
+                    screenName.append("(").append(formal).append(")");
+                param++;
+            } else {
+                screenName.append(ch);
+            }
+        }
+        return screenName.toString();
+    }
+
+    // Simple function only has one comment for all different names.
+    public String getDisplayNameAndComment(String name) {
+
+        return displayName(name) + "\n" + functionComment;
+    }
 
     public String getFunctionComment() {
         return functionComment;

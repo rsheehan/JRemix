@@ -5,6 +5,8 @@ import edu.fizz.remix.editor.RemixREPL;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /** Includes the standard libraries, any extra libraries
  *  and a library made from the editor window.
@@ -17,7 +19,7 @@ public class LibrariesAndCompletions {
        The standard library and the program editor library are valid
        everywhere, all others have a start and finish line.
      */
-    private static final ArrayList<LibraryExpression> addedLibraries = new ArrayList<>();
+    private static final Set<LibraryExpression> addedLibraries = new HashSet<>();
 
     /* The base library has the built-in and standard-lib functions. */
     private static LibraryExpression baseLibrary;
@@ -25,13 +27,6 @@ public class LibrariesAndCompletions {
        functions and statements.
      */
     private static LibraryExpression programLibrary; // = new LibraryExpression();
-
-    // maps the completion name to the display name
-    public static HashMap<String, CompletionNamesAndDoc> originalCompletionTable;
-    public static HashMap<String, CompletionNamesAndDoc> completionTable;
-    // sorted list of function completion names
-    public static ArrayList<String> originalFunctionList;
-    public static ArrayList<String> functionList;
 
     public static void addLibrary(LibraryExpression libraryExpression) {
         addedLibraries.add(libraryExpression);
@@ -41,19 +36,11 @@ public class LibrariesAndCompletions {
         return programLibrary;
     }
 
-    private static void initFunctionsAndCompletions() {
-        baseLibrary = new BuiltInFunctionsLibrary();
-        originalCompletionTable = new HashMap<>();
-        originalFunctionList = new ArrayList<>();
-    }
-
     /*
      * Sets the functions, methods, and context back to the standard version.
      */
     public static void resetToEditorStandard() {
         programLibrary = baseLibrary.copyFunctionsConstants();
-        completionTable = new HashMap<>(originalCompletionTable);
-        functionList = new ArrayList<>(originalFunctionList);
         addedLibraries.clear();
     }
 
@@ -73,97 +60,48 @@ public class LibrariesAndCompletions {
 //        }
 //    }
 
-    /** Build the completion table from built-in and standard-lib. */
-    public static void buildOriginalCompletions() {
-        for (String name : baseLibrary.functionTable.keySet()) {
-            Function function = baseLibrary.functionTable.get(name);
-            CompletionNamesAndDoc namesAndDoc = completionNames(name, function, LibraryExpression.ALLLINES);
-            String completionString = namesAndDoc.completionString();
-            originalCompletionTable.put(completionString, namesAndDoc);
-            originalFunctionList.add(completionString);
-        }
-        // at this stage the methodTableForCompletions only has standard-lib methods
-        LibraryExpression.methodTableForCompletions.forEach((name, method) -> {
-            CompletionNamesAndDoc namesAndDoc = completionNames(name, method, LibraryExpression.ALLLINES);
-            String completionString = namesAndDoc.completionString();
-            originalCompletionTable.put(completionString, namesAndDoc);
-            originalFunctionList.add(completionString);
-        });
-        originalFunctionList.sort(null);
-    }
-
     /*
-    * Should really be done when function signatures are entered in the editor.
-    * Currently checking after every editor change.
-    * "library" is all libraries in "using" statements, also the editor program itself.
-    */
-    public static void buildAdditionalCompletions(LibraryExpression library) {
-        for (String name : library.functionTable.keySet()) {
-            Function function = library.functionTable.get(name);
-            CompletionNamesAndDoc namesAndDoc = completionNames(name, function, library.getActiveLines());
-            String completionString = namesAndDoc.completionString();
-            completionTable.put(completionString, namesAndDoc);
-            functionList.add(completionString);
-        }
-        LibraryExpression.methodTableForCompletions.forEach((name, method) -> {
-            CompletionNamesAndDoc namesAndDoc = completionNames(name, method, LibraryExpression.ALLLINES);
-            String completionString = namesAndDoc.completionString();
-            if (completionTable.put(completionString, namesAndDoc) == null)
-                functionList.add(completionString);
-        });
-        functionList.sort(null);
-    }
-
-    public record CompletionNamesAndDoc(
-            String displayName, // the full name with formal parameters
-            String completionString, // the name with parameters and spaces removed
-            String functionComment,
-            ArrayList<int[]> activeLines
-    ){}
-
-    /*
-    Create a record of the name (with parameters), the shortened completion string and the function comment.
-    Now also includes the active lines in the editor for this library.
+    A completion is a string with the "DisplayName\nFunctionComment"
      */
-    private static CompletionNamesAndDoc completionNames(String internalName, Function function, ArrayList<int []> activeLines) {
-        StringBuilder screenName = new StringBuilder();
-        StringBuilder completionName = new StringBuilder();
-        int param = 0;
-        for (char ch : internalName.toCharArray()) {
-            if (ch == '⫾') {
-                String formal = function.formalParameters.get(param);
-                if (formal.equals("ME"))
-                    formal = "OBJECT";
-                else if (formal.startsWith("#"))
-                    formal = formal.substring(1);
-                if (function.blockParameters.get(param))
-                    screenName.append("[").append(formal).append("]");
-                else
-                    screenName.append("(").append(formal).append(")");
-                param++;
-            } else {
-                screenName.append(ch);
-                completionName.append(ch);
+
+    public static ArrayList<String> createCompletionsFrom(String searchWord, int lineNumber) {
+        HashSet<String> completionsRemaining = new HashSet<>();
+        HashSet<String> completionsAtStart = new HashSet<>();
+        HashSet<String> completionsConsecutive = new HashSet<>();
+        // first check against base library
+        //      with activeLines all lines
+        searchForCompletions(searchWord, baseLibrary.functionTable, completionsAtStart, completionsConsecutive, completionsRemaining);
+        // then each additional library
+        //      with activeLines retrieved from the library - compare with lineNumber
+        for (LibraryExpression library : addedLibraries) {
+            // first check lineNumber against activeLines
+            boolean activeHere = false;
+            for (int[] startAndFinish : library.getActiveLines()) {
+                if (startAndFinish[0] < lineNumber && lineNumber <= startAndFinish[1]) {
+                    activeHere = true;
+                    break;
+                }
+            }
+            if (activeHere) {
+                searchForCompletions(searchWord, library.functionTable, completionsAtStart, completionsConsecutive, completionsRemaining);
             }
         }
-        return new CompletionNamesAndDoc(
-                screenName.toString(),
-                completionName.toString(),
-                function.functionComment,
-                activeLines
-        );
+        // then all methods
+        //      with activeLines all lines
+        searchForCompletions(searchWord, LibraryExpression.methodTableForCompletions, completionsAtStart, completionsConsecutive, completionsRemaining);
+        ArrayList<String> allCompletions = new ArrayList<>(completionsAtStart);
+        allCompletions.addAll(completionsConsecutive);
+        allCompletions.addAll(completionsRemaining);
+
+        return allCompletions;
     }
 
-    /* The completions are now any function which matches the searchWord
-    *  with all the letters and in the order from left to right.
-    *  Currently works on originalCompletionTable and FunctionList
-    *  and the functions defined in the editor window itself.
-    *  Now adding library functions, hence the need to know the current line number. */
-    public static ArrayList<CompletionNamesAndDoc> createCompletions(String searchWord, int lineNumber){
-        ArrayList<CompletionNamesAndDoc> completions = new ArrayList<>();
-        ArrayList<CompletionNamesAndDoc> completionsAtStart = new ArrayList<>();
-        ArrayList<CompletionNamesAndDoc> completionsConsecutive = new ArrayList<>();
-        for (String functionName : LibrariesAndCompletions.functionList) {
+    private static void searchForCompletions(String searchWord,
+                                             HashMap<String, Function> functionTable,
+                                             HashSet<String> atStart,
+                                             HashSet<String> consecutive,
+                                             HashSet<String> remaining) {
+        for (String functionName : functionTable.keySet()) {
             int finish = 0;
             boolean found = false;
             int i = 0;
@@ -182,28 +120,18 @@ public class LibrariesAndCompletions {
             then consecutive, then non-consecutive.
              */
             if (found) {
-                final CompletionNamesAndDoc thisCompletion = LibrariesAndCompletions.completionTable.get(functionName);
-                boolean activeHere = false;
-                for (int[] startAndFinish : thisCompletion.activeLines) {
-                    if (startAndFinish[0] < lineNumber && lineNumber <= startAndFinish[1]) {
-                        activeHere = true;
-                        break;
-                    }
-                }
-                if (activeHere) {
-                    int position = consecutiveLetters(searchWord, functionName, finish);
-                    if (position == 0)
-                        completionsAtStart.add(thisCompletion);
-                    else if (position > 0)
-                        completionsConsecutive.add(thisCompletion);
-                    else
-                        completions.add(thisCompletion);
-                }
+                // create name and doc
+                Function function = functionTable.get(functionName);
+                String thisCompletion = function.getDisplayNameAndComment(functionName);
+                int position = consecutiveLetters(searchWord, functionName, finish);
+                if (position == 0)
+                    atStart.add(thisCompletion);
+                else if (position > 0)
+                    consecutive.add(thisCompletion);
+                else
+                    remaining.add(thisCompletion);
             }
         }
-        completionsAtStart.addAll(completionsConsecutive);
-        completionsAtStart.addAll(completions);
-        return completionsAtStart;
     }
 
     /*
@@ -222,10 +150,12 @@ public class LibrariesAndCompletions {
 
     /** Run the standard library setting up functions. No longer objects and global data */
     public static void prepareEnvironment() throws Exception {
-        initFunctionsAndCompletions();
+        baseLibrary = new BuiltInFunctionsLibrary();
         RemixEditor.setEditing(false);
         LibraryExpression standardLibrary = RemixREPL.loadPackage("remixLibraries/standard-lib.rem");
         RemixEditor.setEditing(true);
+        // the following line is a kludge to get the standard-lib methods into completions
+        RemixREPL.loadPackage("remixLibraries/standard-lib.rem");
         // this also makes the currentLibrary the program one
         // merge the standardLibrary into the baseLibrary
         baseLibrary.functionTable.putAll(standardLibrary.functionTable);
@@ -238,19 +168,8 @@ public class LibrariesAndCompletions {
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in program.");
         }
-        buildOriginalCompletions();
         // Completions should also include in scope variable names (a bit trickier)
         // but I now know how to do it (like "using" libraries).
-    }
-
-    /*
-     * Currently after every editor change.
-     */
-    public static void addFunctionsWhileEditing(LibraryExpression program) {
-        for (LibraryExpression lib : addedLibraries) {
-            buildAdditionalCompletions(lib);
-        }
-        buildAdditionalCompletions(program);
     }
 
 }

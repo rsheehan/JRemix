@@ -82,7 +82,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             topOfStackLibrary.functionTable.putAll(included.functionTable);
             if (RemixEditor.isEditing()) {
                 included.setActiveLines(topOfStackLibrary.getActiveLines());
-                LibrariesAndCompletions.buildAdditionalCompletions(included);
+//                LibrariesAndCompletions.buildAdditionalCompletions(included);
             }
 
             Object result = null;

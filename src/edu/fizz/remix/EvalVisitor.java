@@ -235,7 +235,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 // add it to the methodTable for the object
                 methodTable.addMethod(method);
                 // add it to the global table
-                LibraryExpression.addMethodName(method.getName(), method.getSelfRef(), method);
+                LibraryExpression.addMethodName(method.getFirstName(), method.getSelfRef(), method);
             }
         }
         objectExpr.addMethodTable(methodTable);

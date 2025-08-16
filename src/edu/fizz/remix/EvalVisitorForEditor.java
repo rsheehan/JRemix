@@ -254,7 +254,8 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                     // add it to the methodTable for the object
                     // methodTable.addMethod(method);
                     // add it to the global table
-                    LibraryExpression.addMethodName(method.getName(), method.getSelfRef(), method);
+                    for (String name : method.getAllNames())
+                        LibraryExpression.addMethodNameEditing(name, method.getSelfRef(), method);
                 }
             }
         }

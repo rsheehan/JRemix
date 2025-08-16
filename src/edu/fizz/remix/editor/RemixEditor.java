@@ -97,7 +97,7 @@ public class RemixEditor extends JFrame {
         EvalVisitorForEditor eval = new EvalVisitorForEditor();
         LibraryExpression programLib = (LibraryExpression) eval.visit(tree);
         programLib.setActiveLines(LibraryExpression.ALLLINES);
-        LibrariesAndCompletions.addFunctionsWhileEditing(programLib);
+        LibrariesAndCompletions.addLibrary(programLib);
         // the visit above fills in addedLibraries in LibrariesAndCompletions
         // this the result program is added as well.
     }

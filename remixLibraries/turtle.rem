@@ -23,38 +23,41 @@ library
 			MY 'base-layer' :
 				'the window'’s 'base-layer'
 
+			=-
+			Update the turtle space 'OBJECT'.
+			=-
 			update ME :
 				update 'the window'
 
-			==========================
-			Place turtle in the space.
-			==========================
+			=-
+			Place the 'turtle' in the turtle space 'OBJECT'.
+			=-
 			place 'turtle' in ME :
 				'turtle'’s 'turtle space' : ME
 				'turtle'’s 'animation layer' : 'the window' next layer
 				update 'the window'
 
-			==================================
-			Place a turtle group in the space.
-			==================================
+			=-
+			Place the 'turtle group' in the turtle space 'OBJECT'.
+			=-
 			place 'turtle group' group in ME :
 				'turtle group'’s 'turtle space' : ME
 
-			=============================================
-			Clear the space.
+			=-
+			Clear the turtle space 'OBJECT'.
 			This includes the base-layer of the space.
 			This holds any pen marks left by the turtles.
-			=============================================
+			=-
 			clear ME :
 				clear 'the window'
 
-			==============================================
-			Resets all turtle layers.
-			But leaves the base-layer of the space.
+			=-
+			Clear all animation layers of the turtle space 'OBJECT'.
+			Leaves the base-layer of the space.
 			This holds any pen marks left by the turtles.
-			Usually a similar effect to "hide turtles"
-			but that leaves the turtles' animation layers.
-			==============================================
+			Usually a similar effect to "hide turtles" but that leaves
+			the turtles' animation layers.
+			=-
 			clear MY turtles :
 				clear 'the window' leaving the base-layer
 
@@ -97,7 +100,7 @@ library
 			and places the turtle in the layer.
 			=======================================
 			MY 'animation layer' 'layer' : ; a setter for the 'animation layer'
-				- this is called when a turtle is place in a turtle space.
+				- this is called when a turtle is placed in a turtle space.
 				'animation layer' : 'layer'
 				place ME in 'animation layer'
 
@@ -124,15 +127,24 @@ library
 			MY 'window position' 'the position' : ; in panel coordinates not turtle coordinates
 				'position' : 'the position'
 
+			=-
+			Whether the turtle 'OBJECT' is visible.
+			=-
 			ME is visible :
 				'visible'
 
+			=-
+			Hide the turtle 'OBJECT'.
+			=-
 			hide ME :
 				'visible' : false
 				if ('animation layer' ≠ null)
 					clear 'animation layer' shapes
 				update 'turtle space'
 
+			=-
+			Show the turtle 'OBJECT'.
+			=-
 			show ME :
 				'visible' : true
 				if ('animation layer' ≠ null)
@@ -140,24 +152,26 @@ library
 					place ME in 'animation layer'
 				update 'turtle space'
 
+			=-
+			Lower the turtle 'OBJECT' pen.
+			=-
 			MY pen down :
 				'pen down' : true
 
+			=-
+			Raise the turtle 'OBJECT' pen.
+			=-
 			MY pen up :
 				'pen down' : false
-
-			================
-			Turn the turtle.
-			================
-			turn ME 'angle' degrees/degree:
-				'radians' : 'angle' degrees as radians
-				'heading' : 'heading' + 'radians'
 
 			=======================================
 			Move the turtle instantly.
 			Used as partial moves in animation.
 			'start' and 'finish' are panel coordinates.
 			=======================================
+			=-
+			Only used internally.
+			=-
 			instantly move ME from 'start' to 'finish' in 'destination layer' :
 				clear 'animation layer' shapes
 				if ('pen down')
@@ -168,10 +182,10 @@ library
 					place ME in 'animation layer'
 				update 'turtle space'
 
-			================
-			Move the turtle.
-			================
-			move ME 'n' steps/step :
+			=-
+			Move the turtle 'OBJECT' 'n' steps.
+			=-
+			move ME 'n' step/steps :
 				'remaining' : 'n'
 				'distance' : 0
 				'start' : 'position' ; initial position
@@ -185,26 +199,26 @@ library
 				'finish' : MY position after moving 'n' from 'start'
 				instantly move ME from 'start' to 'finish' in ('turtle space'’s 'base-layer')
 
-			================================
-			Move the turtle to a 'position'.
+			=-
+			Move the turtle 'OBJECT' to the 'coordinate'.
 			'coordinate' is a turtle point.
-			================================
+			=-
 			move ME to 'coordinate' :
 				turn ME to 'coordinate'
 				'new position' : turtle coordinate 'coordinate' to panel coordinate
 				move ME (distance from 'position' to 'new position') steps
 
-			================
-			Turn the turtle.
-			================
+			=-
+			Turn the turtle 'OBJECT' by 'angle' degrees clockwise.
+			=-
 			turn ME 'angle' degrees/degree:
 				add ('angle' degrees as radians) to 'heading'
 				update 'turtle space'
 
-			===================================
-			Turn a turtle to face a 'position'.
+			=-
+			Turn the turtle 'OBJECT' to face the 'coordinate'.
 			'coordinate' is a turtle point.
-			===================================
+			=-
 			turn ME to 'coordinate' :
 				'finish' : turtle coordinate 'coordinate' to panel coordinate
 				'δx' : 'finish' {1} - 'position' {1}
@@ -216,6 +230,10 @@ library
 			Where the turtle would be after moving with the current heading
 			from the starting position.
 			===============================================================
+
+			=-
+			Only used internally.
+			=-
 			MY position after moving 'distance' from 'start' :
 				'actual heading' : π ÷ 2 - 'heading'
 				{
@@ -231,7 +249,7 @@ library
 	================================
 
 	=-
-	Create a group of "'n'" turtles.
+	Create a group of 'n' turtles.
 	'turtles' in a turtle group can perform the same move and turn
 	instructions simultaneously.
 	They have a speed for the group.
@@ -249,9 +267,9 @@ library
 			getter/setter
 				'speed'
 
-			==========================================
-			Retrieve a specific turtle from the group.
-			==========================================
+			=-
+			Retrieve turtle 'n' from the turtle group 'OBJECT'.
+			=-
 			turtle 'n' from ME :
 				'turtles' {'n'}
 
@@ -278,11 +296,11 @@ library
 					next ME :
 						'turtles' {increment 'index'}
 
-			===========================================
-			Move the group.
-			Each turtle has its own heading, colour etc
-			but they all move the same distance.
-			===========================================
+			=-
+			Move each turtle in the turtle group 'OBJECT' 'n' steps.
+			Each turtle has its own heading, colour etc, but they all
+			move the same distance.
+			=-
 			move ME 'n' step/steps :
 				'remaining' : 'n'
 				'distance' : 0

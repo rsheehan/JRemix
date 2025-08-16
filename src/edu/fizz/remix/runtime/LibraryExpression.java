@@ -36,7 +36,7 @@ public class LibraryExpression implements Expression {
     HashMap<String, Object> constantTable = new HashMap<String, Object>();
 
     static HashMap<String, Integer> methodTable = new HashMap<>(); // one table used by all
-    static HashMap<String, Method> methodTableForCompletions = new HashMap<>();
+    static HashMap<String, Function> methodTableForCompletions = new HashMap<String, Function>();
 
     public static Integer searchMethodTable(String methodName) {
         return methodTable.get(methodName);
@@ -80,11 +80,32 @@ public class LibraryExpression implements Expression {
         Integer pos;
         pos = methodTable.get(name);
         if (pos == null) { // new method name
-            methodTable.put(name, refPos);
-            if (method != null && refPos > 0)
-                methodTableForCompletions.put(name, method);
+            if (method != null) {
+                for (String nameM : method.functionNames) {
+                    methodTable.put(nameM, refPos);
+                }
+            } else {
+                methodTable.put(name, refPos);
+            }
         } else if (pos != refPos) {
             System.err.format("Conflicting method definition: %s%n", name);
+        }
+    }
+
+    /** Add a name of method and the reference parameter position. */
+    public static void addMethodNameEditing(String name, int refPos, Method method) {
+        Integer pos;
+        if (refPos == 0) // private method, currently don't add to completion methods
+            return;
+        method.setMethodDisplayName(name);
+        Method existingMethod = (Method) methodTableForCompletions.get(name);
+        if (existingMethod == null) { // new method name
+            methodTableForCompletions.put(name, method);
+        } else { // a method of this name already exists
+            existingMethod.addDifferentComment(method.getMethodDisplayName(), method.functionComment);
+            if (existingMethod.getSelfRef() != refPos) {
+                System.err.format("Conflicting method definition: %s%n", name);
+            }
         }
     }
 

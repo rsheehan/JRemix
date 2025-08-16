@@ -1,4 +1,7 @@
-- Accessible at the top-level. No need for "uses".
+=-
+Accessible at the top-level. No need for "uses".
+Currently not added to completions.
+=-
 'A' times 'B' :
 	'A' * 'B'
 

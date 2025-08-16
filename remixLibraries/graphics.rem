@@ -347,7 +347,6 @@ library "edu.fizz.remix.libraries.Graphics"
 
 			=-
 			Clear all shapes from the shape layer 'OBJECT'.
-			Does nothing to a base-layer.
 			=-
 			clear MY shapes :
 				'shapes' : { }
@@ -380,9 +379,15 @@ library "edu.fizz.remix.libraries.Graphics"
 				… otherwise
 					add the 'shape' to the ('JGraphics panel' base-layer) image ; Java
 
+			=-
+			Nothing happens in the base-layer.
+			=-
 			clear MY shapes :
 				"Clearing shapes from the base-layer - does nothing."
 
+			=-
+			Nothing happens in the base-layer.
+			=-
 			prepare MY shapes for drawing on 'JGraphics' :
 				"Preparing shapes in the base-layer - does nothing."
 
