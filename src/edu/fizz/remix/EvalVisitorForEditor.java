@@ -228,26 +228,6 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             if (node instanceof RemixParser.FieldContext) {
                 FieldAssignmentStatement initStmnt = (FieldAssignmentStatement)visit(node);
                 objectExpr.addVarInitialization(initStmnt);
-//            } else if (node instanceof RemixParser.GetterSetterContext) {
-//                List<String> getSetNames = (List<String>)visit(node);
-//                for (String name : getSetNames) {
-//                    String getMethodName = methodTable.createGetter(name);
-//                    LibraryExpression.addMethodName(getMethodName, 1, null);
-//                    String setMethodName = methodTable.createSetter(name);
-//                    LibraryExpression.addMethodName(setMethodName, 1, null);
-//                }
-//            } else if (node instanceof RemixParser.GetterContext) {
-//                List<String> getterNames = (List<String>)visit(node);
-//                for (String name : getterNames) {
-//                    String methodName = methodTable.createGetter(name);
-//                    LibraryExpression.addMethodName(methodName, 1, null);
-//                }
-//            } else if (node instanceof RemixParser.SetterContext) {
-//                List<String> setterNames = (List<String>)visit(node);
-//                for (String name : setterNames) {
-//                    String methodName = methodTable.createSetter(name);
-//                    LibraryExpression.addMethodName(methodName, 1, null);
-//                }
             } else if (node instanceof RemixParser.MethodDefinitionContext) {
                 Method method = (Method)visit(node);
                 if (method != null) { // visiting an incomplete method definition returns null
