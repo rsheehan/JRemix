@@ -41,6 +41,7 @@ public class LibrariesAndCompletions {
      */
     public static void resetToEditorStandard() {
         programLibrary = baseLibrary.copyFunctionsConstants();
+        LibraryExpression.methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
         addedLibraries.clear();
     }
 
@@ -156,6 +157,7 @@ public class LibrariesAndCompletions {
         RemixEditor.setEditing(true);
         // the following line is a kludge to get the standard-lib methods into completions
         RemixREPL.loadPackage("remixLibraries/standard-lib.rem");
+        LibraryExpression.methodTableStandardLib = new HashMap<>(LibraryExpression.methodTableForCompletions);
         // this also makes the currentLibrary the program one
         // merge the standardLibrary into the baseLibrary
         baseLibrary.functionTable.putAll(standardLibrary.functionTable);

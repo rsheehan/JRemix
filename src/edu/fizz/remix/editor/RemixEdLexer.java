@@ -58,15 +58,31 @@ public class RemixEdLexer {
     }
 
     public static void initStyles(RemixStyledDocument document) {
+        Color variableColour, stringColour, operatorColour, literalColour;
         RemixEdLexer.document = document;
 
         // the style at the original position of the textPane
         defaultStyle = document.getStyle("default");
         SimpleAttributeSet attr = new SimpleAttributeSet();
-        StyleConstants.setForeground(attr, Color.white);
+        if (RemixEditor.dark) {
+            StyleConstants.setForeground(attr, Color.white);
+        } else {
+            StyleConstants.setForeground(attr, Color.black);
+        }
         defaultStyle.addAttributes(attr);
+        if (RemixEditor.dark) {
+            variableColour = new Color(255,255,200);
+            stringColour = new Color(255, 200, 200);
+            operatorColour = Color.green;
+            literalColour = Color.cyan;
+        } else {
+            variableColour = new Color(0, 100, 150);
+            stringColour = new Color(200, 10, 200);
+            operatorColour = new Color(0, 150, 0);
+            literalColour = new Color(205, 127, 50);
+        }
         // variables
-        variable = makeStyle("variable", new Color(255,255,200), false, true, defaultStyle); // was italic
+        variable = makeStyle("variable", variableColour, false, true, defaultStyle); // was italic
         // singleQuote
         singleQuote = makeStyle("singleQuote", new Color(70,70,70), false, false, defaultStyle);
         // parentheses
@@ -74,11 +90,11 @@ public class RemixEdLexer {
         // comments, all sorts
         comment = makeStyle("comment",new Color(170,121,66), true, false, defaultStyle);
         // operator text
-        operator = makeStyle("operator", Color.green, false, false, defaultStyle); // was italic
+        operator = makeStyle("operator", operatorColour, false, false, defaultStyle); // was italic
         // literals
-        literal = makeStyle("literal", Color.cyan, true, false, defaultStyle);
+        literal = makeStyle("literal", literalColour, true, false, defaultStyle);
         // string - just a version of literal for the RemixStyleDocument code
-        string = makeStyle("string", new Color(255,200,200), true, false, defaultStyle);
+        string = makeStyle("string", stringColour, true, false, defaultStyle);
         // keywords
         keyword = makeStyle("keyword", Color.red, false, false, defaultStyle);
         // separator

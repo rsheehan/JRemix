@@ -36,7 +36,8 @@ public class LibraryExpression implements Expression {
     HashMap<String, Object> constantTable = new HashMap<String, Object>();
 
     static HashMap<String, Integer> methodTable = new HashMap<>(); // one table used by all
-    static HashMap<String, Function> methodTableForCompletions = new HashMap<String, Function>();
+    static HashMap<String, Function> methodTableStandardLib = new HashMap<>();
+    static HashMap<String, Function> methodTableForCompletions = new HashMap<>();
 
     public static Integer searchMethodTable(String methodName) {
         return methodTable.get(methodName);

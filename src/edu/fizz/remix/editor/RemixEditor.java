@@ -37,7 +37,7 @@ import static edu.fizz.remix.runtime.LibrariesAndCompletions.resetToEditorStanda
 
 public class RemixEditor extends JFrame {
 
-    public static final int SIZE = 14;
+    public static final int SIZE = 12; // 12 is small but gives 80 col printout on A4
     private final JTextPane editorTextPane;
     private Point caretPoint; // the point of the top left of the caret within the document pane
     // this is always set when a caret update occurs
@@ -53,6 +53,7 @@ public class RemixEditor extends JFrame {
     private final JPanel docPanel = new JPanel();
     protected final JTextArea docArea;
     static String currentDirectory = "remixPrograms";
+    public static boolean dark = false;
 
     private final HashMap<Object, Action> actions;
 
@@ -108,11 +109,17 @@ public class RemixEditor extends JFrame {
         editorTextPane = new JTextPane();
         editorTextPane.addKeyListener(new CatchKeys());
         editorTextPane.setMargin(new Insets(5,10,5,10));
-        editorTextPane.setForeground(Color.white);
-        editorTextPane.setBackground(Color.black);
-        editorTextPane.setCaretColor(Color.white);
-        editorTextPane.setSelectionColor(new Color(100,80,80));
-
+        if (dark) {
+            editorTextPane.setForeground(Color.white);
+            editorTextPane.setBackground(Color.black);
+            editorTextPane.setCaretColor(Color.white);
+            editorTextPane.setSelectionColor(new Color(100, 80, 80));
+        } else {
+            editorTextPane.setForeground(Color.black);
+            editorTextPane.setBackground(Color.white);
+            editorTextPane.setCaretColor(Color.black);
+            editorTextPane.setSelectionColor(new Color(100, 80, 80));
+        }
         // the base font
         editorTextPane.setFont(new Font("monospaced", Font.PLAIN, SIZE)); // previously "Monaco" on Mac
         doc = new RemixStyledDocument(this);
@@ -121,7 +128,9 @@ public class RemixEditor extends JFrame {
 
         // set up the tabs
         StyleContext sc = StyleContext.getDefaultStyleContext();
-        float tabDiff = 24; // 40 matches 4 characters of new courier 16 font width
+        float tabDiff = 21; // 21 matches 3 characters of 12 font width
+        // 40 matches 4 characters of new courier 16 font width
+        // 24 matches 3 characters of 14 font width
         List<TabStop> tabList = new ArrayList<>();
         for (int i = 1; i <= 40; i++) {
             tabList.add(new TabStop(tabDiff * i));
