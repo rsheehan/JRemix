@@ -18,9 +18,20 @@ library "edu.fizz.remix.libraries.RemixFiles"
 		create
 			'directory' : 'directory name' ⊕ path separator
 
+			=-
+			Open the file 'name' in the directory 'OBJECT'.
+			The file is opened for reading.
+			=-
 			open file 'name' in ME :
 				a file with full path ('directory' ⊕ 'name') for READING
 
+			=-
+			Open the file 'name' in the directory 'OBJECT' for 'access' of
+			- READING
+			- WRITING
+			- BOTH (reading and writing)
+			- BINARY-READING
+			=-
 			open file 'name' in ME for 'access' :
 				a file with full path ('directory' ⊕ 'name') for 'access'
 
@@ -39,22 +50,35 @@ library "edu.fizz.remix.libraries.RemixFiles"
 			getter
 				'access'
 
+			=-
+			Returns the contents of the file 'OBJECT' as a string.
+			=-
 			read ME :
 				if ('access' is in { READING, BOTH })
 					return read file 'name' ; Java
 				'name', " is not open for reading." ↲
 				""
-
+			=-
+			Writes the string 'contents' to the file 'OBJECT'.
+			Overwrites any existing content.
+			=-
 			write 'contents' to ME :
 				if ('access' is in { WRITING, BOTH })
 					return write 'contents' to file 'name' ; Java
 				'name', " is not open for writing." ↲
 
+			=-
+			Appends the string 'contents' to the existing contents of
+			the file 'OBJECT'.
+			=-
 			append 'contents' to ME :
 				if ('access' is in { WRITING, BOTH })
 					return write (read ME ⊕ 'contents') to file 'name'
 				'name', " is not open for writing." ↲
 
+			=-
+			Reads the byte contents of the file 'OBJECT'.
+			=-
 			binary read ME :
 				if ('access' = BINARY-READING)
 					return read binary file 'name' ; Java
@@ -62,10 +86,10 @@ library "edu.fizz.remix.libraries.RemixFiles"
 			ME to string :
 				'name'
 
-			=============================================
-			Produces a sequence of lines from the 'file'.
+			=-
+			Produces a sequence of lines from the file 'OBJECT'.
 			This can be used in for loops.
-			=============================================
+			=-
 			lines from ME :
 				create
 					'file' : ME
@@ -76,10 +100,10 @@ library "edu.fizz.remix.libraries.RemixFiles"
 					ME to string :
 						"sequence of lines from " ⊕ ('file' to string)
 
-			=============================================
-			Produces a sequence of words from the 'file'.
+			=-
+			Produces a sequence of words from the file 'OBJECT'.
 			This can be used in for loops.
-			=============================================
+			=-
 			words from ME :
 				create
 					'file' : ME
@@ -90,10 +114,10 @@ library "edu.fizz.remix.libraries.RemixFiles"
 					ME to string :
 						"sequence of words from " ⊕ ('file' to string)
 
-			==================================================
-			Produces a sequence of characters from the 'file'.
+			=-
+			Produces a sequence of characters from the file 'OBJECT'.
 			This can be used in for loops.
-			==================================================
+			=-
 			characters from ME :
 				create
 					'file' : ME
@@ -104,10 +128,10 @@ library "edu.fizz.remix.libraries.RemixFiles"
 					ME to string :
 						"sequence of characters from " ⊕ ('file' to string)
 
-			=============================================
-			Produces a sequence of bytes from the 'file'.
+			=-
+			Produces a sequence of bytes from the file 'OBJECT'.
 			This can be used in for loops.
-			=============================================
+			=-
 			bytes from ME :
 				create
 					'file' : ME

@@ -20,8 +20,8 @@ library
 			getter
 				'turtle rate'
 
-			MY 'base-layer' :
-				'the window'’s 'base-layer'
+			MY 'base layer' :
+				'the window'’s 'base layer'
 
 			=-
 			Update the turtle space 'OBJECT'.
@@ -45,7 +45,7 @@ library
 
 			=-
 			Clear the turtle space 'OBJECT'.
-			This includes the base-layer of the space.
+			This includes the base layer of the space.
 			This holds any pen marks left by the turtles.
 			=-
 			clear ME :
@@ -53,13 +53,13 @@ library
 
 			=-
 			Clear all animation layers of the turtle space 'OBJECT'.
-			Leaves the base-layer of the space.
+			Leaves the base layer of the space.
 			This holds any pen marks left by the turtles.
 			Usually a similar effect to "hide turtles" but that leaves
 			the turtles' animation layers.
 			=-
 			clear MY turtles :
-				clear 'the window' leaving the base-layer
+				clear 'the window' leaving the base layer
 
 -==================================================================================================-
 
@@ -135,6 +135,7 @@ library
 
 			=-
 			Hide the turtle 'OBJECT'.
+			Don't hide the turtle until after it is added to a turtle space.
 			=-
 			hide ME :
 				'visible' : false
@@ -144,6 +145,7 @@ library
 
 			=-
 			Show the turtle 'OBJECT'.
+			Don't show the turtle until after it is added to a turtle space.
 			=-
 			show ME :
 				'visible' : true
@@ -197,7 +199,7 @@ library
 					pause (1.0 ÷ 'turtle space'’s 'turtle rate') seconds
 				- now add the "permanent" layer
 				'finish' : MY position after moving 'n' from 'start'
-				instantly move ME from 'start' to 'finish' in ('turtle space'’s 'base-layer')
+				instantly move ME from 'start' to 'finish' in ('turtle space'’s 'base layer')
 
 			=-
 			Move the turtle 'OBJECT' to the 'coordinate'.
@@ -320,26 +322,28 @@ library
 				for each 'turtle' in 'turtles' keeping 'index'
 					'start' : 'starting' {'index'}
 					'finish' : 'turtle' position after moving 'n' from 'start'
-					instantly move 'turtle' from 'start' to 'finish' in ('turtle space'’s 'base-layer')
+					instantly move 'turtle' from 'start' to 'finish' in ('turtle space'’s 'base layer')
 
-			=================================================
-			Turn each turtle in the group by the same amount.
-			=================================================
+			=-
+			Turn each turtle in the turtle group 'OBJECT' by 'angle' degrees clockwise.
+			=-
 			turn ME 'angle' degrees :
 				for each 'turtle' in 'turtles'
 					'turtle'’s 'heading' : 'turtle'’s 'heading' - 'angle'
 				update 'turtle space'
 
-			========================================
-			Hide all the turtle bodies in the group.
-			========================================
+			=-
+			Hide each turtle in the turtle group 'OBJECT'.
+			Don't hide the turtles until after they are added to a turtle space.
+			=-
 			hide ME :
 				for each 'turtle' in 'turtles'
 					hide 'turtle'
 
-			========================================
-			Show all the turtle bodies in the group.
-			========================================
+			=-
+			Show each turtle in the turtle group 'OBJECT'.
+			Don't show the turtles until after they are added to a turtle space.
+			=-
 			show ME :
 				for each 'turtle' in 'turtles'
 					show 'turtle'
@@ -347,13 +351,13 @@ library
 -==================================================================================================-
 
 	=-
-	Convert turtle heading "'angle'" to a direction (and vice versa).
+	Convert turtle heading 'angle' to a direction (and vice versa).
 	=-
 	'angle' heading to direction :
 		90 - 'angle'
 
 	=-
-	Convert panel coordinate "'coordinate'" to a turtle coordinate.
+	Convert panel coordinate 'coordinate' to a turtle coordinate.
 	=-
 	panel coordinate 'coordinate' to turtle coordinate :
 		{
@@ -362,7 +366,7 @@ library
 		}
 
 	=-
-	Convert turtle coordinate "'coordinate'" to a panel coordinate.
+	Convert turtle coordinate 'coordinate' to a panel coordinate.
 	=-
 	turtle coordinate 'coordinate' to panel coordinate :
 		{

@@ -1,7 +1,7 @@
 using graphics lib
 	'the window' : the graphics panel
 
-	'layer' : 'the window's 'base-layer'
+	'layer' : 'the window's 'base layer'
 
 	'triangle' : a triangle
 	RED 'triangle' at { 500, 400 } facing 0 scaled by 100

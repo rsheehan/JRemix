@@ -236,7 +236,7 @@ library "edu.fizz.remix.libraries.Graphics"
 
 	===========================================================
 	The Remix 'panel' for drawing in.
-	It has a base-layer which is an image for permanent shapes,
+	It has a base layer which is an image for permanent shapes,
 	and multiple layers for animation on top of that.
 
 	It can be the built-in panel from the Remix IDE or a panel
@@ -248,7 +248,7 @@ library "edu.fizz.remix.libraries.Graphics"
 	'JGraphics panel' with layers :
 		'panel' : create
 			'JGraphics' : 'JGraphics panel'
-			'layers' : { a base-layer for 'JGraphics panel' }
+			'layers' : { a base layer for 'JGraphics panel' }
 			'colour' : DARK-BLUE ; set by "MY 'colour' 'the colour'"
 
 			getters
@@ -267,13 +267,13 @@ library "edu.fizz.remix.libraries.Graphics"
 				'new layer'
 
 			=-
-			Get the permanent base-layer for the panel 'OBJECT'.
+			Get the permanent base layer for the panel 'OBJECT'.
 			=-
-			MY 'base-layer' : ; a fake getter
+			MY 'base layer' : ; a fake getter
 				'layers' {1}
 
 			=-
-			Place the 'shape' in the base-layer of the panel 'OBJECT'.
+			Place the 'shape' in the base layer of the panel 'OBJECT'.
 			=-
 			place 'shape' in ME :
 				place 'shape' in ('layers' {1})
@@ -292,16 +292,16 @@ library "edu.fizz.remix.libraries.Graphics"
 			Clears all layers.
 			==================
 			=-
-			Clear all layers of the panel 'OBJECT' including the base-layer.
+			Clear all layers of the panel 'OBJECT' including the base layer.
 			=-
 			clear ME :
-				clear 'JGraphics' base-layer
-				clear ME leaving the base-layer
+				clear 'JGraphics' base layer
+				clear ME leaving the base layer
 
 			=-
-			Clear all layers of the panel 'OBJECT' keeping the base-layer.
+			Clear all layers of the panel 'OBJECT' keeping the base layer.
 			=-
-			clear ME leaving the base-layer :
+			clear ME leaving the base layer :
 				make the 'JGraphics' background 'colour'
 				'layers' : { 'layers' {1} }
 				update ME
@@ -325,7 +325,7 @@ library "edu.fizz.remix.libraries.Graphics"
 	=-
 	Create a shape layer.
 	'shapes' get added to layers.
-	This does not include the base-layer which is special.
+	This does not include the base layer which is special.
 	Animations should be placed in ordinary shape layers.
 	=-
 	a shape layer :
@@ -353,19 +353,19 @@ library "edu.fizz.remix.libraries.Graphics"
 
 			=-
 			Prepare and show the shapes of the shape layer 'OBJECT' on the 'JGraphics' panel.
-			Does nothing to a base-layer.
+			Does nothing to a base layer.
 			=-
 			prepare MY shapes for drawing on 'JGraphics' :
 				for each 'shape' in 'shapes'
 					add the 'shape' to the 'JGraphics' ; Java
 
 	=-
-	Create a base-layer for the 'JGraphics panel'.
-	'shapes' which get added to a base-layer are "permanent"
+	Create a base layer for the 'JGraphics panel'.
+	'shapes' which get added to a base layer are "permanent"
 	until the layer gets cleared.
-	Animations should not be placed in the base-layer.
+	Animations should not be placed in the base layer.
 	=-
-	a base-layer for 'JGraphics panel' :
+	a base layer for 'JGraphics panel' :
 		create
 			'JGraphics panel' : 'JGraphics panel' ; base layer can change so need this
 
@@ -375,21 +375,21 @@ library "edu.fizz.remix.libraries.Graphics"
 			place 'shape' in ME :
 				if ('shape' is a "list")
 					for each 'part' in 'shape'
-						add the 'part' to the ('JGraphics panel' base-layer) image ; Java
+						add the 'part' to the ('JGraphics panel' base layer) image ; Java
 				… otherwise
-					add the 'shape' to the ('JGraphics panel' base-layer) image ; Java
+					add the 'shape' to the ('JGraphics panel' base layer) image ; Java
 
 			=-
-			Nothing happens in the base-layer.
+			Nothing happens in the base layer.
 			=-
 			clear MY shapes :
-				"Clearing shapes from the base-layer - does nothing."
+				"Clearing shapes from the base layer - does nothing."
 
 			=-
-			Nothing happens in the base-layer.
+			Nothing happens in the base layer.
 			=-
 			prepare MY shapes for drawing on 'JGraphics' :
-				"Preparing shapes in the base-layer - does nothing."
+				"Preparing shapes in the base layer - does nothing."
 
 -==================================================================================================-
 
@@ -406,6 +406,10 @@ library "edu.fizz.remix.libraries.Graphics"
 			'counter' : 'n'
 			'changes' : 'changes'
 
+			=-
+			Animate the animation 'OBJECT'.
+			Called after a set number of ticks.
+			=-
 			animate ME :
 				decrement 'counter'
 				if ('counter' = 0)

@@ -3,7 +3,7 @@ using graphics lib
 	'the window' : the graphics panel
 	'the window'’s'colour' : SKY-BLUE
 	
-	'the back layer'  : 'the window'’s'base-layer'
+	'the back layer'  : 'the window'’s'base layer'
 	'the cloud layer' : 'the window' next layer
 	'the front layer' : 'the window' next layer
 	

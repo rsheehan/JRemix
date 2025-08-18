@@ -137,11 +137,11 @@ public class Graphics extends LibraryExpression {
 
         public BaseLayerFunction() {
             super(
-                    List.of("⫾ base-layer", "the ⫾ base-layer"),
+                    List.of("⫾ base layer", "the ⫾ base layer"),
                     List.of("graphics panel"),
                     List.of(false),
                     false,
-                    "The base-layer of 'graphics panel'."
+                    "The base layer of 'graphics panel'."
             );
         }
 
@@ -156,11 +156,11 @@ public class Graphics extends LibraryExpression {
 
         public ClearBaseLayerFunction() {
             super(
-                    List.of("clear ⫾ base-layer"),
+                    List.of("clear ⫾ base layer"),
                     List.of("graphics panel"),
                     List.of(false),
                     false,
-                    "Clear the base-layer of 'graphics panel'."
+                    "Clear the base layer of 'graphics panel'."
             );
         }
 
@@ -238,7 +238,7 @@ public class Graphics extends LibraryExpression {
                     List.of("graphics panel"),
                     List.of(false),
                     false,
-                    "Remove current shapes from the 'graphics panel' leaving the base-layer."
+                    "Remove current shapes from the 'graphics panel' leaving the base layer."
             );
         }
 
@@ -312,17 +312,17 @@ public class Graphics extends LibraryExpression {
         public AddShapeToBaseLayerFunction() {
             super(
                     List.of("add the ⫾ to the ⫾ image"),
-                    List.of("shape", "base-layer"),
+                    List.of("shape", "base layer"),
                     List.of(false, false),
                     false,
-                    "Add the 'shape' to the 'base-layer'."
+                    "Add the 'shape' to the 'base layer'."
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
             RemixObject shape = (RemixObject) context.retrieve("shape", false);
-            GraphicsLayerImage layerImage = (GraphicsLayerImage) context.retrieve("base-layer", false);
+            GraphicsLayerImage layerImage = (GraphicsLayerImage) context.retrieve("base layer", false);
             Context shapeContext = shape.getContext();
             // get the fill colour
             boolean filled = true;
@@ -340,7 +340,7 @@ public class Graphics extends LibraryExpression {
             } else if (retrieve.equals("line")) {
                 dealWithLine(fillColour, shapeContext, layerImage, null);
             } else
-                System.err.println("Bad shape - not added to the base-layer.");
+                System.err.println("Bad shape - not added to the base layer.");
             return null;
         }
     }
