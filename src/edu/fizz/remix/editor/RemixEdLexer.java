@@ -58,7 +58,7 @@ public class RemixEdLexer {
     }
 
     public static void initStyles(RemixStyledDocument document) {
-        Color variableColour, stringColour, operatorColour, literalColour;
+        Color variableColour, singleQuoteColour, stringColour, operatorColour, literalColour;
         RemixEdLexer.document = document;
 
         // the style at the original position of the textPane
@@ -72,11 +72,13 @@ public class RemixEdLexer {
         defaultStyle.addAttributes(attr);
         if (RemixEditor.dark) {
             variableColour = new Color(255,255,200);
+            singleQuoteColour = new Color(70,70,70);
             stringColour = new Color(255, 200, 200);
             operatorColour = Color.green;
             literalColour = Color.cyan;
         } else {
             variableColour = new Color(0, 100, 150);
+            singleQuoteColour = new Color(185,185,185);
             stringColour = new Color(200, 10, 200);
             operatorColour = new Color(0, 150, 0);
             literalColour = new Color(205, 127, 50);
@@ -84,7 +86,7 @@ public class RemixEdLexer {
         // variables
         variable = makeStyle("variable", variableColour, false, true, defaultStyle); // was italic
         // singleQuote
-        singleQuote = makeStyle("singleQuote", new Color(70,70,70), false, false, defaultStyle);
+        singleQuote = makeStyle("singleQuote", singleQuoteColour, false, false, defaultStyle);
         // parentheses
         parentheses = makeStyle("parentheses", new Color(150,150,250), false, false, defaultStyle);
         // comments, all sorts

@@ -52,6 +52,7 @@ public class RemixEditor extends JFrame {
     private Popup docPopup;
     private final JPanel docPanel = new JPanel();
     protected final JTextArea docArea;
+    protected Point popupScreenLocation = null;
     static String currentDirectory = "remixPrograms";
     public static boolean dark = false;
 
@@ -76,6 +77,7 @@ public class RemixEditor extends JFrame {
                 case 27:
                     doc.cancelCompletionHandling();
                 default :
+                    popupScreenLocation = null;
                     if (docPopup != null)
                         docPopup.hide();
             }
@@ -118,7 +120,7 @@ public class RemixEditor extends JFrame {
             editorTextPane.setForeground(Color.black);
             editorTextPane.setBackground(Color.white);
             editorTextPane.setCaretColor(Color.black);
-            editorTextPane.setSelectionColor(new Color(100, 80, 80));
+            editorTextPane.setSelectionColor(new Color(165, 175, 175));
         }
         // the base font
         editorTextPane.setFont(new Font("monospaced", Font.PLAIN, SIZE)); // previously "Monaco" on Mac
@@ -252,6 +254,8 @@ public class RemixEditor extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
             try {
+                if (popupScreenLocation == null)
+                    popupScreenLocation = getPopupScreenLocation();
                 Element root = doc.getDefaultRootElement();
                 int mark = editorTextPane.getCaretPosition();
                 int lineNumber = root.getElementIndex(mark) + 1;
@@ -260,11 +264,9 @@ public class RemixEditor extends JFrame {
                     docPopup.hide();
                 if (docText != null && !docText.isEmpty()) {
                     docArea.setText(docText);
-                    Point location = getPopupScreenLocation();
-                    docPopup = popupFactory.getPopup(editorTextPane, docPanel, location.x, location.y);
+                    docPopup = popupFactory.getPopup(editorTextPane, docPanel, popupScreenLocation.x, popupScreenLocation.y);
                     docPopup.show();
                 }
-//                RemixEdLexer.fullLex(); // overkill, needs to change
             } catch (BadLocationException ex) {
                 throw new RuntimeException(ex);
             }
