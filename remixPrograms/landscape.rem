@@ -2,8 +2,8 @@ using graphics lib
 
 	'window' : the graphics panel
 	'window'’s 'colour' : SKY-BLUE
-	
-	'back layer'  : 'window'’s 'base layer'
+
+	'back layer'  : 'window' base layer
 	'cloud layer' : 'window' next layer
 	'front layer' : 'window' next layer
 	

@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RemixEditor">
+    <output-path>$PROJECT_DIR$/out/artifacts/RemixEditor</output-path>
+    <root id="archive" name="RemixEditor.jar">
+      <element id="library" level="project" name="antlr-4.13.2-complete" />
+      <element id="library" level="project" name="antlr4-4.13.2" />
+      <element id="library" level="project" name="antlr4-runtime-4.13.2" />
+      <element id="module-output" name="remix" />
+    </root>
+  </artifact>
+</component>

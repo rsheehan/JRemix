@@ -63,6 +63,7 @@ Here is an animated random landscape program in Remix. N.B. This is how it appea
 ![landscape1.png](images/landscape1.png)
 ![landscape2.png](images/landscape2.png)
 ![landscape3.png](images/landscape3.png)
+![landscape4.png](images/landscape4.png)
 
 Remix has a simple library system which provides a measure of 
 encapsulation. Libraries can contain both Java and Remix functions as in the 

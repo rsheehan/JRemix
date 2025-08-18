@@ -1,0 +1,33 @@
+'r' : 2
+'πR²' : π × 'r'²
+'πR²' ↲
+'powers of 2' : {1, 2, 4, 8, 16, 32, 64, 128}
+'powers of 2' ↲
+xy map from {3, 5} ↲
+'the list' : { "one", "two", "three" }
+'the list'{1} ↲
+'the list'{2} ↲
+last in 'the list' ↲
+'the list' {5} : "new element"
+'the list' ↲
+'map' : { "one" : 2, "another" : 3, "and another" : 5, "penultimate" : 7, "last" : 11 }
+'map' ↲
+'map' {"new key"} : "new value"
+'map' ↲
+↲
+'another map' : { "name" : "New Zealand", "is it" : true, "age" : 156, "coords" : { 9, 3 } }
+'another map' ↲
+merge 'another map' into 'map'
+'map' ↲
+'empty map' : {"" : null}
+'empty map' ↲
+length of 'empty map' ↲
+length of 'map' ↲
+'empty map' {"one"} ↲
+merge {"one" : π} into 'empty map'
+'empty map' ↲
+↲
+'pam' : {"c" : 9, "d" : "space"}
+'map' : {"a" : {2, 4, 6, 8}, "b" : 'pam'}
+'map' {"a"}{3} ↲
+'map' {"b"}{"d"} ↲
