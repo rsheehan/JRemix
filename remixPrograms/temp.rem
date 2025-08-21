@@ -1,17 +1,16 @@
-using include "remixPrograms/tempLib.rem"
-	function ↲
-	outside
-	inside
+using library [
+=-
+Lib abc
+=-
+abc :
+	"abc library" ↲
+]
+	abc
 
-	inside :
-		function ↲
+=-
+Top-level abc
+=-
+abc :
+	"abc top-level" ↲
 
-function ↲
-outside
-inside
-
-function :
-	"program level"
-
-outside :
-	function ↲
+abc

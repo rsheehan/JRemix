@@ -31,3 +31,8 @@ merge {"one" : π} into 'empty map'
 'map' : {"a" : {2, 4, 6, 8}, "b" : 'pam'}
 'map' {"a"}{3} ↲
 'map' {"b"}{"d"} ↲
+'range' : 1 to 10
+'range' ↲
+type of 'range' ↲
+'range' : 8 to 2
+'range' ↲
