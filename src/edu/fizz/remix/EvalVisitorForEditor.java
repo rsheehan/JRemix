@@ -163,7 +163,10 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             funcComment = (String)visit(ctx.functionComment());
         }
         FunctionName<String> funcSig = (FunctionName<String>)visit(ctx.functionSignature());
-        Block block = (Block)visit(ctx.blockOfStatements()); // need to visit to find create and extend expressions
+        try {
+            Block block = (Block)visit(ctx.blockOfStatements()); // need to visit to find create and extend expressions
+        } catch (NullPointerException e) {
+        }
         return new RemixFunction(
                 funcSig.getAllNames(),
                 null, // block,
