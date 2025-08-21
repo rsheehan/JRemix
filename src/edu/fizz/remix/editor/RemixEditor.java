@@ -54,13 +54,14 @@ public class RemixEditor extends JFrame {
     protected final JTextArea docArea;
     protected Point popupScreenLocation = null;
     static String currentDirectory = "remixPrograms";
-    public static boolean dark = false;
 
     private final HashMap<Object, Action> actions;
 
     private RemixSwingWorker remixRunner;
     protected RunAction runAction;
     protected StopAction stopAction;
+    protected DarkThemeAction darkThemeAction;
+    protected LightThemeAction lightThemeAction;
     //undo helpers
     private UndoAction undoAction;
     private RedoAction redoAction;
@@ -111,22 +112,12 @@ public class RemixEditor extends JFrame {
         editorTextPane = new JTextPane();
         editorTextPane.addKeyListener(new CatchKeys());
         editorTextPane.setMargin(new Insets(5,10,5,10));
-        if (dark) {
-            editorTextPane.setForeground(Color.white);
-            editorTextPane.setBackground(Color.black);
-            editorTextPane.setCaretColor(Color.white);
-            editorTextPane.setSelectionColor(new Color(100, 80, 80));
-        } else {
-            editorTextPane.setForeground(Color.black);
-            editorTextPane.setBackground(Color.white);
-            editorTextPane.setCaretColor(Color.black);
-            editorTextPane.setSelectionColor(new Color(165, 175, 175));
-        }
+        setTextPaneTheme(true);
         // the base font
         editorTextPane.setFont(new Font("monospaced", Font.PLAIN, SIZE)); // previously "Monaco" on Mac
         doc = new RemixStyledDocument(this);
         editorTextPane.setStyledDocument(doc);
-        RemixEdLexer.initStyles(doc);
+        RemixEdLexer.initStyles(doc, true);
 
         // set up the tabs
         StyleContext sc = StyleContext.getDefaultStyleContext();
@@ -177,7 +168,6 @@ public class RemixEditor extends JFrame {
         systemSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, editorScrollPane, scrollPaneForSystem);
         systemSplitPane.setOneTouchExpandable(true);
 
-
         //Create a split pane for the graphics and text output.
         outputSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, graphicOutput, scrollPaneForOutput);
         outputSplitPane.setOneTouchExpandable(true);
@@ -204,6 +194,8 @@ public class RemixEditor extends JFrame {
         JMenu editMenu = createEditMenu();
         mb.add(editMenu);
         setJMenuBar(mb);
+        JMenu viewMenu = createViewMenu();
+        mb.add(viewMenu);
         JMenu controlMenu = createControlMenu();
         mb.add(controlMenu);
 
@@ -226,6 +218,20 @@ public class RemixEditor extends JFrame {
         docArea = new JTextArea("Document goes here.");
         docArea.setForeground(Color.red);
         docPanel.add(docArea);
+    }
+
+    private void setTextPaneTheme(boolean dark) {
+        if (dark) {
+            editorTextPane.setForeground(Color.white);
+            editorTextPane.setBackground(Color.black);
+            editorTextPane.setCaretColor(Color.white);
+            editorTextPane.setSelectionColor(new Color(100, 80, 80));
+        } else {
+            editorTextPane.setForeground(Color.black);
+            editorTextPane.setBackground(Color.white);
+            editorTextPane.setCaretColor(Color.black);
+            editorTextPane.setSelectionColor(new Color(165, 175, 175));
+        }
     }
 
     public String getProgramText() {
@@ -430,6 +436,15 @@ public class RemixEditor extends JFrame {
         return menu;
     }
 
+    private JMenu createViewMenu() {
+        JMenu menu = new JMenu("View");
+        darkThemeAction = new DarkThemeAction();
+        menu.add(darkThemeAction);
+        lightThemeAction = new LightThemeAction();
+        menu.add(lightThemeAction);
+        return menu;
+    }
+
     protected JMenu createControlMenu() {
         JMenu menu = new JMenu("Control");
         runAction = new RunAction();
@@ -527,6 +542,48 @@ public class RemixEditor extends JFrame {
                 } catch (PrinterException e) {
                     System.err.println("Error during printing: " + e.getMessage());
                 }
+            }
+        }
+    }
+
+    class DarkThemeAction extends AbstractAction {
+
+        public DarkThemeAction() {
+            super("Dark theme");
+            setEnabled(false);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            RemixEditor.this.setTextPaneTheme(true);
+            RemixEdLexer.initStyles(doc, true);
+            setEnabled(false);
+            lightThemeAction.setEnabled(true);
+            try {
+                RemixEdLexer.fullLex();
+            } catch (BadLocationException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+    class LightThemeAction extends AbstractAction {
+
+        public LightThemeAction() {
+            super("Light theme");
+            setEnabled(true);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            RemixEditor.this.setTextPaneTheme(false);
+            RemixEdLexer.initStyles(doc, false);
+            setEnabled(false);
+            darkThemeAction.setEnabled(true);
+            try {
+                RemixEdLexer.fullLex();
+            } catch (BadLocationException ex) {
+                throw new RuntimeException(ex);
             }
         }
     }

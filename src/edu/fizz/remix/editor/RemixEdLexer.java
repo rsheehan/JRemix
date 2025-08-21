@@ -57,20 +57,20 @@ public class RemixEdLexer {
         return "⊕+-*×÷%<>=≤≥≠".contains(Character.toString(c));
     }
 
-    public static void initStyles(RemixStyledDocument document) {
+    public static void initStyles(RemixStyledDocument document, boolean dark) {
         Color variableColour, singleQuoteColour, stringColour, operatorColour, literalColour;
         RemixEdLexer.document = document;
 
         // the style at the original position of the textPane
         defaultStyle = document.getStyle("default");
         SimpleAttributeSet attr = new SimpleAttributeSet();
-        if (RemixEditor.dark) {
+        if (dark) {
             StyleConstants.setForeground(attr, Color.white);
         } else {
             StyleConstants.setForeground(attr, Color.black);
         }
         defaultStyle.addAttributes(attr);
-        if (RemixEditor.dark) {
+        if (dark) {
             variableColour = new Color(255,255,200);
             singleQuoteColour = new Color(70,70,70);
             stringColour = new Color(255, 200, 200);
