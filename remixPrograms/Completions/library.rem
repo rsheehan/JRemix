@@ -1,0 +1,12 @@
+=-
+Function abc1 at top-level of included file.
+=-
+function abc1 :
+	1
+
+library
+	=-
+	Function abc2 inside library in included file
+	=-
+	function abc2 :
+		2

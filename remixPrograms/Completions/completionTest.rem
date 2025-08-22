@@ -1,0 +1,14 @@
+=-
+Function abc3 top-level in program.
+=-
+function abc3 :
+	3
+
+using (include "remixPrograms/Completions/library.rem")
+	=-
+	Function abc4 inside using block of library.
+	=-
+	function abc4 :
+		4
+	
+	function

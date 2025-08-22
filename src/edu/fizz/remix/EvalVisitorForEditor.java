@@ -198,9 +198,11 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                 funcSig.addToName(node.getText());
             } else if (node instanceof RemixParser.SigParamContext) {
                 funcSig.addParam((String)visit(node));
-            } else if (node instanceof RemixParser.SigBlockContext) {
-                funcSig.addBlockParam((String)visit(node));
-            }
+            } else if (node instanceof RemixParser.SigBlockContext)
+                try {
+                    funcSig.addBlockParam((String)visit(node));
+                } catch (NullPointerException _) {
+                }
         }
         return funcSig;
     }

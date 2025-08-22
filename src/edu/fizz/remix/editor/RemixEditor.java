@@ -60,8 +60,8 @@ public class RemixEditor extends JFrame {
     private RemixSwingWorker remixRunner;
     protected RunAction runAction;
     protected StopAction stopAction;
-    protected DarkThemeAction darkThemeAction;
-    protected LightThemeAction lightThemeAction;
+    private DarkThemeAction darkThemeAction;
+    private LightThemeAction lightThemeAction;
     //undo helpers
     private UndoAction undoAction;
     private RedoAction redoAction;
@@ -101,7 +101,7 @@ public class RemixEditor extends JFrame {
         EvalVisitorForEditor eval = new EvalVisitorForEditor();
         LibraryExpression programLib = (LibraryExpression) eval.visit(tree);
         programLib.setActiveLines(LibraryExpression.ALLLINES);
-        LibrariesAndCompletions.addLibrary(programLib);
+        LibrariesAndCompletions.addFirstLibrary(programLib);
         // the visit above fills in addedLibraries in LibrariesAndCompletions
         // this the result program is added as well.
     }
@@ -287,6 +287,8 @@ public class RemixEditor extends JFrame {
 
     //This listens for and reports caret movements.
     protected class CaretListenerLabel extends JLabel implements CaretListener {
+        private int lastLine = 0;
+
         public CaretListenerLabel(String label) {
             super(label);
         }
@@ -308,10 +310,18 @@ public class RemixEditor extends JFrame {
             Element root = doc.getDefaultRootElement();
             int lineNumber = root.getElementIndex(mark) + 1;
             int startOfLine = root.getElement(lineNumber - 1).getStartOffset();
-            SwingUtilities.invokeLater(() ->
-                    setText("line: " + lineNumber +
-                            ", offset: " + (mark - startOfLine) +
-                            ", style: " + RemixEdLexer.getStyleName(mark)));
+            SwingUtilities.invokeLater(() -> {
+                if (lineNumber != lastLine) { // added this so moving to a different line clears completions
+                    doc.cancelCompletionHandling();
+                    popupScreenLocation = null;
+                    if (docPopup != null)
+                        docPopup.hide();
+                }
+                lastLine = lineNumber;
+                setText("line: " + lineNumber +
+                        ", offset: " + (mark - startOfLine) +
+                        ", style: " + RemixEdLexer.getStyleName(mark));
+            });
         }
     }
 
@@ -488,7 +498,7 @@ public class RemixEditor extends JFrame {
                     throw new RuntimeException(e);
                 }
                 try {
-                    currentDirectory = chooser.getCurrentDirectory().getName();
+                    currentDirectory = chooser.getCurrentDirectory().getAbsolutePath();
                     File remFile = chooser.getSelectedFile();
                     Scanner myReader = new Scanner(remFile);
                     while (myReader.hasNextLine()) {

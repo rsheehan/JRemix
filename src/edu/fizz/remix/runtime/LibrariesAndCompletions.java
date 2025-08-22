@@ -3,10 +3,7 @@ package edu.fizz.remix.runtime;
 import edu.fizz.remix.editor.RemixEditor;
 import edu.fizz.remix.editor.RemixREPL;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /** Includes the standard libraries, any extra libraries
  *  and a library made from the editor window.
@@ -19,7 +16,7 @@ public class LibrariesAndCompletions {
        The standard library and the program editor library are valid
        everywhere, all others have a start and finish line.
      */
-    private static final Set<LibraryExpression> addedLibraries = new HashSet<>();
+    private static final ArrayList<LibraryExpression> addedLibraries = new ArrayList<LibraryExpression>();
 
     /* The base library has the built-in and standard-lib functions. */
     private static LibraryExpression baseLibrary;
@@ -30,6 +27,10 @@ public class LibrariesAndCompletions {
 
     public static void addLibrary(LibraryExpression libraryExpression) {
         addedLibraries.add(libraryExpression);
+    }
+
+    public static void addFirstLibrary(LibraryExpression libraryExpression) {
+        addedLibraries.addFirst(libraryExpression);
     }
 
     public static LibraryExpression getProgramLibrary() {
@@ -66,12 +67,13 @@ public class LibrariesAndCompletions {
      */
 
     public static ArrayList<String> createCompletionsFrom(String searchWord, int lineNumber) {
-        HashSet<String> completionsRemaining = new HashSet<>();
-        HashSet<String> completionsAtStart = new HashSet<>();
-        HashSet<String> completionsConsecutive = new HashSet<>();
+        HashMap<String, String> functionDisplayNames = new HashMap<>(); // maps display names to comments
+        SortedSet<String> completionsRemaining = new TreeSet<>();
+        SortedSet<String> completionsAtStart = new TreeSet<>();
+        SortedSet<String> completionsConsecutive = new TreeSet<>();
         // first check against base library
         //      with activeLines all lines
-        searchForCompletions(searchWord, baseLibrary.functionTable, completionsAtStart, completionsConsecutive, completionsRemaining);
+        searchForCompletions(searchWord, baseLibrary.functionTable, completionsAtStart, completionsConsecutive, completionsRemaining, functionDisplayNames);
         // then each additional library
         //      with activeLines retrieved from the library - compare with lineNumber
         for (LibraryExpression library : addedLibraries) {
@@ -84,12 +86,12 @@ public class LibrariesAndCompletions {
                 }
             }
             if (activeHere) {
-                searchForCompletions(searchWord, library.functionTable, completionsAtStart, completionsConsecutive, completionsRemaining);
+                searchForCompletions(searchWord, library.functionTable, completionsAtStart, completionsConsecutive, completionsRemaining, functionDisplayNames);
             }
         }
         // then all methods
         //      with activeLines all lines
-        searchForCompletions(searchWord, LibraryExpression.methodTableForCompletions, completionsAtStart, completionsConsecutive, completionsRemaining);
+        searchForCompletions(searchWord, LibraryExpression.methodTableForCompletions, completionsAtStart, completionsConsecutive, completionsRemaining, functionDisplayNames);
         ArrayList<String> allCompletions = new ArrayList<>(completionsAtStart);
         allCompletions.addAll(completionsConsecutive);
         allCompletions.addAll(completionsRemaining);
@@ -99,9 +101,10 @@ public class LibrariesAndCompletions {
 
     private static void searchForCompletions(String searchWord,
                                              HashMap<String, Function> functionTable,
-                                             HashSet<String> atStart,
-                                             HashSet<String> consecutive,
-                                             HashSet<String> remaining) {
+                                             SortedSet<String> atStart,
+                                             SortedSet<String> consecutive,
+                                             SortedSet<String> remaining,
+                                             HashMap<String, String> functionDisplayNames) {
         for (String functionName : functionTable.keySet()) {
             int finish = 0;
             boolean found = false;
@@ -123,7 +126,22 @@ public class LibrariesAndCompletions {
             if (found) {
                 // create name and doc
                 Function function = functionTable.get(functionName);
-                String thisCompletion = function.getDisplayNameAndComment(functionName);
+                String displayName = function.displayName(functionName);
+                String comment = function.getFunctionComment();
+                String thisCompletion;
+                if (functionDisplayNames != null) {
+                    // public methods are always available but not functions if overridden in a library
+                    // need to replace the comment of the existing one
+                    // the order this is done is libraries first, then
+                    String previousComment = functionDisplayNames.put(displayName, comment);
+                    if (previousComment != null) { // overwrite the previous function
+                        String previousCompletion = displayName + "\n" + previousComment;
+                        atStart.remove(previousCompletion);
+                        consecutive.remove(previousCompletion);
+                        remaining.remove(previousCompletion);
+                    }
+                }
+                thisCompletion = function.getDisplayNameAndComment(functionName);
                 int position = consecutiveLetters(searchWord, functionName, finish);
                 if (position == 0)
                     atStart.add(thisCompletion);
