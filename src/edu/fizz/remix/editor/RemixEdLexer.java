@@ -20,6 +20,7 @@ public class RemixEdLexer {
     private static Style
         defaultStyle,
         variable,
+        constant,
         singleQuote,
         parentheses,
         comment,
@@ -58,7 +59,7 @@ public class RemixEdLexer {
     }
 
     public static void initStyles(RemixStyledDocument document, boolean dark) {
-        Color variableColour, singleQuoteColour, stringColour, operatorColour, literalColour;
+        Color variableColour, constantColour, singleQuoteColour, stringColour, operatorColour, literalColour;
         RemixEdLexer.document = document;
 
         // the style at the original position of the textPane
@@ -72,12 +73,14 @@ public class RemixEdLexer {
         defaultStyle.addAttributes(attr);
         if (dark) {
             variableColour = new Color(255,255,200);
+            constantColour = new Color(100, 200, 255);
             singleQuoteColour = new Color(70,70,70);
             stringColour = new Color(255, 200, 200);
             operatorColour = Color.green;
             literalColour = Color.cyan;
         } else {
             variableColour = new Color(0, 100, 150);
+            constantColour = new Color(100, 0, 255);
             singleQuoteColour = new Color(185,185,185);
             stringColour = new Color(200, 10, 200);
             operatorColour = new Color(0, 150, 0);
@@ -85,6 +88,8 @@ public class RemixEdLexer {
         }
         // variables
         variable = makeStyle("variable", variableColour, false, true, defaultStyle); // was italic
+        // constants
+        constant = makeStyle("constant", constantColour, false, false, defaultStyle);
         // singleQuote
         singleQuote = makeStyle("singleQuote", singleQuoteColour, false, false, defaultStyle);
         // parentheses
@@ -178,7 +183,9 @@ public class RemixEdLexer {
             }
             default -> {
                 mode = LexMode.insideLine;
-                if (firstWordChar(ch)) {
+                if (Character.isUpperCase(ch)) {
+                    return dealWithConstant(pos);
+                } else if (firstWordChar(ch)) {
                     return dealWithWord(pos);
                 } else if (isSeparator(ch)) {
                     return dealWithSeparator(ch, pos);
@@ -210,7 +217,9 @@ public class RemixEdLexer {
                 return dealWithSingleLineComment(pos);
             }
             default -> {
-                if (firstWordChar(ch)) {
+                if (Character.isUpperCase(ch)) {
+                    return dealWithConstant(pos);
+                } else if (firstWordChar(ch)) {
                     return dealWithWord(pos);
                 } else if (isSeparator(ch)) {
                     return dealWithSeparator(ch, pos);
@@ -277,29 +286,26 @@ public class RemixEdLexer {
     private static int dealWithMultiLineComment(int pos) throws BadLocationException {
         int commentPos;
         boolean tabbedStartOfLine = false;
-//        boolean newline = false;
         for (commentPos = pos + 1; commentPos < document.getLength(); commentPos++) {
             char ch = getChar(commentPos);
             if (tabbedStartOfLine && ch == '=') {// finishing
                 commentPos++;
                 break;
             }
-//            newline = false;
             if (ch == '\n') {
-//                newline = true;
                 tabbedStartOfLine = true;
             } else {
                 if (tabbedStartOfLine) {
                     tabbedStartOfLine = ch == '\t';
                 }
             }
-//            newline = ch == '\n';
         }
         for (; commentPos < document.getLength(); commentPos++) { // mop up any remaining characters on the line
             char ch = getChar(commentPos);
             if (ch == '\n')
                 break;
         }
+        mode = LexMode.startOfLine;
         document.setCharacterAttributes(pos, commentPos - pos, comment, true);
         return commentPos + 1;
     }
@@ -359,6 +365,18 @@ public class RemixEdLexer {
         else // could be a bad location if at the end of the document
             document.setCharacterAttributes(varPos, 1, defaultStyle, true);
         return varPos + 1;
+    }
+
+    private static int dealWithConstant(int pos) throws BadLocationException {
+        int constPos;
+        char ch = ' ';
+        for (constPos = pos + 1; constPos < document.getLength(); constPos++) {
+            ch = getChar(constPos);
+            if (!Character.isUpperCase(ch) && ch != '-')
+                break;
+        }
+        document.setCharacterAttributes(pos, constPos - pos, constant, true);
+        return constPos;
     }
 
     private static int dealWithWord(int pos) throws BadLocationException {
