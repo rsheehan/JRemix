@@ -137,7 +137,7 @@ public class Graphics extends LibraryExpression {
 
         public BaseLayerFunction() {
             super(
-                    List.of("⫾ base layer", "the ⫾ base layer"),
+                    List.of("⫾ base layer"),
                     List.of("graphics panel"),
                     List.of(false),
                     false,
@@ -311,7 +311,7 @@ public class Graphics extends LibraryExpression {
 
         public AddShapeToBaseLayerFunction() {
             super(
-                    List.of("add the ⫾ to the ⫾ image"),
+                    List.of("add ⫾ to the ⫾ image"),
                     List.of("shape", "base layer"),
                     List.of(false, false),
                     false,
@@ -349,7 +349,7 @@ public class Graphics extends LibraryExpression {
 
         public AddShapeFunction() {
             super(
-                    List.of("add the ⫾ to the ⫾", "add ⫾ to the ⫾"),
+                    List.of("add ⫾ to the ⫾"),
                     List.of("shape", "graphics panel"),
                     List.of(false, false),
                     false,

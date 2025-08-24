@@ -357,7 +357,7 @@ library "edu.fizz.remix.libraries.Graphics"
 			=-
 			prepare MY shapes for drawing on 'JGraphics' :
 				for each 'shape' in 'shapes'
-					add the 'shape' to the 'JGraphics' ; Java
+					add 'shape' to the 'JGraphics' ; Java
 
 	=-
 	Create a base layer for the 'JGraphics panel'.
@@ -375,9 +375,9 @@ library "edu.fizz.remix.libraries.Graphics"
 			place 'shape' in ME :
 				if ('shape' is a "list")
 					for each 'part' in 'shape'
-						add the 'part' to the ('JGraphics panel' base layer) image ; Java
+						add 'part' to the ('JGraphics panel' base layer) image ; Java
 				… otherwise
-					add the 'shape' to the ('JGraphics panel' base layer) image ; Java
+					add 'shape' to the ('JGraphics panel' base layer) image ; Java
 
 			=-
 			Nothing happens in the base layer.

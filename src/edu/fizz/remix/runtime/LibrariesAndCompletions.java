@@ -68,12 +68,12 @@ public class LibrariesAndCompletions {
 
     public static ArrayList<String> createCompletionsFrom(String searchWord, int lineNumber) {
         HashMap<String, String> functionDisplayNames = new HashMap<>(); // maps display names to comments
-        SortedSet<String> completionsRemaining = new TreeSet<>();
+//        SortedSet<String> completionsRemaining = new TreeSet<>();
         SortedSet<String> completionsAtStart = new TreeSet<>();
         SortedSet<String> completionsConsecutive = new TreeSet<>();
         // first check against base library
         //      with activeLines all lines
-        searchForCompletions(searchWord, baseLibrary.functionTable, completionsAtStart, completionsConsecutive, completionsRemaining, functionDisplayNames);
+        searchForCompletions(searchWord, baseLibrary.functionTable, completionsAtStart, completionsConsecutive, functionDisplayNames);
         // then each additional library
         //      with activeLines retrieved from the library - compare with lineNumber
         for (LibraryExpression library : addedLibraries) {
@@ -86,15 +86,15 @@ public class LibrariesAndCompletions {
                 }
             }
             if (activeHere) {
-                searchForCompletions(searchWord, library.functionTable, completionsAtStart, completionsConsecutive, completionsRemaining, functionDisplayNames);
+                searchForCompletions(searchWord, library.functionTable, completionsAtStart, completionsConsecutive, functionDisplayNames);
             }
         }
         // then all methods
         //      with activeLines all lines
-        searchForCompletions(searchWord, LibraryExpression.methodTableForCompletions, completionsAtStart, completionsConsecutive, completionsRemaining, functionDisplayNames);
+        searchForCompletions(searchWord, LibraryExpression.methodTableForCompletions, completionsAtStart, completionsConsecutive, functionDisplayNames);
         ArrayList<String> allCompletions = new ArrayList<>(completionsAtStart);
         allCompletions.addAll(completionsConsecutive);
-        allCompletions.addAll(completionsRemaining);
+//        allCompletions.addAll(completionsRemaining);
 
         return allCompletions;
     }
@@ -103,7 +103,7 @@ public class LibrariesAndCompletions {
                                              HashMap<String, Function> functionTable,
                                              SortedSet<String> atStart,
                                              SortedSet<String> consecutive,
-                                             SortedSet<String> remaining,
+//                                             SortedSet<String> remaining,
                                              HashMap<String, String> functionDisplayNames) {
         for (String functionName : functionTable.keySet()) {
             int finish = 0;
@@ -138,7 +138,7 @@ public class LibrariesAndCompletions {
                         String previousCompletion = displayName + "\n" + previousComment;
                         atStart.remove(previousCompletion);
                         consecutive.remove(previousCompletion);
-                        remaining.remove(previousCompletion);
+//                        remaining.remove(previousCompletion);
                     }
                 }
                 thisCompletion = function.getDisplayNameAndComment(functionName);
@@ -147,8 +147,8 @@ public class LibrariesAndCompletions {
                     atStart.add(thisCompletion);
                 else if (position > 0)
                     consecutive.add(thisCompletion);
-                else
-                    remaining.add(thisCompletion);
+//                else
+//                    remaining.add(thisCompletion);
             }
         }
     }

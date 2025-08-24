@@ -1,16 +1,1 @@
-using library [
-=-
-Lib abc
-=-
-abc :
-	"abc library" ↲
-]
-	abc
-
-=-
-Top-level abc
-=-
-abc :
-	"abc top-level" ↲
-
-abc
+"Hello world!" \n
