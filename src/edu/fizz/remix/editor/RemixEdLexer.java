@@ -40,9 +40,6 @@ public class RemixEdLexer {
 
     private static final List<String> literalWords = Arrays.asList("true", "false", "null");
 
-    private static boolean identifierChar(String c) {
-        return "ABCDEFGHIJKLMNOPQRSTUVWXYZΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ".contains(c);
-    }
     private static boolean firstWordChar(char c) {
         return !".()[\\]{,}:;—…'’⊕+-*×÷%=≠<≤>≥0123456789π\" \t\n".contains(Character.toString(c));
     }
@@ -363,18 +360,6 @@ public class RemixEdLexer {
         return varPos + 1;
     }
 
-    private static int dealWithConstant(int pos) throws BadLocationException {
-        int constPos;
-        char ch = ' ';
-        for (constPos = pos + 1; constPos < document.getLength(); constPos++) {
-            ch = getChar(constPos);
-            if (!Character.isUpperCase(ch) && ch != '-')
-                break;
-        }
-        document.setCharacterAttributes(pos, constPos - pos, constant, true);
-        return constPos;
-    }
-
     private static int dealWithWord(int pos) throws BadLocationException {
         // gobble word chars until space, separator, operator, newline
         int wordPos;
@@ -387,13 +372,13 @@ public class RemixEdLexer {
         // should work out if the word is a keyword, variable or not
         AttributeSet wordStyle;
         String word = document.getText(pos, wordPos - pos);
-        if (isKeyword(word, pos))
+        if (isKeyword(word))
             wordStyle = keyword;
         else if (isConstantWord(word))
             wordStyle = constant;
         else if (isLiteralWord(word))
             wordStyle = literal;
-        else if (isRefVariable(pos, wordPos - 1))
+        else if (isRefVariable(pos))
             wordStyle = variable;
         else
             wordStyle = document.getStyle("default");
@@ -401,7 +386,7 @@ public class RemixEdLexer {
         return wordPos; // goes back to last character
     }
 
-    private static boolean isKeyword(String word, int start) throws BadLocationException {
+    private static boolean isKeyword(String word) {
         return keywords.contains(word);
     }
 
@@ -420,131 +405,8 @@ public class RemixEdLexer {
         return literalWords.contains(word);
     }
 
-    private static boolean isRefVariable(int startWord, int endWord) throws BadLocationException {
-        //        // a reference variable
-//        for (int i = startWord; i <= endWord; i++) {
-//            if (identifierChar(document.getText(i, 1)))
-//                identifier = true;
-//        }
+    private static boolean isRefVariable(int startWord) throws BadLocationException {
         return document.getText(startWord, 1).equals("#"); //identifierChar(document.getText(startWord, 1));
-    }
-
-    private static boolean follows(String wordBefore, int pos) throws BadLocationException {
-        // we know it must have the last letter of wordBefore as the first non-space character
-        StringBuilder word = new StringBuilder();
-        boolean started = false;
-        while (pos > 0) {
-            pos--;
-            char ch = document.getText(pos, 1).charAt(0);
-            if (wordChar(ch)) {
-                started = true;
-                word.insert(0, ch);
-            } else if (started) {
-                break;
-            }
-        }
-        return word.toString().equals(wordBefore);
-    }
-
-    // pos is the start of a single word
-    // if preceded by ":" then find the indentation before the variable being assigned to
-    // e.g. var : apply     - with the remainder of the apply function indented on the next line
-    public static int indentationBefore(int pos) throws BadLocationException {
-        String before = "";
-        int count = 0;
-        // work out current indentation
-        while (pos > 0) {
-            pos--;
-            before = document.getText(pos, 1);
-            if (!before.equals(" ")) {
-                break;
-            }
-        }
-
-        if (before.equals(":"))
-            pos = startOfVar(pos);
-        else
-            pos++;
-
-        while (pos > 0) {
-            pos--;
-            before = document.getText(pos, 1);
-            if (before.equals("\n"))
-                break;
-            if (before.equals("\t")) {
-                count++;
-            } else {
-                return -1;
-            }
-        }
-        return count;
-    }
-
-    // pos is ":" need to move back over variable being assigned to so that we
-    // can find the indentation at the start
-    public static int startOfVar(int pos) throws BadLocationException {
-        while (pos > 0) {
-            pos--;
-            if (!document.getText(pos, 1).equals(" "))
-                break;
-        }
-        while (pos > 0) {
-            if (wordChar(getChar(pos)))
-                pos--;
-            else {
-                pos++;
-                break;
-            }
-        }
-        return pos;
-    }
-
-    // pos is the end of a single word
-    private static int indentationAfter(int pos) throws BadLocationException {
-        String after;
-        int count = 0;
-        while (pos < document.getLength()) {
-            pos++;
-            after = document.getText(pos, 1);
-            if (after.equals(" "))
-                continue;
-            if (after.equals("\n"))
-                break;
-            else
-                return -1;
-        }
-        // work out following indentation
-        while (pos < document.getLength()) {
-            pos++;
-            after = document.getText(pos, 1);
-            if (after.equals("\t"))
-                count++;
-            else
-                break;
-        }
-        return count;
-    }
-
-    private static String getCharAfter(int pos) throws BadLocationException {
-        String result = "";
-        while (pos < document.getLength()) {
-            pos++;
-            result = document.getText(pos, 1);
-            if (!result.equals(" "))
-                return result;
-        }
-        return result;
-    }
-
-    private static String getCharBefore(int pos) throws BadLocationException {
-        String result = "";
-        while (pos > 0) {
-            pos--;
-            result = document.getText(pos, 1);
-            if (!result.equals(" "))
-                return result;
-        }
-        return result;
     }
 
     private static int dealWithSeparator(char ch, int pos) {
