@@ -183,9 +183,7 @@ public class RemixEdLexer {
             }
             default -> {
                 mode = LexMode.insideLine;
-                if (Character.isUpperCase(ch)) {
-                    return dealWithConstant(pos);
-                } else if (firstWordChar(ch)) {
+                if (firstWordChar(ch)) {
                     return dealWithWord(pos);
                 } else if (isSeparator(ch)) {
                     return dealWithSeparator(ch, pos);
@@ -217,9 +215,7 @@ public class RemixEdLexer {
                 return dealWithSingleLineComment(pos);
             }
             default -> {
-                if (Character.isUpperCase(ch)) {
-                    return dealWithConstant(pos);
-                } else if (firstWordChar(ch)) {
+                if (firstWordChar(ch)) {
                     return dealWithWord(pos);
                 } else if (isSeparator(ch)) {
                     return dealWithSeparator(ch, pos);
@@ -393,6 +389,8 @@ public class RemixEdLexer {
         String word = document.getText(pos, wordPos - pos);
         if (isKeyword(word, pos))
             wordStyle = keyword;
+        else if (isConstantWord(word))
+            wordStyle = constant;
         else if (isLiteralWord(word))
             wordStyle = literal;
         else if (isRefVariable(pos, wordPos - 1))
@@ -404,28 +402,18 @@ public class RemixEdLexer {
     }
 
     private static boolean isKeyword(String word, int start) throws BadLocationException {
-        switch (word) {
-            case "create" -> {
-                String before = getCharBefore(start);
-                String after = getCharAfter(start + 5);
-                if ((":\n\t".contains(before)) && // all strings contain the empty string
-                        (after.isEmpty() || after.equals("\n")))
-                    return true;
-            }
-            case "extend" -> {
-                String before = getCharBefore(start);
-                String after = getCharAfter(start + 5);
-                if ((":\n\t".contains(before)) && // all strings contain the empty string
-                        after.equals("("))
-                    return true;
-            }
-            case "me", "my" -> {
-                if ((start > 1 && getChar(start - 1) == '(') &&
-                        (document.getLength() > start + 2 && getChar(start + 2) == ')'))
-                    return true;
+        return keywords.contains(word);
+    }
+
+    private static boolean isConstantWord(String word) {
+        boolean constant = true;
+        for (Character ch : word.toCharArray()) {
+            if (!(Character.isUpperCase(ch) || ch == '-')) {
+                constant = false;
+                break;
             }
         }
-        return keywords.contains(word);
+        return constant;
     }
 
     private static boolean isLiteralWord(String word) {
