@@ -383,12 +383,13 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
     // Called from keystroke event handler set up in RemixEditor.
     public String completionHandling(int offset, int lineNumber) throws BadLocationException {
-        ArrayList<String>completions = new ArrayList<>();
+        ArrayList<String>completions;
         String completionAndDoc;
-        String completionText = "";
+        String completionText;
         String completionComment = "";
         int splitPos;
         if (completionsHere == null) {
+            editor.reparseProgramText();
             String seedWord = wordSoFar(offset);
             seedWord = seedWord.stripLeading();
             completions = LibrariesAndCompletions.createCompletionsFrom(seedWord, lineNumber);

@@ -123,7 +123,6 @@ public class RemixEdLexer {
         while (pos < document.getLength()) {
             pos = processChar(pos);
         }
-        document.editor.reparseProgramText(); // probably overkill too
     }
 
     private static char getChar(int pos) throws BadLocationException {
