@@ -212,24 +212,24 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
     }
 
-//    /** The "do" function but in the context of the "do" not of the block. Evaluates the block parameter. */
-//    public static final class DoInContextFunction extends Function {
-//        public DoInContextFunction() {
-//            super(
-//                    List.of("do ⫾ in lib context"),
-//                    List.of("block"),
-//                    List.of(true),
-//                    false,
-//                    "Execute the 'block' in library contexts."
-//            );
-//        }
-//
-//        public Object execute(Context context) throws ReturnException, InterruptedException {
-//            Block block = (Block)context.retrieve("block", false);
-//            block.clearContext();
-//            return block.evaluate(context);
-//        }
-//    }
+    /** The "do" function but in the context of the "do" not of the block. Evaluates the block parameter. */
+    public static final class DoInContextFunction extends Function {
+        public DoInContextFunction() {
+            super(
+                    List.of("do ⫾ in lib context"),
+                    List.of("block"),
+                    List.of(true),
+                    false,
+                    "Execute the 'block' in library contexts."
+            );
+        }
+
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            Block block = (Block)context.retrieve("block", false);
+            block.clearContext();
+            return block.evaluate(context);
+        }
+    }
 
     /** The "print" function. Prints the string version of the value.
      *  Now prints lists as real lists.

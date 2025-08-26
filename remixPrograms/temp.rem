@@ -1,11 +1,29 @@
-abc :
-	'x' : 3
-	'y' : 5
-	a 'x' to
-		… 'y' ↲
+with
+	library
+		=-
+		From inside library.
+		=-
+		function :
+			"from inside library" ↲
+… do
+	function
 
-a 'a' to 'b' :
-	debug "what"
-	return "something"
+=-
+From top-level.
+=-
+function :
+	"from top-level" ↲
 
-abc
+function
+
+=-
+From top-level2.
+=-
+function :
+	"from top-level2" ↲
+
+
+with ['library'] do ['block'] :
+	using (do 'library')
+		do 'block'
+		… in lib context

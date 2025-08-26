@@ -48,7 +48,7 @@ public class RemixEdLexer {
         return !".()[\\]{,}:;—…'’⊕+*×÷%=≠<≤>≥π\" \t\n".contains(Character.toString(c));
     }
     private static boolean isSeparator(char c) {
-        return ".:,({[)}]".contains(Character.toString(c));
+        return ".:,…({[)}]".contains(Character.toString(c));
     }
     // currently missing '/' in operator list
     private static boolean isOperator(char c) {
