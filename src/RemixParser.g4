@@ -49,7 +49,7 @@ methodDefinition	: functionComment? (setterSignature | getterSignature | methodS
 
 // add getterSignature and setterSignature
 // to deal with user defined getters and setters
-methodSignature		: methodSigPart methodSigPart+ ;
+methodSignature		: methodSigPart+ ;
 getterSignature		: SELFREF IDENTIFIER ;
 setterSignature		: SELFREF IDENTIFIER (IDENTIFIER | LPAREN IDENTIFIER RPAREN) ;
 
