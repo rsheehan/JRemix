@@ -20,7 +20,7 @@ using graphics lib
 		append 'the arrow' to 'arrows'
 
 an arrow:
-	'arrow' : shape from {
+	'arrow' : a shape from {
 		{ 0, 1 }
 		{-2, 2 }
 		{ 0,-2 }

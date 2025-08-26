@@ -15,7 +15,7 @@ using graphics lib
 	'add line' : every 1 tick
 		add 1 to 'count'
 		'new' : random point
-		place ((random colour) line from 'current' to 'new') in 'the window'
+		place (a (random colour) line from 'current' to 'new') in 'the window'
 		'current' : 'new'
 		update 'the window'
 

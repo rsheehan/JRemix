@@ -2,7 +2,7 @@ using graphics lib, turtle lib
 
 	'the window' : the graphics panel
 	'the window'’s 'colour' : SKY-BLUE
-	'turtle space' : turtle space in 'the window'
+	'turtle space' : a turtle space in 'the window'
 
 	'turtle' : a turtle
 	place 'turtle' in 'turtle space'

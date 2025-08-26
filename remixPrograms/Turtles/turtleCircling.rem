@@ -4,7 +4,7 @@ using graphics lib, turtle lib
 	Rotating Arrows
 	===============
 
-	'turtle space' : turtle space in (the graphics panel)
+	'turtle space' : a turtle space in (the graphics panel)
 
 	'arrows' : a group of 36 turtles
 	prepare 'arrows'

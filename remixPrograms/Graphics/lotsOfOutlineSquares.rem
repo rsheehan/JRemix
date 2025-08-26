@@ -8,7 +8,7 @@ using graphics lib
 		{-1,  1}
 	}
 
-	'square' : shape from 'square pts' scaled by 200
+	'square' : a shape from 'square pts' scaled by 200
 	'square'’s 'colour' : null
 
 	for each 'angle' from 0 to 80 in steps of 10
@@ -24,7 +24,7 @@ using graphics lib
 		{ 2,  2}
 	}
 
-	'arrow' : RED shape from 'arrow pts' scaled by 10 at {
+	'arrow' : a RED shape from 'arrow pts' scaled by 10 at {
 		"x" : 800
 		"y" : STD-HEIGHT ÷ 2
 	}

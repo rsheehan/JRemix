@@ -1,7 +1,7 @@
 using graphics lib, turtle lib
 
 	'the window' : the graphics panel
-	'turtle space' : turtle space in 'the window'
+	'turtle space' : a turtle space in 'the window'
 
 	'turtles' : a group of 20 turtles
 	'turtles' 'speed' : 20

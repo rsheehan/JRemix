@@ -6,7 +6,7 @@ using graphics lib
 	repeat
 		'new' : random point
 		'colour' : random colour
-		place ('colour' line from 'current' to 'new') in 'the window'
+		place (a 'colour' line from 'current' to 'new') in 'the window'
 		'current' : 'new'
 	… 50 times
 	update 'the window'

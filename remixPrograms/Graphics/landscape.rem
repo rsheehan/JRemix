@@ -22,7 +22,7 @@ using graphics lib
 -============================================================================-
 
 	add the sun on the 'layer' :
-		'sun' : YELLOW circle of radius 40 at {800, 100}
+		'sun' : a YELLOW circle of radius 40 at {800, 100}
 		place 'sun' in 'layer'
 		
 	add the mountains on the 'layer' :
@@ -32,7 +32,7 @@ using graphics lib
 			place 'mountain' in 'layer'
 
 	add the sea on the 'layer' :
-		'sea' : DARK-BLUE box of STD-WIDTH x 200 at {
+		'sea' : a DARK-BLUE box of STD-WIDTH x 200 at {
 			STD-WIDTH ÷ 2
 			STD-HEIGHT - 100
 		}
@@ -59,7 +59,7 @@ using graphics lib
 		'centre' : random STD-WIDTH
 		'height' : random 'max height' + 20
 		'width'  : random 150 + 300
-		'mountain' : 'colour' shape from {
+		'mountain' : a 'colour' shape from {
 			{ 0, -'height' }
 			{ 'width' ÷ 2, 0 }
 			{ -'width' ÷ 2, 0 }
@@ -94,9 +94,9 @@ using graphics lib
 		'y1' : 'base' - 'r1'
 		'y2' : 'base' - 'r2'
 
-		'circle A' : WHITE circle of radius 'r1' at { 'x1', 'y1' }
+		'circle A' : a WHITE circle of radius 'r1' at { 'x1', 'y1' }
 		'circle A'’s 'outline colour' : BLACK
-		'circle B' : WHITE circle of radius 'r2' at { 'x2', 'y2' }
+		'circle B' : a WHITE circle of radius 'r2' at { 'x2', 'y2' }
 		'circle B'’s 'outline colour' : BLACK
 
 		'width' : 'x2' - 'x1'
@@ -106,8 +106,8 @@ using graphics lib
 			('y1' + 'r1' + 'y2' + 1) ÷ 2
 		}
 
-		'box' : WHITE box of 'width' x 'height' at 'position'
-		'line' : BLACK line from {'x1', 'y1' + 'r1'} to {'x2', 'y1' + 'r1'}
+		'box' : a WHITE box of 'width' x 'height' at 'position'
+		'line' : a BLACK line from {'x1', 'y1' + 'r1'} to {'x2', 'y1' + 'r1'}
 		'line'’s 'width' : 2
 
 		- creating the object

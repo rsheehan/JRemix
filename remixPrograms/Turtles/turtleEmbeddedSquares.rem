@@ -1,14 +1,14 @@
 using graphics lib, turtle lib
-	'space' : turtle space in (the graphics panel)
+	'space' : a turtle space in (the graphics panel)
 	TURTLE : a turtle
 	TURTLE’s 'position' : { -350, -350 }
 	TURTLE’s 'speed' : 700
 	place TURTLE in 'space'
 	for each ('size') from 10 to 700 in steps of 10 
-		square of size 'size'
+		draw square of 'size'
 	hide TURTLE
 
-square of size 'size' :
+draw square of 'size' :
 	TURTLE’s 'colour' : random colour
 	repeat 4 times
 		move TURTLE 'size' steps

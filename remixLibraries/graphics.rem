@@ -70,18 +70,18 @@ library "edu.fizz.remix.libraries.Graphics"
 				cosine (2π × 'side' ÷ 'n')
 				sine (2π × 'side' ÷ 'n')
 			} to 'points'
-		shape from 'points' scaled by 20
+		a shape from 'points' scaled by 20
 
 	=-
 	Create a box centred at 'position'
 	with 'colour' and 'width' x 'height'.
 	=-
-	'colour' box of 'width' x 'height' at 'position' :
+	a/an 'colour' box of 'width' x 'height' at 'position' :
 		'left'   : -'width' ÷ 2
 		'right'  : 'width' ÷ 2
 		'top'    : -'height' ÷ 2
 		'bottom' : 'height' ÷ 2
-		'colour' shape from {
+		a 'colour' shape from {
 			{ 'left', 'top' }
 			{ 'right', 'top' }
 			{ 'right', 'bottom' }
@@ -92,23 +92,23 @@ library "edu.fizz.remix.libraries.Graphics"
 	Create a shape from the list of 'points'.
 	The shape is scaled by 5.
 	=-
-	shape from 'points' :
-		shape from 'points' scaled by 5
+	a shape from 'points' :
+		a shape from 'points' scaled by 5
 
 	=-
 	Create a shape from the list of 'points' scaled by 'size'.
 	=-
-	shape from 'points' scaled by 'size' :
-		RED shape from 'points' scaled by 'size' at THE-CENTRE-POINT
+	a shape from 'points' scaled by 'size' :
+		a RED shape from 'points' scaled by 'size' at THE-CENTRE-POINT
 
 	=-
 	Create a shape of 'colour' from the list of 'points' scaled by 'size'
 	at 'position'.
 	'shapes' can be filled or just outlines.
 	=-
-	'colour' shape from 'points' scaled by 'size' at 'position':
+	a/an 'colour' shape from 'points' scaled by 'size' at 'position':
 
-		extend shape at 'position'
+		extend a shape at 'position'
 			'type'           : "shape"
 			'colour'         : 'colour'
 			'outline colour' : null ; no outline
@@ -126,13 +126,13 @@ library "edu.fizz.remix.libraries.Graphics"
 			=-
 			Change shape 'OBJECT' heading by 'δd' degrees.
 			=-
-			change MY heading by 'δd' degrees :
+			change MY heading by 'δd' degrees/degree :
 				add ('δd' degrees as radians) to 'heading'
 
 	=-
 	Create an object with a position.
 	=-
-	shape at 'position' :
+	a shape at 'position' :
 		create
 			'position' : 'position'
 
@@ -165,7 +165,7 @@ library "edu.fizz.remix.libraries.Graphics"
 	Create a 'colour' line from 'start' to 'finish'.
 	The width is 3 pixels by default.
 	=-
-	'colour' line from 'start' to 'finish' :
+	a/an 'colour' line from 'start' to 'finish' :
 		create
 			'type'   : "line"
 			'start'  : 'start'
@@ -193,8 +193,8 @@ library "edu.fizz.remix.libraries.Graphics"
 	=-
 	Create a random line.
 	=-
-	random line :
-		(random colour) line from (random point) to (random point)
+	a random line :
+		a (random colour) line from (random point) to (random point)
 
 	=======
 	Circles
@@ -203,8 +203,8 @@ library "edu.fizz.remix.libraries.Graphics"
 	=-
 	Create a 'colour' circle of radius 'radius' at 'position'.
 	=-
-	'colour' circle of radius 'radius' at 'position' :
-		extend shape at 'position'
+	a/an 'colour' circle of radius 'radius' at 'position' :
+		extend a shape at 'position'
 			'type'     : "circle"
 			'colour'   : 'colour'
 			'outline colour' : null ; no outline
@@ -217,9 +217,9 @@ library "edu.fizz.remix.libraries.Graphics"
 	=-
 	Create a random circle.
 	=-
-	random circle :
+	a random circle :
 		'size' : random (STD-HEIGHT ÷ 8) + 10
-		(random colour) circle of radius 'size' at (random point)
+		a (random colour) circle of radius 'size' at (random point)
 
 -==================================================================================================-
 
@@ -232,7 +232,7 @@ library "edu.fizz.remix.libraries.Graphics"
 	Return the graphics panel.
 	=-
 	the graphics panel :
-		(open graphics panel) with layers
+		a (open graphics panel) with layers
 
 	===========================================================
 	The Remix 'panel' for drawing in.
@@ -245,7 +245,7 @@ library "edu.fizz.remix.libraries.Graphics"
 	=-
 	Return a panel with multiple layers based on 'JGraphics panel'.
 	=-
-	'JGraphics panel' with layers :
+	a 'JGraphics panel' with layers :
 		'panel' : create
 			'JGraphics' : 'JGraphics panel'
 			'layers' : { a base layer for 'JGraphics panel' }
@@ -320,7 +320,7 @@ library "edu.fizz.remix.libraries.Graphics"
 		'JWindow' : a "Drawing" window of STD-WIDTH by STD-HEIGHT
 		show 'JWindow' ; Java
 		'JGraphics panel' : the 'JWindow' graphics panel ; Java
-		'JGraphics panel' with layers
+		a 'JGraphics panel' with layers
 
 	=-
 	Create a shape layer.
