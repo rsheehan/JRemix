@@ -58,13 +58,24 @@ public class PreProcessREPL {
                 if (ch == '"') {
                     gobbleString(reader, writer);
                 }
-                // reader.mark(1);
                 ch = reader.read();
                 if (ch == -1) // end of the file so need to
                     return finishFile(lineDepth, restOfLine.toString(), writer);
                 if (ch == '\n') {
                     // this is the position we need to put block brackets if required
                     restOfLine = new StringBuilder("\n");
+                    // if the following line starts with tabs and "..." then carry on
+                    // adding the following line to the current line output
+                    // after adding the new line to keep the line numbering for the editor
+                    // But doesn't work because the indentation of some lines starting
+                    // with an ellipsis is required to close a block.
+                    String possibleTabEllipsis = dealWithPossibleEllipsis(reader, lineDepth);
+                    if (!possibleTabEllipsis.isEmpty()) {
+                        restOfLine.append(possibleTabEllipsis);
+                        writer.write(restOfLine.toString());
+                        restOfLine = new StringBuilder();
+                        ch = '…'; // just so it continues at the while
+                    }
                 } else if (ch == ';') {
                     // scan to end of the line keeping the string for writing later
                     restOfLine = new StringBuilder(";");
@@ -81,6 +92,9 @@ public class PreProcessREPL {
             // still need to print the rest of the line
             // find the following indentation level
             int tabCount = findFollowingIndentation(reader);
+            if (tabCount == -1) {
+                return false;
+            }
             if (tabCount == lineDepth + 1) {
                 writer.write('['); // precede newline with '['
             } else {
@@ -99,13 +113,38 @@ public class PreProcessREPL {
     }
 
     /*
+     * Called after a '\n', need to check if the next line starts with an ellipsis.
+     */
+    private static String dealWithPossibleEllipsis(BufferedReader reader, int prevLineTabs) throws IOException {
+        reader.mark(1024); // so can reset to here
+        int ch;
+        StringBuilder tabEllipsis = new StringBuilder();
+        scanner : while ((ch = reader.read()) != -1) {
+            switch (ch) {
+                case '\t' -> tabEllipsis.append((char) ch);
+                case '…' -> {
+                    // don't add here added in dealWithLine
+                    if (tabEllipsis.length() < prevLineTabs)
+                        break scanner;
+                    return tabEllipsis.toString();
+                }
+                default -> {
+                    break scanner;
+                }
+            }
+        }
+        reader.reset();
+        return "";
+    }
+
+    /*
      * Read ahead until we can determine the indentation of the following
      * non-comment, non-empty line.
      * Return the depth of the following line.
      */
     private static int findFollowingIndentation(BufferedReader reader) throws IOException {
         // called just after a new line
-        reader.mark(131072); // so can reset to here
+        reader.mark(1024); // so can reset to here
         int tabCount = 0;
         int ch;
         while ((ch = reader.read()) != -1) {

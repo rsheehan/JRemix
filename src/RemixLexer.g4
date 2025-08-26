@@ -22,8 +22,6 @@ SPACE				: (' ' | '\t') -> skip ;
 CONT				: ( // also used to help deal with PreProcess output
 					'\n' '\t'* ELLIPSIS
 					|
-					ELLIPSIS '\n'
-					|
 					ELLIPSIS
 					) -> skip ;
 

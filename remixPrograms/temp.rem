@@ -1,1 +1,11 @@
-"Hello world!" \n
+abc :
+	'x' : 3
+	'y' : 5
+	a 'x' to
+		… 'y' ↲
+
+a 'a' to 'b' :
+	debug "what"
+	return "something"
+
+abc

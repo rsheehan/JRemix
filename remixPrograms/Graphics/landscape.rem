@@ -28,7 +28,7 @@ using graphics lib
 	add the mountains on the 'layer' :
 		repeat 20 times
 			'mountain' : a DARK-GREY mountain with BLACK edges
-			… of height 300 based at 600
+				… of height 300 based at 600
 			place 'mountain' in 'layer'
 
 	add the sea on the 'layer' :
@@ -41,7 +41,7 @@ using graphics lib
 	add the islands on the 'layer' :
 		for each 'location' from 650 to 680 in steps of 3
 			'island' : a GREY mountain with WHITE edges
-			… of height 250 based at 'location'
+				… of height 250 based at 'location'
 			place 'island' in 'layer'
 
 	'n' clouds in the 'layer' :
@@ -55,7 +55,7 @@ using graphics lib
 	A mountain is an isosceles triangle.
 	=
 	a 'colour' mountain with 'outline colour' edges
-	… of height 'max height' based at 'level' :
+		… of height 'max height' based at 'level' :
 		'centre' : random STD-WIDTH
 		'height' : random 'max height' + 20
 		'width'  : random 150 + 300
@@ -120,7 +120,7 @@ using graphics lib
 			'box'  : 'box'
 			'line' : 'line'
 			'size' : 'circle A'’s 'radius' + 'circle B'’s 'radius' + 
-			… ('circle B'’s 'x-pos' - 'circle A'’s 'x-pos')
+				… ('circle B'’s 'x-pos' - 'circle A'’s 'x-pos')
 
 			- these are methods
 
