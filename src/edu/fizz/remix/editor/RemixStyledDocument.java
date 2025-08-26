@@ -501,6 +501,16 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             word.append(ch);
         }
         word.reverse();
+        String result = word.toString();
+        String[] words = result.split(" ");
+        word = new StringBuilder();
+        for (String nextWord : words) {
+            if (!RemixEdLexer.isKeyword(nextWord)) {
+                if (!word.isEmpty())
+                    word.append(" ");
+                word.append(nextWord);
+            }
+        }
         return word.toString();
     }
 

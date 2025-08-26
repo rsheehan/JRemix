@@ -745,13 +745,21 @@ test 'list of tests' :
 ==============================
  Common library functions
 ==============================
-
+=-
+Include the graphics library.
+=-
 graphics lib :
 	include "remixLibraries/graphics.rem"
 
+=-
+Include the turtle library.
+=-
 turtle lib :
 	include "remixLibraries/turtle.rem"
 
+=-
+Include the files library.
+=-
 files lib :
 	include "remixLibraries/files.rem"
 

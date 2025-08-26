@@ -385,7 +385,7 @@ public class RemixEdLexer {
         return wordPos; // goes back to last character
     }
 
-    private static boolean isKeyword(String word) {
+    public static boolean isKeyword(String word) {
         return keywords.contains(word);
     }
 
