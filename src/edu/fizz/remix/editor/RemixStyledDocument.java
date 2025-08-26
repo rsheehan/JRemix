@@ -68,7 +68,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         if (text.equals("\t") && !inStringOrComment(offset)) { // don't if in a string or a comment
             handleTab(offset);
         } else {
-            if (text.equals("\n") && !inStringOrComment(offset)) {
+            if (text.equals("\n") && !inString(offset)) {
                 autoIndent(offset);
             } else if (inIdentifier(offset)) {
                 super.insertString(offset, text, style);
@@ -244,6 +244,11 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     private static boolean inIdentifier(int pos) {
         String styleName = RemixEdLexer.getStyleName(pos);
         return styleName.equals("singleQuote") || styleName.equals("variable");
+    }
+
+    private static boolean inString(int pos) {
+        String styleName = RemixEdLexer.getStyleName(pos);
+        return styleName.equals("string");
     }
 
     private static boolean inStringOrComment(int pos) {

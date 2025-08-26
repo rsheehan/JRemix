@@ -1,0 +1,28 @@
+with
+	library
+		=-
+		From inside library.
+		=-
+		function :
+			"from inside library" ↲
+… do
+	function ; completion doesn't work properly, can't get the lib context
+
+=-
+From top-level.
+=-
+function :
+	"from top-level" ↲
+
+function
+
+=-
+From top-level2.
+=-
+function :
+	"from top-level2" ↲
+
+
+with ['library'] do ['block'] :
+	using (do 'library')
+		do 'block' in lib context
