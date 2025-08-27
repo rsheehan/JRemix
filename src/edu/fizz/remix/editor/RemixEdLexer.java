@@ -118,6 +118,7 @@ public class RemixEdLexer {
     }
 
     public static void fullLex() throws BadLocationException {
+        RemixEditor.systemOutput.setText("");
         mode = LexMode.startOfLine;
         int pos = 0;
         while (pos < document.getLength()) {
@@ -240,6 +241,8 @@ public class RemixEdLexer {
         int tabStart = pos;
         for (pos++; pos < document.getLength(); pos++) {
             ch = getChar(pos);
+            if (ch == ' ')
+                err.println("Lines cannot have a space following a tab.");
             if (ch != '\t')
                 break;
         }
