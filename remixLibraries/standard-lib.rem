@@ -207,7 +207,7 @@ while ['condition'] ['block'] :
 
 =-
 Filter 'list' using 'condition block' on each 'item' keeping 'keep block'.
-The Blocks commonly refer to 'item'.
+The blocks commonly refer to 'item'.
 =-
 filter 'list' by #item where ['condition block'] keeping ['keep block'] :
 	'new list' : { }
@@ -224,7 +224,7 @@ filter 'list' by #item where ['condition block'] :
 	filter 'list' by #item where 'condition block' keeping [#item]
 
 =-
-Collect Items from 'list' until 'condition' is true.
+Collect items from 'list' until 'condition' is true.
 The 'condition' is checked before adding the 'item'.
 =-
 keep #item from 'list' until ['condition'] :
@@ -236,7 +236,7 @@ keep #item from 'list' until ['condition'] :
 	'new list'
 
 =-
-Collect Items from 'list' where 'condition' is true,
+Collect items from 'list' where 'condition' is true,
 stopping when 'termination' becomes true.
 The conditions are checked before adding the 'item'.
 =-
@@ -284,7 +284,7 @@ starting with ['initial'] apply ['block'] on each #item in 'sequence' :
 	for each #item in 'sequence''block'
 
 =-
-'sum' the 'list' values.
+Sum the 'list' values.
 =-
 sum 'list' :
 	starting with
