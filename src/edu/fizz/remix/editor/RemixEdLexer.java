@@ -15,25 +15,22 @@ public class RemixEdLexer {
         insideLine,
     }
 //    private static JTextPane textPane;
-    private RemixStyledDocument document;
+    private final RemixStyledDocument document;
 
-    private Style
-        defaultStyle,
-        variable,
-        constant,
-        singleQuote,
-        parentheses,
-        comment,
-        operator,
-        literal,
-        string,
-        keyword,
-        separator;
+    private final Style defaultStyle;
+    private final Style variable;
+    private final Style constant;
+    private final Style singleQuote;
+    private final Style parentheses;
+    private final Style comment;
+    private final Style operator;
+    private final Style literal;
+    private final Style string;
+    private final Style keyword;
+    private final Style separator;
 
     // horrible global state variables
     private LexMode mode;
-
-    private boolean darkMode;
 
     private static final List<String> keywords = Arrays.asList("return", "redo", "create", "extend", "ME", "MY",
             "setter", "setters", "getter", "getters", "getter/setter", "getters/setters", "library", "using");
@@ -60,7 +57,6 @@ public class RemixEdLexer {
     public RemixEdLexer(RemixStyledDocument document, boolean dark) {
         Color variableColour, constantColour, singleQuoteColour, stringColour, operatorColour, literalColour;
         this.document = document;
-        this.darkMode = dark;
 
         // the style at the original position of the textPane
         defaultStyle = document.getStyle("default");
@@ -71,7 +67,7 @@ public class RemixEdLexer {
             StyleConstants.setForeground(attr, Color.black);
         }
         defaultStyle.addAttributes(attr);
-        if (darkMode) {
+        if (dark) {
             variableColour = new Color(255,255,200);
             constantColour = new Color(100, 200, 255);
             singleQuoteColour = new Color(70,70,70);

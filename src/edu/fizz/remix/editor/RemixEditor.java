@@ -215,12 +215,12 @@ public class RemixEditor extends JFrame {
 
         // set up the tabs
         StyleContext sc = StyleContext.getDefaultStyleContext();
-        float tabDiff = tabSize; // 21 matches 3 characters of 12 font width
+        // 21 matches 3 characters of 12 font width
         // 40 matches 4 characters of new courier 16 font width
         // 24 matches 3 characters of 14 font width
         List<TabStop> tabList = new ArrayList<>();
         for (int i = 1; i <= 40; i++) {
-            tabList.add(new TabStop(tabDiff * i));
+            tabList.add(new TabStop(tabSize * i));
         }
         TabSet tabs = new TabSet(tabList.toArray(new TabStop[0]));
         AttributeSet paraSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.TabSet, tabs);
@@ -562,7 +562,7 @@ public class RemixEditor extends JFrame {
             JTextPane printTextPane = new JTextPane();
             document = setUpStylesAndSpacing(null, printTextPane, defaultFontForPrinter, 15,false);
             printEdLexer = new RemixEdLexer(document, false);
-            String textInDocument = null;
+            String textInDocument;
             try {
                 textInDocument = doc.getText(0, doc.getLength());
                 document.insertString(0, textInDocument, null);
