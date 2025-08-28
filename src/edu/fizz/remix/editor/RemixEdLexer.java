@@ -15,9 +15,9 @@ public class RemixEdLexer {
         insideLine,
     }
 //    private static JTextPane textPane;
-    private static RemixStyledDocument document;
+    private RemixStyledDocument document;
 
-    private static Style
+    private Style
         defaultStyle,
         variable,
         constant,
@@ -31,7 +31,9 @@ public class RemixEdLexer {
         separator;
 
     // horrible global state variables
-    private static LexMode mode;
+    private LexMode mode;
+
+    private boolean darkMode;
 
     private static final List<String> keywords = Arrays.asList("return", "redo", "create", "extend", "ME", "MY",
             "setter", "setters", "getter", "getters", "getter/setter", "getters/setters", "library", "using");
@@ -55,9 +57,10 @@ public class RemixEdLexer {
         return "⊕+-*×÷%<>=≤≥≠".contains(Character.toString(c));
     }
 
-    public static void initStyles(RemixStyledDocument document, boolean dark) {
+    public RemixEdLexer(RemixStyledDocument document, boolean dark) {
         Color variableColour, constantColour, singleQuoteColour, stringColour, operatorColour, literalColour;
-        RemixEdLexer.document = document;
+        this.document = document;
+        this.darkMode = dark;
 
         // the style at the original position of the textPane
         defaultStyle = document.getStyle("default");
@@ -68,7 +71,7 @@ public class RemixEdLexer {
             StyleConstants.setForeground(attr, Color.black);
         }
         defaultStyle.addAttributes(attr);
-        if (dark) {
+        if (darkMode) {
             variableColour = new Color(255,255,200);
             constantColour = new Color(100, 200, 255);
             singleQuoteColour = new Color(70,70,70);
@@ -105,19 +108,19 @@ public class RemixEdLexer {
         separator = makeStyle("separator", Color.magenta, false, false, defaultStyle);
     }
 
-    private static Style makeStyle(String name, Color colour, boolean italic, boolean underline, Style base) {
+    private Style makeStyle(String name, Color colour, boolean italic, boolean underline, Style base) {
         Style newStyle = document.addStyle(name, base);
         SimpleAttributeSet attr = new SimpleAttributeSet();
         if (colour != null)
             StyleConstants.setForeground(attr, colour);
-        StyleConstants.setFontSize(attr, RemixEditor.SIZE);
+//        StyleConstants.setFontSize(attr, RemixEditor.SIZE);
         StyleConstants.setItalic(attr, italic);
         StyleConstants.setUnderline(attr, underline);
         newStyle.addAttributes(attr);
         return newStyle;
     }
 
-    public static void fullLex() throws BadLocationException {
+    public void fullLex() throws BadLocationException {
         RemixEditor.systemOutput.setText("");
         mode = LexMode.startOfLine;
         int pos = 0;
@@ -126,18 +129,18 @@ public class RemixEdLexer {
         }
     }
 
-    private static char getChar(int pos) throws BadLocationException {
+    private char getChar(int pos) throws BadLocationException {
         return document.getText(pos, 1).toCharArray()[0];
     }
 
-    public static String getStyleName(int pos) {
+    public String getStyleName(int pos) {
         return (String) document
                 .getCharacterElement(pos)
                 .getAttributes()
                 .getAttribute(StyleConstants.NameAttribute);
     }
 
-    private static int processChar(int pos) throws BadLocationException {
+    private int processChar(int pos) throws BadLocationException {
         char ch = getChar(pos);
 
         switch (mode) {
@@ -151,7 +154,7 @@ public class RemixEdLexer {
         return pos + 1;
     }
 
-    private static int dealWithStartOfLine(char ch, int pos) throws BadLocationException {
+    private int dealWithStartOfLine(char ch, int pos) throws BadLocationException {
         switch (ch) {
             case ' ' -> {
                 err.println("Lines cannot start with a space.");
@@ -195,7 +198,7 @@ public class RemixEdLexer {
         return pos + 1;
     }
 
-    private static int dealWithInsideLine(char ch, int pos) throws BadLocationException {
+    private int dealWithInsideLine(char ch, int pos) throws BadLocationException {
         switch (ch) {
             case ' ' -> {
                 return dealWithSpaces(pos);
@@ -236,7 +239,7 @@ public class RemixEdLexer {
     The rest of the methods use the local variable and keep pos as the
     starting location. Just style consistency things which needs correcting.
      */
-    private static int dealWithTabs(int pos) throws BadLocationException {
+    private int dealWithTabs(int pos) throws BadLocationException {
         char ch = 0;
         int tabStart = pos;
         for (pos++; pos < document.getLength(); pos++) {
@@ -254,7 +257,7 @@ public class RemixEdLexer {
         return pos;
     }
 
-    private static int dealWithSpaces(int pos) throws BadLocationException {
+    private int dealWithSpaces(int pos) throws BadLocationException {
 //        String prevStyle = pos > 0 ? getStyleName(pos - 1) : "default"; // should just get Style
         int spacePos = pos;
         for (pos++; pos < document.getLength(); pos++) {
@@ -266,7 +269,7 @@ public class RemixEdLexer {
         return pos;
     }
 
-    private static int dealWithSingleLineComment(int pos) throws BadLocationException {
+    private int dealWithSingleLineComment(int pos) throws BadLocationException {
         int commentPos;
         mode = LexMode.startOfLine; // after throwing the rest away
         for (commentPos = pos + 1; commentPos < document.getLength(); commentPos++) {
@@ -278,7 +281,7 @@ public class RemixEdLexer {
         return commentPos + 1;
     }
 
-    private static int dealWithMultiLineComment(int pos) throws BadLocationException {
+    private int dealWithMultiLineComment(int pos) throws BadLocationException {
         int commentPos;
         boolean tabbedStartOfLine = false;
         for (commentPos = pos + 1; commentPos < document.getLength(); commentPos++) {
@@ -305,7 +308,7 @@ public class RemixEdLexer {
         return commentPos + 1;
     }
 
-    private static int dealWithString(int pos) throws BadLocationException {
+    private int dealWithString(int pos) throws BadLocationException {
         // check the '\' escape character.
         boolean escape = false;
         int stringPos;
@@ -329,7 +332,7 @@ public class RemixEdLexer {
         return stringPos + 1;
     }
 
-    private static int dealWithNumber(int pos) throws BadLocationException {
+    private int dealWithNumber(int pos) throws BadLocationException {
         int numPos;
         for (numPos = pos + 1; numPos < document.getLength(); numPos++) {
             char ch = getChar(numPos);
@@ -340,12 +343,12 @@ public class RemixEdLexer {
         return numPos;
     }
 
-    private static int dealWithPi(int pos) {
+    private int dealWithPi(int pos) {
         document.setCharacterAttributes(pos, 1, literal, true);
         return pos + 1;
     }
 
-    private static int dealWithVariable(int pos) throws BadLocationException {
+    private int dealWithVariable(int pos) throws BadLocationException {
         int varPos;
         char ch = ' ';
         for (varPos = pos + 1; varPos < document.getLength(); varPos++) {
@@ -362,7 +365,7 @@ public class RemixEdLexer {
         return varPos + 1;
     }
 
-    private static int dealWithWord(int pos) throws BadLocationException {
+    private int dealWithWord(int pos) throws BadLocationException {
         // gobble word chars until space, separator, operator, newline
         int wordPos;
         for (wordPos = pos + 1; wordPos < document.getLength(); wordPos++) {
@@ -388,11 +391,11 @@ public class RemixEdLexer {
         return wordPos; // goes back to last character
     }
 
-    public static boolean isKeyword(String word) {
+    public boolean isKeyword(String word) {
         return keywords.contains(word);
     }
 
-    private static boolean isConstantWord(String word) {
+    private boolean isConstantWord(String word) {
         boolean constant = true;
         for (Character ch : word.toCharArray()) {
             if (!(Character.isUpperCase(ch) || ch == '-')) {
@@ -403,15 +406,15 @@ public class RemixEdLexer {
         return constant;
     }
 
-    private static boolean isLiteralWord(String word) {
+    private boolean isLiteralWord(String word) {
         return literalWords.contains(word);
     }
 
-    private static boolean isRefVariable(int startWord) throws BadLocationException {
+    private boolean isRefVariable(int startWord) throws BadLocationException {
         return document.getText(startWord, 1).equals("#"); //identifierChar(document.getText(startWord, 1));
     }
 
-    private static int dealWithSeparator(char ch, int pos) {
+    private int dealWithSeparator(char ch, int pos) {
         if (ch == '(' || ch == ')') {
             document.setCharacterAttributes(pos, 1, parentheses, true);
         } else
@@ -419,7 +422,7 @@ public class RemixEdLexer {
         return pos + 1;
     }
 
-    private static int dealWithOperator(int pos) {
+    private int dealWithOperator(int pos) {
         document.setCharacterAttributes(pos, 1, operator, true);
         return pos + 1;
     }

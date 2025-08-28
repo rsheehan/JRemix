@@ -37,16 +37,21 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     private boolean justInsertedMatch = false;
     protected final RemixEditor editor;
     private final Style defaultStyle = getStyle("default");
+    private RemixEdLexer edLexer;
 
-    public RemixStyledDocument(RemixEditor editor) {
+    public RemixStyledDocument(RemixEditor editor, JTextPane textPane) {
         this.editor = editor;
-        this.textPane = editor.getEditorTextPane();
+        this.textPane = textPane;
+    }
+
+    public void setEdLexer(RemixEdLexer edLexer) {
+        this.edLexer = edLexer;
     }
 
     /* Insert a line.
-        Does not do a lex.
-        Useful for inserting lots of lines and then call fullLex.
-     */
+            Does not do a lex.
+            Useful for inserting lots of lines and then call fullLex.
+         */
     public void insertLine(String line) throws BadLocationException {
         insertStringNoLex(getLength(), line, null);
     }
@@ -59,7 +64,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     @Override
     public void insertString(int offset, String text, AttributeSet style) throws BadLocationException {
         insertStringNoLex(offset, text, style);
-        RemixEdLexer.fullLex(); // overkill, just to get things going at the moment
+        edLexer.fullLex(); // overkill, just to get things going at the moment
     }
 
     public void insertStringNoLex(int offset, String text, AttributeSet style) throws BadLocationException {
@@ -97,7 +102,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         }
         super.remove(offset, length);
         completionsHere = null; // otherwise deleting a character doesn't regenerate completions
-        RemixEdLexer.fullLex(); // overkill, just to get things going at the moment
+        edLexer.fullLex(); // overkill, just to get things going at the moment
     }
 
     @Override
@@ -241,18 +246,18 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         return result;
     }
 
-    private static boolean inIdentifier(int pos) {
-        String styleName = RemixEdLexer.getStyleName(pos);
+    private boolean inIdentifier(int pos) {
+        String styleName = edLexer.getStyleName(pos);
         return styleName.equals("singleQuote") || styleName.equals("variable");
     }
 
-    private static boolean inString(int pos) {
-        String styleName = RemixEdLexer.getStyleName(pos);
+    private boolean inString(int pos) {
+        String styleName = edLexer.getStyleName(pos);
         return styleName.equals("string");
     }
 
-    private static boolean inStringOrComment(int pos) {
-        String styleName = RemixEdLexer.getStyleName(pos);
+    private boolean inStringOrComment(int pos) {
+        String styleName = edLexer.getStyleName(pos);
         return styleName.equals("string") || styleName.equals("comment");
     }
 
@@ -394,7 +399,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         String completionComment = "";
         int splitPos;
         if (completionsHere == null) {
-            editor.reparseProgramText();
+            editor.reparseProgramText(); // editor can be null if printing this document
             String seedWord = wordSoFar(offset);
             seedWord = seedWord.stripLeading();
             completions = LibrariesAndCompletions.createCompletionsFrom(seedWord, lineNumber);
@@ -510,7 +515,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         String[] words = result.split(" ");
         word = new StringBuilder();
         for (String nextWord : words) {
-            if (!RemixEdLexer.isKeyword(nextWord)) {
+            if (!edLexer.isKeyword(nextWord)) {
                 if (!word.isEmpty())
                     word.append(" ");
                 word.append(nextWord);

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,8 +41,6 @@ public class RemixEditor extends JFrame {
     public static final int SIZE = 12; // 12 is small but gives 80 col printout on A4
     private final JTextPane editorTextPane;
     private Point caretPoint; // the point of the top left of the caret within the document pane
-    // this is always set when a caret update occurs
-    private static JSplitPane splitPane;
     private static JSplitPane systemSplitPane;
     private static JSplitPane outputSplitPane;
     private static RemixStyledDocument doc;
@@ -62,12 +61,17 @@ public class RemixEditor extends JFrame {
     protected StopAction stopAction;
     private DarkThemeAction darkThemeAction;
     private LightThemeAction lightThemeAction;
+    private static final Font defaultFontForScreen = new Font("monospaced", Font.PLAIN, SIZE);
+    private static final Font defaultFontForPrinter = new Font("monospaced", Font.PLAIN, 8);
     //undo helpers
     private UndoAction undoAction;
     private RedoAction redoAction;
     private final UndoManager undo = new UndoManager();
 
     private static boolean editing = true;
+
+    private RemixEdLexer edLexer;
+    private String currentFileName = null;
 
     class CatchKeys extends KeyAdapter {
         @Override
@@ -112,29 +116,7 @@ public class RemixEditor extends JFrame {
         editorTextPane = new JTextPane();
         editorTextPane.addKeyListener(new CatchKeys());
         editorTextPane.setMargin(new Insets(5,10,5,10));
-        setTextPaneTheme(true);
-        // the base font
-        editorTextPane.setFont(new Font("monospaced", Font.PLAIN, SIZE)); // previously "Monaco" on Mac
-        doc = new RemixStyledDocument(this);
-        editorTextPane.setStyledDocument(doc);
-        RemixEdLexer.initStyles(doc, true);
-
-        // set up the tabs
-        StyleContext sc = StyleContext.getDefaultStyleContext();
-        float tabDiff = 21; // 21 matches 3 characters of 12 font width
-        // 40 matches 4 characters of new courier 16 font width
-        // 24 matches 3 characters of 14 font width
-        List<TabStop> tabList = new ArrayList<>();
-        for (int i = 1; i <= 40; i++) {
-            tabList.add(new TabStop(tabDiff * i));
-        }
-        TabSet tabs = new TabSet(tabList.toArray(new TabStop[0]));
-        AttributeSet paraSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.TabSet, tabs);
-        editorTextPane.setParagraphAttributes(paraSet, false);
-
-        MutableAttributeSet lineSet = new SimpleAttributeSet();
-        StyleConstants.setLineSpacing(lineSet, 0.25f);
-        editorTextPane.setParagraphAttributes(lineSet, false);
+        doc = setUpStylesAndSpacing(this, editorTextPane, defaultFontForScreen, 21, true);
 
         JScrollPane editorScrollPane = new JScrollPane(editorTextPane);
         editorScrollPane.setMinimumSize(new Dimension(711, 800));
@@ -173,7 +155,8 @@ public class RemixEditor extends JFrame {
         outputSplitPane.setOneTouchExpandable(true);
 
         //Create a split pane for the output and the text area.
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, systemSplitPane, outputSplitPane);
+        // this is always set when a caret update occurs
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, systemSplitPane, outputSplitPane);
         splitPane.setOneTouchExpandable(true);
         splitPane.setResizeWeight(1);
 
@@ -220,17 +203,46 @@ public class RemixEditor extends JFrame {
         docPanel.add(docArea);
     }
 
-    private void setTextPaneTheme(boolean dark) {
+    private RemixStyledDocument setUpStylesAndSpacing(RemixEditor editor, JTextPane textPane, Font baseFont, float tabSize, boolean darkTheme) {
+        RemixStyledDocument document;
+        setTextPaneTheme(textPane, darkTheme);
+        // the base font
+        textPane.setFont(baseFont); // previously "Monaco" on Mac
+        document = new RemixStyledDocument(editor, textPane);
+        textPane.setStyledDocument(document);
+        edLexer = new RemixEdLexer(document, darkTheme);
+        document.setEdLexer(edLexer);
+
+        // set up the tabs
+        StyleContext sc = StyleContext.getDefaultStyleContext();
+        float tabDiff = tabSize; // 21 matches 3 characters of 12 font width
+        // 40 matches 4 characters of new courier 16 font width
+        // 24 matches 3 characters of 14 font width
+        List<TabStop> tabList = new ArrayList<>();
+        for (int i = 1; i <= 40; i++) {
+            tabList.add(new TabStop(tabDiff * i));
+        }
+        TabSet tabs = new TabSet(tabList.toArray(new TabStop[0]));
+        AttributeSet paraSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.TabSet, tabs);
+        textPane.setParagraphAttributes(paraSet, false);
+
+        MutableAttributeSet lineSet = new SimpleAttributeSet();
+        StyleConstants.setLineSpacing(lineSet, 0.25f);
+        textPane.setParagraphAttributes(lineSet, false);
+        return document;
+    }
+
+    private void setTextPaneTheme(JTextPane textPane, boolean dark) {
         if (dark) {
-            editorTextPane.setForeground(Color.white);
-            editorTextPane.setBackground(Color.black);
-            editorTextPane.setCaretColor(Color.white);
-            editorTextPane.setSelectionColor(new Color(100, 80, 80));
+            textPane.setForeground(Color.white);
+            textPane.setBackground(Color.black);
+            textPane.setCaretColor(Color.white);
+            textPane.setSelectionColor(new Color(100, 80, 80));
         } else {
-            editorTextPane.setForeground(Color.black);
-            editorTextPane.setBackground(Color.white);
-            editorTextPane.setCaretColor(Color.black);
-            editorTextPane.setSelectionColor(new Color(165, 175, 175));
+            textPane.setForeground(Color.black);
+            textPane.setBackground(Color.white);
+            textPane.setCaretColor(Color.black);
+            textPane.setSelectionColor(new Color(165, 175, 175));
         }
     }
 
@@ -320,7 +332,7 @@ public class RemixEditor extends JFrame {
                 lastLine = lineNumber;
                 setText("line: " + lineNumber +
                         ", offset: " + (mark - startOfLine) +
-                        ", style: " + RemixEdLexer.getStyleName(mark));
+                        ", style: " + edLexer.getStyleName(mark));
             });
         }
     }
@@ -500,12 +512,13 @@ public class RemixEditor extends JFrame {
                 try {
                     currentDirectory = chooser.getCurrentDirectory().getAbsolutePath();
                     File remFile = chooser.getSelectedFile();
+                    currentFileName = remFile.getName();
                     Scanner myReader = new Scanner(remFile);
                     while (myReader.hasNextLine()) {
                         String line = myReader.nextLine();
                         doc.insertLine(line + "\n");
                     }
-                    RemixEdLexer.fullLex();
+                    edLexer.fullLex();
                     myReader.close();
                     editorTextPane.setCaretPosition(0);
                 } catch (FileNotFoundException | BadLocationException e) {
@@ -544,8 +557,28 @@ public class RemixEditor extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent ev) {
+            RemixStyledDocument document;
+            RemixEdLexer printEdLexer;
+            JTextPane printTextPane = new JTextPane();
+            document = setUpStylesAndSpacing(null, printTextPane, defaultFontForPrinter, 15,false);
+            printEdLexer = new RemixEdLexer(document, false);
+            String textInDocument = null;
+            try {
+                textInDocument = doc.getText(0, doc.getLength());
+                document.insertString(0, textInDocument, null);
+                printEdLexer.fullLex();
+            } catch (BadLocationException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                printEdLexer.fullLex();
+            } catch (BadLocationException e) {
+                throw new RuntimeException(e);
+            }
             PrinterJob job = PrinterJob.getPrinterJob();
-            job.setPrintable(editorTextPane.getPrintable(null, null));
+            job.setPrintable(printTextPane.getPrintable(
+                    currentFileName == null ? null : new MessageFormat(currentFileName),
+                    new MessageFormat("Page {0}")));
             if (job.printDialog()) {
                 try {
                     job.print();
@@ -565,12 +598,12 @@ public class RemixEditor extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            RemixEditor.this.setTextPaneTheme(true);
-            RemixEdLexer.initStyles(doc, true);
+            RemixEditor.this.setTextPaneTheme(editorTextPane, true);
+            edLexer = new RemixEdLexer(doc, true);
             setEnabled(false);
             lightThemeAction.setEnabled(true);
             try {
-                RemixEdLexer.fullLex();
+                edLexer.fullLex();
             } catch (BadLocationException ex) {
                 throw new RuntimeException(ex);
             }
@@ -586,12 +619,12 @@ public class RemixEditor extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            RemixEditor.this.setTextPaneTheme(false);
-            RemixEdLexer.initStyles(doc, false);
+            RemixEditor.this.setTextPaneTheme(editorTextPane, false);
+            edLexer = new RemixEdLexer(doc, false);
             setEnabled(false);
             darkThemeAction.setEnabled(true);
             try {
-                RemixEdLexer.fullLex();
+                edLexer.fullLex();
             } catch (BadLocationException ex) {
                 throw new RuntimeException(ex);
             }
@@ -607,7 +640,7 @@ public class RemixEditor extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 undo.undo();
-                RemixEdLexer.fullLex(); // THIS IS REALLY OVERKILL NEEDS TO CHANGE
+                edLexer.fullLex(); // THIS IS REALLY OVERKILL NEEDS TO CHANGE
             } catch (CannotUndoException | BadLocationException ex) {
                 System.out.println("Unable to undo: " + ex);
                 ex.printStackTrace();
@@ -636,7 +669,7 @@ public class RemixEditor extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 undo.redo();
-                RemixEdLexer.fullLex(); // THIS IS REALLY OVERKILL NEEDS TO CHANGE
+                edLexer.fullLex(); // THIS IS REALLY OVERKILL NEEDS TO CHANGE
             } catch (CannotRedoException | BadLocationException ex) {
                 System.out.println("Unable to redo: " + ex);
                 ex.printStackTrace();
@@ -676,10 +709,6 @@ public class RemixEditor extends JFrame {
         //Display the window.
         frame.setBounds(100, 100, 1728, 1080); // for my Mac. Was 50, 50, 1700, 1050
         frame.setVisible(true);
-    }
-
-    public JTextPane getEditorTextPane() {
-        return editorTextPane;
     }
 
     //The standard main method.
