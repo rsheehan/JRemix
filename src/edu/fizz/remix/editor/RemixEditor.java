@@ -6,8 +6,8 @@ package edu.fizz.remix.editor;
 
 import edu.fizz.remix.EvalVisitorForEditor;
 import edu.fizz.remix.libraries.GraphicsPanel;
-import edu.fizz.remix.runtime.LibraryExpression;
 import edu.fizz.remix.runtime.LibrariesAndCompletions;
+import edu.fizz.remix.runtime.LibraryExpression;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import javax.swing.*;
@@ -72,10 +72,21 @@ public class RemixEditor extends JFrame {
 
     private RemixEdLexer edLexer;
     private String currentFileName = null;
+    private String currentAbsoluteFileName = null;
+    private boolean editorContentSaved = true;
 
     class CatchKeys extends KeyAdapter {
         @Override
+        public void keyPressed(KeyEvent e) {
+            if ((e.getKeyCode() == KeyEvent.VK_V) && ((e.getModifiersEx() & KeyEvent.META_DOWN_MASK) != 0)) {
+                editorContentSaved = false;
+            }
+            super.keyPressed(e);
+        }
+
+        @Override
         public void keyTyped(KeyEvent e) {
+            editorContentSaved = false;
             switch (e.getKeyChar()) {
                 case '\t':
                     break;
@@ -399,7 +410,7 @@ public class RemixEditor extends JFrame {
         inputMap.put(key, menuItem.getAction());
 
         //Command-shift-z to redo last undo
-        key = KeyStroke.getKeyStroke(KeyEvent. VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()  | InputEvent.SHIFT_DOWN_MASK);
+        key = KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()  | InputEvent.SHIFT_DOWN_MASK);
         menuItem = editMenu.getItem(1); // redo
         inputMap.put(key, menuItem.getAction());
     }
@@ -416,10 +427,14 @@ public class RemixEditor extends JFrame {
     //Create the file menu.
     protected JMenu createFileMenu() {
         JMenu menu = new JMenu("File");
+        NewFileAction newAction = new NewFileAction();
+        menu.add(newAction);
         OpenFileAction openAction = new OpenFileAction();
         menu.add(openAction);
         SaveFileAction saveAction = new SaveFileAction();
         menu.add(saveAction);
+        SaveAsFileAction saveAsAction = new SaveAsFileAction();
+        menu.add(saveAsAction);
         PrintFileAction printAction = new PrintFileAction();
         menu.add(printAction);
         return menu;
@@ -491,6 +506,72 @@ public class RemixEditor extends JFrame {
         return actions.get(name);
     }
 
+    class NewFileAction extends AbstractAction {
+        public NewFileAction() { super("New");}
+
+        public void actionPerformed(ActionEvent event) {
+            if (!editorContentSaved) {
+                int result = queryReplace();
+                if (result == JOptionPane.YES_OPTION) {
+                    saveFile();
+                } else if (result == JOptionPane.CANCEL_OPTION) {
+                    return;
+                }
+            }
+            newFile();
+        }
+    }
+
+    private int queryReplace() {
+       return JOptionPane.showConfirmDialog(
+               editorTextPane,
+               "Do you want to save the current text?",
+               "Clearing editor",
+               JOptionPane.YES_NO_CANCEL_OPTION
+       );
+    }
+
+    private void newFile() {
+        try {
+            doc.remove(0, doc.getLength());
+            edLexer.fullLex();
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
+        editorTextPane.setCaretPosition(0);
+        editorContentSaved = true;
+        currentFileName = null;
+        currentAbsoluteFileName = null;
+    }
+
+    private void saveFile() {
+        if (currentAbsoluteFileName == null)
+            saveAsFile();
+        else {
+            try {
+                Files.write(Path.of(currentAbsoluteFileName), editorTextPane.getText().getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            editorContentSaved = true;
+        }
+    }
+
+    private void saveAsFile() {
+        JFileChooser chooser = new JFileChooser(currentDirectory);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "Remix programs", "rem");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showSaveDialog(editorTextPane);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            currentDirectory = chooser.getCurrentDirectory().getAbsolutePath();
+            File file = chooser.getSelectedFile();
+            currentFileName = file.getName();
+            currentAbsoluteFileName = file.getAbsolutePath();
+            saveFile();
+        }
+    }
+
     class OpenFileAction extends AbstractAction {
         public OpenFileAction() {
             super("Open…");
@@ -498,6 +579,15 @@ public class RemixEditor extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent event) {
+            if (!editorContentSaved) {
+                int result = queryReplace();
+                if (result == JOptionPane.YES_OPTION) {
+                    if (currentFileName != null)
+                        saveFile();
+                    else
+                        saveAsFile();
+                }
+            }
             JFileChooser chooser = new JFileChooser(currentDirectory); // "Tests"); //
             FileNameExtensionFilter filter = new FileNameExtensionFilter(
                     "Remix programs", "rem");
@@ -513,6 +603,7 @@ public class RemixEditor extends JFrame {
                     currentDirectory = chooser.getCurrentDirectory().getAbsolutePath();
                     File remFile = chooser.getSelectedFile();
                     currentFileName = remFile.getName();
+                    currentAbsoluteFileName = remFile.getAbsolutePath();
                     Scanner myReader = new Scanner(remFile);
                     while (myReader.hasNextLine()) {
                         String line = myReader.nextLine();
@@ -521,6 +612,7 @@ public class RemixEditor extends JFrame {
                     edLexer.fullLex();
                     myReader.close();
                     editorTextPane.setCaretPosition(0);
+                    editorContentSaved = true;
                 } catch (FileNotFoundException | BadLocationException e) {
                     throw new RuntimeException(e);
                 }
@@ -530,25 +622,22 @@ public class RemixEditor extends JFrame {
 
     class SaveFileAction extends AbstractAction {
         public SaveFileAction() {
-            super("Save…");
+            super("Save");
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            JFileChooser chooser = new JFileChooser(currentDirectory); // "Tests"); //
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    "Remix programs", "rem");
-            chooser.setFileFilter(filter);
-            int returnVal = chooser.showSaveDialog(editorTextPane);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    currentDirectory = chooser.getCurrentDirectory().getAbsolutePath();
-                    String remFileName = chooser.getSelectedFile().getName();
-                    Files.write(Path.of(currentDirectory, remFileName), editorTextPane.getText().getBytes());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
+            saveFile();
+        }
+    }
+    class SaveAsFileAction extends AbstractAction {
+        public SaveAsFileAction() {
+            super("Save as…");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            saveAsFile();
         }
     }
 
