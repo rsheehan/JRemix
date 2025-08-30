@@ -109,7 +109,6 @@ public class RemixEdLexer {
         SimpleAttributeSet attr = new SimpleAttributeSet();
         if (colour != null)
             StyleConstants.setForeground(attr, colour);
-//        StyleConstants.setFontSize(attr, RemixEditor.SIZE);
         StyleConstants.setItalic(attr, italic);
         StyleConstants.setUnderline(attr, underline);
         newStyle.addAttributes(attr);

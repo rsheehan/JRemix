@@ -49,9 +49,9 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     }
 
     /* Insert a line.
-            Does not do a lex.
-            Useful for inserting lots of lines and then call fullLex.
-         */
+       Does not do a lex.
+       Useful for inserting lots of lines and then call fullLex.
+     */
     public void insertLine(String line) throws BadLocationException {
         insertStringNoLex(getLength(), line, null);
     }

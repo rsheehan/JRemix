@@ -586,7 +586,8 @@ public class RemixEditor extends JFrame {
                         saveFile();
                     else
                         saveAsFile();
-                }
+                } else if (result == JOptionPane.CANCEL_OPTION)
+                    return;
             }
             JFileChooser chooser = new JFileChooser(currentDirectory); // "Tests"); //
             FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -609,6 +610,7 @@ public class RemixEditor extends JFrame {
                         String line = myReader.nextLine();
                         doc.insertLine(line + "\n");
                     }
+                    doc.setEdLexer(edLexer);
                     edLexer.fullLex();
                     myReader.close();
                     editorTextPane.setCaretPosition(0);
@@ -689,6 +691,7 @@ public class RemixEditor extends JFrame {
         public void actionPerformed(ActionEvent e) {
             RemixEditor.this.setTextPaneTheme(editorTextPane, true);
             edLexer = new RemixEdLexer(doc, true);
+            doc.setEdLexer(edLexer);
             setEnabled(false);
             lightThemeAction.setEnabled(true);
             try {
@@ -710,6 +713,7 @@ public class RemixEditor extends JFrame {
         public void actionPerformed(ActionEvent e) {
             RemixEditor.this.setTextPaneTheme(editorTextPane, false);
             edLexer = new RemixEdLexer(doc, false);
+            doc.setEdLexer(edLexer);
             setEnabled(false);
             darkThemeAction.setEnabled(true);
             try {
