@@ -3,7 +3,9 @@ package edu.fizz.remix.runtime;
 /** Gets the value of a variable from its name. */
 public class VarValueExpression implements Expression {
 
-    String varName;
+    private final String varName;
+    private int lineNumber = 0;
+    private int offSet;
 
     public VarValueExpression(String name) {
         varName = name;
@@ -26,4 +28,19 @@ public class VarValueExpression implements Expression {
         return varName;
     }
 
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
+    public int getOffSet() {
+        return offSet;
+    }
+
+    public void setOffSet(int offSet) {
+        this.offSet = offSet;
+    }
 }

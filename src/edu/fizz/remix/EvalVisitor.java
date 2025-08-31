@@ -40,8 +40,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.StatementContext) {
                 Expression statement = (Expression)visit(node);
-                if (statement != null) // can be blank statements
+                if (statement != null) {// can be blank statements
                     library.block.addStatement(statement);
+                    checkForUnusedValue(statement, i < n - 2);
+                }
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 library.addFunction(function);
@@ -89,7 +91,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     @Override
     public UsingLibBlock visitUsingLibrary(RemixParser.UsingLibraryContext ctx) {
         ArrayList<Expression> libraryExpressions = new ArrayList<>();
-        LibraryExpression usingBlock = new LibraryExpression();
+        LibraryExpression usingBlock = new LibraryExpression(); // keep this for side effect
 
         int n = ctx.getChildCount();
         for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
@@ -396,6 +398,19 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         String constName = ctx.CONSTANT().getText();
         Expression expression = (Expression) visit(ctx.expression());
         return new ConstantAssignmentStatement(constName, expression);
+    }
+
+    /** expression (from statement) */
+    public Expression visitExpr(RemixParser.ExprContext ctx) {
+        // This is only necessary to catch a single stand alone variable
+        // which can be misinterpreted as a statement. This is legal but
+        // probably not was intended by a programmer.
+        Expression expression = (Expression) visit(ctx.expression());
+        if (expression instanceof VarValueExpression varValue) {
+            varValue.setLineNumber(ctx.getStart().getLine() - 1);
+            varValue.setOffSet(ctx.getStart().getCharPositionInLine());
+        }
+        return expression;
     }
 
     /** (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) */
@@ -906,11 +921,24 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.StatementContext) {
                 Expression statement = (Expression)visit(node);
-                if (statement != null) // can be blank statements
+                if (statement != null) { // can be blank statements
                     block.addStatement(statement);
+                    checkForUnusedValue(statement, i < n - 2);
+                }
             }
         }
         return block;
+    }
+
+    // The last statement is not a problem.
+    private void checkForUnusedValue(Expression statement, boolean notLast) {
+        if (statement instanceof VarValueExpression varValueExpression && notLast) {
+            String variableName = varValueExpression.toString();
+            int lineNumber = varValueExpression.getLineNumber();
+            int lineOffset = varValueExpression.getOffSet();
+            System.err.printf("Variable '%s' on line %d, offset %d, value not used.%n",
+                              variableName, lineNumber, lineOffset);
+        }
     }
 
     public RemixListExpression produceListExpression(ParseTree ctx) {

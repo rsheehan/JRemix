@@ -21,7 +21,7 @@ public class RemixParser extends Parser {
 		GREATEREQUAL=23, EQUAL=24, NOTEQUAL=25, CONCAT=26, MINUS=27, NULL=28, 
 		BOOLEAN=29, RETURN=30, REDO=31, CREATE=32, EXTEND=33, GETTERSETTER=34, 
 		GETTER=35, SETTER=36, LIBRARY=37, USING=38, SELFREF=39, POSSESSIVE=40, 
-		CONSTANT=41, IDENTIFIER=42, WORD=43, WORDPRODUCT=44, STRING=45;
+		CONSTANT=41, IDENTIFIER=42, WORD=43, WORDPRODUCT=44, STRING=45, EMPTYIDENTIFIER=46;
 	public static final int
 		RULE_program = 0, RULE_library = 1, RULE_usingLibrary = 2, RULE_usingBlock = 3, 
 		RULE_functionDefinition = 4, RULE_functionComment = 5, RULE_functionSignature = 6, 
@@ -67,7 +67,7 @@ public class RemixParser extends Parser {
 			"EQUAL", "NOTEQUAL", "CONCAT", "MINUS", "NULL", "BOOLEAN", "RETURN", 
 			"REDO", "CREATE", "EXTEND", "GETTERSETTER", "GETTER", "SETTER", "LIBRARY", 
 			"USING", "SELFREF", "POSSESSIVE", "CONSTANT", "IDENTIFIER", "WORD", "WORDPRODUCT", 
-			"STRING"
+			"STRING", "EMPTYIDENTIFIER"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -4546,7 +4546,7 @@ public class RemixParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001-\u028c\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001.\u028c\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
 		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b\u0002"+

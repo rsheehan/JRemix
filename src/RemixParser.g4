@@ -65,7 +65,7 @@ blockOfStatements	: LBLOCK statement* RBLOCK ;
 
 statement			: assignmentStatement	# assStatement	// label not used
 					| printStatement		# prStatement	// label not used
-					| expression 			# expr			// label not used
+					| expression 			# expr			// label only used for error checking
 					| REDO					# redo
 					| RETURN expression?	# return
 					| usingLibrary			# usingStatement// label not used
