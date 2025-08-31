@@ -253,7 +253,7 @@ library "edu.fizz.remix.libraries.Graphics"
 			'colour' : DARK-BLUE ; set by "MY 'colour' 'the colour'"
 
 			getters
-				'layers', 'background colour'
+				'layers', 'colour'
 
 			MY 'colour' 'the colour' : ; this is a setter
 				'colour' : 'the colour'
