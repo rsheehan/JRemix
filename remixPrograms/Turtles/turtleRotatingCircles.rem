@@ -18,7 +18,7 @@ using graphics lib, turtle lib
 	RADIUS : 200
 	position 'arrows'
 
-	'arrows' 'speed' : 10
+	'arrows'’s 'speed' : 10
 	STEP : 10 ; 2 × RADIUS × π ÷ 180
 	repeat 180 times
 		animate 'arrows'

@@ -2,7 +2,7 @@ using graphics lib, turtle lib
 	'space' : a turtle space in (the graphics panel)
 	TURTLE : a turtle
 	TURTLE’s 'position' : { -350, -350 }
-	TURTLE’s 'speed' : 700
+	TURTLE’s 'speed' : 10000
 	place TURTLE in 'space'
 	for each ('size') from 10 to 700 in steps of 10 
 		draw square of 'size'

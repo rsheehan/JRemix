@@ -4,7 +4,7 @@ using graphics lib, turtle lib
 	'turtle space' : a turtle space in 'the window'
 
 	'turtles' : a group of 20 turtles
-	'turtles' 'speed' : 20
+	'turtles'’s 'speed' : 5
 
 	for each 'turtle' in 'turtles'
 		'turtle's 'colour' : random colour

@@ -4,6 +4,7 @@ using graphics lib, turtle lib
 	'the window'’s 'colour' : SKY-BLUE
 
 	'turtle' : a turtle in (a turtle space in 'the window')
+	'turtle'’s 'speed' : 1000
 	hide 'turtle'
 	'turtle' random walk
 

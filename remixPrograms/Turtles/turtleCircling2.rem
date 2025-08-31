@@ -10,6 +10,7 @@ using graphics lib, turtle lib
 
 	'arrows' : a group of 36 turtles in 'turtle space'
 	prepare 'arrows'
+	'arrows' speed 5
 
 	repeat 180 times
 		animate 'arrows'
@@ -25,6 +26,5 @@ using graphics lib, turtle lib
 			turn 'arrow' -90 degrees
 
 	animate 'arrows' :
-		'arrows'’s 'speed' : 5
 		move 'arrows' (2π × RADIUS ÷ 180) steps
 		turn 'arrows' -2 degrees

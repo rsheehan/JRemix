@@ -12,13 +12,10 @@ library
 	a turtle space in 'the window':
 		create
 			'the window' : 'the window'
-			'turtle rate' : 30
+			'turtle rate' : 100
 				- The 'turtle rate' was the number of frames per second.
 				- Now it sets the time between parts of an unfinished
 				- move command. See "move 'turtle' 'n' steps"
-
-			getter
-				'turtle rate'
 
 			MY 'base layer' :
 				'the window'’s 'base layer'
@@ -60,6 +57,13 @@ library
 			=-
 			clear MY turtles :
 				clear 'the window' leaving the base layer
+			
+			=-
+			A small pause in the turtle space 'OBJECT'.
+			Called from turtle actions.
+			=-
+			pause ME :
+				pause (1.0 ÷ 'turtle rate') seconds
 
 -==================================================================================================-
 
@@ -92,14 +96,13 @@ library
 			'pen down' : true
 			'visible' : true
 			'speed' : 10
-
-			getters/setters
-				'speed'
+			'steps' : 0 ; used with 'speed' when moving
 
 			getter
 				'animation layer'
 				'pen down'
-
+				'speed'
+				
 			setter
 				'turtle space'
 
@@ -116,6 +119,10 @@ library
 			'turtle' graphics have { 0, 0 } at the centre of the window
 			and the heading is in degrees turning anticlockwise from the right.
 			====================================================================
+			
+			MY 'speed' 'new speed' : ; the 'speed' setter
+				'speed' : 'new speed'
+				'steps' : 0 ; restart step count when speed is changed
 
 			MY 'position' :
 				panel coordinate 'position' to turtle coordinate
@@ -184,11 +191,11 @@ library
 			=-
 			instantly move ME from 'start' to 'finish' in 'destination layer' :
 				clear 'animation layer' shapes
-				if ('pen down')
+				if 'pen down'
 					'line' : a 'colour' line from 'start' to 'finish'
 					place 'line' in 'destination layer'
 				'position' : 'finish'
-				if ('visible')
+				if 'visible'
 					place ME in 'animation layer'
 				update 'turtle space'
 
@@ -204,10 +211,15 @@ library
 					'finish' : MY position after moving 'distance' from 'start'
 					instantly move ME from 'start' to 'finish' in 'animation layer'
 					'remaining' : 'remaining' - 'speed'
-					pause (1.0 ÷ 'turtle space'’s 'turtle rate') seconds
+					pause 'turtle space'
+					'steps' : 0
 				- now add the "permanent" layer
 				'finish' : MY position after moving 'n' from 'start'
 				instantly move ME from 'start' to 'finish' in ('turtle space'’s 'base layer')
+				add 'remaining' to 'steps'
+				if ('steps' > 'speed')
+					pause 'turtle space'
+					'steps' : 'steps' - 'speed'
 
 			=-
 			Move the turtle 'OBJECT' to the 'coordinate'.
@@ -284,9 +296,14 @@ library
 			'turtle space' : null
 			'turtles' : 'turtles'
 			'speed' : 10 ; this is for the group
+			'steps' : 0
 
-			getter/setter
+			getter
 				'speed'
+			
+			MY 'speed' 'new speed' : ; the 'speed' setter
+				'speed' : 'new speed'
+				'steps' : 0 ; restart step count when speed is changed
 
 			=-
 			Retrieve turtle 'n' from the turtle group 'OBJECT'.
@@ -336,12 +353,17 @@ library
 						'finish' : 'turtle' position after moving 'distance' from 'start'
 						instantly move 'turtle' from 'start' to 'finish' in ('turtle'’s 'animation layer')
 					'remaining' : 'remaining' - 'speed'
-					pause (1.0 ÷ 'turtle space'’s 'turtle rate') seconds
+					pause 'turtle space'
+					'steps' : 0
 				- now add the "permanent" layer
 				for each 'turtle' in 'turtles' keeping 'index'
 					'start' : 'starting' {'index'}
 					'finish' : 'turtle' position after moving 'n' from 'start'
 					instantly move 'turtle' from 'start' to 'finish' in ('turtle space'’s 'base layer')
+				add 'remaining' to 'steps'
+				if ('steps' > 'speed')
+					pause 'turtle space'
+					'steps' : 'steps' - 'speed'
 
 			=-
 			Turn each turtle in the turtle group 'OBJECT' by 'angle' degrees clockwise.
