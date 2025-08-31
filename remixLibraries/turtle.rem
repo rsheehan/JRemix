@@ -68,6 +68,14 @@ library
 	================
 
 	=-
+	Create a turtle in the 'turtle space'.
+	=-
+	a turtle in 'turtle space' :
+		'turtle' : a turtle
+		place 'turtle' in 'turtle space'
+		'turtle'
+
+	=-
 	Create a turtle.
 	=-
 	a turtle :
@@ -249,6 +257,17 @@ library
 	A turtle group object.
 	Together for parallel operation.
 	================================
+
+	=-
+	Create a group of 'n' turtles in the 'turtle space'.
+	'turtles' in a turtle group can perform the same move and turn
+	instructions simultaneously.
+	They have a speed for the group.
+	=-
+	a group of 'n' turtles in 'turtle space' :
+		'turtles' : a group of 'n' turtles
+		place 'turtles' group in 'turtle space'
+		'turtles'
 
 	=-
 	Create a group of 'n' turtles.

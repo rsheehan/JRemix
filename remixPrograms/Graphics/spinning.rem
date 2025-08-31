@@ -11,7 +11,7 @@ using graphics lib
 		change 'triangle' heading by 2 degrees
 
 	'movement' : every 1 tick
-		change 'triangle' x-pos by 4
+		change 'triangle' x-pos by 2
 
 	animate at 60 ticks per second
 		animate 'movement'

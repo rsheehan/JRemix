@@ -1,0 +1,30 @@
+using graphics lib, turtle lib
+
+	===============
+	Rotating Arrows
+	===============
+
+	'turtle space' : a turtle space in (the graphics panel)
+	
+	RADIUS : 200
+
+	'arrows' : a group of 36 turtles in 'turtle space'
+	prepare 'arrows'
+
+	repeat 180 times
+		animate 'arrows'
+
+	prepare 'arrows' :
+		'angle' : 0
+		for each 'arrow' in 'arrows'
+			'arrow' pen up
+			'arrow'’s 'colour'  : random colour
+			'arrow'’s 'heading' : 'angle' increment by 10
+
+			move 'arrow' RADIUS steps
+			turn 'arrow' -90 degrees
+
+	animate 'arrows' :
+		'arrows'’s 'speed' : 5
+		move 'arrows' (2π × RADIUS ÷ 180) steps
+		turn 'arrows' -2 degrees

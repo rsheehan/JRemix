@@ -369,15 +369,13 @@ public class Graphics extends LibraryExpression {
                 filled = false;
             else
                 fillColour = colorFromRGBorString(fill);
-            final Object type = shapeContext.retrieve("type", false);
-            if (type.equals("shape")) {
-                dealWithShape(filled, fillColour, shapeContext, null, panel);
-            } else if (type.equals("circle")) {
-                dealWithCircle(filled, fillColour, shapeContext, null, panel);
-            } else if (type.equals("line")) {
-                dealWithLine(fillColour, shapeContext, null, panel);
-            } else
-                System.err.println("Bad shape - not added to the graphics panel.");
+            final String type = (String) shapeContext.retrieve("type", false);
+            switch (type) {
+                case "shape" -> dealWithShape(filled, fillColour, shapeContext, null, panel);
+                case "circle" -> dealWithCircle(filled, fillColour, shapeContext, null, panel);
+                case "line" -> dealWithLine(fillColour, shapeContext, null, panel);
+                default -> System.err.println("Bad shape - not added to the graphics panel.");
+            }
             return null;
         }
     }
@@ -423,7 +421,7 @@ public class Graphics extends LibraryExpression {
             double rate = ((Number) context.retrieve("rate", false)).doubleValue();
             Block animation = (Block) context.retrieve("animation", false);
             Block condition = (Block) context.retrieve("condition", false);
-            AnimationBlock animationBlock = new AnimationBlock(context, animation, condition);
+            AnimationBlock animationBlock = new AnimationBlock(animation, condition);
             animationTimer = new Timer((int)(1000/rate), animationBlock);
             animationBlock.setAnimationTimer(animationTimer);
             animationTimer.start();
@@ -436,7 +434,7 @@ public class Graphics extends LibraryExpression {
             private final Block condition;
             private Timer animationTimer;
 
-            AnimationBlock( Context context, Block animationBlock, Block conditionBlock) {
+            AnimationBlock( Block animationBlock, Block conditionBlock) {
                 animation = animationBlock;
                 condition = conditionBlock;
             }

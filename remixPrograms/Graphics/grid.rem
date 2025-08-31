@@ -6,7 +6,6 @@ using graphics lib
 	refresh 'panel'
 
 	across lines in 'panel':
-		"starting"↲
 		for each 'row' from 10 to (STD-HEIGHT - 10) in steps of 10
 			'line': a BLUE line from {10, 'row'} to {STD-WIDTH - 10, 'row'}
 			'line'’s 'width': 1
