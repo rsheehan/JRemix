@@ -3,24 +3,21 @@ using graphics lib, turtle lib
 	'the window' : the graphics panel
 	'turtle space' : a turtle space in 'the window'
 
-	repeat
+	repeat 20 times
 		star explosion in 'turtle space'
-	… 20 times
-
 
 star explosion in 'space' :
 	'turtles' : a group of 40 turtles
-	'turtles' speed (5 + (random 10))
 	'angle' : 0
 	'point' : random turtle point
 	for each 'turtle' in 'turtles'
-		'turtle's 'heading' : add 9 to 'angle'
-		'turtle's 'colour' : random colour
-		'turtle's 'position' : 'point'
+		'turtle' heading (add 9 to 'angle')
+		'turtle' colour (random colour)
+		'turtle' position 'point'
 	place 'turtles' group in 'space'
 
-	'size' : random from 50 to 200
-	move 'turtles' 'size' steps
+	'turtles' speed (5 + random 10)
+	move 'turtles' (random from 50 to 200) steps
 	-hide 'turtles'
 	-clear 'space' turtles
 	clear 'space'
