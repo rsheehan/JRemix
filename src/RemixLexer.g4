@@ -72,7 +72,7 @@ LIBRARY				: 'library' ;
 USING				: 'using' ; // using a-library
 SELFREF				: 'ME' | 'MY' ;
 
-CONSTANT			: CAPITAL (CAPITAL | '-')* (DIGIT)* ;
+CONSTANT			: CAPITAL (CAPITAL | '-' | DIGIT)* ;
 IDENTIFIER			: '\'' FIRSTCHAR IDCHAR* '\''
 					| '#' FIRSTCHAR CHARACTER* ;
 WORD				: FIRSTCHAR CHARACTER* ;

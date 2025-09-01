@@ -392,8 +392,15 @@ public class RemixEdLexer {
 
     private boolean isConstantWord(String word) {
         boolean constant = true;
+        boolean first = true;
         for (Character ch : word.toCharArray()) {
-            if (!(Character.isUpperCase(ch) || ch == '-')) {
+            if (first) {
+                if (!(Character.isUpperCase(ch))) {
+                    constant = false;
+                    break;
+                }
+                first = false;
+            } else if (!(Character.isUpperCase(ch) || Character.isDigit(ch) || ch == '-')) {
                 constant = false;
                 break;
             }
