@@ -162,18 +162,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 return false;
             }
         }
-        // add "’s " instead of "s" if immediately following "'"
-        // or if after a CAPITAL letter or a closing "}"
-        if (input.equals("s")) {
-            if (offset > 0) {
-                    String prev = getText(offset - 1, 1);
-                if ("'}".contains(prev) || Character.isUpperCase(prev.toCharArray()[0])) {
-                    super.insertString(offset, "’s ", defaultStyle);
-                    textPane.setCaretPosition(offset + 3);
-                    return false;
-                }
-            }
-        }
         // magic add matching close character
         for (String opening : matchingPairs.keySet()) {
             if (input.equals(opening)) { // only insert match if end of line or followed by space
