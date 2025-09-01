@@ -56,9 +56,8 @@ fieldname`. Fields without getters or setters are private to the object.
 More information about Remix can be found in this [presentation](https://github.com/rsheehan/JRemix/blob/main/RemixIntroduction.pdf).
 The first half shows how Remix can be used to develop a program from pseudocode, the second half briefly describes the language.
 
-Here is an animated random landscape program in Remix. N.B. This is how it appears in the Remix editor. In particular note the underlining of variable names.
-<embed src="https://github.com/rsheehan/JRemix/blob/main/landscape.pdf" 
-type="application/pdf" width="100%" height="600px" />
+[Here](https://github.com/rsheehan/JRemix/blob/main/landscape.pdf) is an animated random landscape program in Remix. N.B. This is how it 
+appears in the Remix editor. In particular note the underlining of variable names.
 
 Remix has a simple library system which provides a measure of 
 encapsulation. Libraries can contain both Java and Remix functions as in the 
