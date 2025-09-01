@@ -30,8 +30,8 @@ is the function signature for a function which can be called with any of the fol
     pause turtle for 1 second
 
 Objects are created using the following syntax, and can have automatically generated getter and setter methods for fields (which are otherwise private). Methods which include a "ME" or "MY" parameter, indicating the receiver, are public. Methods without a "ME" or "MY" parameter can only be called from methods in the same object, hence they are private.
-You can access object fields which have getters or setters using 'object' fieldname. Fields 
-without getters or setters are private to the object.
+You can access object fields which have getters or setters using `'object' 
+fieldname`. Fields without getters or setters are private to the object.
 
     create
         'field1' : value
@@ -57,11 +57,8 @@ More information about Remix can be found in this [presentation](https://github.
 The first half shows how Remix can be used to develop a program from pseudocode, the second half briefly describes the language.
 
 Here is an animated random landscape program in Remix. N.B. This is how it appears in the Remix editor. In particular note the underlining of variable names.
-
-![landscape1.png](images/landscape1.png)
-![landscape2.png](images/landscape2.png)
-![landscape3.png](images/landscape3.png)
-![landscape4.png](images/landscape4.png)
+<embed src="https://github.com/rsheehan/JRemix/blob/main/landscape.pdf" 
+type="application/pdf" width="100%" height="600px" />
 
 Remix has a simple library system which provides a measure of 
 encapsulation. Libraries can contain both Java and Remix functions as in the 
