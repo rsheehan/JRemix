@@ -112,7 +112,7 @@ library
 			Sets the animation layer for the turtle
 			and places the turtle in the layer.
 			=======================================
-			MY 'animation layer' 'layer' : ; a setter for the 'animation layer'
+			MY animation layer 'layer' : ; a setter for the 'animation layer'
 				- this is called when a turtle is placed in a turtle space.
 				'animation layer' : 'layer'
 				place ME in 'animation layer'
