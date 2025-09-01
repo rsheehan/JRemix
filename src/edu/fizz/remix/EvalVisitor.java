@@ -290,7 +290,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return identifier(ctx.IDENTIFIER().getText());
     }
 
-    /** functionComment? (setterSignature | getterSignature | methodSignature) COLON EOL? blockOfStatements EOL* */
+    /** functionComment? methodSignature COLON EOL? blockOfStatements EOL* */
     @Override
     public Method visitMethodDefinition(RemixParser.MethodDefinitionContext ctx) {
         // doesn't deal with pass through "::" methods yet
@@ -308,7 +308,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new Method(methSig.getAllNames(), block, methSig.getParameters(), methSig.getBlockParams(), methSig.getSelfRef(), methodComment);
     }
 
-    /** methodSigPart methodSigPart+ */
+    /** methodSigPart+ */
     @Override
     public MethodName visitMethodSignature(RemixParser.MethodSignatureContext ctx) {
         MethodName methodSig = new MethodName();
@@ -325,25 +325,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 methodSig.addBlockParam((String)visit(node));
             }
         }
-        return methodSig;
-    }
-
-    /** SELFREF IDENTIFIER */
-    @Override
-    public MethodName visitGetterSignature(RemixParser.GetterSignatureContext ctx) {
-        MethodName methodSig = new MethodName();
-        methodSig.setSelfRefNow();
-        methodSig.addToName(identifier(ctx.IDENTIFIER().getText()));
-        return methodSig;
-    }
-
-    /** SELFREF IDENTIFIER IDENTIFIER */
-    @Override
-    public MethodName visitSetterSignature(RemixParser.SetterSignatureContext ctx) {
-        MethodName methodSig = new MethodName();
-        methodSig.setSelfRefNow();
-        methodSig.addToName(identifier(ctx.IDENTIFIER(0).getText()));
-        methodSig.addParam(identifier(ctx.IDENTIFIER(1).getText()));
         return methodSig;
     }
 
@@ -627,46 +608,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     public Block visitExprBlock(RemixParser.ExprBlockContext ctx) {
         // this is just the super version, need to go down a level to remove []
         return (Block)visitChildren(ctx);
-    }
-
-    /** getterSetterObject POSSESSIVE IDENTIFIER; */
-    @Override
-    public Expression visitGetterMethodCall(RemixParser.GetterMethodCallContext ctx) {
-        String fileName = RemixREPL.getFileName();
-        int lineNumber = ctx.getStart().getLine() - 1;
-        int lineOffset = ctx.getStart().getCharPositionInLine();
-        FunctionCallExpression getterCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
-        getterCall.addParam((Expression)visit(ctx.getterSetterObject()));
-        getterCall.addToName(identifier(ctx.IDENTIFIER().getText()));
-        return getterCall;
-    }
-
-    /** getterSetterObject POSSESSIVE IDENTIFIER COLON expression */
-    @Override
-    public Expression visitSetterMethodCall(RemixParser.SetterMethodCallContext ctx) {
-        String fileName = RemixREPL.getFileName();
-        int lineNumber = ctx.getStart().getLine() - 1;
-        int lineOffset = ctx.getStart().getCharPositionInLine();
-        FunctionCallExpression setterCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
-        setterCall.addParam((Expression)visit(ctx.getterSetterObject()));
-        setterCall.addToName(identifier(ctx.IDENTIFIER().getText()));
-        // now add the expression
-        setterCall.addParam((Expression) visit(ctx.expression()));
-        return setterCall;
-    }
-
-    /** IDENTIFIER (from getterSetterObject) */
-    @Override
-    public Expression visitIdentifierGetterSetter(RemixParser.IdentifierGetterSetterContext ctx) {
-        String varName = identifier(ctx.IDENTIFIER().getText());
-        return new VarValueExpression(varName);
-    }
-
-    /** CONSTANT (from getterSetterObject) */
-    @Override
-    public Expression visitConstantGetterSetter(RemixParser.ConstantGetterSetterContext ctx) {
-        String constantName = ctx.CONSTANT().getText();
-        return new ConstantValueExpression(constantName);
     }
 
     /** IDENTIFIER (from callPart) */

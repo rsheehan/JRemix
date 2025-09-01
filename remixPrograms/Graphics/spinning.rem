@@ -3,8 +3,8 @@ using graphics lib
 	'animation layer' : 'the window' next layer
 
 	'triangle' : a triangle
-	'triangle's 'size' : 100
-	'triangle's 'position' : { 0, STD-HEIGHT ÷ 2 }
+	'triangle' size 100
+	'triangle' position { 0, STD-HEIGHT ÷ 2 }
 	place 'triangle' in 'animation layer'
 
 	'rotation' : every 2 ticks
@@ -18,6 +18,6 @@ using graphics lib
 		animate 'rotation'
 		update 'the window'
 	… until
-		('triangle's 'x-pos') ≥ STD-WIDTH
+		('triangle' x-pos) ≥ STD-WIDTH
 
 "Finished" ↲

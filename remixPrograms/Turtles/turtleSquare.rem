@@ -4,10 +4,10 @@ using graphics lib, turtle lib
 	'turtle space' : a turtle space in 'the window'
 
 	'turtle' : a turtle
-	'turtle's 'speed' : 20
+	'turtle' speed 20
 	place 'turtle' in 'turtle space'
 	repeat 8 times
-		'turtle's 'colour' : random colour
+		'turtle' colour (random colour)
 		'turtle' square 200
 		turn 'turtle' 45 degrees
 	hide 'turtle'

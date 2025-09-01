@@ -4,11 +4,11 @@ using graphics lib, turtle lib
 	'turtle space' : a turtle space in 'the window'
 
 	'turtles' : a group of 16 turtles
-	'turtles's 'speed' : 40
+	'turtles' speed 40
 	'angle' : 0
 	for each 'turtle' in 'turtles'
-		'turtle's 'colour' : random colour
-		'turtle's 'heading' : add 22.5 to 'angle'
+		'turtle' colour  (random colour)
+		'turtle' heading (add 22.5 to 'angle')
 	place 'turtles' group in 'turtle space'
 
 	'turtles' pattern

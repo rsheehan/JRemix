@@ -17,8 +17,8 @@ library
 				- Now it sets the time between parts of an unfinished
 				- move command. See "move 'turtle' 'n' steps"
 
-			MY 'base layer' :
-				'the window'’s 'base layer'
+			MY base layer :
+				'the window' base layer
 
 			=-
 			Update the turtle space 'OBJECT'.
@@ -30,15 +30,15 @@ library
 			Place the 'turtle' in the turtle space 'OBJECT'.
 			=-
 			place 'turtle' in ME :
-				'turtle'’s 'turtle space' : ME
-				'turtle'’s 'animation layer' : 'the window' next layer
+				'turtle' turtle space ME
+				'turtle' animation layer ('the window' next layer)
 				update 'the window'
 
 			=-
 			Place the 'turtle group' in the turtle space 'OBJECT'.
 			=-
 			place 'turtle group' group in ME :
-				'turtle group'’s 'turtle space' : ME
+				'turtle group' turtle space ME
 
 			=-
 			Clear the turtle space 'OBJECT'.
@@ -98,11 +98,13 @@ library
 			'speed' : 10
 			'steps' : 0 ; used with 'speed' when moving
 
-			getter
+			getters/setters
 				'animation layer'
-				'pen down'
 				'speed'
-				
+
+			getters
+				'pen down'
+
 			setter
 				'turtle space'
 
@@ -120,26 +122,26 @@ library
 			and the heading is in degrees turning anticlockwise from the right.
 			====================================================================
 			
-			MY 'speed' 'new speed' : ; the 'speed' setter
+			MY speed 'new speed' : ; the 'speed' setter
 				'speed' : 'new speed'
 				'steps' : 0 ; restart step count when speed is changed
 
-			MY 'position' :
+			MY position :
 				panel coordinate 'position' to turtle coordinate
 
-			MY 'position' 'turtle coordinate' :
+			MY position 'turtle coordinate' :
 				'position' : turtle coordinate 'turtle coordinate' to panel coordinate
 
-			MY 'heading' :
+			MY heading :
 				('heading' radians as degrees) heading to direction
 
-			MY 'heading' 'angle' :
+			MY heading 'angle' :
 				'heading' : ('angle' heading to direction) degrees as radians
 
-			MY 'window position' : ; in panel coordinates not turtle coordinates
+			MY window position : ; in panel coordinates not turtle coordinates
 				'position'
 
-			MY 'window position' 'the position' : ; in panel coordinates not turtle coordinates
+			MY window position 'the position' : ; in panel coordinates not turtle coordinates
 				'position' : 'the position'
 
 			=-
@@ -215,7 +217,7 @@ library
 					'steps' : 0
 				- now add the "permanent" layer
 				'finish' : MY position after moving 'n' from 'start'
-				instantly move ME from 'start' to 'finish' in ('turtle space'’s 'base layer')
+				instantly move ME from 'start' to 'finish' in ('turtle space' base layer)
 				add 'remaining' to 'steps'
 				if ('steps' > 'speed')
 					pause 'turtle space'
@@ -301,7 +303,7 @@ library
 			getter
 				'speed'
 			
-			MY 'speed' 'new speed' : ; the 'speed' setter
+			MY speed 'new speed' : ; the 'speed' setter
 				'speed' : 'new speed'
 				'steps' : 0 ; restart step count when speed is changed
 
@@ -315,7 +317,7 @@ library
 			Not only sets the turtle space but adds all
 			turtles to it.
 			===========================================
-			MY 'turtle space' 'space' : ; a setter for 'turtle space'
+			MY turtle space 'space' : ; a setter for 'turtle space'
 				'turtle space' : 'space'
 				for each 'turtle' in 'turtles'
 					place 'turtle' in 'turtle space'
@@ -343,7 +345,7 @@ library
 				'remaining' : 'n'
 				'distance' : 0
 				'starting' : apply
-					'turtle'’s 'window position'
+					'turtle' window position
 				… to each 'turtle' from 'turtles'
 
 				while ['remaining' > 'speed']
@@ -351,7 +353,7 @@ library
 					for each 'turtle' in 'turtles' keeping 'index'
 						'start' : 'starting' {'index'} ; initial position
 						'finish' : 'turtle' position after moving 'distance' from 'start'
-						instantly move 'turtle' from 'start' to 'finish' in ('turtle'’s 'animation layer')
+						instantly move 'turtle' from 'start' to 'finish' in ('turtle' animation layer)
 					'remaining' : 'remaining' - 'speed'
 					pause 'turtle space'
 					'steps' : 0
@@ -359,7 +361,7 @@ library
 				for each 'turtle' in 'turtles' keeping 'index'
 					'start' : 'starting' {'index'}
 					'finish' : 'turtle' position after moving 'n' from 'start'
-					instantly move 'turtle' from 'start' to 'finish' in ('turtle space'’s 'base layer')
+					instantly move 'turtle' from 'start' to 'finish' in ('turtle space' base layer)
 				add 'remaining' to 'steps'
 				if ('steps' > 'speed')
 					pause 'turtle space'
@@ -370,7 +372,7 @@ library
 			=-
 			turn ME 'angle' degrees :
 				for each 'turtle' in 'turtles'
-					'turtle'’s 'heading' : 'turtle'’s 'heading' - 'angle'
+					'turtle' heading ('turtle' heading - 'angle')
 				update 'turtle space'
 
 			=-

@@ -4,19 +4,19 @@ using graphics lib, turtle lib
 	'turtle space' : a turtle space in 'the window'
 
 	'turtles' : a group of 20 turtles
-	'turtles'’s 'speed' : 5
+	'turtles' speed 5
 
 	for each 'turtle' in 'turtles'
-		'turtle's 'colour' : random colour
-		'turtle's 'position' : random turtle point
-		'turtle's 'heading' : random angle
+		'turtle' colour   (random colour)
+		'turtle' position (random turtle point)
+		'turtle' heading  (random angle)
 	place 'turtles' group in 'turtle space'
 
 	'turtles' square 150
 
 	for each 'turtle' in 'turtles'
-		'turtle's 'position' : random turtle point
-		'turtle's 'heading' : random angle
+		'turtle' position (random turtle point)
+		'turtle' heading  (random angle)
 
 	'turtles' triangle 150
 	hide 'turtles'

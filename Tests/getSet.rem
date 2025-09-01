@@ -5,21 +5,21 @@ a person :
 		getter
 			'name'
 
-		MY 'name' : ; overrides getter
+		MY name : ; overrides getter
 			'name' ⊕ 'name'
 
-		MY 'name' ('value') :
+		MY name 'value' :
 			'name' : "*" ⊕ 'value' ⊕ "*"
 
 'P' : a person
 
 test {
 	"Overwritten user defined getter."
-		'P'’s 'name'
+		'P' name
 	… expected "RobertRobert"
 
 	"User defined setter."
-		'P'’s 'name' : "Peter"
-		'P'’s 'name'
+		'P' name "Peter"
+		'P' name
 	… expected "*Peter**Peter*"
 }

@@ -20,7 +20,7 @@ add three to 'value' :
 			inc 'value'
 
 		MY inner value :
-			'caller'’s 'value'
+			'caller' value
 
 		exec ME :
 			exec 'caller'
@@ -32,7 +32,7 @@ add three to 'value' :
 test {
 	"Outer instance variable"
 		'object' : add three to 2
-		'object'’s 'value'
+		'object' value
 	… expected 3
 
 	"Inner instance variable"

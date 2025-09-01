@@ -1,3 +1,5 @@
+'L' : {}
+
 test {
 	"Auto list expansion"
 		'L' {4} : 1
@@ -22,6 +24,8 @@ test {
 	… expected null
 }
 ↲
+'M' : null
+
 test {
 	"Auto map creation"
 		'M' {"x"} : "zero"
@@ -40,6 +44,8 @@ test {
 
 }
 ↲
+'Mx' : null
+
 test {
 	"Auto mixed expansion"
 		'Mx' {3}{"i"} : 7

@@ -72,8 +72,6 @@ LIBRARY				: 'library' ;
 USING				: 'using' ; // using a-library
 SELFREF				: 'ME' | 'MY' ;
 
-POSSESSIVE			: '’'? 's' ; // used for field access e.g. 'Robert''s 'age'
-
 CONSTANT			: CAPITAL (CAPITAL | '-')* (DIGIT)* ;
 IDENTIFIER			: '\'' FIRSTCHAR IDCHAR* '\''
 					| '#' FIRSTCHAR CHARACTER* ;

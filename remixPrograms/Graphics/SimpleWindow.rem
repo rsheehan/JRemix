@@ -4,17 +4,17 @@ using graphics lib
 	'animation layer' ↲
 	repeat
 		'shape' : a square
-		'shape's 'colour'   : random colour
-		'shape's 'position' : random point
-		'shape's 'size'     : random from 10 to 100
-		'shape's 'heading'  : random from 1 to 90
+		'shape' colour   (random colour)
+		'shape' position (random point)
+		'shape' size     (random from 10 to 100)
+		'shape' heading  (random from 1 to 90)
 		place 'shape' in 'animation layer'
 	… 100 times
 
 	'turn' : 2
 	'degree' : 0
 	animate at 60 ticks per second
-		for each 'shape' in ('animation layer's 'shapes')
+		for each 'shape' in ('animation layer' shapes)
 			change 'shape' heading by 'turn' degrees
 		update 'the window'
 		'degree' : 'degree' + 'turn'

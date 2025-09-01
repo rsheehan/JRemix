@@ -2,9 +2,9 @@ using graphics lib
 	'the window' : the graphics panel
 
 	'square' : a square
-	'square's 'size' : 200
-	'square's 'heading' : π ÷ 4
-	'square's 'colour' : GREEN
+	'square' size     200
+	'square' heading  π ÷ 4
+	'square' colour   GREEN
 	place 'square' in 'the window'
 
 	'rectangle' : a BLUE box of 200 x 200 at THE-CENTRE-POINT

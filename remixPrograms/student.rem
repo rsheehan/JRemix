@@ -21,12 +21,12 @@
 "student data" ↲
 "============" ↲
 for each 'student' in 'students'
-	'student's 'name' ↲
-	'student's 'age' ↲
-	'student's 'languages' ↲
+	'student' name ↲
+	'student' age ↲
+	'student' languages ↲
 	↲
 
-merge {"BASIC" : "Expert"} into ('students' {2}s 'languages')
+merge {"BASIC" : "Expert"} into (('students' {2}) languages)
 
 "Expertise" ↲
 "=========" ↲

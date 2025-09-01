@@ -26,18 +26,18 @@ an arrow:
 		{ 0,-2 }
 		{ 2, 2 }
 	}
-	'arrow'’s 'colour' : random colour
+	'arrow' colour (random colour)
 	'arrow'
 
 position 'the arrow' at 'angle' :
 	'x' : CENTRE-X + 200 × cosine 'angle'
 	'y' : CENTRE-Y - 200 × sine 'angle'
-	'the arrow'’s 'position' : { 'x', 'y' }
-	'the arrow'’s 'heading' : -'angle'
+	'the arrow' position { 'x', 'y' }
+	'the arrow' heading (-'angle')
 
 animate 'arrows' in 'the window' :
 	animate 'the window' 180 times at 30 ticks per second
 		for each 'arrow' in 'arrows'
-			'angle' : -('arrow'’s 'heading')
+			'angle' : -('arrow' heading)
 			add (2 degrees as radians) to 'angle'
 			position 'arrow' at 'angle'

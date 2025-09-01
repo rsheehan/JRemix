@@ -5,11 +5,11 @@ using graphics lib, turtle lib
 
 	'turtle' : a turtle
 	place 'turtle' in 'turtle space'
-	'turtle's 'speed' : 100
+	'turtle' speed 100
 
 	'turtle' random walk
 
 'turtle' random walk :
 	repeat 100 times
-		'turtle's 'colour' : random colour
+		'turtle' colour (random colour)
 		move 'turtle' to (random turtle point)

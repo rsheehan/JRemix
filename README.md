@@ -30,9 +30,7 @@ is the function signature for a function which can be called with any of the fol
     pause turtle for 1 second
 
 Objects are created using the following syntax, and can have automatically generated getter and setter methods for fields (which are otherwise private). Methods which include a "ME" or "MY" parameter, indicating the receiver, are public. Methods without a "ME" or "MY" parameter can only be called from methods in the same object, hence they are private.
-You can access object fields which have getters or setters using the possessive 
-apostrophe e.g. 'object'’s 'fieldname'. (This looks better in the Remix 
-editor which distinguishes between single quotes and the apostrophe.) Fields 
+You can access object fields which have getters or setters using 'object' fieldname. Fields 
 without getters or setters are private to the object.
 
     create

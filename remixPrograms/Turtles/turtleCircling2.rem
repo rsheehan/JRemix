@@ -19,8 +19,8 @@ using graphics lib, turtle lib
 		'angle' : 0
 		for each 'arrow' in 'arrows'
 			'arrow' pen up
-			'arrow'’s 'colour'  : random colour
-			'arrow'’s 'heading' : 'angle' increment by 10
+			'arrow' colour  (random colour)
+			'arrow' heading ('angle' increment by 10)
 
 			move 'arrow' RADIUS steps
 			turn 'arrow' -90 degrees

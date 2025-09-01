@@ -1,10 +1,10 @@
 a b :
 	create
-		'X' : 1
-		'Y' : 99
+		'x' : 1
+		'y' : 99
 
 		getters/setters
-			'X', 'Y'
+			'x', 'y'
 
 'Z' : a b
 
@@ -16,33 +16,33 @@ a b :
 
 test {
 	"Get simple possessive 1"
-		'Z'’s 'X'
+		'Z' x
 	… expected 1
 
 	"Get simple possessive 2"
-		'Z'’s 'Y'
+		'Z' y
 	… expected 99
 
 	"Set simple possessive"
-		'Z'’s 'Y' : 2
-		'Z'’s 'Y'
+		'Z' y 2
+		'Z' y
 	… expected 2
 
 	"Get list item possessive"
-		'list' {1}’s 'Y'
+		('list' {1}) y
 	… expected 99
 
 	"Set list item possessive"
-		'list' {1}’s 'X' : 3
-		'list' {1}’s 'X'
+		('list' {1}) x 3
+		('list' {1}) x
 	… expected 3
 
 	"Set list 2D item possessive"
-		'list' {2}{2}’s 'Y' : 4
-		'list' {2}{2}’s 'Y'
+		('list' {2}{2}) y 4
+		('list' {2}{2}) y
 	… expected 4
 	
 	"In binary operation"
-		'list' {1}’s 'X' + 'list' {2}{2}’s 'Y'
+		('list' {1}) x + ('list' {2}{2}) y
 	… expected 7
 }

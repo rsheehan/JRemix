@@ -1,15 +1,15 @@
 using graphics lib, turtle lib
 	'space' : a turtle space in (the graphics panel)
 	TURTLE : a turtle
-	TURTLE’s 'position' : { -350, -350 }
-	TURTLE’s 'speed' : 10000
+	TURTLE position { -350, -350 }
+	TURTLE speed 10000
 	place TURTLE in 'space'
 	for each ('size') from 10 to 700 in steps of 10 
 		draw square of 'size'
 	hide TURTLE
 
 draw square of 'size' :
-	TURTLE’s 'colour' : random colour
+	TURTLE colour (random colour)
 	repeat 4 times
 		move TURTLE 'size' steps
 		turn TURTLE 90 degrees

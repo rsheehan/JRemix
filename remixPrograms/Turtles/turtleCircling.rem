@@ -19,15 +19,15 @@ prepare 'arrows' :
 	'angle' : 0
 	for each 'arrow' in 'arrows'
 		'arrow' pen up
-		'arrow'’s 'colour'  : random colour
-		'arrow'’s 'heading' : 'angle' increment by 10
+		'arrow' colour  (random colour)
+		'arrow' heading ('angle' increment by 10)
 
 move 'arrows' to start positions :
-	'arrows'’s 'speed' : 200
+	'arrows' speed 200
 	move 'arrows' RADIUS steps
 	turn 'arrows' -90 degrees
 
 animate 'arrows' :
-	'arrows'’s 'speed' : 5
+	'arrows' speed 5
 	move 'arrows' (2 × RADIUS × π ÷ 180) steps
 	turn 'arrows' -2 degrees

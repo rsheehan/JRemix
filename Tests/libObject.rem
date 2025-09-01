@@ -4,17 +4,17 @@ using (library
 
 	make an object :
 		create
-			'X' : 3
-			'Y' : 4
+			'x' : 3
+			'y' : 4
 
 			getters
-				'X', 'Y'
+				'x', 'y'
 			setter
-				'Y'
+				'y'
 
 			MY method one :
-				'Z' : 3 + 4
-				'Z' + a function
+				'z' : 3 + 4
+				'z' + a function
 )
 	'O' : make an object
 
@@ -34,11 +34,11 @@ test {
 		'O' method one
 	… expected 29
 	"Getting instance var"
-		'O'’s 'X'
+		'O' x
 	… expected 3
 	"Setting and getting instance var"
-		'O'’s 'Y' : 8
-		'O'’s 'Y'
+		'O' y 8
+		'O' y
 	… expected 8
 }
 

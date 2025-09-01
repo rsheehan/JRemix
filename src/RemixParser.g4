@@ -45,13 +45,11 @@ setter              : SETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* ;
 
 fieldId				: IDENTIFIER ;
 
-methodDefinition	: functionComment? (setterSignature | getterSignature | methodSignature) COLON EOL? blockOfStatements EOL* ;
+methodDefinition	: functionComment? methodSignature COLON EOL? blockOfStatements EOL* ;
 
 // add getterSignature and setterSignature
 // to deal with user defined getters and setters
 methodSignature		: methodSigPart+ ;
-getterSignature		: SELFREF IDENTIFIER ;
-setterSignature		: SELFREF IDENTIFIER (IDENTIFIER | LPAREN IDENTIFIER RPAREN) ;
 
 methodSigPart		: WORD						# methSigWord
 					| IDENTIFIER				# methSigParam
@@ -108,18 +106,7 @@ expression			: MINUS expression						# exprMinus
 					| library				# exprLibrary
 					| createObject			# exprObject
 					| extendObject			# exprExtend
-					| getterMethodCall		# exprGetterMethod
-					| setterMethodCall      # exprSetterMethod
 					| LPAREN EOL* expression EOL* RPAREN	# exprParen // after functionCall
-					;
-
-getterMethodCall	: getterSetterObject POSSESSIVE IDENTIFIER ;
-
-setterMethodCall    : getterSetterObject POSSESSIVE IDENTIFIER COLON expression	;
-
-getterSetterObject	: IDENTIFIER	# identifierGetterSetter
-					| CONSTANT		# constantGetterSetter
-					| listElement	# listElementGetterSetter // uses listElement only
 					;
 
 listElement			: IDENTIFIER listPart+ ; // access a list element

@@ -15,9 +15,9 @@ make a cloud :
 			… ⊕ " 'across': " ⊕ 'across'
 
 'cloud' : make a cloud
-"The cloud's base is ", 'cloud's 'base' ↲
+"The cloud's base is ", 'cloud' base ↲
 move 'cloud'
-"The cloud's base is now ", 'cloud's 'base' ↲
+"The cloud's base is now ", 'cloud' base ↲
 
 'another cloud' : make a cloud
 

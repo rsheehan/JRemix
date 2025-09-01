@@ -140,18 +140,6 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMethodSignature(RemixParser.MethodSignatureContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link RemixParser#getterSignature}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGetterSignature(RemixParser.GetterSignatureContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link RemixParser#setterSignature}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSetterSignature(RemixParser.SetterSignatureContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code methSigWord}
 	 * labeled alternative in {@link RemixParser#methodSigPart}.
 	 * @param ctx the parse tree
@@ -437,13 +425,6 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprLibrary(RemixParser.ExprLibraryContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code exprGetterMethod}
-	 * labeled alternative in {@link RemixParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprGetterMethod(RemixParser.ExprGetterMethodContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code exprGreater}
 	 * labeled alternative in {@link RemixParser#expression}.
 	 * @param ctx the parse tree
@@ -464,46 +445,6 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExprFncCall(RemixParser.ExprFncCallContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code exprSetterMethod}
-	 * labeled alternative in {@link RemixParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprSetterMethod(RemixParser.ExprSetterMethodContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link RemixParser#getterMethodCall}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGetterMethodCall(RemixParser.GetterMethodCallContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link RemixParser#setterMethodCall}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSetterMethodCall(RemixParser.SetterMethodCallContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code identifierGetterSetter}
-	 * labeled alternative in {@link RemixParser#getterSetterObject}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIdentifierGetterSetter(RemixParser.IdentifierGetterSetterContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code constantGetterSetter}
-	 * labeled alternative in {@link RemixParser#getterSetterObject}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitConstantGetterSetter(RemixParser.ConstantGetterSetterContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code listElementGetterSetter}
-	 * labeled alternative in {@link RemixParser#getterSetterObject}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitListElementGetterSetter(RemixParser.ListElementGetterSetterContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RemixParser#listElement}.
 	 * @param ctx the parse tree

@@ -10,15 +10,15 @@ using graphics lib, turtle lib
 	'angle' : 0
 	for each 'arrow' in 'arrows'
 		'arrow' pen down
-		'arrow's 'colour' : random colour
-		'arrow's 'heading' : 'angle'
+		'arrow' colour (random colour)
+		'arrow' heading 'angle'
 		add 10 to 'angle'
 
-	'arrows's 'speed' : 200
+	'arrows' speed 200
 	RADIUS : 200
 	position 'arrows'
 
-	'arrows'’s 'speed' : 10
+	'arrows' speed 10
 	STEP : 10 ; 2 × RADIUS × π ÷ 180
 	repeat 180 times
 		animate 'arrows'

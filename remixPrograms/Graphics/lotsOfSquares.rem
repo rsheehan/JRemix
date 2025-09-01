@@ -12,8 +12,8 @@ using graphics lib
 
 	for each 'angle' from 0 to 80 in steps of 10
 		's' : copy 'square'
-		's'’s 'heading' : 'angle' degrees as radians
-		's'’s 'colour' : random colour
+		's' heading ('angle' degrees as radians)
+		's' colour (random colour)
 		place 's' in 'the window'
 
 	'arrow pts' : {
@@ -27,9 +27,9 @@ using graphics lib
 		"x" : 800
 		"y" : STD-HEIGHT ÷ 2
 	}
-	'arrow'’s 'heading' : 1.5π
-	'arrow'’s 'outline colour' : RED
-	'arrow'’s 'colour' : null
+	'arrow' heading 1.5π
+	'arrow' outline colour RED
+	'arrow' colour null
 
 	place 'arrow' in 'the window'
 	update 'the window'

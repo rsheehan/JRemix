@@ -7,7 +7,7 @@ using graphics lib
 
 	across lines in 'panel':
 		'line': a BLUE line from {10, 10} to {STD-WIDTH - 10, 10}
-		'line'’s 'width': 1
+		'line' width 1
 
 		for each 'row' from 0 to (STD-HEIGHT ÷ 10 - 2)
 			add 'line' to the 'panel'
@@ -15,7 +15,7 @@ using graphics lib
 
 	down lines in 'panel':
 		'line': a BLUE line from {10, 10} to {10, STD-HEIGHT - 10}
-		'line'’s 'width' : 1
+		'line' width 1
 		
 		for each 'col' from 0 to (STD-WIDTH ÷ 10 - 2)
 			add 'line' to the 'panel'

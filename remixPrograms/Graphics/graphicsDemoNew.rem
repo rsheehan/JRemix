@@ -5,31 +5,31 @@ using graphics lib
 
 	repeat
 		'shape' : a square
-		'shape'’s 'colour'   : random colour
-		'shape'’s 'position' : random point
-		'shape'’s 'size'     : random from 10 to 100
-		'shape'’s 'heading'  : random from 1 to 90
+		'shape' colour    (random colour)
+		'shape' position  (random point)
+		'shape' size      (random from 10 to 100)
+		'shape' heading   (random from 1 to 90)
 		place 'shape' in 'layer2'
 	… 50 times
 
 	for each 'y-pos' from 40 to (STD-HEIGHT - 20) in steps of 80
 		'arrow' : a triangle
-		'arrow'’s 'size' : 20
-		'arrow'’s 'position' : { 0, 'y-pos' }
+		'arrow' size 20
+		'arrow' position { 0, 'y-pos' }
 		place 'arrow' in 'layer1'
 
 	'squares rotation' : every 1 tick
-		for each 'square' in ('layer2'’s 'shapes')
+		for each 'square' in ('layer2' shapes)
 			change 'square' heading by 2 degrees
 
 	'arrows movement' : every 2 ticks
-		for each 'arrow' in ('layer1'’s 'shapes')
+		for each 'arrow' in ('layer1' shapes)
 			change 'arrow' x-pos by 5
 
 	animate at 50 ticks per second
 		animate 'squares rotation'
 		animate 'arrows movement'
 		update 'window'
-	… until [ 'arrow'’s 'x-pos' ≥ STD-WIDTH ]
+	… until [ 'arrow' x-pos ≥ STD-WIDTH ]
 
 "Finished" ↲

@@ -140,10 +140,10 @@ library "edu.fizz.remix.libraries.Graphics"
 			getter/setter
 				'position'
 
-			MY 'x-pos' : ; a fake getter
+			MY x-pos : ; a fake getter
 				'position'{1}
 
-			MY 'y-pos' : ; a fake getter
+			MY y-pos : ; a fake getter
 				'position'{2}
 
 			=-
@@ -250,12 +250,12 @@ library "edu.fizz.remix.libraries.Graphics"
 		'panel' : create
 			'JGraphics' : 'JGraphics panel'
 			'layers' : { a base layer for 'JGraphics panel' }
-			'colour' : DARK-BLUE ; set by "MY 'colour' 'the colour'"
+			'colour' : DARK-BLUE ; set by "MY colour 'the colour'"
 
 			getters
 				'layers', 'colour'
 
-			MY 'colour' 'the colour' : ; this is a setter
+			MY colour 'the colour' : ; this is a setter
 				'colour' : 'the colour'
 				make the 'JGraphics' background 'colour' ; Java
 
@@ -270,14 +270,14 @@ library "edu.fizz.remix.libraries.Graphics"
 			=-
 			Get the permanent base layer for the panel 'OBJECT'.
 			=-
-			MY 'base layer' : ; a fake getter
-				'layers' {1}
+			MY base layer : ; a fake getter
+				'layers'{1}
 
 			=-
 			Place the 'shape' in the base layer of the panel 'OBJECT'.
 			=-
 			place 'shape' in ME :
-				place 'shape' in ('layers' {1})
+				place 'shape' in ('layers'{1})
 
 			=-
 			Update the panel 'OBJECT'.
@@ -304,7 +304,7 @@ library "edu.fizz.remix.libraries.Graphics"
 			=-
 			clear ME leaving the base layer :
 				make the 'JGraphics' background 'colour'
-				'layers' : { 'layers' {1} }
+				'layers' : { 'layers'{1} }
 				update ME
 
 		clear 'panel'
@@ -370,7 +370,7 @@ library "edu.fizz.remix.libraries.Graphics"
 		create
 			'JGraphics panel' : 'JGraphics panel' ; base layer can change so need this
 
-			MY 'shapes' : ; a getter for shapes which are not stored
+			MY shapes : ; a getter for shapes which are not stored
 				{ }
 
 			place 'shape' in ME :
