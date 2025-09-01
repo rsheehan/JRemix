@@ -13,9 +13,9 @@ library
 		create
 			'the window' : 'the window'
 			'turtle rate' : 100
-				- The 'turtle rate' was the number of frames per second.
-				- Now it sets the time between parts of an unfinished
-				- move command. See "move 'turtle' 'n' steps"
+				- The 'turtle rate' is the time delay fraction of a second
+				- after a turtle has moved as many steps as its speed.
+				- See "move 'turtle' 'n' steps"
 
 			MY base layer :
 				'the window' base layer
