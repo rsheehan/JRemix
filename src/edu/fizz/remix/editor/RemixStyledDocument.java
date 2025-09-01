@@ -23,8 +23,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             Map.entry("sqrd", "²"),
             Map.entry("\\n", "↲"),
             Map.entry("...", "…"),
-            Map.entry(" (+", " ⊕"),
-            Map.entry("using", "using  lib []")
+            Map.entry(" (+", " ⊕")
     );
     private final Map<String, String> matchingPairs = Map.of(
             "(", ")",
@@ -155,10 +154,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         // magic replace some operators
         for (String target : operators.keySet()) {
             if (replaceOperator(target, input, offset)) {
-                if (target.equals("using")) {
-                    textPane.setSelectionStart(offset + 2);
-                    textPane.setSelectionEnd(offset + 2);
-                }
                 return false;
             }
         }
