@@ -3,7 +3,7 @@ using graphics lib
 
 	'square' : a square
 	'square' size     200
-	'square' heading  π ÷ 4
+	'square' heading  (π ÷ 4)
 	'square' colour   GREEN
 	place 'square' in 'the window'
 
