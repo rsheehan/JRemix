@@ -10,7 +10,7 @@ public class SetterAssignment extends AssignmentStatement {
 
     @Override
     public Object evaluate(Context context) throws ReturnException {
-        Object result = context.retrieve("_expression", false);
+        Object result = context.retrieve("expression", false);
         context.assign(variableName, result);
         return result;
     }
