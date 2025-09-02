@@ -17,6 +17,9 @@ library
 				- after a turtle has moved as many steps as its speed.
 				- See "move 'turtle' 'n' steps"
 
+			=-
+			The base layer of the turtle space 'OBJECT'.
+			=-
 			MY base layer :
 				'the window' base layer
 
@@ -96,8 +99,10 @@ library
 			'speed' : 10
 			'steps' : 0 ; used with 'speed' when moving
 
-			getters/setters
+			getter/setter
 				'animation layer'
+
+			getter
 				'speed'
 
 			setter

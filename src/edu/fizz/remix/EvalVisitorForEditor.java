@@ -131,7 +131,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         for (int i = 0; i < ctx.getChildCount(); i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.StatementContext) {
-                Expression statement = (Expression)visit(node);
+                visit(node);
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 usingBlockLibrary.addFunction(function);
@@ -164,7 +164,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         }
         FunctionName<String> funcSig = (FunctionName<String>)visit(ctx.functionSignature());
         try {
-            Block block = (Block)visit(ctx.blockOfStatements()); // need to visit to find create and extend expressions
+            visit(ctx.blockOfStatements()); // need to visit to find create and extend expressions
         } catch (NullPointerException e) {
         }
         return new RemixFunction(
@@ -233,6 +233,32 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             if (node instanceof RemixParser.FieldContext) {
                 FieldAssignmentStatement initStmnt = (FieldAssignmentStatement)visit(node);
                 objectExpr.addVarInitialization(initStmnt);
+
+            } else if (node instanceof RemixParser.GetterSetterContext) {
+                List<String> getSetNames = (List<String>)visit(node);
+                for (String name : getSetNames) {
+                    String getMethodName = methodTable.createGetter(name);
+                    Method getter = methodTable.get(getMethodName);
+                    LibraryExpression.addMethodNameEditing(getMethodName, 1, getter);
+                    String setMethodName = methodTable.createSetter(name);
+                    Method setter = methodTable.get(setMethodName);
+                    LibraryExpression.addMethodNameEditing(setMethodName, 1, setter);
+                }
+            } else if (node instanceof RemixParser.GetterContext) {
+                List<String> getterNames = (List<String>)visit(node);
+                for (String name : getterNames) {
+                    String methodName = methodTable.createGetter(name);
+                    Method getter = methodTable.get(methodName);
+                    LibraryExpression.addMethodNameEditing(methodName, 1, getter);
+                }
+            }else if (node instanceof RemixParser.SetterContext) {
+                List<String> setterNames = (List<String>)visit(node);
+                for (String name : setterNames) {
+                    String methodName = methodTable.createSetter(name);
+                    Method setter = methodTable.get(methodName);
+                    LibraryExpression.addMethodNameEditing(methodName, 1, setter);
+                }
+
             } else if (node instanceof RemixParser.MethodDefinitionContext) {
                 Method method = (Method)visit(node);
                 if (method != null) { // visiting an incomplete method definition returns null

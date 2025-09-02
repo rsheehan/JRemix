@@ -26,7 +26,8 @@ public class MethodTable extends HashMap<String, Method> {
         methodSig.addToName(varName);
         Block block = new Block();
         block.addStatement(new VarValueExpression(varName));
-        addMethod(new Method(methodSig.getAllNames(), block, methodSig.getParameters(), methodSig.getBlockParams(), 1, null));
+        String comment = "Get " + varName + " of the 'OBJECT'." ;
+        addMethod(new Method(methodSig.getAllNames(), block, methodSig.getParameters(), methodSig.getBlockParams(), 1, comment));
         return methodSig.singleName();
     }
 
@@ -36,10 +37,11 @@ public class MethodTable extends HashMap<String, Method> {
         MethodName methodSig = new MethodName();
         methodSig.setSelfRefNow();
         methodSig.addToName(varName);
-        methodSig.addParam("_expression"); // a formal parameter
+        methodSig.addParam("expression"); // a formal parameter
         Block block = new Block();
         block.addStatement(new SetterAssignment(varName));
-        addMethod(new Method(methodSig.getAllNames(), block, methodSig.getParameters(), methodSig.getBlockParams(), 1, null));
+        String comment = "Set " + varName + " of the 'OBJECT'." ;
+        addMethod(new Method(methodSig.getAllNames(), block, methodSig.getParameters(), methodSig.getBlockParams(), 1, comment));
         return methodSig.singleName();
     }
 }
