@@ -1,6 +1,6 @@
-=============================
+===============================
 'turtle' Operations and Objects
-=============================
+===============================
 library
 
 	=-
@@ -83,14 +83,12 @@ library
 	Create a turtle.
 	=-
 	a turtle :
-		'turtle shape' : a shape from {
+		extend a shape from {
 			{ 0, 1 }
 			{-2, 2 }
 			{ 0,-2 }
 			{ 2, 2 }
 		}
-
-		'turtle' : extend 'turtle shape'
 			'turtle space' : null
 			'animation layer' : null ; its own animation layer
 			'pen down' : true
@@ -102,16 +100,13 @@ library
 				'animation layer'
 				'speed'
 
-			getters
-				'pen down'
-
 			setter
 				'turtle space'
 
-			=======================================
-			Sets the animation layer for the turtle
-			and places the turtle in the layer.
-			=======================================
+			=-
+			Set the animation 'layer' for the turtle 'OBJECT'.
+			Places the turtle in the layer.
+			=-
 			MY animation layer 'layer' : ; a setter for the 'animation layer'
 				- this is called when a turtle is placed in a turtle space.
 				'animation layer' : 'layer'
@@ -121,28 +116,51 @@ library
 			'turtle' graphics have { 0, 0 } at the centre of the window
 			and the heading is in degrees turning anticlockwise from the right.
 			====================================================================
-			
+
+			=-
+			Set the speed of the turtle 'OBJECT'.
+			=-
 			MY speed 'new speed' : ; the 'speed' setter
 				'speed' : 'new speed'
 				'steps' : 0 ; restart step count when speed is changed
 
+			=-
+			The position of the turtle 'OBJECT' in turtle coordinates.
+			=-
 			MY position :
 				panel coordinate 'position' to turtle coordinate
 
+			=-
+			Set the position of the turtle 'OBJECT' in turtle coordinates.
+			=-
 			MY position 'turtle coordinate' :
 				'position' : turtle coordinate 'turtle coordinate' to panel coordinate
 
+			=-
+			The heading in degrees of the turtle 'OBJECT'.
+			=-
 			MY heading :
 				('heading' radians as degrees) heading to direction
 
+			=-
+			Set the heading of the turtle 'OBJECT' to 'angle' degrees.
+			=-
 			MY heading 'angle' :
 				'heading' : ('angle' heading to direction) degrees as radians
 
-			MY window position : ; in panel coordinates not turtle coordinates
+			=-
+			The window position of the turtle 'OBJECT'.
+			A window position is in the panel coordinates.
+			=-
+			MY window position :
 				'position'
 
-			MY window position 'the position' : ; in panel coordinates not turtle coordinates
-				'position' : 'the position'
+			=-
+			Set the window 'position' of the turtle 'OBJECT'.
+			A window position is in the panel coordinates.
+			=-
+			MY window position 'position' :
+				'position' : 'position'
 
 			=-
 			Whether the turtle 'OBJECT' is visible.
@@ -295,6 +313,7 @@ library
 			'n' : 100
 		'turtles' : apply [a turtle] 'n' times
 		create
+			'type' : "turtle group"
 			'turtle space' : null
 			'turtles' : 'turtles'
 			'speed' : 10 ; this is for the group
@@ -302,7 +321,10 @@ library
 
 			getter
 				'speed'
-			
+
+			=-
+			Set the speed for the turtles in the turtle group 'OBJECT'.
+			=-
 			MY speed 'new speed' : ; the 'speed' setter
 				'speed' : 'new speed'
 				'steps' : 0 ; restart step count when speed is changed
@@ -313,14 +335,28 @@ library
 			turtle 'n' from ME :
 				'turtles' {'n'}
 
-			===========================================
-			Not only sets the turtle space but adds all
-			turtles to it.
-			===========================================
+			=-
+			Set the 'space' for the turtle group 'OBJECT'.
+			Also adds each turtle in the group to the 'space'.
+			=-
 			MY turtle space 'space' : ; a setter for 'turtle space'
 				'turtle space' : 'space'
 				for each 'turtle' in 'turtles'
 					place 'turtle' in 'turtle space'
+
+			=-
+			Lower the turtle space 'OBJECT' pens.
+			=-
+			MY pens down :
+				for each 'turtle' in 'turtles'
+					'turtle' pen down
+
+			=-
+			Raise the turtle space 'OBJECT' pens.
+			=-
+			MY pens up :
+				for each 'turtle' in 'turtles'
+					'turtle' pen up
 
 			====================================================
 			Enable the turtle group to iterate over the turtles.

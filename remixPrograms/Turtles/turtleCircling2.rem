@@ -17,8 +17,8 @@ using graphics lib, turtle lib
 
 	prepare 'arrows' :
 		'angle' : 0
+		'arrows' pens up
 		for each 'arrow' in 'arrows'
-			'arrow' pen up
 			'arrow' colour  (random colour)
 			'arrow' heading ('angle' increment by 10)
 

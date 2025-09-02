@@ -6,18 +6,18 @@ using graphics lib, turtle lib
 	repeat 20 times
 		star explosion in 'turtle space'
 
-star explosion in 'space' :
-	'turtles' : a group of 40 turtles
-	'angle' : 0
-	'point' : random turtle point
-	for each 'turtle' in 'turtles'
-		'turtle' heading  (add 9 to 'angle')
-		'turtle' colour   (random colour)
-		'turtle' position 'point'
-	place 'turtles' group in 'space'
-
-	'turtles' speed (5 + random 10)
-	move 'turtles' (random from 50 to 200) steps
-	-hide 'turtles'
-	-clear 'space' turtles
-	clear 'space'
+	star explosion in 'space' :
+		'turtles' : a group of 40 turtles
+		'angle' : 0
+		'point' : random turtle point
+		for each 'turtle' in 'turtles'
+			'turtle' heading  (add 9 to 'angle')
+			'turtle' colour   (random colour)
+			'turtle' position 'point'
+		place 'turtles' group in 'space'
+		
+		'turtles' speed (5 + random 10)
+		move 'turtles' (random from 50 to 200) steps
+		-hide 'turtles'
+		-clear 'space' turtles
+		clear 'space'
