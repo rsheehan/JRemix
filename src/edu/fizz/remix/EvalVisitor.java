@@ -91,7 +91,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     @Override
     public UsingLibBlock visitUsingLibrary(RemixParser.UsingLibraryContext ctx) {
         ArrayList<Expression> libraryExpressions = new ArrayList<>();
-        LibraryExpression usingBlock = new LibraryExpression(); // keep this for side effect
+        UsingBlockLibExpression usingBlock; // = new UsingBlockLibExpression(); // keep this for side effect
 
         int n = ctx.getChildCount();
         for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
@@ -100,14 +100,14 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 libraryExpressions.add((Expression) visit(node));
             }
         }
-        usingBlock = (LibraryExpression) visit(ctx.usingBlock());
+        usingBlock = (UsingBlockLibExpression) visit(ctx.usingBlock());
         return new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
     }
 
     /** LBLOCK (functionDefinition | statement)* RBLOCK */
     @Override
-    public LibraryExpression visitUsingBlock(RemixParser.UsingBlockContext ctx) {
-        LibraryExpression usingBlock = new LibraryExpression();
+    public UsingBlockLibExpression visitUsingBlock(RemixParser.UsingBlockContext ctx) {
+        UsingBlockLibExpression usingBlock = new UsingBlockLibExpression();
         for (int i = 0; i < ctx.getChildCount(); i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.StatementContext) {

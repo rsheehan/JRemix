@@ -66,7 +66,6 @@ statement			: assignmentStatement	# assStatement	// label not used
 					| expression 			# expr			// label only used for error checking
 					| REDO					# redo
 					| RETURN expression?	# return
-					| usingLibrary			# usingStatement// label not used
 					| endOfStatement		# blank // need to reconsider this
 					;
 
@@ -101,6 +100,7 @@ expression			: MINUS expression						# exprMinus
 					| BOOLEAN				# exprBoolean
 					| STRING				# exprString
 					| blockOfStatements		# exprBlock
+					| usingLibrary			# usingStatement // label not used
 					| list					# exprList
 					| map					# exprMap
 					| library				# exprLibrary
