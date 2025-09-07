@@ -33,7 +33,7 @@ public class RemixEdLexer {
     private LexMode mode;
 
     private static final List<String> keywords = Arrays.asList("return", "redo", "create", "extend", "ME", "MY",
-            "setter", "setters", "getter", "getters", "getter/setter", "getters/setters", "library", "using");
+            "setter", "setters", "getter", "getters", "getter/setter", "getters/setters", "library", "using", "uses");
 
     private static final List<String> literalWords = Arrays.asList("true", "false", "null");
 

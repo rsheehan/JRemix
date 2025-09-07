@@ -4,19 +4,19 @@ using graphics lib
 
 -==============================================================================-
 
-animate 'window' :
-	'x' : 50
-	'y' : 50
-	'n' : 3
-	animate 'window' 80 times at 20 ticks per second
-		'polygon' : an 'n' sided polygon
-		'polygon' colour (random colour)
-		'polygon' size 40
-		'polygon' position { 'x', 'y' }
-		place 'polygon' in 'window'
-		'n', " sided polygon" ↲
-		add 100 to 'x'
-		if (('n' - 2) is divisible by 10)
-			add 100 to 'y'
-			'x' : 50
-		add 1 to 'n'
+	animate 'window' :
+		'x' : 50
+		'y' : 50
+		'n' : 3
+		animate 'window' 80 times at 20 ticks per second
+			'polygon' : an 'n' sided polygon
+			'polygon' colour (random colour)
+			'polygon' size 40
+			'polygon' position { 'x', 'y' }
+			place 'polygon' in 'window'
+			'n', " sided polygon" ↲
+			add 100 to 'x'
+			if (('n' - 2) is divisible by 10)
+				add 100 to 'y'
+				'x' : 50
+			add 1 to 'n'

@@ -8,8 +8,8 @@ using graphics lib, turtle lib
 		draw square of 'size'
 	hide TURTLE
 
-draw square of 'size' :
-	TURTLE colour (random colour)
-	repeat 4 times
-		move TURTLE 'size' steps
-		turn TURTLE 90 degrees
+	draw square of 'size' :
+		TURTLE colour (random colour)
+		repeat 4 times
+			move TURTLE 'size' steps
+			turn TURTLE 90 degrees

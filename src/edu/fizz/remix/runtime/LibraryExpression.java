@@ -33,7 +33,7 @@ public class LibraryExpression implements Expression {
     public Block block = new Block();
     HashMap<String, Function> functionTable = new HashMap<>();
     // TODO: probably add a constants table to the library too
-    HashMap<String, Object> constantTable = new HashMap<String, Object>();
+    HashMap<String, Object> constantTable = new HashMap<>();
 
     static HashMap<String, Integer> methodTable = new HashMap<>(); // one table used by all
     static HashMap<String, Function> methodTableStandardLib = new HashMap<>();
@@ -49,6 +49,10 @@ public class LibraryExpression implements Expression {
 
     public LibraryExpression() {
         setUpBuiltIns();
+    }
+
+    public LibraryExpression(Block statementBlock) {
+        block = statementBlock;
     }
 
     public void setValidLines(int[] lines) {
@@ -95,7 +99,6 @@ public class LibraryExpression implements Expression {
 
     /** Add a name of method and the reference parameter position. */
     public static void addMethodNameEditing(String name, int refPos, Method method) {
-        Integer pos;
         if (refPos == 0) // private method, currently don't add to completion methods
             return;
         method.setMethodDisplayName(name);

@@ -27,24 +27,21 @@ using files lib, graphics lib
 				'across' : 0
 				add 8 to 'down'
 
+	display 'character' at 'across' 'down' in 'window' :
+		'character', " across: ", 'across', " down: ", 'down' ↲
+		for each 'byte' in 'character' keeping 'byte count'
+			for each 'bit' in (bits from 'byte') keeping 'bit count'
+				if (not 'bit')
+					'x' : ('across' + 1) × 7 - 'bit count' + 2
+					'y' : 'down' + 'byte count' + 1
+					square at { 'x', 'y' } in 'window'
 
-display 'character' at 'across' 'down' in 'window' :
-	'character', " across: ", 'across', " down: ", 'down' ↲
-	for each 'byte' in 'character' keeping 'byte count'
-		for each 'bit' in (bits from 'byte') keeping 'bit count'
-			if (not 'bit')
-				'x' : ('across' + 1) × 7 - 'bit count' + 2
-				'y' : 'down' + 'byte count' + 1
-				square at { 'x', 'y' } in 'window'
-=
-Graphics stuff
-=
-square at 'position' in 'window' :
-	'x' : 'position'{1} × DOT-SPACE
-	'y' : 'position'{2} × DOT-SPACE
-	'square' : a RED box of DOT-SIZE x DOT-SIZE at { 'x', 'y' }
-	place 'square' in 'window'
-	update 'window'
+	square at 'position' in 'window' :
+		'x' : 'position'{1} × DOT-SPACE
+		'y' : 'position'{2} × DOT-SPACE
+		'square' : a RED box of DOT-SIZE x DOT-SIZE at { 'x', 'y' }
+		place 'square' in 'window'
+		update 'window'
 	
 
 bits from 'value' :

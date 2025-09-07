@@ -1,7 +1,10 @@
 package edu.fizz.remix.runtime;
 
-/*
+import java.util.HashMap;
+
+/**
 The UsingLibBlock is a statement which executes its block of statements.
+It is using one or more libraries - in the libraryExpressions.
  */
 public class UsingLibBlock implements Expression {
 
@@ -9,12 +12,18 @@ public class UsingLibBlock implements Expression {
     Expression[] libraryExpressions;
     // The statements to be executed in the context of the libraries.
     LibraryExpression usingBlock;
-//    Block usingStatements;
-//    HashMap<String, Function> functionTable = new HashMap<>();
 
     public UsingLibBlock(Expression[] libraries, LibraryExpression functionsAndStatements) {
         libraryExpressions = libraries;
         usingBlock = functionsAndStatements;
+    }
+
+    public HashMap functionsDefined() {
+        return usingBlock.functionTable;
+    }
+
+    public Block statements() {
+        return usingBlock.block;
     }
 
     @Override
@@ -33,7 +42,7 @@ public class UsingLibBlock implements Expression {
         Object result = usingBlock.evaluate(context);
 
         for (Expression ignored : libraryExpressions) {
-            // TODO: should not pop any "non-libraries". Thee were not added.
+            // TODO: should not pop any "non-libraries". These were not added.
             context.popLibrary();
         }
         return result;

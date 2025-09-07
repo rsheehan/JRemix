@@ -1,0 +1,23 @@
+LIB1 : include "remixPrograms/LibraryUsingLibrary/lib1.rem"
+
+function :
+	"Before the using block" ↲
+	'abc' : 1
+	using LIB1
+		"in the using block" ↲
+		'abc' ↲
+		function1
+		function2 'abc' :
+			"what - function2" ↲
+			'abc' ↲
+		function2 'abc'
+		function2
+	"After the using block" ↲
+	function1
+
+function1 :
+	"function1 from this program" ↲
+	
+function
+function1
+"blah2"↲

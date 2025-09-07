@@ -17,6 +17,8 @@ public class RemixExtendedObjectExpression extends  RemixObjectExpression {
     @Override
     public RemixObject evaluate(Context definingContext) throws ReturnException, InterruptedException {
         RemixObject remixObject = (RemixObject) originalObject.evaluate(definingContext);
+        // change libstack of original object to be the current context libstack
+        remixObject.getContext().libraryStack = definingContext.cloneLibraryStack();
         for (Expression statement : extendedObject.initBlock.statements) {
             FieldAssignmentStatement assStmnt = (FieldAssignmentStatement) statement;
             Object result = assStmnt.evaluate(definingContext);
@@ -24,9 +26,7 @@ public class RemixExtendedObjectExpression extends  RemixObjectExpression {
         }
         // need to copy the methodTable because other objects may be using it
         remixObject.methodTable = new MethodTable(remixObject.methodTable);
-        extendedObject.methodTable.forEach((name, method) -> {
-            remixObject.methodTable.addMethod(method);
-        });
+        extendedObject.methodTable.forEach((_, method) -> remixObject.methodTable.addMethod(method));
         return remixObject;
     }
 }

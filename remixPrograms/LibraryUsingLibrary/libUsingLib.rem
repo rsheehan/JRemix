@@ -1,9 +1,32 @@
+lib1 :
+	include "remixPrograms/LibraryUsingLibrary/lib1.rem"
 
-using include "remixPrograms/LibraryUsingLibrary/lib1.rem", include "remixPrograms/LibraryUsingLibrary/lib2.rem"
+lib2 :
+	include "remixPrograms/LibraryUsingLibrary/lib2.rem"
+
+using lib1, lib2
 
 	function0
-
 	function3
 	function4
 	function1
-	
+	↲
+function0
+function3
+function4
+function1
+
+function0 :
+	"function0 from this file" ↲
+
+function1 :
+	"function1 from this file" ↲
+
+function2 :
+	"function2 from this file" ↲
+
+function3 :
+	"function3 from this file" ↲
+
+function4 :
+	"function4 from this file" ↲

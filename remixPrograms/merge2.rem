@@ -1,0 +1,52 @@
+'my list' : apply [random 1000] 1000 times
+'my list' ↲
+
+merge-sort 'my list'
+'my list' ↲
+
+============
+ Merge sort
+============
+
+merge-sort 'list' :
+	sort 'list' from 1 to ('list' length)
+
+sort 'list' from 'start' to 'finish' :
+	if ('start' ≥ 'finish')
+		return
+	'middle' : half way between 'start' and 'finish'
+	sort 'list' from 'start' to 'middle'
+	sort 'list' from ('middle' + 1) to 'finish'
+	merge 'list' from 'start' to 'middle' to 'finish'
+
+merge 'list' from 'start' to 'middle' to 'finish' :
+	'left' : 'start'
+	'right' : 'middle' + 1
+	'working list' : { }
+
+	while values on both sides 'left' to 'middle' and 'right' to 'finish' of 'list' move 
+		… smallest to 'working list'
+	move remaining values from 'left' to 'middle' of 'list' to 'working list'
+	move remaining values from 'right' to 'finish' of 'list' to 'working list'
+	put items from 'start' to 'finish' in 'working list' into 'list'
+
+------------------------------------------------------------------------------------------
+
+half way between 'start' and 'finish' :
+	'start' + ('finish' - 'start') ÷ 2
+
+while values on both sides #left to 'middle' and #right to 'finish' of 'list' move smallest to 'work' :
+	while [(#left ≤ 'middle') and (#right ≤ 'finish')]
+		if ('list' {#left} ≤ 'list' {#right})
+			append ('list' {#left inc}) to 'work'
+		… otherwise
+			append ('list' {#right inc}) to 'work'
+
+move remaining values from 'location' to 'end' of 'list' to 'work' :
+	if ('location' ≤ 'end')
+		for each 'item' in 'list' from position 'location' to 'end'
+			append 'item' to 'work'
+
+put items from 'start' to 'finish' in 'work' into 'list' :
+	for each 'item' from 'start' to 'finish'
+		'list' {'item'} : 'work' {'item' - 'start' + 1}

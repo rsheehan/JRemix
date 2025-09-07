@@ -1,16 +1,16 @@
 - Lots of filled squares -
 
-random square :
-	'shape' : a square
-	'shape' colour   (random colour)
-	'shape' size     (random from 5 to 100)
-	'shape' position (random point)
-	'shape' heading  ((random 360) degrees as radians)
-	'shape'
-
 using graphics lib
 	'the window' : the graphics panel
 	repeat
 		place (random square) in 'the window'
 	… 100 times
 	update 'the window'
+
+	random square :
+		'shape' : a square
+		'shape' colour   (random colour)
+		'shape' size     (random from 5 to 100)
+		'shape' position (random point)
+		'shape' heading  ((random 360) degrees as radians)
+		'shape'

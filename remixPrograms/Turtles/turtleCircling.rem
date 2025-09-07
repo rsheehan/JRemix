@@ -15,12 +15,12 @@ using graphics lib, turtle lib
 	repeat 180 times
 		animate 'arrows'
 
-prepare 'arrows' :
-	'angle' : 0
-	'arrows' pens up
-	for each 'arrow' in 'arrows'
-		'arrow' colour  (random colour)
-		'arrow' heading ('angle' increment by 10)
+	prepare 'arrows' :
+		'angle' : 0
+		'arrows' pens up
+		for each 'arrow' in 'arrows'
+			'arrow' colour  (random colour)
+			'arrow' heading ('angle' increment by 10)
 
 move 'arrows' to start positions :
 	'arrows' speed 200

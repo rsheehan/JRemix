@@ -1,17 +1,15 @@
--lib1 :
--include "remixPrograms/LibraryUsingLibrary/lib1.rem"
+lib1 :
+	include "remixPrograms/LibraryUsingLibrary/lib1.rem"
 
-using include "remixPrograms/LibraryUsingLibrary/lib1.rem"
+library using lib1
 
-	library
+	function0 :
+		"function0 from library 2" ↲
 
-		function0 :
-			"function0 from library 2" ↲
+	function3 :
+		function1
+		"function3 from library 2" ↲
 
-		function3 :
-			function1
-			"function3 from library 2" ↲
-	
-		function4 :
-			function2
-			"function4 from library 2" ↲
+	function4 :
+		function2
+		"function4 from library 2" ↲

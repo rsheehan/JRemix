@@ -3,7 +3,7 @@ package edu.fizz.remix.runtime;
 import edu.fizz.remix.editor.RemixREPL;
 
 import java.util.ListIterator;
-import java.util.NoSuchElementException;
+import java.util.Stack;
 
 /*
  * With multiple function names I should really change this as the function call only
@@ -73,16 +73,18 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         }
 
         // fall through into a possible function call
-
+        Stack<LibraryExpression> inCallLibStack = (Stack) context.libraryStack.clone();
         Function function = null;
-        ListIterator<LibraryExpression> stackIterator = context.libraryStack.listIterator(context.libraryStack.size());
-        try {
-            do {
-                LibraryExpression library = stackIterator.previous();
-                function = library.searchFunctionTable(routineName);
-            } while (function == null);
-        } catch (NoSuchElementException ignored) {
+        int libNumber;
+        for (libNumber = inCallLibStack.size() - 1; libNumber >= 0; libNumber--) {
+            LibraryExpression library = inCallLibStack.get(libNumber);
+            function = library.searchFunctionTable(routineName);
+            if (function != null)
+                break;
+            else
+                inCallLibStack.pop();
         }
+        // SHOULD EVALUATE THE PARAMETERS BEFORE RESTRICTING THE LIBSTACK
 
         if (function == null) {
             String readable = routineName; //.replace("_", " ");
@@ -94,6 +96,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             return null;
         }
         Context functionContext = new Context(context, function.isTransparent());
+        functionContext.libraryStack = inCallLibStack;
         return executeFunctionOrMethod(function, functionContext);
     }
 

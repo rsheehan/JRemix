@@ -52,16 +52,15 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return library;
     }
 
-    /** LIBRARY STRING? LBLOCK EOL* (functionDefinition | statement)* RBLOCK */
+    /** LIBRARY STRING? */
     @Override
-    public Object visitLibrary(RemixParser.LibraryContext ctx) {
-        LibraryExpression library;
+    public LibraryExpression visitLibraryName(RemixParser.LibraryNameContext ctx) {
         if (ctx.STRING() != null) {
             String libName = ctx.STRING().getText();
             libName = libName.substring(1, libName.length() - 1); // strip off quotes
             try {
                 Class libClass = Class.forName(libName);
-                library = (LibraryExpression) libClass.getDeclaredConstructor().newInstance();
+                return (LibraryExpression) libClass.getDeclaredConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
                      InvocationTargetException e) {
                 throw new RuntimeException(e);
@@ -70,8 +69,13 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 throw new RuntimeException(e);
             }
         } else {
-            library = new LibraryExpression();
+            return new LibraryExpression();
         }
+    }
+
+    /** libraryName LBLOCK EOL* (functionDefinition | statement)* RBLOCK */
+    public Object visitLibNoUses(RemixParser.LibNoUsesContext ctx) {
+        LibraryExpression library = (LibraryExpression) visit(ctx.libraryName());
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -87,11 +91,28 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return library;
     }
 
+    /** libraryName usingStatement */
+    @Override
+    public Object visitLibUses(RemixParser.LibUsesContext ctx) {
+        LibraryExpression library = (LibraryExpression) visit(ctx.libraryName());
+        UsingLibBlock usingLibBlock = (UsingLibBlock) visit(ctx.usingStatement());
+        final HashMap functionMap = usingLibBlock.functionsDefined();
+        for (Object key : functionMap.keySet()) {
+            Function function = (Function)functionMap.get(key);
+            library.addFunction(function);
+        }
+        library.block = usingLibBlock.statements();
+        // TODO : do I need to copy library constants?
+        // need to think through whether libs can have same named constants.
+        // Could get very confusing.
+        return library;
+    }
+
     /** USING expression (COMMA expression)* usingBlock */
     @Override
-    public UsingLibBlock visitUsingLibrary(RemixParser.UsingLibraryContext ctx) {
+    public UsingLibBlock visitUsingStatement(RemixParser.UsingStatementContext ctx) {
         ArrayList<Expression> libraryExpressions = new ArrayList<>();
-        UsingBlockLibExpression usingBlock; // = new UsingBlockLibExpression(); // keep this for side effect
+        LibraryExpression usingBlock;
 
         int n = ctx.getChildCount();
         for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
@@ -100,14 +121,14 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 libraryExpressions.add((Expression) visit(node));
             }
         }
-        usingBlock = (UsingBlockLibExpression) visit(ctx.usingBlock());
+        usingBlock = (LibraryExpression) visit(ctx.usingBlock());
         return new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
     }
 
     /** LBLOCK (functionDefinition | statement)* RBLOCK */
     @Override
-    public UsingBlockLibExpression visitUsingBlock(RemixParser.UsingBlockContext ctx) {
-        UsingBlockLibExpression usingBlock = new UsingBlockLibExpression();
+    public LibraryExpression visitUsingBlock(RemixParser.UsingBlockContext ctx) {
+        LibraryExpression usingBlock = new LibraryExpression();
         for (int i = 0; i < ctx.getChildCount(); i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.StatementContext) {
@@ -120,6 +141,38 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             }
         }
         return usingBlock;
+    }
+
+    /** USES expression (COMMA expression)* statementBlock */
+    @Override
+    public BlockInUses visitUsesStatement(RemixParser.UsesStatementContext ctx) {
+        ArrayList<Expression> libraryExpressions = new ArrayList<>();
+        BlockInUses usingBlock;
+
+        int n = ctx.getChildCount();
+        for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixParser.ExpressionContext) {
+                libraryExpressions.add((Expression) visit(node));
+            }
+        }
+        usingBlock = new BlockInUses(libraryExpressions, (Block) visit(ctx.statementBlock()));
+        return usingBlock;
+    }
+
+    /** LBLOCK statement+ RBLOCK */
+    @Override
+    public Block visitStatementBlock(RemixParser.StatementBlockContext ctx) {
+        Block blockStatements = new Block();
+        for (int i = 0; i < ctx.getChildCount(); i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixParser.StatementContext) {
+                Expression statement = (Expression) visit(node);
+                if (statement != null) // can be blank statements
+                    blockStatements.addStatement(statement);
+            }
+        }
+        return blockStatements;
     }
 
     /** RETURN expression? */

@@ -10,34 +10,34 @@ using graphics lib
 	place 'arrows' in 'the animation layer'
 	animate 'arrows' in 'the window'
 
-'n' arrows :
-	'arrows' : { }
-	'angle' : 0
-	repeat 'n' times
-		'the arrow' : an arrow
-		position 'the arrow' at ('angle' degrees as radians)
-		add 10 to 'angle'
-		append 'the arrow' to 'arrows'
+	'n' arrows :
+		'arrows' : { }
+		'angle' : 0
+		repeat 'n' times
+			'the arrow' : an arrow
+			position 'the arrow' at ('angle' degrees as radians)
+			add 10 to 'angle'
+			append 'the arrow' to 'arrows'
 
-an arrow:
-	'arrow' : a shape from {
-		{ 0, 1 }
-		{-2, 2 }
-		{ 0,-2 }
-		{ 2, 2 }
-	}
-	'arrow' colour (random colour)
-	'arrow'
+	an arrow:
+		'arrow' : a shape from {
+			{ 0, 1 }
+			{-2, 2 }
+			{ 0,-2 }
+			{ 2, 2 }
+		}
+		'arrow' colour (random colour)
+		'arrow'
 
-position 'the arrow' at 'angle' :
-	'x' : CENTRE-X + 200 × cosine 'angle'
-	'y' : CENTRE-Y - 200 × sine 'angle'
-	'the arrow' position { 'x', 'y' }
-	'the arrow' heading (-'angle')
+	position 'the arrow' at 'angle' :
+		'x' : CENTRE-X + 200 × cosine 'angle'
+		'y' : CENTRE-Y - 200 × sine 'angle'
+		'the arrow' position { 'x', 'y' }
+		'the arrow' heading (-'angle')
 
-animate 'arrows' in 'the window' :
-	animate 'the window' 180 times at 30 ticks per second
-		for each 'arrow' in 'arrows'
-			'angle' : -('arrow' heading)
-			add (2 degrees as radians) to 'angle'
-			position 'arrow' at 'angle'
+	animate 'arrows' in 'the window' :
+		animate 'the window' 180 times at 30 ticks per second
+			for each 'arrow' in 'arrows'
+				'angle' : -('arrow' heading)
+				add (2 degrees as radians) to 'angle'
+				position 'arrow' at 'angle'
