@@ -85,6 +85,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                     library.block.addStatement(statement);
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
+                if (function.getAllNames().get(0).equals("the graphics panel"))
+                    System.out.println(function);
                 library.addFunction(function);
             }
         }
@@ -96,11 +98,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     public Object visitLibUses(RemixParser.LibUsesContext ctx) {
         LibraryExpression library = (LibraryExpression) visit(ctx.libraryName());
         UsingLibBlock usingLibBlock = (UsingLibBlock) visit(ctx.usingStatement());
-        final HashMap functionMap = usingLibBlock.functionsDefined();
-        for (Object key : functionMap.keySet()) {
-            Function function = (Function)functionMap.get(key);
-            library.addFunction(function);
-        }
+        library.functionTable.putAll(usingLibBlock.functionsDefined());
         library.block = usingLibBlock.statements();
         // TODO : do I need to copy library constants?
         // need to think through whether libs can have same named constants.

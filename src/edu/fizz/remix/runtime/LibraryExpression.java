@@ -31,7 +31,7 @@ public class LibraryExpression implements Expression {
 
     private ArrayList<int[]> activeLines = new ArrayList<>(); // editor lines where this library is active
     public Block block = new Block();
-    HashMap<String, Function> functionTable = new HashMap<>();
+    public HashMap<String, Function> functionTable = new HashMap<>();
     // TODO: probably add a constants table to the library too
     HashMap<String, Object> constantTable = new HashMap<>();
 

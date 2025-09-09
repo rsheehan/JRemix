@@ -74,8 +74,8 @@ statement			: assignmentStatement	# assStatement	// label not used
 					| expression 			# expr			// label only used for error checking
 					| REDO					# redo
 					| RETURN expression?	# return
-					| usesStatement			# uses
-					| usingStatement		# using
+					| usesStatement			# uses			// label not used
+					| usingStatement		# using			// label not used
 					| endOfStatement		# blank // need to reconsider this
 					;
 
