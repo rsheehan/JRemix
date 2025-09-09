@@ -1,31 +1,32 @@
 'my list' : apply [random 1000] 1000 times
 'my list' ↲
 
-merge-sort 'my list'
+mergesort 'my list' from 1 to ('my list' length)
 'my list' ↲
 
-============
- Merge sort
-============
-
-merge-sort 'list' :
-	sort 'list' from 1 to ('list' length)
-
-sort 'list' from 'start' to 'finish' :
+=-
+Mergesort the 'list' from indices 'start' to 'finish'.
+The 'list' is sorted when returned.
+=-
+mergesort 'list' from 'start' to 'finish' :
 	if ('start' ≥ 'finish')
 		return
 	'middle' : half way between 'start' and 'finish'
-	sort 'list' from 'start' to 'middle'
-	sort 'list' from ('middle' + 1) to 'finish'
+	mergesort 'list' from 'start' to 'middle'
+	mergesort 'list' from ('middle' + 1) to 'finish'
 	merge 'list' from 'start' to 'middle' to 'finish'
 
+=-
+Merge the two halves of the 'list' so the result is ordered.
+The halves are from indices 'start' to 'middle' and 'middle' + 1 to 'finish'.
+=-
 merge 'list' from 'start' to 'middle' to 'finish' :
 	'left' : 'start'
 	'right' : 'middle' + 1
 	'working list' : { }
 
-	while values on both sides 'left' to 'middle' and 'right' to 'finish' of 'list' move 
-		… smallest to 'working list'
+	while values on both sides of 'left' to 'middle' and 'right' to 'finish' of 'list' 
+	… move smallest to 'working list'
 	move remaining values from 'left' to 'middle' of 'list' to 'working list'
 	move remaining values from 'right' to 'finish' of 'list' to 'working list'
 	put items from 'start' to 'finish' in 'working list' into 'list'
@@ -35,7 +36,8 @@ merge 'list' from 'start' to 'middle' to 'finish' :
 half way between 'start' and 'finish' :
 	'start' + ('finish' - 'start') ÷ 2
 
-while values on both sides #left to 'middle' and #right to 'finish' of 'list' move smallest to 'work' :
+while values on both sides of #left to 'middle' and #right to 'finish' of 'list'
+	… move smallest to 'work' :
 	while [(#left ≤ 'middle') and (#right ≤ 'finish')]
 		if ('list' {#left} ≤ 'list' {#right})
 			append ('list' {#left inc}) to 'work'
