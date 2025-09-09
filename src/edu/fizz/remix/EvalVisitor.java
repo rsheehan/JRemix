@@ -85,8 +85,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                     library.block.addStatement(statement);
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
-                if (function.getAllNames().get(0).equals("the graphics panel"))
-                    System.out.println(function);
                 library.addFunction(function);
             }
         }

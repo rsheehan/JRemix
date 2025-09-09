@@ -139,8 +139,8 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
      The library produced here is only for completions. It includes the functions
      declared in the using block of a library.
      */
-    @Override
     /** LBLOCK (functionDefinition | statement)* RBLOCK */
+    @Override
     public Object visitUsingBlock(RemixParser.UsingBlockContext ctx) {
         int blockLineStart = ctx.getStart().getLine() - 1;
         int blockLineFinish = ctx.getStop().getLine() - 1;
