@@ -6,13 +6,12 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
     }
 
     /*
-    Constants can now be reassigned, just not a good idea. An error message is presented to let
-    the programmer know.
+    Constants can not be reassigned. An error message is presented to let the programmer know.
      */
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         LibraryExpression library;
-        Object result = null;
+        Object result;
         int i = context.libraryStack.size() - 1;
         do {
             library = context.libraryStack.get(i);
