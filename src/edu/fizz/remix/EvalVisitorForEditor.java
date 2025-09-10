@@ -101,6 +101,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         // Could get very confusing.
         return library;
     }
+
     /** USING expression (COMMA expression)* usingBlock */
     @Override
     public UsingLibBlock visitUsingStatement(RemixParser.UsingStatementContext ctx) {
@@ -169,7 +170,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         int blockLineFinish = blockContext.getStop().getLine() - 1;
 
         int n = ctx.getChildCount();
-        for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
+        for (int i = 1; i < n - 1; i++) { // first node = "USES", last = "statementBlock"
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.ExpressionContext) {
                 Expression libToEvaluate = (Expression) visit(node);
