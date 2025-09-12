@@ -528,7 +528,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         int pos = offset;
         // go back until we find the first non-space character
         while (pos > 0) {
-            before = getText(pos--, 1);
+            before = getText(--pos, 1);
             if (!before.equals(" ")) {
                 pos++;
                 break;
