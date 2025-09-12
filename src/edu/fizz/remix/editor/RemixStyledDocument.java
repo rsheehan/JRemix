@@ -174,8 +174,9 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 }
             }
         }
-        // also remove parens if input is a digit between "( )"
-        if (Character.isDigit(input.toCharArray()[0]) && surroundedByParens(offset)) {
+        // also remove parens if input is a digit or CAPITAL letter between "( )"
+        boolean digitOrCapital = Character.isDigit(input.toCharArray()[0]) || Character.isUpperCase(input.toCharArray()[0]);
+        if (digitOrCapital && surroundedByParens(offset)) {
             offset--;
             super.remove(offset, 2);
             super.insertString(offset, input, defaultStyle);
@@ -527,15 +528,23 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         int pos = offset;
         // go back until we find the first non-space character
         while (pos > 0) {
-            pos--;
-            before = getText(pos, 1);
-            if (!before.equals(" "))
+            before = getText(pos--, 1);
+            if (!before.equals(" ")) {
+                pos++;
                 break;
+            }
         }
 
         boolean followsOpenBlock = false;
         boolean followsListStart = false;
-        if (before.equals(":") || libraryHeader(offset) || afterCreate(offset)) // also need to check for a "using" line
+        if (before.equals(":")
+                || lineContains(pos, "library")
+                || lineContains(pos, "using")
+                || lineContains(pos, "uses")
+                || lineContains(pos, "create")
+                || lineContains(pos, "extend")
+                || lineContains(pos, "getter")
+                || lineContains(pos, "setter")) // also need to check for a "using" line
             // and create, extend, getter, setter
             tabbedReturn.append("\t");
         else if (before.equals("[")) {
@@ -583,73 +592,25 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     }
 
     /**
-     * Are we after a library header?
-     * A library header is either "library" or "library" followed by a Java class name as a String.
-     * @param pos The position.
-     * @return True iff we are at the end of a library header.
+     * Does the line we are currently on contain the word before the current pos.
+     * The word must be at the start of the line, or following a ":".
+     * @param pos the position of the current line
+     * @param word the word we are searching for
+     * @return True iff the currently line contains the word.
+     * @throws BadLocationException if out of document
      */
-    private boolean libraryHeader(int pos) throws BadLocationException {
-        boolean library = false;
-        pos = backupOverSpaces(pos);
-        pos =  backupOverString(pos);
-        pos = backupOverSpaces(pos);
-        pos = pos - 7;
-        if (pos >= 0 && getText(pos, 7).equals("library")) {
-            library = (pos == 0 || ": \n".contains(getText(pos - 1, 1)));
-        }
-        // is this a "library" expression?
-        return library;
-    }
-
-    /**
-     * Are we after a "create"?
-     * @param pos The position.
-     * @return True iff the line we have finished starts with "create".
-     */
-    private boolean afterCreate(int pos) throws BadLocationException {
-        boolean create = false;
-        pos = backupOverSpaces(pos);
-        pos = pos - 6;
-        if (pos >= 0 && getText(pos, 6).equals("create")) {
-            create = (pos == 0 || ": \t".contains(getText(pos - 1, 1)));
-            String a = getText(pos - 1, 1);
-            System.out.println(a);
-        }
-        return create;
-    }
-
-    /**
-     * Move back from the position until the position is not in a String.
-     * @param pos the current position
-     * @return The position before a preceding String (or zero).
-     */
-    private int backupOverString(int pos) throws BadLocationException {
-        if (pos == 0 || !getText(pos - 1, 1).equals("\"")) {
-            return pos;
-        }
-        pos--; // at the closing quotes
-        while (pos > 0) {
+    private boolean lineContains(int pos, String word) throws BadLocationException {
+        int wordLength = word.length();
+        pos -= wordLength;
+        while (pos >= 0) {
+            String run = getText(pos , wordLength);
+            if (run.contains("\n"))
+                return false;
+            if (run.equals(word) && (pos == 0 || ": \n\t".contains(getText(pos - 1, 1))))
+                return true;
             pos--;
-            if (getText(pos, 1).equals("\""))
-                break;
         }
-        return pos;
-    }
-
-    /**
-     * Move back from the position until the position is not a space.
-     * @param pos the current position
-     * @return The position before immediately preceding spaces (or zero).
-     */
-    private int backupOverSpaces(int pos) throws BadLocationException {
-        while (pos > 0) {
-            pos--;
-            if (!getText(pos, 1).equals(" ")) {
-                pos++;
-                break;
-            }
-        }
-        return pos;
+        return false;
     }
 
     /**
