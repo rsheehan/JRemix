@@ -16,14 +16,14 @@ public class LibrariesAndCompletions {
        The standard library and the program editor library are valid
        everywhere, all others have a start and finish line.
      */
-    private static final ArrayList<LibraryExpression> addedLibraries = new ArrayList<LibraryExpression>();
+    private static final ArrayList<LibraryExpression> addedLibraries = new ArrayList<>();
 
     /* The base library has the built-in and standard-lib functions. */
     private static LibraryExpression baseLibrary;
     /* The program library copies the base library and adds the current
        functions and statements.
      */
-    private static LibraryExpression programLibrary; // = new LibraryExpression();
+    private static LibraryExpression programLibrary = new LibraryExpression();
 
     public static void addLibrary(LibraryExpression libraryExpression) {
         addedLibraries.add(libraryExpression);

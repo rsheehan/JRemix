@@ -27,6 +27,8 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     // TODO: need to remove all unnecessary code, currently mostly a copy
     // of EvalVisitor.
 
+    private LibraryExpression thisProgramSoFar;
+
     /** ( functionDefinition | statement )* EOF */
     /* This is where the Remix functions are added to the function table. */
     @Override
@@ -34,8 +36,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         /*
         The current library could be the baseLibrary, or the programLibrary
          */
-        LibraryExpression library = new LibraryExpression();
-
+        thisProgramSoFar = LibrariesAndCompletions.getProgramLibrary();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -43,14 +44,14 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             if (node instanceof RemixParser.StatementContext) {
                 Expression statement = (Expression)visit(node);
                 if (statement != null) // can be blank statements
-                    library.block.addStatement(statement);
+                    thisProgramSoFar.block.addStatement(statement);
             } else
             if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
-                library.addFunction(function);
+                thisProgramSoFar.addFunction(function);
             }
         }
-        return library;
+        return thisProgramSoFar;
     }
 
     /** LIBRARY STRING? */
@@ -107,7 +108,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     public UsingLibBlock visitUsingStatement(RemixParser.UsingStatementContext ctx) {
         LibraryExpression libraryExpression = null;
         ArrayList<LibraryExpression> libraryExpressions = new ArrayList<>();
-        LibraryExpression usingBlockLib;
+        LibraryExpression usingBlockLib = null;
 
         int n = ctx.getChildCount();
         for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
@@ -115,7 +116,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             if (node instanceof RemixParser.ExpressionContext) {
                 Expression libExp = (Expression) visit(node);
                 try {
-                    libraryExpression = (LibraryExpression) libExp.evaluate(new Context(LibrariesAndCompletions.getProgramLibrary()));
+                    libraryExpression = (LibraryExpression) libExp.evaluate(new Context(thisProgramSoFar));
                 } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException e) {
                     //throw new RuntimeException(e);
                 }
@@ -133,7 +134,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         } catch (NullPointerException ex) {
             // just incomplete error while editing
         }
-        return null;
+        return new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlockLib);
     }
 
     /*
@@ -227,13 +228,14 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             funcComment = (String)visit(ctx.functionComment());
         }
         FunctionName<String> funcSig = (FunctionName<String>)visit(ctx.functionSignature());
+        Block block = null;
         try {
-            visit(ctx.blockOfStatements()); // need to visit to find create and extend expressions
+            block = (Block) visit(ctx.blockOfStatements()); // need to visit to find create and extend expressions
         } catch (NullPointerException _) {
         }
         return new RemixFunction(
                 funcSig.getAllNames(),
-                null, // block,
+                block,
                 funcSig.getParameters(),
                 funcSig.getBlockParams(),
                 false, // transparent,
