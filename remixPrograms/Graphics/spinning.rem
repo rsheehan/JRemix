@@ -5,6 +5,8 @@ using graphics lib
 	'triangle' : a triangle
 	'triangle' size 100
 	'triangle' position { 0, STD-HEIGHT ÷ 2 }
+	'triangle' colour null
+	'triangle' outline colour GREEN
 	place 'triangle' in 'animation layer'
 
 	'rotation' : every 2 ticks

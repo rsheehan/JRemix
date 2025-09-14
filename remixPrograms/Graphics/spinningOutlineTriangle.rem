@@ -1,0 +1,14 @@
+using graphics lib
+	'panel' : the graphics panel
+	
+	'triangle' : a triangle
+	'triangle' colour null
+	'triangle' outline colour GREEN
+	'triangle' size 100
+	place 'triangle' in ('panel' next layer)
+	
+	'degrees' : 0
+	animate 'panel' 360 times at 72 ticks per second 
+		add -1 to 'degrees'
+		'triangle' heading ('degrees' degrees as radians)
+		update 'panel'
