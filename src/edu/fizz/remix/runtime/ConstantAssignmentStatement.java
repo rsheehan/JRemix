@@ -12,20 +12,30 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         LibraryExpression library;
         Object result;
+        Object value;
         int i = context.libraryStack.size() - 1;
         do {
             library = context.libraryStack.get(i);
             result = library.constantTable.get(variableName);
             i--;
         } while (result == null && i >= 0);
-
-        if (result == null) {
-            // local context but this is never accessed?
-            result = super.evaluate(context); // as a side effect this puts the name into the
-            // TODO: put the constant into the corresponding library
-            library.constantTable.put(variableName, result);
-        } else
+        library = context.libraryStack.peek();
+        if (!library.isTrueLibrary())
+            library = context.libraryStack.get(0);
+        // Blocks get assigned as they are. They are evaluated with do.
+        if (expression instanceof Block block) {
+            if (block.getContext() == null) {
+                block = block.copy(); // the block could be called recursively we need a copy
+                block.setContext(context);
+            }
+            value = block;
+        } else {
+            value = expression.evaluate(context);
+        }
+        if (result == null)
+            library.constantTable.put(variableName, value);
+        else if (!result.equals(value)) // no error if the value matches
             System.err.format("Attempt to reassign constant %s%n", variableName);
-        return result;
+        return value;
     }
 }
