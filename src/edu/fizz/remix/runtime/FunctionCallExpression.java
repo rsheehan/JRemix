@@ -1,5 +1,6 @@
 package edu.fizz.remix.runtime;
 
+import edu.fizz.remix.editor.RemixEditor;
 import edu.fizz.remix.editor.RemixREPL;
 
 import java.util.ListIterator;
@@ -89,6 +90,8 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         if (function == null) {
             String readable = routineName; //.replace("_", " ");
             readable = readable.replace("⫾", "()");
+            if (RemixEditor.isEditing())
+                return null;
             if (!fileName.equals(RemixREPL.EDITORTEXT))
                 System.err.format("file: %s, ", fileName);
             System.err.format("line: %d, offset: %d%n\t\"%s\" does not exist or is a method with a null receiver.%n",

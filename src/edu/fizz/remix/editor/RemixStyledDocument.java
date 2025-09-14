@@ -33,7 +33,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             "'", "'"
     );
     private CompletionInfo completionsHere = null;
-    private boolean justInsertedMatch = false;
     protected final RemixEditor editor;
     private final Style defaultStyle = getStyle("default");
     private RemixEdLexer edLexer;
@@ -67,7 +66,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     }
 
     public void insertStringNoLex(int offset, String text, AttributeSet style) throws BadLocationException {
-        justInsertedMatch = false;
         completionsHere = null; // now always done, repeated completions come from "shift TAB" handler
         if (text.equals("\t") && !inStringOrComment(offset)) { // don't if in a string or a comment
             handleTab(offset);
@@ -91,11 +89,13 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
     @Override
     public void remove(int offset, int length) throws BadLocationException {
-        if (justInsertedMatch) {
-            for (String next : matchingPairs.values()) {
-                if (getText(offset + 1, 1).equals(next)) {
+        if (length == 1) {
+            for (Map.Entry<String, String> entry : matchingPairs.entrySet()) {
+                String before = entry.getKey();
+                String after = entry.getValue();
+                if (getText(offset, 1).equals(before) && getText(offset + 1, 1).equals(after)) {
                     length++;
-                    justInsertedMatch = false;
+                    break;
                 }
             }
         }
@@ -169,7 +169,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                     }
                     super.insertString(offset, input + matchingPairs.get(input), defaultStyle);
                     textPane.setCaretPosition(offset + 1);
-                    justInsertedMatch = true;
                     return false;
                 }
             }
