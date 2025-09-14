@@ -1,5 +1,7 @@
 package edu.fizz.remix.runtime;
 
+import edu.fizz.remix.editor.RemixEditor;
+
 public class ConstantValueExpression implements Expression {
 
     String constantName;
@@ -25,7 +27,7 @@ public class ConstantValueExpression implements Expression {
             i--;
         } while (result == null && i >= 0);
 
-        if (result == null)
+        if (result == null && !RemixEditor.isEditing())
             System.err.format("Constant \"%s\" has no value.%n", constantName);
         return result;
     }
