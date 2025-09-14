@@ -116,7 +116,9 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             if (node instanceof RemixParser.ExpressionContext) {
                 Expression libExp = (Expression) visit(node);
                 try {
+                    ArrayList<LibraryExpression> storedLibraries = LibrariesAndCompletions.copyAddedLibraries();
                     libraryExpression = (LibraryExpression) libExp.evaluate(new Context(thisProgramSoFar));
+                    LibrariesAndCompletions.replaceAddedLibraries(storedLibraries);
                 } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException e) {
                     //throw new RuntimeException(e);
                 }

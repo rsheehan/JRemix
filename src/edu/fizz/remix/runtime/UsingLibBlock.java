@@ -6,7 +6,7 @@ import java.util.HashMap;
 The UsingLibBlock is a statement which executes its block of statements.
 It is using one or more libraries - in the libraryExpressions.
  */
-public class UsingLibBlock implements Expression {
+public class UsingLibBlock extends Block {
 
     // The libraries which are to be added to the library stack when the block of statements is evaluated.
     Expression[] libraryExpressions;
@@ -16,6 +16,10 @@ public class UsingLibBlock implements Expression {
     public UsingLibBlock(Expression[] libraries, LibraryExpression functionsAndStatements) {
         libraryExpressions = libraries;
         usingBlock = functionsAndStatements;
+    }
+
+    public void addFunctionsFromJavaLibrary(LibraryExpression javaLibrary) {
+        usingBlock.functionTable.putAll(javaLibrary.functionTable);
     }
 
     public HashMap functionsDefined() {

@@ -16,7 +16,22 @@ public class LibrariesAndCompletions {
        The standard library and the program editor library are valid
        everywhere, all others have a start and finish line.
      */
-    private static final ArrayList<LibraryExpression> addedLibraries = new ArrayList<>();
+    private static ArrayList<LibraryExpression> addedLibraries = new ArrayList<>();
+
+    /*
+    This is used when including a library file as we need to preserve the current state.
+     */
+    public static ArrayList<LibraryExpression> copyAddedLibraries() {
+        return new ArrayList<>(addedLibraries);
+    }
+
+    /*
+    This returns to the state before including a library file.
+    See EvalVisitorForEditor VisitUsingStatement.
+     */
+    public static void replaceAddedLibraries(ArrayList<LibraryExpression> originalAddedLibraries) {
+        addedLibraries = originalAddedLibraries;
+    }
 
     /* The base library has the built-in and standard-lib functions. */
     private static LibraryExpression baseLibrary;
@@ -94,7 +109,6 @@ public class LibrariesAndCompletions {
         searchForCompletions(searchWord, LibraryExpression.methodTableForCompletions, completionsAtStart, completionsConsecutive, functionDisplayNames);
         ArrayList<String> allCompletions = new ArrayList<>(completionsAtStart);
         allCompletions.addAll(completionsConsecutive);
-//        allCompletions.addAll(completionsRemaining);
 
         return allCompletions;
     }
@@ -103,7 +117,6 @@ public class LibrariesAndCompletions {
                                              HashMap<String, Function> functionTable,
                                              SortedSet<String> atStart,
                                              SortedSet<String> consecutive,
-//                                             SortedSet<String> remaining,
                                              HashMap<String, String> functionDisplayNames) {
         for (String functionName : functionTable.keySet()) {
             int finish = 0;
