@@ -78,7 +78,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             If it contains a "library" block that is different.
             That would add a library level to the stack in the context.
              */
-            LibraryExpression topOfStackLibrary = (LibraryExpression)context.libraryStack.get(context.libraryStack.size()-1);
+            LibraryExpression topOfStackLibrary = (LibraryExpression)context.libraryStack.peek();
             topOfStackLibrary.functionTable.putAll(included.functionTable);
             if (RemixEditor.isEditing()) {
                 included.setActiveLines(topOfStackLibrary.getActiveLines());
