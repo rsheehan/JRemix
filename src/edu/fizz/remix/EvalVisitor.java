@@ -55,12 +55,15 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** LIBRARY STRING? */
     @Override
     public LibraryExpression visitLibraryName(RemixParser.LibraryNameContext ctx) {
+        LibraryExpression library;
         if (ctx.STRING() != null) {
             String libName = ctx.STRING().getText();
             libName = libName.substring(1, libName.length() - 1); // strip off quotes
             try {
                 Class libClass = Class.forName(libName);
-                return (LibraryExpression) libClass.getDeclaredConstructor().newInstance();
+                library = (LibraryExpression) libClass.getDeclaredConstructor().newInstance();
+                library.setTrueLibrary(true);
+                return library;
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
                      InvocationTargetException e) {
                 throw new RuntimeException(e);
@@ -69,7 +72,9 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 throw new RuntimeException(e);
             }
         } else {
-            return new LibraryExpression();
+            library = new LibraryExpression();
+            library.setTrueLibrary(true);
+            return library;
         }
     }
 
@@ -96,12 +101,20 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     public Object visitLibUses(RemixParser.LibUsesContext ctx) {
         LibraryExpression library = (LibraryExpression) visit(ctx.libraryName());
         UsingLibBlock usingLibBlock = (UsingLibBlock) visit(ctx.usingStatement());
-        library.functionTable.putAll(usingLibBlock.functionsDefined());
-        library.block = usingLibBlock.statements();
+
+        if (!library.functionTable.isEmpty())
+            usingLibBlock.addFunctionsFromJavaLibrary(library);
+//        library.functionTable.putAll(usingLibBlock.functionsDefined());
+//        library.block = usingLibBlock.statements();
+        /*
+        This is where I need to attach the libraries which are used by this library
+        into the library itself so that when the library is evaluated it uses them.
+        There is a connection with UsingLibBlock
+         */
         // TODO : do I need to copy library constants?
         // need to think through whether libs can have same named constants.
         // Could get very confusing.
-        return library;
+        return usingLibBlock; //library;
     }
 
     /** USING expression (COMMA expression)* usingBlock */

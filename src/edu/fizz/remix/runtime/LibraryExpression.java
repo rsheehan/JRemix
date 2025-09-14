@@ -19,6 +19,15 @@ public class LibraryExpression implements Expression {
 
     public static final ArrayList<int []> ALLLINES = new ArrayList<>(Collections.singleton(new int[]{0, Integer.MAX_VALUE}));
 
+    public void setTrueLibrary(boolean trueLibrary) {
+        this.trueLibrary = trueLibrary;
+    }
+
+    public boolean isTrueLibrary() {
+        return trueLibrary;
+    }
+
+    boolean trueLibrary = false; // whether this is using block library or a true "library"
     boolean loaded = false; // set to true when first evaluated
 
     public ArrayList<int[]> getActiveLines() {
