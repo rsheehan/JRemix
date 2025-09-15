@@ -6,9 +6,9 @@ using graphics lib
 
 	'the window' : the graphics panel
 	'the animation layer' : 'the window' next layer
-	'arrows' : 36 arrows
-	place 'arrows' in 'the animation layer'
-	animate 'arrows' in 'the window'
+	'the arrows' : 36 arrows
+	place 'the arrows' in 'the animation layer'
+	animate 'the arrows' in 'the window'
 
 	'n' arrows :
 		'arrows' : { }
@@ -18,6 +18,7 @@ using graphics lib
 			position 'the arrow' at ('angle' degrees as radians)
 			add 10 to 'angle'
 			append 'the arrow' to 'arrows'
+		return 'arrows'
 
 	an arrow:
 		'arrow' : a shape from {
@@ -27,7 +28,7 @@ using graphics lib
 			{ 2, 2 }
 		}
 		'arrow' colour (random colour)
-		'arrow'
+		return 'arrow'
 
 	position 'the arrow' at 'angle' :
 		'x' : CENTRE-X + 200 × cosine 'angle'
