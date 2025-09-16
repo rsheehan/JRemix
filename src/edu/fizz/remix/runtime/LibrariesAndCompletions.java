@@ -83,7 +83,6 @@ public class LibrariesAndCompletions {
 
     public static ArrayList<String> createCompletionsFrom(String searchWord, int lineNumber) {
         HashMap<String, String> functionDisplayNames = new HashMap<>(); // maps display names to comments
-//        SortedSet<String> completionsRemaining = new TreeSet<>();
         SortedSet<String> completionsAtStart = new TreeSet<>();
         SortedSet<String> completionsConsecutive = new TreeSet<>();
         // first check against base library
@@ -151,7 +150,6 @@ public class LibrariesAndCompletions {
                         String previousCompletion = displayName + "\n" + previousComment;
                         atStart.remove(previousCompletion);
                         consecutive.remove(previousCompletion);
-//                        remaining.remove(previousCompletion);
                     }
                 }
                 thisCompletion = function.getDisplayNameAndComment(functionName);
@@ -160,8 +158,6 @@ public class LibrariesAndCompletions {
                     atStart.add(thisCompletion);
                 else if (position > 0)
                     consecutive.add(thisCompletion);
-//                else
-//                    remaining.add(thisCompletion);
             }
         }
     }

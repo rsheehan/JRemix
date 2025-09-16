@@ -43,8 +43,9 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             /* Bring back the following when linked into the RemixEdLexer. */
             if (node instanceof RemixParser.StatementContext) {
                 Expression statement = (Expression)visit(node);
-                if (statement != null) // can be blank statements
+                if (statement != null) {// can be blank statements
                     thisProgramSoFar.block.addStatement(statement);
+                }
             } else
             if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
@@ -153,7 +154,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         for (int i = 0; i < ctx.getChildCount(); i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.StatementContext) {
-                visit(node);
+                Expression statement = (Expression) visit(node);
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 usingBlock.addFunction(function);
@@ -459,10 +460,23 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         return identifier(ctx.IDENTIFIER().getText());
     }
 
+    // in functionDefinition, methodDefinition, and indirectly from
+    // expression and callPart
     /** LBLOCK statement* RBLOCK */
     @Override
     public Block visitBlockOfStatements(RemixParser.BlockOfStatementsContext ctx) {
-        return produceBlockExpression(ctx);
+        Block block = new Block();
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n; i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixParser.StatementContext) {
+                Expression statement = (Expression) visit(node);
+                if (statement != null) { // can be blank statements
+                    block.addStatement(statement);
+                }
+            }
+        }
+        return block;
     }
 
     /** IDENTIFIER COLON expression */
@@ -942,19 +956,6 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         return new SimpleExpression<>(Boolean.parseBoolean(boolString));
     }
 
-    private Block produceBlockExpression(ParseTree ctx) {
-        Block block = new Block();
-        int n = ctx.getChildCount();
-        for (int i = 0; i < n; i++) {
-            ParseTree node = ctx.getChild(i);
-            if (node instanceof RemixParser.StatementContext) {
-                Expression statement = (Expression)visit(node);
-                if (statement != null) // can be blank statements
-                    block.addStatement(statement);
-            }
-        }
-        return block;
-    }
 
     public RemixListExpression produceListExpression(ParseTree ctx) {
         List<Expression> list = new ArrayList<>();

@@ -494,16 +494,18 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             word.append(ch);
         }
         word.reverse();
-        String result = word.toString();
-        String[] words = result.split(" ");
-        word = new StringBuilder();
-        for (String nextWord : words) {
-            if (!edLexer.isKeyword(nextWord)) {
-                if (!word.isEmpty())
-                    word.append(" ");
-                word.append(nextWord);
-            }
-        }
+// This was originally to remove extra spaces.
+// I also allowed searches on this which matched the letters in any order. Not currently.
+//        String result = word.toString();
+//        String[] words = result.split(" ");
+//        word = new StringBuilder();
+//        for (String nextWord : words) {
+//            if (!edLexer.isKeyword(nextWord)) {
+//                if (!word.isEmpty())
+//                    word.append(" ");
+//                word.append(nextWord);
+//            }
+//        }
         return word.toString();
     }
 
