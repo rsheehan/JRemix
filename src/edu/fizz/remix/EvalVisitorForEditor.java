@@ -27,8 +27,6 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     // TODO: need to remove all unnecessary code, currently mostly a copy
     // of EvalVisitor.
 
-    private LibraryExpression thisProgramSoFar;
-
     /** ( functionDefinition | statement )* EOF */
     /* This is where the Remix functions are added to the function table. */
     @Override
@@ -36,7 +34,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         /*
         The current library could be the baseLibrary, or the programLibrary
          */
-        thisProgramSoFar = LibrariesAndCompletions.getProgramLibrary();
+        LibraryExpression thisProgramSoFar = LibrariesAndCompletions.getProgramLibrary();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -160,7 +158,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         for (int i = 0; i < ctx.getChildCount(); i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.StatementContext) {
-                Expression statement = (Expression) visit(node);
+                visit(node);
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 usingBlock.addFunction(function);

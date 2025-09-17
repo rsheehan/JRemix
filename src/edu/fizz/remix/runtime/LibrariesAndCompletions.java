@@ -87,11 +87,7 @@ public class LibrariesAndCompletions {
         programLibrary = baseLibrary.copyFunctionsConstants();
     }
 
-    public static LibraryExpression copyOfBaseLibrary() {
-        return baseLibrary.copyFunctionsConstants();
-    }
-
-//    /** Print the names of all the functions. */
+    //    /** Print the names of all the functions. */
 //    public static void printFunctionNames() {
 //        for (String name : programLibrary.functionTable.keySet()) {
 //            System.out.println(name + ": " + completionNames(name, baseLibrary));
@@ -113,7 +109,7 @@ public class LibrariesAndCompletions {
             if (variable.startsWith(searchWord))
                 variableCompletions.add(variable);
         }
-        variableCompletions.sort((s1, s2) -> Integer.compare(s1.length(), s2.length()));
+        variableCompletions.sort(Comparator.comparingInt(String::length));
         variableCompletions.add(original);
         return variableCompletions;
     }
