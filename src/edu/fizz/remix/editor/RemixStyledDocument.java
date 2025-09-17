@@ -384,11 +384,20 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         if (completionsHere == null) {
             editor.reparseProgramText(); // editor can be null if printing this document
             String seedWord = wordSoFar(offset);
-            seedWord = seedWord.stripLeading();
-            completions = LibrariesAndCompletions.createCompletionsFrom(seedWord, lineNumber);
+            if (seedWord.startsWith("'")) { // variable
+                completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord);
+                seedWord += "'";
+                offset += 1;
+            } else if (seedWord.startsWith("#")) { // refvar
+                completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord);
+            } else { // function call
+                seedWord = seedWord.stripLeading();
+                completions = LibrariesAndCompletions.createCompletionsFrom(seedWord, lineNumber);
+            }
             if (!seedWord.isEmpty() && !completions.isEmpty()) {
                 int seedLength = seedWord.length();
-                completions.add(seedWord + "\n");
+                if (!seedWord.startsWith("'") && !seedWord.startsWith("#")) // only function calls
+                    completions.add(seedWord + "\n");
                 completionsHere = new CompletionInfo(completions, offset - seedLength);
                 completionAndDoc = completionsHere.nextCompletion();
                 splitPos = completionAndDoc.indexOf('\n');
@@ -489,8 +498,12 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         StringBuilder word = new StringBuilder();
         while (--pos >= 0) {
             String ch = getText(pos, 1);
-            if (".()[\\]{,}:—§@…'’0123456789×÷≤≥≠=√²↲⊕\"\t\n".contains(ch)) // ⊕+*×÷%=≠<≤>≥
+            if (".()[\\]{,}:—§@…’0123456789×÷≤≥≠=√²↲⊕\"\t\n".contains(ch)) // ⊕+*×÷%=≠<≤>≥
                 break;
+            if (ch.equals("'")) {
+                word.append(ch); // puts quote at beginning as flag
+                break;
+            }
             word.append(ch);
         }
         word.reverse();

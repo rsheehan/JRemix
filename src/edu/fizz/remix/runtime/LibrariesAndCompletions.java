@@ -11,6 +11,18 @@ import java.util.*;
 public class LibrariesAndCompletions {
 
     /*
+       All of the variable identifiers.
+     */
+    private static final SortedSet<String> allVariableNames = new TreeSet<>();
+
+    public static void addVariableName(String variable) {
+        if (variable.startsWith("#"))
+            allVariableNames.add(variable + "\n");
+        else
+            allVariableNames.add("'" + variable + "'\n");
+    }
+
+    /*
        List of libraries which have been added so far.
        This is used by the editor for completions.
        The standard library and the program editor library are valid
@@ -52,6 +64,10 @@ public class LibrariesAndCompletions {
         return programLibrary;
     }
 
+    public static void setProgramLibrary(LibraryExpression previousProgramLibrary) {
+        programLibrary = previousProgramLibrary;
+    }
+
     /*
      * Sets the functions, methods, and context back to the standard version.
      */
@@ -59,6 +75,7 @@ public class LibrariesAndCompletions {
         programLibrary = baseLibrary.copyFunctionsConstants();
         LibraryExpression.methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
         addedLibraries.clear();
+        LibrariesAndCompletions.allVariableNames.clear();
     }
 
     /*
@@ -70,6 +87,10 @@ public class LibrariesAndCompletions {
         programLibrary = baseLibrary.copyFunctionsConstants();
     }
 
+    public static LibraryExpression copyOfBaseLibrary() {
+        return baseLibrary.copyFunctionsConstants();
+    }
+
 //    /** Print the names of all the functions. */
 //    public static void printFunctionNames() {
 //        for (String name : programLibrary.functionTable.keySet()) {
@@ -78,9 +99,28 @@ public class LibrariesAndCompletions {
 //    }
 
     /*
+    Get list of possible variable name completions.
+     */
+    public static ArrayList<String> variableCompletionsFrom(String searchWord) {
+        ArrayList<String> variableCompletions = new ArrayList<>();
+        String original = searchWord;
+        if (original.startsWith("'"))
+            original = searchWord + "'";
+        original += "\n";
+        for (String variable : allVariableNames) {
+            if (variable.equals(original))
+                continue;
+            if (variable.startsWith(searchWord))
+                variableCompletions.add(variable);
+        }
+        variableCompletions.sort((s1, s2) -> Integer.compare(s1.length(), s2.length()));
+        variableCompletions.add(original);
+        return variableCompletions;
+    }
+
+    /*
     A completion is a string with the "DisplayName\nFunctionComment"
      */
-
     public static ArrayList<String> createCompletionsFrom(String searchWord, int lineNumber) {
         HashMap<String, String> functionDisplayNames = new HashMap<>(); // maps display names to comments
         SortedSet<String> completionsAtStart = new TreeSet<>();

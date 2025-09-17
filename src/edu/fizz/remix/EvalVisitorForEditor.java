@@ -118,7 +118,13 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                 Expression libExp = (Expression) visit(node);
                 try {
                     ArrayList<LibraryExpression> storedLibraries = LibrariesAndCompletions.copyAddedLibraries();
-                    libraryExpression = (LibraryExpression) libExp.evaluate(new Context(thisProgramSoFar));
+                    LibraryExpression savedProgramLibrary = LibrariesAndCompletions.getProgramLibrary();
+                    LibrariesAndCompletions.resetToRunStandard(); // program lib back to base lib
+                    Context contextForLib = new Context(LibrariesAndCompletions.getProgramLibrary());
+
+                    libraryExpression = (LibraryExpression) libExp.evaluate(contextForLib); //new Context(thisProgramSoFar));
+
+                    LibrariesAndCompletions.setProgramLibrary(savedProgramLibrary);
                     LibrariesAndCompletions.replaceAddedLibraries(storedLibraries);
                 } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException e) {
                     //throw new RuntimeException(e);
@@ -433,6 +439,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         if (varName.startsWith("'")) {
             varName = varName.substring(1, varName.length() - 1);
         }
+        LibrariesAndCompletions.addVariableName(varName);
         return varName;
     }
 
