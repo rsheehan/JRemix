@@ -425,18 +425,31 @@ public class Graphics extends LibraryExpression {
             animationTimer = new Timer((int)(1000/rate), animationBlock);
             animationBlock.setAnimationTimer(animationTimer);
             animationTimer.start();
+            // register the animationBlock so the RemixEditor knows it
+            RemixEditor.addAnimation(animationBlock);
             return animationBlock;
         }
 
-        private class AnimationBlock implements ActionListener {
+        public static class AnimationBlock implements ActionListener {
 
             private final Block animation;
             private final Block condition;
             private Timer animationTimer;
+            private boolean stopped = false;
 
             AnimationBlock( Block animationBlock, Block conditionBlock) {
                 animation = animationBlock;
                 condition = conditionBlock;
+            }
+
+            public boolean isStopped() {
+                return stopped;
+            }
+
+            public void stopAnimation() {
+                stopped = true;
+                animationTimer.stop();
+                RemixEditor.indicateAnAnimationFinished();
             }
 
             public void setAnimationTimer(Timer animationTimer) {
@@ -446,7 +459,8 @@ public class Graphics extends LibraryExpression {
             public void pauseTimer(int millis) throws InterruptedException {
                 animationTimer.stop();
                 Thread.sleep(millis);
-                animationTimer.start();
+                if (!stopped)
+                    animationTimer.start();
             }
 
             @Override
@@ -459,7 +473,7 @@ public class Graphics extends LibraryExpression {
                 }
                 try {
                     if ((Boolean)condition.evaluate(null)) { // see above
-                        animationTimer.stop();
+                        stopAnimation();
                     }
                 } catch (ReturnException | InterruptedException ex) {
                     System.err.println("Problem evaluating animation stop");

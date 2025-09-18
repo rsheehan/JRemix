@@ -17,19 +17,22 @@ public class RemixSwingWorker extends SwingWorker<Boolean, String> {
 
     @Override
     protected Boolean doInBackground() {
-        RemixEditor.setEditing(false);
         RemixREPL.runEditorText(this);
-        RemixEditor.setEditing(true);
         return true; // can make it false on an error in the program
     }
 
     @Override
     protected void done() {
         // called when the doInBackground method finishes
-        editor.stopAction.setEnabled(false);
-        editor.runAction.setEnabled(true);
+        // careful : this is on the event dispatch thread
+        Thread thread = new Thread(() -> {
+            RemixEditor.waitForProgramFinish();
+            editor.stopAction.setEnabled(false);
+            editor.runAction.setEnabled(true);
+            RemixEditor.setEditing(true);
+        });
+        thread.start();
     }
-
 
     public void publish(String output) {
         super.publish(output);

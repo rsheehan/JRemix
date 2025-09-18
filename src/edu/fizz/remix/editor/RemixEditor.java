@@ -5,6 +5,7 @@ package edu.fizz.remix.editor;
  */
 
 import edu.fizz.remix.EvalVisitorForEditor;
+import edu.fizz.remix.libraries.Graphics;
 import edu.fizz.remix.libraries.GraphicsPanel;
 import edu.fizz.remix.runtime.LibrariesAndCompletions;
 import edu.fizz.remix.runtime.LibraryExpression;
@@ -33,6 +34,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static edu.fizz.remix.runtime.LibrariesAndCompletions.resetToEditorStandard;
 
@@ -57,8 +61,8 @@ public class RemixEditor extends JFrame {
     private final HashMap<Object, Action> actions;
 
     private RemixSwingWorker remixRunner;
-    protected RunAction runAction;
-    protected StopAction stopAction;
+    public RunAction runAction;
+    public StopAction stopAction;
     private DarkThemeAction darkThemeAction;
     private LightThemeAction lightThemeAction;
     private static final Font defaultFontForScreen = new Font("monospaced", Font.PLAIN, SIZE);
@@ -74,6 +78,50 @@ public class RemixEditor extends JFrame {
     private String currentFileName = null;
     private String currentAbsoluteFileName = null;
     private boolean editorContentSaved = true;
+
+    private static final ArrayList<Graphics.AnimateFunction.AnimationBlock> animations = new ArrayList<>();
+    private static final Lock animationLock = new ReentrantLock();
+    private static final Condition animationFinished = animationLock.newCondition();
+
+    public static void addAnimation(Graphics.AnimateFunction.AnimationBlock animation) {
+        animations.add(animation);
+    }
+
+    public static boolean animationsStopped() {
+        for (Graphics.AnimateFunction.AnimationBlock animationBlock : animations) {
+            if (!animationBlock.isStopped())
+                return false;
+        }
+        return true;
+    }
+
+    private static void stopAllAnimations() {
+        for (Graphics.AnimateFunction.AnimationBlock animationBlock : animations) {
+            animationBlock.stopAnimation();
+        }
+    }
+
+    public static void indicateAnAnimationFinished() { // called from any animation in Graphics AnimationBlock
+        animationLock.lock();
+        try {
+            animationFinished.signalAll();
+        } finally {
+            animationLock.unlock();
+        }
+    }
+
+    public static void waitForProgramFinish() {
+        animationLock.lock();
+        try {
+            while (!animationsStopped()) {
+                animationFinished.await();
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            animationLock.unlock();
+        }
+    }
 
     class CatchKeys extends KeyAdapter {
         @Override
@@ -372,15 +420,17 @@ public class RemixEditor extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            //                hideGraphicsPanel(); // uncomment if you want the graphics panel hidden
+            // hideGraphicsPanel(); // uncomment if you want the graphics panel hidden
             systemOutput.setText("");
             remixOutput.setText("");
             remixRunner = new RemixSwingWorker(
-                    RemixEditor.this //,
+                    RemixEditor.this
             );
             stopAction.setEnabled(true);
             setEnabled(false); // changed back when running finishes or is terminated
-            remixRunner.execute();
+            animations.clear();
+            setEditing(false); // only changed after program completed
+            remixRunner.execute(); // this causes the program to run in a background thread
         }
     }
 
@@ -394,9 +444,11 @@ public class RemixEditor extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             remixRunner.cancel(true);
+            stopAllAnimations();
             System.out.println("cancel called");
             setEnabled(false);
             runAction.setEnabled(true);
+            setEditing(true);
         }
     }
 
