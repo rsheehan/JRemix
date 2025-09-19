@@ -350,14 +350,14 @@ library using graphics lib
 					place 'turtle' in 'turtle space'
 
 			=-
-			Lower the turtle space 'OBJECT' pens.
+			Lower the turtle group 'OBJECT' pens.
 			=-
 			MY pens down :
 				for each 'turtle' in 'turtles'
 					'turtle' pen down
 
 			=-
-			Raise the turtle space 'OBJECT' pens.
+			Raise the turtle group 'OBJECT' pens.
 			=-
 			MY pens up :
 				for each 'turtle' in 'turtles'

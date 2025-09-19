@@ -11,9 +11,13 @@ using graphics lib, turtle lib
 	'arrows' : a group of 36 turtles in 'turtle space'
 	prepare 'arrows'
 	'arrows' speed 5
-
+	turn 'arrows' -90 degrees
+	
 	repeat 180 times
-		animate 'arrows'
+		rotate 'arrows'
+	
+	'arrows' speed 10
+	'arrows' back to start
 
 	prepare 'arrows' :
 		'angle' : 0
@@ -21,10 +25,18 @@ using graphics lib, turtle lib
 		for each 'arrow' in 'arrows'
 			'arrow' colour  (random colour)
 			'arrow' heading ('angle' increment by 10)
-
 			move 'arrow' RADIUS steps
-			turn 'arrow' -90 degrees
 
-	animate 'arrows' :
+	rotate 'arrows' :
 		move 'arrows' (2π × RADIUS ÷ 180) steps
 		turn 'arrows' -2 degrees
+
+	'arrows' back to start :
+		'prev arrow' : null
+		for each 'arrow' in 'arrows'
+			turn 'arrow' -90 degrees
+			move 'arrow' RADIUS steps
+			if ('prev arrow' ≠ null)
+				hide 'prev arrow'
+			'prev arrow' : 'arrow'
+		hide 'arrow'
