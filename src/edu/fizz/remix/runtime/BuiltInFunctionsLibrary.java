@@ -1,5 +1,7 @@
 package edu.fizz.remix.runtime;
 
+import edu.fizz.remix.EvalVisitorForEditor;
+import edu.fizz.remix.Remix;
 import edu.fizz.remix.editor.RemixEditor;
 import edu.fizz.remix.editor.RemixREPL;
 
@@ -63,7 +65,11 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             String filename = context.retrieve("file-name", false).toString();
             LibraryExpression included;
             try {
+                if (RemixEditor.isEditing())
+                    EvalVisitorForEditor.addIdentifierStack.push(false);
                 included = RemixREPL.loadPackage(filename);
+                if (RemixEditor.isEditing())
+                    EvalVisitorForEditor.addIdentifierStack.pop();
                 /*
                 If the package finishes with a statement which is a "library" that
                 needs to be kept for evaluating with "using".

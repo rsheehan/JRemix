@@ -8,10 +8,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
 
@@ -26,6 +23,13 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
 
     // TODO: need to remove all unnecessary code, currently mostly a copy
     // of EvalVisitor.
+
+    public static final Stack<Boolean> addIdentifierStack;
+
+    static {
+        addIdentifierStack = new Stack<>();
+        addIdentifierStack.push(true);
+    }
 
     /** ( functionDefinition | statement )* EOF */
     /* This is where the Remix functions are added to the function table. */
@@ -437,7 +441,8 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         if (varName.startsWith("'")) {
             varName = varName.substring(1, varName.length() - 1);
         }
-        LibrariesAndCompletions.addVariableName(varName);
+        if (addIdentifierStack.peek())
+            LibrariesAndCompletions.addVariableName(varName);
         return varName;
     }
 

@@ -496,12 +496,17 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     /* From the current position move back to gather a word. */
     private String wordSoFar(int pos) throws BadLocationException {
         StringBuilder word = new StringBuilder();
+        boolean nextCharQuote = false;
+        if (getLength() > pos) {
+            nextCharQuote = getText(pos, 1).equals("'");
+        }
         while (--pos >= 0) {
             String ch = getText(pos, 1);
             if (".()[\\]{,}:—§@…’0123456789×÷≤≥≠=√²↲⊕\"\t\n".contains(ch)) // ⊕+*×÷%=≠<≤>≥
                 break;
             if (ch.equals("'")) {
-                word.append(ch); // puts quote at beginning as flag
+                if (nextCharQuote)
+                    word.append(ch); // puts quote at beginning as flag
                 break;
             }
             word.append(ch);
