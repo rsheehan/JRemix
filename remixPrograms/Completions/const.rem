@@ -1,0 +1,10 @@
+using graphics lib
+	CONST : -1
+	CONST ↲
+	abc
+	
+	abc :
+		9 ↲
+
+CONST ↲
+abc

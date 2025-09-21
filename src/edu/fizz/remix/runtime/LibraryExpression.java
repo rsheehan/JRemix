@@ -1,9 +1,7 @@
 package edu.fizz.remix.runtime;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * A library expression holds a function table.
@@ -19,41 +17,18 @@ public class LibraryExpression implements Expression {
 
     public static final ArrayList<int []> ALLLINES = new ArrayList<>(Collections.singleton(new int[]{0, Integer.MAX_VALUE}));
 
-    public void setTrueLibrary(boolean trueLibrary) {
-        this.trueLibrary = trueLibrary;
-    }
-
-    public boolean isTrueLibrary() {
-        return trueLibrary;
-    }
-
     boolean trueLibrary = false; // whether this is using block library or a true "library"
     boolean loaded = false; // set to true when first evaluated
-
-    public ArrayList<int[]> getActiveLines() {
-        return activeLines;
-    }
-
-    public void setActiveLines(ArrayList<int[]> activeLines) {
-        this.activeLines = activeLines;
-    }
-
     private ArrayList<int[]> activeLines = new ArrayList<>(); // editor lines where this library is active
     public Block block = new Block();
     public HashMap<String, Function> functionTable = new HashMap<>();
     protected HashMap<String, Object> constantTable = new HashMap<>();
+    // Constants available in this library.
+    protected SortedSet<String> allConstantNames = new TreeSet<>();
 
     static HashMap<String, Integer> methodTable = new HashMap<>(); // one table used by all
     static HashMap<String, Function> methodTableStandardLib = new HashMap<>();
     static HashMap<String, Function> methodTableForCompletions = new HashMap<>();
-
-    public static Integer searchMethodTable(String methodName) {
-        return methodTable.get(methodName);
-    }
-
-    public Function searchFunctionTable(String functionName) {
-        return functionTable.get(functionName);
-    }
 
     public LibraryExpression() {
         setUpBuiltIns();
@@ -63,10 +38,33 @@ public class LibraryExpression implements Expression {
         block = statementBlock;
     }
 
+    public void setTrueLibrary(boolean trueLibrary) {
+        this.trueLibrary = trueLibrary;
+    }
+
+    public boolean isTrueLibrary() {
+        return trueLibrary;
+    }
+
+    public ArrayList<int[]> getActiveLines() {
+        return activeLines;
+    }
+
+    public void setActiveLines(ArrayList<int[]> activeLines) {
+        this.activeLines = activeLines;
+    }
+
+    public static Integer searchMethodTable(String methodName) {
+        return methodTable.get(methodName);
+    }
+
+    public Function searchFunctionTable(String functionName) {
+        return functionTable.get(functionName);
+    }
+
     public void setValidLines(int[] lines) {
         activeLines.add(lines);
     }
-
 
     /** Add all Function classes in this library as Remix functions.
      *  Used by subclasses. */
@@ -79,6 +77,11 @@ public class LibraryExpression implements Expression {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    /** Add constants for completions from editing. */
+    public void addConstant(String constantName) {
+        allConstantNames.add(constantName + "\n");
     }
 
     /** Add functions from the compile phase. */
@@ -126,6 +129,7 @@ public class LibraryExpression implements Expression {
         LibraryExpression copy = new LibraryExpression();
         copy.functionTable = new HashMap<>(functionTable);
         copy.constantTable = new HashMap<>(constantTable);
+        copy.allConstantNames = allConstantNames;
         copy.activeLines = new ArrayList<>(activeLines);
         return copy;
     }

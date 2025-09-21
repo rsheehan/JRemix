@@ -330,23 +330,23 @@ public class RemixEditor extends JFrame {
         editorTextPane.getActionMap().put("actionName", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            try {
-                if (popupScreenLocation == null)
-                    popupScreenLocation = getPopupScreenLocation();
-                Element root = doc.getDefaultRootElement();
-                int mark = editorTextPane.getCaretPosition();
-                int lineNumber = root.getElementIndex(mark) + 1;
-                String docText = doc.completionHandling(mark, lineNumber);
-                if (docPopup != null)
-                    docPopup.hide();
-                if (docText != null && !docText.isEmpty()) {
-                    docArea.setText(docText);
-                    docPopup = popupFactory.getPopup(editorTextPane, docPanel, popupScreenLocation.x, popupScreenLocation.y);
-                    docPopup.show();
+                try {
+                    if (popupScreenLocation == null)
+                        popupScreenLocation = getPopupScreenLocation();
+                    Element root = doc.getDefaultRootElement();
+                    int mark = editorTextPane.getCaretPosition();
+                    int lineNumber = root.getElementIndex(mark) + 1;
+                    String docText = doc.completionHandling(mark, lineNumber);
+                    if (docPopup != null)
+                        docPopup.hide();
+                    if (docText != null && !docText.isEmpty()) {
+                        docArea.setText(docText);
+                        docPopup = popupFactory.getPopup(editorTextPane, docPanel, popupScreenLocation.x, popupScreenLocation.y);
+                        docPopup.show();
+                    }
+                } catch (BadLocationException ex) {
+                    throw new RuntimeException(ex);
                 }
-            } catch (BadLocationException ex) {
-                throw new RuntimeException(ex);
-            }
             }
         });
     }

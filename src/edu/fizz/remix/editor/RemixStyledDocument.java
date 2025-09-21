@@ -390,13 +390,15 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 offset += 1;
             } else if (seedWord.startsWith("#")) { // refvar
                 completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord);
+            }else if (seedWord.equals(seedWord.toUpperCase())) { // constant
+                completions = LibrariesAndCompletions.constantCompletionsFrom(seedWord, lineNumber);
             } else { // function call
                 seedWord = seedWord.stripLeading();
                 completions = LibrariesAndCompletions.createCompletionsFrom(seedWord, lineNumber);
             }
             if (!seedWord.isEmpty() && !completions.isEmpty()) {
                 int seedLength = seedWord.length();
-                if (!seedWord.startsWith("'") && !seedWord.startsWith("#")) // only function calls
+                if (!seedWord.startsWith("'") && !seedWord.startsWith("#") && !seedWord.equals(seedWord.toUpperCase())) // only function calls
                     completions.add(seedWord + "\n");
                 completionsHere = new CompletionInfo(completions, offset - seedLength);
                 completionAndDoc = completionsHere.nextCompletion();

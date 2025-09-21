@@ -95,6 +95,34 @@ public class LibrariesAndCompletions {
 //    }
 
     /*
+    List of completions from a constant.
+     */
+    public static ArrayList<String> constantCompletionsFrom(String searchWord, int lineNumber) {
+        ArrayList<String> constantCompletions = new ArrayList<>();
+        String original = searchWord + "\n";
+        for (LibraryExpression lib : addedLibraries) {
+            for (String constantName : lib.allConstantNames) {
+                if (constantName.equals(original))
+                    continue;
+                if (constantName.startsWith(searchWord)) {
+                    boolean activeHere = false;
+                    for (int[] startAndFinish : lib.getActiveLines()) {
+                        if (startAndFinish[0] < lineNumber && lineNumber <= startAndFinish[1]) {
+                            activeHere = true;
+                            break;
+                        }
+                    }
+                    if (activeHere) {
+                        constantCompletions.add(constantName);
+                    }
+                }
+            }
+        }
+        constantCompletions.add(original);
+        return constantCompletions;
+    }
+
+    /*
     Get list of possible variable name completions.
      */
     public static ArrayList<String> variableCompletionsFrom(String searchWord) {
@@ -218,8 +246,9 @@ public class LibrariesAndCompletions {
         RemixEditor.setEditing(false);
         LibraryExpression standardLibrary = RemixREPL.loadPackage("remixLibraries/standard-lib.rem");
         RemixEditor.setEditing(true);
-        // the following line is a kludge to get the standard-lib methods into completions
-        RemixREPL.loadPackage("remixLibraries/standard-lib.rem");
+        // the following line is a kludge to get the standard-lib methods and constants into completions
+        LibraryExpression libWithConstants = RemixREPL.loadPackage("remixLibraries/standard-lib.rem");
+        baseLibrary.allConstantNames = libWithConstants.allConstantNames;
         LibraryExpression.methodTableStandardLib = new HashMap<>(LibraryExpression.methodTableForCompletions);
         // this also makes the currentLibrary the program one
         // merge the standardLibrary into the baseLibrary
@@ -233,8 +262,6 @@ public class LibrariesAndCompletions {
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in program.");
         }
-        // Completions should also include in scope variable names (a bit trickier)
-        // but I now know how to do it (like "using" libraries).
     }
 
 }
