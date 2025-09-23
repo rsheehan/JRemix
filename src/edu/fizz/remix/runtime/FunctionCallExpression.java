@@ -42,7 +42,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         */
 
         String routineName = singleName();
-        Integer refPos = LibraryExpression.searchMethodTable(routineName);
+        Integer refPos = LibraryExpression.searchMethodTableRefPos(routineName);
         if (refPos != null) {
             RemixObject remixObject = null;
             Method method = null;

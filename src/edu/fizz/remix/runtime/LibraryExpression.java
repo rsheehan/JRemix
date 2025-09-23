@@ -26,7 +26,7 @@ public class LibraryExpression implements Expression {
     // Constants available in this library.
     protected SortedSet<String> allConstantNames = new TreeSet<>();
 
-    static HashMap<String, Integer> methodTable = new HashMap<>(); // one table used by all
+    static HashMap<String, Integer> methodTableRefPos = new HashMap<>(); // one table used by all
     static HashMap<String, Function> methodTableStandardLib = new HashMap<>();
     static HashMap<String, Function> methodTableForCompletions = new HashMap<>();
 
@@ -54,8 +54,8 @@ public class LibraryExpression implements Expression {
         this.activeLines = activeLines;
     }
 
-    public static Integer searchMethodTable(String methodName) {
-        return methodTable.get(methodName);
+    public static Integer searchMethodTableRefPos(String methodName) {
+        return methodTableRefPos.get(methodName);
     }
 
     public Function searchFunctionTable(String functionName) {
@@ -94,14 +94,14 @@ public class LibraryExpression implements Expression {
     /** Add a name of method and the reference parameter position. */
     public static void addMethodName(String name, int refPos, Method method) {
         Integer pos;
-        pos = methodTable.get(name);
+        pos = methodTableRefPos.get(name);
         if (pos == null) { // new method name
             if (method != null) {
                 for (String nameM : method.functionNames) {
-                    methodTable.put(nameM, refPos);
+                    methodTableRefPos.put(nameM, refPos);
                 }
             } else {
-                methodTable.put(name, refPos);
+                methodTableRefPos.put(name, refPos);
             }
         } else if (pos != refPos) {
             System.err.format("Conflicting method definition: %s%n", name);
