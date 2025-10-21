@@ -1,0 +1,21 @@
+using graphics lib, turtle lib 
+	'window' : the graphics panel
+	
+	TURTLE : a turtle in (a turtle space in 'window')
+	TURTLE speed 3
+	square 200
+	turn TURTLE 180 degrees
+	more squares
+	
+	more squares : ; only accessible from the using block
+		repeat 2 times
+			square 200
+			turn TURTLE 90 degrees
+
+square 'size' : ; accessible from top-level and using block
+	repeat 4 times
+		move TURTLE 'size' steps
+		turn TURTLE 90 degrees
+	
+square 100
+TURTLE ↲

@@ -1,10 +1,13 @@
-===========
- Fizz-Buzz
-===========
+'lib' : library
+	a lib func :
+		"lib func"
 
-for each 'n' from 1 to 100
-	when [
-	['n' is divisible by 15] do ["fizz-buzz"]
-	['n' is divisible by 3]  do ["fizz"]
-	['n' is divisible by 5]  do ["buzz"]
-	'n' ] ↲
+using 'lib'
+	a lib func ↲
+
+'lib2' : library using 'lib'
+	call lib func :
+		a lib func, " from lib2" ↲
+
+using 'lib2'
+	call lib func
