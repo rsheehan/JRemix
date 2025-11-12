@@ -26,7 +26,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
 
     // private Map<String, Object> currentVariableContext;
 
-    /** ( functionDefinition | statement )* EOF */
+    /** ( functionDefinition | statement | usingStatement )* EOF */
     /* This is where the Remix functions are added to the function table. */
     @Override
     public LibraryExpression visitProgram(RemixParser.ProgramContext ctx) {
@@ -47,6 +47,13 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 library.addFunction(function);
+            } else if (node instanceof RemixParser.UsingStatementContext) {
+                UsingLibBlock usingLibBlock = (UsingLibBlock) visit(node);
+                // need to add the usingLibBlock to the program level library
+                /*
+                When the statements or functions are evaluated the libraries they
+                are using must be added to the context.
+                 */
             }
         }
         return library;
@@ -149,23 +156,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 usingBlock.addFunction(function);
             }
         }
-        return usingBlock;
-    }
-
-    /** USES expression (COMMA expression)* statementBlock */
-    @Override
-    public BlockInUses visitUsesStatement(RemixParser.UsesStatementContext ctx) {
-        ArrayList<Expression> libraryExpressions = new ArrayList<>();
-        BlockInUses usingBlock;
-
-        int n = ctx.getChildCount();
-        for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
-            ParseTree node = ctx.getChild(i);
-            if (node instanceof RemixParser.ExpressionContext) {
-                libraryExpressions.add((Expression) visit(node));
-            }
-        }
-        usingBlock = new BlockInUses(libraryExpressions, (Block) visit(ctx.statementBlock()));
         return usingBlock;
     }
 

@@ -5,6 +5,13 @@ import java.util.HashMap;
 /**
 The UsingLibBlock is a statement which executes its block of statements.
 It is using one or more libraries - in the libraryExpressions.
+
+ Now changed to be a block of statements which are executed at the top-level but
+ using the libraries of libraryExpressions.
+ This is either at the program level or at the level of a library which this block
+ defines. This determines the context for variables and constants and also where
+ the functions in the usingBlock are stored.
+ This has to be determined at a higher level in EvalVisitor.
  */
 public class UsingLibBlock extends Block {
 

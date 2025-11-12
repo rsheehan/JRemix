@@ -70,7 +70,7 @@ GETTER				: 'getter' 's'? ;
 SETTER				: 'setter' 's'? ;
 LIBRARY				: 'library' ;
 USING				: 'using' ; // using a-library
-USES				: 'uses' ;
+//USES				: 'uses' ;
 SELFREF				: 'ME' | 'MY' ;
 
 CONSTANT			: CAPITAL (CAPITAL | '-' | DIGIT)* ;
