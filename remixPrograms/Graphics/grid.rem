@@ -1,4 +1,4 @@
-using graphics lib 
+using graphics
 
 	across lines in 'panel':
 		for each 'row' from 10 to (STD-HEIGHT - 10) in steps of 10

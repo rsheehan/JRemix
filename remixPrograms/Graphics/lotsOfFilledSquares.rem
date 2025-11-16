@@ -1,6 +1,6 @@
 - Lots of filled squares -
 
-using graphics lib
+using graphics
 	'the window' : the graphics panel
 	repeat
 		place (random square) in 'the window'

@@ -1,6 +1,6 @@
-using graphics lib 
+using graphics
 	'panel': open graphics panel
-	make 'panel' background WHITE
+	make 'panel' background YELLOW
 	across lines in 'panel'
 	down lines in 'panel'
 	refresh 'panel'

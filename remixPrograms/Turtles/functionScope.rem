@@ -1,7 +1,4 @@
-using graphics lib, turtle lib 
-	'window' : the graphics panel
-	
-	TURTLE : a turtle in (a turtle space in 'window')
+using graphics, turtle
 	
 	more squares :
 		repeat 2 times
@@ -13,8 +10,6 @@ using graphics lib, turtle lib
 			move TURTLE 'size' steps
 			turn TURTLE 90 degrees
 
-TURTLE speed 5
 square 200
-turn TURTLE 180 degrees
 more squares	
 square 100

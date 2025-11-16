@@ -3,7 +3,7 @@
 =================
 RADIUS : 200
 
-using graphics lib, turtle lib
+using graphics, turtle
 	'turtle space' : a turtle space in (the graphics panel)
 	'arrows' : a group of 36 turtles
 

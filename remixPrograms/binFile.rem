@@ -1,4 +1,4 @@
-using files lib
+using files
 
 	'abc file' : open file "abc.txt" in HOME for BINARY-READING
 	"File: ", 'abc file' ↲

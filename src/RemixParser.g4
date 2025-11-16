@@ -7,13 +7,21 @@ options { tokenVocab=RemixLexer; } // use tokens from RemixLexer.g4
 	Parser rules
 */
 
-program				: ( functionDefinition | statement )* EOF ;
-
-library				: libraryName LBLOCK EOL* ( functionDefinition | statement )* RBLOCK ; //# libNoUses
-//					| libraryName usingStatement		# libUses
-//					;
+program				: ( functionDefinition
+						| statement
+						| usingStatement
+						| library
+						| libAssignment )* EOF ;
 
 libraryName			: LIBRARY STRING? ;
+
+library				: libraryName LBLOCK EOL* ( functionDefinition
+												| statement
+												| usingStatement )* RBLOCK ;
+
+libAssignment		: IDENTIFIER COLON library 			# setVarLibrary
+					| CONSTANT COLON library			# setConLibrary
+					;
 
 usingStatement		: USING expression (COMMA expression)* usingBlock ;
 
@@ -74,8 +82,7 @@ statement			: assignmentStatement	# assStatement	// label not used
 					| expression 			# expr			// label only used for error checking
 					| REDO					# redo
 					| RETURN expression?	# return
-//					| usesStatement			# uses			// label not used
-					| usingStatement		# using			// label not used
+//					| usingStatement		# using			// label not used
 					| endOfStatement		# blank // need to reconsider this
 					;
 
@@ -112,7 +119,7 @@ expression			: MINUS expression						# exprMinus
 					| blockOfStatements		# exprBlock
 					| list					# exprList
 					| map					# exprMap
-					| library				# exprLibrary
+//					| library				# exprLibrary
 					| createObject			# exprObject
 					| extendObject			# exprExtend
 					| LPAREN EOL* expression EOL* RPAREN	# exprParen // after functionCall
@@ -120,9 +127,7 @@ expression			: MINUS expression						# exprMinus
 
 listElement			: IDENTIFIER listPart+ ; // access a list element
 
-listPart			: LBRACE expression RBRACE	# listPartExpr // { number or string } to access part of a list or map
-//					| LBRACE key RBRACE			# listPartKey
-					;
+listPart			: LBRACE expression RBRACE	# listPartExpr ; // { number or string } to access part of a list or map
 
 functionCall		: callPart callPart+
 					| singleWord

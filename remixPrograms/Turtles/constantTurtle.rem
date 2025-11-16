@@ -1,4 +1,4 @@
-using turtle lib
+using turtle
 
 	square 'size' :
 		repeat 4 times

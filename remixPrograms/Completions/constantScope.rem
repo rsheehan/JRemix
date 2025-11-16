@@ -14,7 +14,7 @@ inside func
 "outside ", GHI ↲ ; not found because doesn't exist yet
 "outside ", JKL ↲ ; ditto
 
-using graphics lib
+using graphics
 	GHI : 6
 	"using ", ABC ↲
 	"using ", DEF ↲
@@ -35,7 +35,7 @@ inside func
 STD-WIDTH : 999
 "outside ", STD-WIDTH ↲
 
-using graphics lib, 'the lib'
+using graphics, 'the lib'
 	"using ", ABC ↲
 	"using ", DEF ↲
 	"using ", GHI ↲

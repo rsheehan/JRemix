@@ -1,4 +1,4 @@
-using graphics lib, turtle lib
+using graphics, turtle
 
 	'the window' : the graphics panel
 	'turtle space' : a turtle space in 'the window'

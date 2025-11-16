@@ -2,7 +2,7 @@
 'turtle' Operations and Objects
 ===============================
 library
-	using graphics lib
+	using graphics
 
 		'window' : the graphics panel
 		TURTLE : a turtle in (a turtle space in 'window')

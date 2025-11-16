@@ -5,7 +5,7 @@ If the animate block is moved to a function at the top level all variables must 
 passed to it. 'count' has to be a reference variable.
 =
 
-using graphics lib
+using graphics
 
 	'the window' : the graphics panel
 

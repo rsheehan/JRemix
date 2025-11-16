@@ -1,4 +1,4 @@
-using graphics lib
+using graphics
 	'squares rotation' : every 1 tick
 		for each 'square' in ('layer2' shapes)
 			change 'square' heading by 2 degrees

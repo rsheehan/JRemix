@@ -16,7 +16,7 @@ using include "remixPrograms/includeLibrary.rem"
 4 minus 3 ↲
 4 times 3 ↲
 4 plus 3 ↲ ; does not exist because in library
-36 div 3 ↲ ; currently not accessible, considering changing this
+36 div 3 ↲
 
 'O' ↲
 print 'O' ; should print "OV1 + OV2 = 6"

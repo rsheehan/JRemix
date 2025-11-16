@@ -1,7 +1,7 @@
 =====================
  A landscape program
 =====================
-using graphics lib
+using graphics
 
 	add the sun on the 'layer' :
 		'sun' : a YELLOW circle of radius 40 at {800, 100}

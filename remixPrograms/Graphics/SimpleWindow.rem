@@ -1,7 +1,7 @@
-using graphics lib
+using graphics
 	'the window' : a graphics window
 	'animation layer' : 'the window' next layer
-	'animation layer' ↲
+
 	repeat
 		'shape' : a square
 		'shape' colour   (random colour)

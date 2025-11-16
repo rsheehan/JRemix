@@ -17,17 +17,31 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProgram(RemixParser.ProgramContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link RemixParser#libraryName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLibraryName(RemixParser.LibraryNameContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link RemixParser#library}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitLibrary(RemixParser.LibraryContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link RemixParser#libraryName}.
+	 * Visit a parse tree produced by the {@code setVarLibrary}
+	 * labeled alternative in {@link RemixParser#libAssignment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitLibraryName(RemixParser.LibraryNameContext ctx);
+	T visitSetVarLibrary(RemixParser.SetVarLibraryContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code setConLibrary}
+	 * labeled alternative in {@link RemixParser#libAssignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSetConLibrary(RemixParser.SetConLibraryContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RemixParser#usingStatement}.
 	 * @param ctx the parse tree
@@ -214,13 +228,6 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitReturn(RemixParser.ReturnContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code using}
-	 * labeled alternative in {@link RemixParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitUsing(RemixParser.UsingContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code blank}
 	 * labeled alternative in {@link RemixParser#statement}.
@@ -423,13 +430,6 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExprList(RemixParser.ExprListContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code exprLibrary}
-	 * labeled alternative in {@link RemixParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprLibrary(RemixParser.ExprLibraryContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code exprGreater}
 	 * labeled alternative in {@link RemixParser#expression}.

@@ -1,27 +1,4 @@
-using graphics lib, turtle lib 
-	'window' : the graphics panel
-
-	TURTLE : a turtle in (a turtle space in 'window')
-	'turtle' : a turtle in (a turtle space in 'window')
-	'turtle' colour GREEN
-	'x' : 39
-	square 200
-	more squares
-	
-	more squares : ; currently only accessible from the using block
-		repeat 2 times
-			square 200
-			turn TURTLE 90 degrees
-
-square 'size' : ; accessible from top-level and using block
-	repeat 4 times
-		move TURTLE 'size' steps
-		turn TURTLE 90 degrees
-
-square 100 ; works because the move and turn functions are method calls
-more squares ; not currently accessible
-'turtle' ↲
-'x' ↲
-move 'turtle'210 steps
-
-'bturtle' : a turtle in (a turtle space in 'window')
+using graphics
+	func :
+		"something" ↲
+func

@@ -1,11 +1,11 @@
 DOT-SIZE : 4
 DOT-SPACE : 5
 
-using files lib
+using files
 	'directory' : file directory "/Users/robert/Documents/AppleII/ROMS"
 	'video ROM' : open file "IIE.US#062000" in 'directory' for BINARY-READING
 	
-using graphics lib
+using graphics
 	'window' : the graphics panel
 
 	display 'character' at 'across' 'down' in 'window' :

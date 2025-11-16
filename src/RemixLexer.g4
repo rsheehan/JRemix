@@ -74,7 +74,7 @@ USING				: 'using' ; // using a-library
 SELFREF				: 'ME' | 'MY' ;
 
 CONSTANT			: CAPITAL (CAPITAL | '-' | DIGIT)* ;
-IDENTIFIER			: '\'' FIRSTCHAR IDCHAR* '\''
+IDENTIFIER			: '\'' IDCHAR* '\''
 					| '#' FIRSTCHAR CHARACTER* ;
 WORD				: FIRSTCHAR CHARACTER* ;
 WORDPRODUCT			: '-'? DIGIT+ ('.' DIGIT+)? (IDENTIFIER | 'π') ;
@@ -82,7 +82,7 @@ WORDPRODUCT			: '-'? DIGIT+ ('.' DIGIT+)? (IDENTIFIER | 'π') ;
 STRING				: '"' ('\\"' | .)*? '"' ;
 
 // everything apart from white space, newline or special is a character
-fragment IDCHAR		: ~['~\t\n↲] ;
+fragment IDCHAR		: ~['\t\n↲] ;
 fragment FIRSTCHAR	: ~[.()[\]{,};:—⫾…'\-0-9" ~\t\n↲] ; // ⊕+\-*×÷%=≠<≤>≥
 fragment CHARACTER	: ~[.()[\]{,};:—⫾…'" ~\t\n↲] ; // ⊕+*×÷%=≠<≤>≥
 

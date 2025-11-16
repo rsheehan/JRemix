@@ -6,5 +6,5 @@ include "remixPrograms/included.rem"
 
 extra function ↲
 
-'included var' ↲
+'included var' ↲ ; this is not available
 CONSTANT ↲

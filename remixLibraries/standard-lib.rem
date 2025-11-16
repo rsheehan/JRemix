@@ -746,22 +746,28 @@ test 'list of tests' :
  Common library functions
 ==============================
 =-
-Include the graphics library.
+The library from the standard location with 'name'.
 =-
-graphics lib :
-	include "remixLibraries/graphics.rem"
+from 'name' :
+	include ("remixLibraries/" ⊕ 'name' ⊕ ".rem")
 
 =-
-Include the turtle library.
+The graphics library.
 =-
-turtle lib :
-	include "remixLibraries/turtle.rem"
+graphics :
+	from "graphics"
 
 =-
-Include the files library.
+The turtle library.
 =-
-files lib :
-	include "remixLibraries/files.rem"
+turtle :
+	from "turtle"
+
+=-
+The files library.
+=-
+files :
+	from "files"
 
 -==============================-
 

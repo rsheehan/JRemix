@@ -2,7 +2,7 @@
 Rotating arrows
 ===============
 
-using graphics lib
+using graphics
 	'the window' : the graphics panel
 	'the animation layer' : 'the window' next layer
 

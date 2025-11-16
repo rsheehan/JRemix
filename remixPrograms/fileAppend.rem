@@ -1,4 +1,4 @@
-using files lib
+using files
 	'write file' : open file "abcWrite.txt" in HOME for BOTH
 
 append "\nHello world!" to 'write file'

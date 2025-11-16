@@ -1,6 +1,6 @@
 - Lots of filled circles -
 
-using graphics lib
+using graphics
 	'the window' : the graphics panel
 	repeat
 		place (a random circle) in 'the window'
