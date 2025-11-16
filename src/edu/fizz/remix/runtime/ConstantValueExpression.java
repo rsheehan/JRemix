@@ -18,7 +18,6 @@ public class ConstantValueExpression implements Expression {
     public Object evaluate(Context context) {
         // TODO: get constant from corresponding library
         LibraryExpression library;
-
         Object result = null;
         int i = context.libraryStack.size() - 1;
         do {

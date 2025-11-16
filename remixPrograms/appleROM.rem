@@ -1,31 +1,12 @@
 DOT-SIZE : 4
 DOT-SPACE : 5
 
-using files lib, graphics lib
-
-	'window' : the graphics panel
-
+using files lib
 	'directory' : file directory "/Users/robert/Documents/AppleII/ROMS"
-
 	'video ROM' : open file "IIE.US#062000" in 'directory' for BINARY-READING
-	"File: ", 'video ROM' ↲
-	↲
-
-	'across' : 0
-	'down' : 0
-	'char rows' : { }
-	'bytes' : bytes from 'video ROM'
-	for each 'byte' in 'bytes' keeping 'count'
-		if ('count' > 256 × 8)
-			return
-		append 'byte' to 'char rows'
-		if (length of 'char rows' = 8)
-			display 'char rows' at 'across' 'down' in 'window'
-			'char rows' : { }
-			increment 'across'
-			if ('across' = 16)
-				'across' : 0
-				add 8 to 'down'
+	
+using graphics lib
+	'window' : the graphics panel
 
 	display 'character' at 'across' 'down' in 'window' :
 		'character', " across: ", 'across', " down: ", 'down' ↲
@@ -43,7 +24,6 @@ using files lib, graphics lib
 		place 'square' in 'window'
 		update 'window'
 	
-
 bits from 'value' :
 	create
 		'value' : 'value'
@@ -62,3 +42,21 @@ bits from 'value' :
 						subtract 'bit pos' from 'value'
 					divide 'bit pos' by 2
 					'result'
+					
+-----------------------------
+'across' : 0
+'down' : 0
+'char rows' : { }
+'bytes' : bytes from 'video ROM'
+
+for each 'byte' in 'bytes' keeping 'count'
+	if ('count' > 256 × 8)
+		return
+	append 'byte' to 'char rows'
+	if (length of 'char rows' = 8)
+		display 'char rows' at 'across' 'down' in 'window'
+		'char rows' : { }
+		increment 'across'
+		if ('across' = 16)
+			'across' : 0
+			add 8 to 'down'

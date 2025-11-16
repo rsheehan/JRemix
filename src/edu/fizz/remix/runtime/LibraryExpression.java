@@ -91,6 +91,12 @@ public class LibraryExpression implements Expression {
         }
     }
 
+    public void addFunctionsFromUsingLibBlock(UsingLibBlock usingLibBlock) {
+//        I don't know if this is the right place to connect the libraries with the function
+//        it could also be done as the function definition is being processed.
+        functionTable.putAll(usingLibBlock.functionsDefined()); //javaLibrary.functionTable);
+    }
+
     /** Add a name of method and the reference parameter position. */
     public static void addMethodName(String name, int refPos, Method method) {
         Integer pos;

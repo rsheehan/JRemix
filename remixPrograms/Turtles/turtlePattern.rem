@@ -9,10 +9,10 @@ using graphics lib, turtle lib
 	for each 'turtle' in 'turtles'
 		'turtle' colour  (random colour)
 		'turtle' heading (add 22.5 to 'angle')
-	place 'turtles' group in 'turtle space'
-
-	'turtles' pattern
-	hide 'turtles'
+		
+place 'turtles' group in 'turtle space'
+'turtles' pattern
+hide 'turtles'
 
 'turtles' pattern :
 	repeat 10 times

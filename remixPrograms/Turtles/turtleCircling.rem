@@ -1,19 +1,11 @@
+=================
+ Rotating Arrows
+=================
+RADIUS : 200
+
 using graphics lib, turtle lib
-
-	===============
-	Rotating Arrows
-	===============
-
 	'turtle space' : a turtle space in (the graphics panel)
-
 	'arrows' : a group of 36 turtles
-	prepare 'arrows'
-	place 'arrows' group in 'turtle space'
-	RADIUS : 200
-	move 'arrows' to start positions
-
-	repeat 180 times
-		animate 'arrows'
 
 	prepare 'arrows' :
 		'angle' : 0
@@ -22,6 +14,7 @@ using graphics lib, turtle lib
 			'arrow' colour  (random colour)
 			'arrow' heading ('angle' increment by 10)
 
+-------------------------------------
 move 'arrows' to start positions :
 	'arrows' speed 200
 	move 'arrows' RADIUS steps
@@ -31,3 +24,11 @@ animate 'arrows' :
 	'arrows' speed 5
 	move 'arrows' (2 × RADIUS × π ÷ 180) steps
 	turn 'arrows' -2 degrees
+
+-------------------------------------
+prepare 'arrows'
+place 'arrows' group in 'turtle space'
+move 'arrows' to start positions
+
+repeat 180 times
+	animate 'arrows'

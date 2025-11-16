@@ -2,14 +2,13 @@ using graphics lib, turtle lib
 
 	'the window' : the graphics panel
 	'turtle space' : a turtle space in 'the window'
-
 	'turtle' : a turtle
-	place 'turtle' in 'turtle space'
-	'turtle' speed 100
-
-	'turtle' random walk
-
+	
 	'turtle' random walk :
 		repeat 100 times
 			'turtle' colour (random colour)
 			move 'turtle' to (random turtle point)
+
+'turtle' speed 100
+place 'turtle' in 'turtle space'
+'turtle' random walk

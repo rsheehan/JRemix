@@ -1,468 +1,472 @@
 ===============================
 'turtle' Operations and Objects
 ===============================
-library using graphics lib
+library
+	using graphics lib
 
-	=-
-	Create a turtle space in 'the window'.
-	'the window' is a graphics panel.
-	A turtle space can have individual turtles or
-	groups of turtles added to it.
-	=-
-	a turtle space in 'the window':
-		create
-			'the window' : 'the window'
-			'turtle rate' : 100
-				- The 'turtle rate' is the time delay fraction of a second
-				- after a turtle has moved as many steps as its speed.
-				- See "move 'turtle' 'n' steps"
+		'window' : the graphics panel
+		TURTLE : a turtle in (a turtle space in 'window')
 
-			=-
-			The base layer of the turtle space 'OBJECT'.
-			=-
-			MY base layer :
-				'the window' base layer
+		=-
+		Create a turtle space in 'the window'.
+		'the window' is a graphics panel.
+		A turtle space can have individual turtles or
+		groups of turtles added to it.
+		=-
+		a turtle space in 'the window':
+			create
+				'the window' : 'the window'
+				'turtle rate' : 100
+					- The 'turtle rate' is the time delay fraction of a second
+					- after a turtle has moved as many steps as its speed.
+					- See "move 'turtle' 'n' steps"
 
-			=-
-			Update the turtle space 'OBJECT'.
-			=-
-			update ME :
-				update 'the window'
+				=-
+				The base layer of the turtle space 'OBJECT'.
+				=-
+				MY base layer :
+					'the window' base layer
 
-			=-
-			Place the 'turtle' in the turtle space 'OBJECT'.
-			=-
-			place 'turtle' in ME :
-				'turtle' turtle space ME
-				'turtle' animation layer ('the window' next layer)
-				update 'the window'
+				=-
+				Update the turtle space 'OBJECT'.
+				=-
+				update ME :
+					update 'the window'
 
-			=-
-			Place the 'turtle group' in the turtle space 'OBJECT'.
-			=-
-			place 'turtle group' group in ME :
-				'turtle group' turtle space ME
+				=-
+				Place the 'turtle' in the turtle space 'OBJECT'.
+				=-
+				place 'turtle' in ME :
+					'turtle' turtle space ME
+					'turtle' animation layer ('the window' next layer)
+					update 'the window'
 
-			=-
-			Clear the turtle space 'OBJECT'.
-			This includes the base layer of the space.
-			This holds any pen marks left by the turtles.
-			=-
-			clear ME :
-				clear 'the window'
+				=-
+				Place the 'turtle group' in the turtle space 'OBJECT'.
+				=-
+				place 'turtle group' group in ME :
+					'turtle group' turtle space ME
 
-			=-
-			Clear all animation layers of the turtle space 'OBJECT'.
-			Leaves the base layer of the space.
-			This holds any pen marks left by the turtles.
-			Usually a similar effect to "hide turtles" but that leaves
-			the turtles' animation layers.
-			=-
-			clear MY turtles :
-				clear 'the window' leaving the base layer
-			
-			=-
-			A small pause in the turtle space 'OBJECT'.
-			Called from turtle actions.
-			=-
-			pause ME :
-				pause (1.0 ÷ 'turtle rate') seconds
+				=-
+				Clear the turtle space 'OBJECT'.
+				This includes the base layer of the space.
+				This holds any pen marks left by the turtles.
+				=-
+				clear ME :
+					clear 'the window'
+
+				=-
+				Clear all animation layers of the turtle space 'OBJECT'.
+				Leaves the base layer of the space.
+				This holds any pen marks left by the turtles.
+				Usually a similar effect to "hide turtles" but that leaves
+				the turtles' animation layers.
+				=-
+				clear MY turtles :
+					clear 'the window' leaving the base layer
+
+				=-
+				A small pause in the turtle space 'OBJECT'.
+				Called from turtle actions.
+				=-
+				pause ME :
+					pause (1.0 ÷ 'turtle rate') seconds
 
 -==================================================================================================-
 
-	================
-	A turtle object.
-	================
+		================
+		A turtle object.
+		================
 
-	=-
-	Create a turtle in the 'turtle space'.
-	=-
-	a turtle in 'turtle space' :
-		'turtle' : a turtle
-		place 'turtle' in 'turtle space'
-		'turtle'
+		=-
+		Create a turtle in the 'turtle space'.
+		=-
+		a turtle in 'turtle space' :
+			'turtle' : a turtle
+			place 'turtle' in 'turtle space'
+			'turtle'
 
-	=-
-	Create a turtle.
-	=-
-	a turtle :
-		extend a shape from {
-			{ 0, 1 }
-			{-2, 2 }
-			{ 0,-2 }
-			{ 2, 2 }
-		}
-			'turtle space' : null
-			'animation layer' : null ; its own animation layer
-			'pen down' : true
-			'visible' : true
-			'speed' : 10
-			'steps' : 0 ; used with 'speed' when moving
-
-			getter/setter
-				'animation layer'
-
-			getter
-				'speed'
-
-			setter
-				'turtle space'
-
-			=-
-			Set the animation 'layer' for the turtle 'OBJECT'.
-			Places the turtle in the layer.
-			=-
-			MY animation layer 'layer' : ; a setter for the 'animation layer'
-				- this is called when a turtle is placed in a turtle space.
-				'animation layer' : 'layer'
-				place ME in 'animation layer'
-
-			====================================================================
-			'turtle' graphics have { 0, 0 } at the centre of the window
-			and the heading is in degrees turning anticlockwise from the right.
-			====================================================================
-
-			=-
-			Set the speed of the turtle 'OBJECT'.
-			=-
-			MY speed 'new speed' : ; the 'speed' setter
-				'speed' : 'new speed'
-				'steps' : 0 ; restart step count when speed is changed
-
-			=-
-			The position of the turtle 'OBJECT' in turtle coordinates.
-			=-
-			MY position :
-				panel coordinate 'position' to turtle coordinate
-
-			=-
-			Set the position of the turtle 'OBJECT' in turtle coordinates.
-			=-
-			MY position 'turtle coordinate' :
-				'position' : turtle coordinate 'turtle coordinate' to panel coordinate
-
-			=-
-			The heading in degrees of the turtle 'OBJECT'.
-			=-
-			MY heading :
-				('heading' radians as degrees) heading to direction
-
-			=-
-			Set the heading of the turtle 'OBJECT' to 'angle' degrees.
-			=-
-			MY heading 'angle' :
-				'heading' : ('angle' heading to direction) degrees as radians
-
-			=-
-			The window position of the turtle 'OBJECT'.
-			A window position is in the panel coordinates.
-			=-
-			MY window position :
-				'position'
-
-			=-
-			Set the window 'position' of the turtle 'OBJECT'.
-			A window position is in the panel coordinates.
-			=-
-			MY window position 'position' :
-				'position' : 'position'
-
-			=-
-			Whether the turtle 'OBJECT' is visible.
-			=-
-			ME is visible :
-				'visible'
-
-			=-
-			Hide the turtle 'OBJECT'.
-			Don't hide the turtle until after it is added to a turtle space.
-			=-
-			hide ME :
-				'visible' : false
-				if ('animation layer' ≠ null)
-					clear 'animation layer' shapes
-				update 'turtle space'
-
-			=-
-			Show the turtle 'OBJECT'.
-			Don't show the turtle until after it is added to a turtle space.
-			=-
-			show ME :
-				'visible' : true
-				if ('animation layer' ≠ null)
-					clear 'animation layer' shapes
-					place ME in 'animation layer'
-				update 'turtle space'
-
-			=-
-			Lower the turtle 'OBJECT' pen.
-			=-
-			MY pen down :
+		=-
+		Create a turtle.
+		=-
+		a turtle :
+			extend a shape from {
+				{ 0, 1 }
+				{-2, 2 }
+				{ 0,-2 }
+				{ 2, 2 }
+			}
+				'turtle space' : null
+				'animation layer' : null ; its own animation layer
 				'pen down' : true
+				'visible' : true
+				'speed' : 10
+				'steps' : 0 ; used with 'speed' when moving
 
-			=-
-			Raise the turtle 'OBJECT' pen.
-			=-
-			MY pen up :
-				'pen down' : false
+				getter/setter
+					'animation layer'
 
-			=======================================
-			Move the turtle instantly.
-			Used as partial moves in animation.
-			'start' and 'finish' are panel coordinates.
-			=======================================
-			=-
-			Only used internally.
-			=-
-			instantly move ME from 'start' to 'finish' in 'destination layer' :
-				clear 'animation layer' shapes
-				if 'pen down'
-					'line' : a 'colour' line from 'start' to 'finish'
-					place 'line' in 'destination layer'
-				'position' : 'finish'
-				if 'visible'
+				getter
+					'speed'
+
+				setter
+					'turtle space'
+
+				=-
+				Set the animation 'layer' for the turtle 'OBJECT'.
+				Places the turtle in the layer.
+				=-
+				MY animation layer 'layer' : ; a setter for the 'animation layer'
+					- this is called when a turtle is placed in a turtle space.
+					'animation layer' : 'layer'
 					place ME in 'animation layer'
-				update 'turtle space'
 
-			=-
-			Move the turtle 'OBJECT' 'n' steps.
-			=-
-			move ME 'n' step/steps :
-				'remaining' : 'n'
-				'distance' : 0
-				'start' : 'position' ; initial position
-				while ['remaining' > 'speed']
-					'distance' : 'distance' + 'speed'
-					'finish' : MY position after moving 'distance' from 'start'
-					instantly move ME from 'start' to 'finish' in 'animation layer'
-					'remaining' : 'remaining' - 'speed'
-					pause 'turtle space'
-					'steps' : 0
-				- now add the "permanent" layer
-				'finish' : MY position after moving 'n' from 'start'
-				instantly move ME from 'start' to 'finish' in ('turtle space' base layer)
-				add 'remaining' to 'steps'
-				if ('steps' > 'speed')
-					pause 'turtle space'
-					'steps' : 'steps' - 'speed'
+				====================================================================
+				'turtle' graphics have { 0, 0 } at the centre of the window
+				and the heading is in degrees turning anticlockwise from the right.
+				====================================================================
 
-			=-
-			Move the turtle 'OBJECT' to the 'coordinate'.
-			'coordinate' is a turtle point.
-			=-
-			move ME to 'coordinate' :
-				turn ME to 'coordinate'
-				'new position' : turtle coordinate 'coordinate' to panel coordinate
-				move ME (distance from 'position' to 'new position') steps
+				=-
+				Set the speed of the turtle 'OBJECT'.
+				=-
+				MY speed 'new speed' : ; the 'speed' setter
+					'speed' : 'new speed'
+					'steps' : 0 ; restart step count when speed is changed
 
-			=-
-			Turn the turtle 'OBJECT' by 'angle' degrees clockwise.
-			=-
-			turn ME 'angle' degrees/degree:
-				add ('angle' degrees as radians) to 'heading'
-				update 'turtle space'
+				=-
+				The position of the turtle 'OBJECT' in turtle coordinates.
+				=-
+				MY position :
+					panel coordinate 'position' to turtle coordinate
 
-			=-
-			Turn the turtle 'OBJECT' to face the 'coordinate'.
-			'coordinate' is a turtle point.
-			=-
-			turn ME to 'coordinate' :
-				'finish' : turtle coordinate 'coordinate' to panel coordinate
-				'δx' : 'finish' {1} - 'position' {1}
-				'δy' : 'position' {2} - 'finish' {2}
-				'heading' : π ÷ 2 - arc tangent 'δy' over 'δx'
-				update 'turtle space'
+				=-
+				Set the position of the turtle 'OBJECT' in turtle coordinates.
+				=-
+				MY position 'turtle coordinate' :
+					'position' : turtle coordinate 'turtle coordinate' to panel coordinate
 
-			===============================================================
-			Where the turtle would be after moving with the current heading
-			from the starting position.
-			===============================================================
+				=-
+				The heading in degrees of the turtle 'OBJECT'.
+				=-
+				MY heading :
+					('heading' radians as degrees) heading to direction
 
-			=-
-			Only used internally.
-			=-
-			MY position after moving 'distance' from 'start' :
-				'actual heading' : π ÷ 2 - 'heading'
-				{
-					'start' {1} + 'distance' × cosine ('actual heading')
-					'start' {2} - 'distance' × sine ('actual heading')
-				}
+				=-
+				Set the heading of the turtle 'OBJECT' to 'angle' degrees.
+				=-
+				MY heading 'angle' :
+					'heading' : ('angle' heading to direction) degrees as radians
 
--==================================================================================================-
+				=-
+				The window position of the turtle 'OBJECT'.
+				A window position is in the panel coordinates.
+				=-
+				MY window position :
+					'position'
 
-	================================
-	A turtle group object.
-	Together for parallel operation.
-	================================
+				=-
+				Set the window 'position' of the turtle 'OBJECT'.
+				A window position is in the panel coordinates.
+				=-
+				MY window position 'position' :
+					'position' : 'position'
 
-	=-
-	Create a group of 'n' turtles in the 'turtle space'.
-	'turtles' in a turtle group can perform the same move and turn
-	instructions simultaneously.
-	They have a speed for the group.
-	=-
-	a group of 'n' turtles in 'turtle space' :
-		'turtles' : a group of 'n' turtles
-		place 'turtles' group in 'turtle space'
-		'turtles'
+				=-
+				Whether the turtle 'OBJECT' is visible.
+				=-
+				ME is visible :
+					'visible'
 
-	=-
-	Create a group of 'n' turtles.
-	'turtles' in a turtle group can perform the same move and turn
-	instructions simultaneously.
-	They have a speed for the group.
-	=-
-	a group of 'n' turtles :
-		if ('n' > 100)
-			"turtle groups limited to 100." ↲
-			'n' : 100
-		'turtles' : apply [a turtle] 'n' times
-		create
-			'type' : "turtle group"
-			'turtle space' : null
-			'turtles' : 'turtles'
-			'speed' : 10 ; this is for the group
-			'steps' : 0
+				=-
+				Hide the turtle 'OBJECT'.
+				Don't hide the turtle until after it is added to a turtle space.
+				=-
+				hide ME :
+					'visible' : false
+					if ('animation layer' ≠ null)
+						clear 'animation layer' shapes
+					update 'turtle space'
 
-			getter
-				'speed'
+				=-
+				Show the turtle 'OBJECT'.
+				Don't show the turtle until after it is added to a turtle space.
+				=-
+				show ME :
+					'visible' : true
+					if ('animation layer' ≠ null)
+						clear 'animation layer' shapes
+						place ME in 'animation layer'
+					update 'turtle space'
 
-			=-
-			Set the speed for the turtles in the turtle group 'OBJECT'.
-			=-
-			MY speed 'new speed' : ; the 'speed' setter
-				'speed' : 'new speed'
-				'steps' : 0 ; restart step count when speed is changed
+				=-
+				Lower the turtle 'OBJECT' pen.
+				=-
+				MY pen down :
+					'pen down' : true
 
-			=-
-			Retrieve turtle 'n' from the turtle group 'OBJECT'.
-			=-
-			turtle 'n' from ME :
-				'turtles' {'n'}
+				=-
+				Raise the turtle 'OBJECT' pen.
+				=-
+				MY pen up :
+					'pen down' : false
 
-			=-
-			Set the 'space' for the turtle group 'OBJECT'.
-			Also adds each turtle in the group to the 'space'.
-			=-
-			MY turtle space 'space' : ; a setter for 'turtle space'
-				'turtle space' : 'space'
-				for each 'turtle' in 'turtles'
-					place 'turtle' in 'turtle space'
+				=======================================
+				Move the turtle instantly.
+				Used as partial moves in animation.
+				'start' and 'finish' are panel coordinates.
+				=======================================
+				=-
+				Only used internally.
+				=-
+				instantly move ME from 'start' to 'finish' in 'destination layer' :
+					clear 'animation layer' shapes
+					if 'pen down'
+						'line' : a 'colour' line from 'start' to 'finish'
+						place 'line' in 'destination layer'
+					'position' : 'finish'
+					if 'visible'
+						place ME in 'animation layer'
+					update 'turtle space'
 
-			=-
-			Lower the turtle group 'OBJECT' pens.
-			=-
-			MY pens down :
-				for each 'turtle' in 'turtles'
-					'turtle' pen down
+				=-
+				Move the turtle 'OBJECT' 'n' steps.
+				=-
+				move ME 'n' step/steps :
+					'remaining' : 'n'
+					'distance' : 0
+					'start' : 'position' ; initial position
+					while ['remaining' > 'speed']
+						'distance' : 'distance' + 'speed'
+						'finish' : MY position after moving 'distance' from 'start'
+						instantly move ME from 'start' to 'finish' in 'animation layer'
+						'remaining' : 'remaining' - 'speed'
+						pause 'turtle space'
+						'steps' : 0
+					- now add the "permanent" layer
+					'finish' : MY position after moving 'n' from 'start'
+					instantly move ME from 'start' to 'finish' in ('turtle space' base layer)
+					add 'remaining' to 'steps'
+					if ('steps' > 'speed')
+						pause 'turtle space'
+						'steps' : 'steps' - 'speed'
 
-			=-
-			Raise the turtle group 'OBJECT' pens.
-			=-
-			MY pens up :
-				for each 'turtle' in 'turtles'
-					'turtle' pen up
+				=-
+				Move the turtle 'OBJECT' to the 'coordinate'.
+				'coordinate' is a turtle point.
+				=-
+				move ME to 'coordinate' :
+					turn ME to 'coordinate'
+					'new position' : turtle coordinate 'coordinate' to panel coordinate
+					move ME (distance from 'position' to 'new position') steps
 
-			====================================================
-			Enable the turtle group to iterate over the turtles.
-			====================================================
-			start ME :
-				create
-					'turtles' : 'turtles'
-					'index' : 0
+				=-
+				Turn the turtle 'OBJECT' by 'angle' degrees clockwise.
+				=-
+				turn ME 'angle' degrees/degree:
+					add ('angle' degrees as radians) to 'heading'
+					update 'turtle space'
 
-					end ME :
-						'index' = 'turtles' length
+				=-
+				Turn the turtle 'OBJECT' to face the 'coordinate'.
+				'coordinate' is a turtle point.
+				=-
+				turn ME to 'coordinate' :
+					'finish' : turtle coordinate 'coordinate' to panel coordinate
+					'δx' : 'finish' {1} - 'position' {1}
+					'δy' : 'position' {2} - 'finish' {2}
+					'heading' : π ÷ 2 - arc tangent 'δy' over 'δx'
+					update 'turtle space'
 
-					next ME :
-						'turtles' {increment 'index'}
+				===============================================================
+				Where the turtle would be after moving with the current heading
+				from the starting position.
+				===============================================================
 
-			=-
-			Move each turtle in the turtle group 'OBJECT' 'n' steps.
-			Each turtle has its own heading, colour etc, but they all
-			move the same distance.
-			=-
-			move ME 'n' step/steps :
-				'remaining' : 'n'
-				'distance' : 0
-				'starting' : apply
-					'turtle' window position
-				… to each 'turtle' from 'turtles'
+				=-
+				Only used internally.
+				=-
+				MY position after moving 'distance' from 'start' :
+					'actual heading' : π ÷ 2 - 'heading'
+					{
+						'start' {1} + 'distance' × cosine ('actual heading')
+						'start' {2} - 'distance' × sine ('actual heading')
+					}
 
-				while ['remaining' > 'speed']
-					'distance' : 'distance' + 'speed'
+	-==================================================================================================-
+
+		================================
+		A turtle group object.
+		Together for parallel operation.
+		================================
+
+		=-
+		Create a group of 'n' turtles in the 'turtle space'.
+		'turtles' in a turtle group can perform the same move and turn
+		instructions simultaneously.
+		They have a speed for the group.
+		=-
+		a group of 'n' turtles in 'turtle space' :
+			'turtles' : a group of 'n' turtles
+			place 'turtles' group in 'turtle space'
+			'turtles'
+
+		=-
+		Create a group of 'n' turtles.
+		'turtles' in a turtle group can perform the same move and turn
+		instructions simultaneously.
+		They have a speed for the group.
+		=-
+		a group of 'n' turtles :
+			if ('n' > 100)
+				"turtle groups limited to 100." ↲
+				'n' : 100
+			'turtles' : apply [a turtle] 'n' times
+			create
+				'type' : "turtle group"
+				'turtle space' : null
+				'turtles' : 'turtles'
+				'speed' : 10 ; this is for the group
+				'steps' : 0
+
+				getter
+					'speed'
+
+				=-
+				Set the speed for the turtles in the turtle group 'OBJECT'.
+				=-
+				MY speed 'new speed' : ; the 'speed' setter
+					'speed' : 'new speed'
+					'steps' : 0 ; restart step count when speed is changed
+
+				=-
+				Retrieve turtle 'n' from the turtle group 'OBJECT'.
+				=-
+				turtle 'n' from ME :
+					'turtles' {'n'}
+
+				=-
+				Set the 'space' for the turtle group 'OBJECT'.
+				Also adds each turtle in the group to the 'space'.
+				=-
+				MY turtle space 'space' : ; a setter for 'turtle space'
+					'turtle space' : 'space'
+					for each 'turtle' in 'turtles'
+						place 'turtle' in 'turtle space'
+
+				=-
+				Lower the turtle group 'OBJECT' pens.
+				=-
+				MY pens down :
+					for each 'turtle' in 'turtles'
+						'turtle' pen down
+
+				=-
+				Raise the turtle group 'OBJECT' pens.
+				=-
+				MY pens up :
+					for each 'turtle' in 'turtles'
+						'turtle' pen up
+
+				====================================================
+				Enable the turtle group to iterate over the turtles.
+				====================================================
+				start ME :
+					create
+						'turtles' : 'turtles'
+						'index' : 0
+
+						end ME :
+							'index' = 'turtles' length
+
+						next ME :
+							'turtles' {increment 'index'}
+
+				=-
+				Move each turtle in the turtle group 'OBJECT' 'n' steps.
+				Each turtle has its own heading, colour etc, but they all
+				move the same distance.
+				=-
+				move ME 'n' step/steps :
+					'remaining' : 'n'
+					'distance' : 0
+					'starting' : apply
+						'turtle' window position
+					… to each 'turtle' from 'turtles'
+
+					while ['remaining' > 'speed']
+						'distance' : 'distance' + 'speed'
+						for each 'turtle' in 'turtles' keeping 'index'
+							'start' : 'starting' {'index'} ; initial position
+							'finish' : 'turtle' position after moving 'distance' from 'start'
+							instantly move 'turtle' from 'start' to 'finish' in ('turtle' animation layer)
+						'remaining' : 'remaining' - 'speed'
+						pause 'turtle space'
+						'steps' : 0
+					- now add the "permanent" layer
 					for each 'turtle' in 'turtles' keeping 'index'
-						'start' : 'starting' {'index'} ; initial position
-						'finish' : 'turtle' position after moving 'distance' from 'start'
-						instantly move 'turtle' from 'start' to 'finish' in ('turtle' animation layer)
-					'remaining' : 'remaining' - 'speed'
-					pause 'turtle space'
-					'steps' : 0
-				- now add the "permanent" layer
-				for each 'turtle' in 'turtles' keeping 'index'
-					'start' : 'starting' {'index'}
-					'finish' : 'turtle' position after moving 'n' from 'start'
-					instantly move 'turtle' from 'start' to 'finish' in ('turtle space' base layer)
-				add 'remaining' to 'steps'
-				if ('steps' > 'speed')
-					pause 'turtle space'
-					'steps' : 'steps' - 'speed'
+						'start' : 'starting' {'index'}
+						'finish' : 'turtle' position after moving 'n' from 'start'
+						instantly move 'turtle' from 'start' to 'finish' in ('turtle space' base layer)
+					add 'remaining' to 'steps'
+					if ('steps' > 'speed')
+						pause 'turtle space'
+						'steps' : 'steps' - 'speed'
 
-			=-
-			Turn each turtle in the turtle group 'OBJECT' by 'angle' degrees clockwise.
-			=-
-			turn ME 'angle' degrees :
-				for each 'turtle' in 'turtles'
-					'turtle' heading ('turtle' heading - 'angle')
-				update 'turtle space'
+				=-
+				Turn each turtle in the turtle group 'OBJECT' by 'angle' degrees clockwise.
+				=-
+				turn ME 'angle' degrees :
+					for each 'turtle' in 'turtles'
+						'turtle' heading ('turtle' heading - 'angle')
+					update 'turtle space'
 
-			=-
-			Hide each turtle in the turtle group 'OBJECT'.
-			Don't hide the turtles until after they are added to a turtle space.
-			=-
-			hide ME :
-				for each 'turtle' in 'turtles'
-					hide 'turtle'
+				=-
+				Hide each turtle in the turtle group 'OBJECT'.
+				Don't hide the turtles until after they are added to a turtle space.
+				=-
+				hide ME :
+					for each 'turtle' in 'turtles'
+						hide 'turtle'
 
-			=-
-			Show each turtle in the turtle group 'OBJECT'.
-			Don't show the turtles until after they are added to a turtle space.
-			=-
-			show ME :
-				for each 'turtle' in 'turtles'
-					show 'turtle'
+				=-
+				Show each turtle in the turtle group 'OBJECT'.
+				Don't show the turtles until after they are added to a turtle space.
+				=-
+				show ME :
+					for each 'turtle' in 'turtles'
+						show 'turtle'
 
--==================================================================================================-
+	-==================================================================================================-
 
-	=-
-	Convert turtle heading 'angle' to a direction (and vice versa).
-	=-
-	'angle' heading to direction :
-		90 - 'angle'
+		=-
+		Convert turtle heading 'angle' to a direction (and vice versa).
+		=-
+		'angle' heading to direction :
+			90 - 'angle'
 
-	=-
-	Convert panel coordinate 'coordinate' to a turtle coordinate.
-	=-
-	panel coordinate 'coordinate' to turtle coordinate :
-		{
-			'coordinate' {1} - CENTRE-X
-			CENTRE-Y - 'coordinate' {2}
-		}
+		=-
+		Convert panel coordinate 'coordinate' to a turtle coordinate.
+		=-
+		panel coordinate 'coordinate' to turtle coordinate :
+			{
+				'coordinate' {1} - CENTRE-X
+				CENTRE-Y - 'coordinate' {2}
+			}
 
-	=-
-	Convert turtle coordinate 'coordinate' to a panel coordinate.
-	=-
-	turtle coordinate 'coordinate' to panel coordinate :
-		{
-			'coordinate' {1} + CENTRE-X
-			CENTRE-Y - 'coordinate' {2}
-		}
+		=-
+		Convert turtle coordinate 'coordinate' to a panel coordinate.
+		=-
+		turtle coordinate 'coordinate' to panel coordinate :
+			{
+				'coordinate' {1} + CENTRE-X
+				CENTRE-Y - 'coordinate' {2}
+			}
 
-	=-
-	A random turtle coordinate.
-	=-
-	random turtle point :
-		panel coordinate (random point) to turtle coordinate
+		=-
+		A random turtle coordinate.
+		=-
+		random turtle point :
+			panel coordinate (random point) to turtle coordinate
 
 -==================================================================================================-
 

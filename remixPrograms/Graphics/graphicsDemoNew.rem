@@ -1,4 +1,12 @@
 using graphics lib
+	'squares rotation' : every 1 tick
+		for each 'square' in ('layer2' shapes)
+			change 'square' heading by 2 degrees
+
+	'arrows movement' : every 2 ticks
+		for each 'arrow' in ('layer1' shapes)
+			change 'arrow' x-pos by 5
+
 	'window' : the graphics panel
 	'layer1' : 'window' next layer
 	'layer2' : 'window' next layer
@@ -17,14 +25,6 @@ using graphics lib
 		'arrow' size 20
 		'arrow' position { 0, 'y-pos' }
 		place 'arrow' in 'layer1'
-
-	'squares rotation' : every 1 tick
-		for each 'square' in ('layer2' shapes)
-			change 'square' heading by 2 degrees
-
-	'arrows movement' : every 2 ticks
-		for each 'arrow' in ('layer1' shapes)
-			change 'arrow' x-pos by 5
 
 	animate at 50 ticks per second
 		animate 'squares rotation'

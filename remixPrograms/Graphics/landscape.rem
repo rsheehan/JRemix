@@ -1,25 +1,7 @@
+=====================
+ A landscape program
+=====================
 using graphics lib
-
-	'window' : the graphics panel
-	'window' colour SKY-BLUE
-
-	'back layer'  : 'window' base layer
-	'cloud layer' : 'window' next layer
-	'front layer' : 'window' next layer
-	
-	add the sun on the 'back layer'
-	add the mountains on the 'back layer'
-	add the sea on the 'back layer'
-	add the islands on the 'front layer'
-	update 'window'	
-
-	'the clouds' : 10 clouds in the 'cloud layer'
-
-	animate 'window' 600 times at 30 ticks per second
-		for each 'cloud' in 'the clouds'
-			move 'cloud'
-
--============================================================================-
 
 	add the sun on the 'layer' :
 		'sun' : a YELLOW circle of radius 40 at {800, 100}
@@ -51,6 +33,11 @@ using graphics lib
 			'cloud'
 		… 'n' times
 
+	animate the 'the clouds' in 'the window' :
+		animate 'the window' 600 times at 30 ticks per second
+			for each 'cloud' in 'the clouds'
+				move 'cloud'
+
 	=
 	A mountain is an isosceles triangle.
 	=
@@ -78,9 +65,7 @@ using graphics lib
 	The "move ME" also wraps the cloud around when it passes off the window.
 	=
 	a cloud :
-
 		- setting up the object’s field values
-
 		'base'   : random (STD-HEIGHT - 200)
 		'across' : random STD-WIDTH
 		'r1' : random 10 + 30
@@ -111,10 +96,8 @@ using graphics lib
 		'line' width 2
 
 		- creating the object
-		
 		create
 			- these are fields
-
 			'circle A' : 'circle A'
 			'circle B' : 'circle B'
 			'box'  : 'box'
@@ -123,7 +106,6 @@ using graphics lib
 				… 'circle B' x-pos - 'circle A' x-pos
 
 			- these are methods
-
 			MY parts :
 				{ 'circle A', 'circle B', 'box', 'line' }
 
@@ -135,3 +117,20 @@ using graphics lib
 				… otherwise ; wrap the cloud around the window
 					for each 'part' in (MY parts)
 						change 'part' x-pos by -(STD-WIDTH + 'size')
+
+	'the window' : the graphics panel
+	'the window' colour SKY-BLUE
+	
+-============================================================================-
+'back layer'  : 'the window' base layer
+'cloud layer' : 'the window' next layer
+'front layer' : 'the window' next layer
+	
+add the sun on the 'back layer'
+add the mountains on the 'back layer'
+add the sea on the 'back layer'
+add the islands on the 'front layer'
+update 'the window'	
+
+'the clouds' : 10 clouds in the 'cloud layer'
+animate the 'the clouds' in 'the window'

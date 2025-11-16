@@ -43,17 +43,14 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 if (statement != null) {// can be blank statements
                     library.block.addStatement(statement);
                     checkForUnusedValue(statement, i < n - 2);
+                    if (statement instanceof UsingLibBlock usingLibBlock) {
+                        // attach functions to this program library
+                        library.addFunctionsFromUsingLibBlock(usingLibBlock);
+                    }
                 }
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
-                RemixFunction function = (RemixFunction)visit(node);
+                RemixFunction function = (RemixFunction) visit(node);
                 library.addFunction(function);
-            } else if (node instanceof RemixParser.UsingStatementContext) {
-                UsingLibBlock usingLibBlock = (UsingLibBlock) visit(node);
-                // need to add the usingLibBlock to the program level library
-                /*
-                When the statements or functions are evaluated the libraries they
-                are using must be added to the context.
-                 */
             }
         }
         return library;
@@ -86,15 +83,20 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     }
 
     /** libraryName LBLOCK EOL* (functionDefinition | statement)* RBLOCK */
-    public Object visitLibNoUses(RemixParser.LibNoUsesContext ctx) {
+    public Object visitLibrary(RemixParser.LibraryContext ctx) {
         LibraryExpression library = (LibraryExpression) visit(ctx.libraryName());
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.StatementContext) {
                 Expression statement = (Expression)visit(node);
-                if (statement != null) // can be blank statements
+                if (statement != null) {// can be blank statements
                     library.block.addStatement(statement);
+                    if (statement instanceof UsingLibBlock usingLibBlock) {
+                        // attach functions to this program library
+                        library.addFunctionsFromUsingLibBlock(usingLibBlock);
+                    }
+                }
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 library.addFunction(function);
@@ -103,26 +105,24 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return library;
     }
 
-    /** libraryName usingStatement */
-    @Override
-    public Object visitLibUses(RemixParser.LibUsesContext ctx) {
-        LibraryExpression library = (LibraryExpression) visit(ctx.libraryName());
-        UsingLibBlock usingLibBlock = (UsingLibBlock) visit(ctx.usingStatement());
-
-        if (!library.functionTable.isEmpty())
-            usingLibBlock.addFunctionsFromJavaLibrary(library);
-//        library.functionTable.putAll(usingLibBlock.functionsDefined());
-//        library.block = usingLibBlock.statements();
-        /*
-        This is where I need to attach the libraries which are used by this library
-        into the library itself so that when the library is evaluated it uses them.
-        There is a connection with UsingLibBlock
-         */
-        // TODO : do I need to copy library constants?
-        // need to think through whether libs can have same named constants.
-        // Could get very confusing.
-        return usingLibBlock; //library;
-    }
+//    /** libraryName usingStatement */
+//    @Override
+//    public Object visitLibUses(RemixParser.LibUsesContext ctx) {
+//        LibraryExpression library = (LibraryExpression) visit(ctx.libraryName());
+//        UsingLibBlock usingLibBlock = (UsingLibBlock) visit(ctx.usingStatement());
+//
+//        if (!library.functionTable.isEmpty())
+//            usingLibBlock.addFunctionsFromJavaLibrary(library);
+//        /*
+//        This is where I need to attach the libraries which are used by this library
+//        into the library itself so that when the library is evaluated it uses them.
+//         */
+//        // need to add the usingLibBlock to the library
+//        library.block.addStatement(usingLibBlock);
+//        // also need to add the functions but they need the library expressions
+//        library.addFunctionsFromUsingLibBlock(usingLibBlock);
+//        return library;
+//    }
 
     /** USING expression (COMMA expression)* usingBlock */
     @Override
@@ -159,20 +159,20 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return usingBlock;
     }
 
-    /** LBLOCK statement+ RBLOCK */
-    @Override
-    public Block visitStatementBlock(RemixParser.StatementBlockContext ctx) {
-        Block blockStatements = new Block();
-        for (int i = 0; i < ctx.getChildCount(); i++) {
-            ParseTree node = ctx.getChild(i);
-            if (node instanceof RemixParser.StatementContext) {
-                Expression statement = (Expression) visit(node);
-                if (statement != null) // can be blank statements
-                    blockStatements.addStatement(statement);
-            }
-        }
-        return blockStatements;
-    }
+//    /** LBLOCK statement+ RBLOCK */
+//    @Override
+//    public Block visitStatementBlock(RemixParser.StatementBlockContext ctx) {
+//        Block blockStatements = new Block();
+//        for (int i = 0; i < ctx.getChildCount(); i++) {
+//            ParseTree node = ctx.getChild(i);
+//            if (node instanceof RemixParser.StatementContext) {
+//                Expression statement = (Expression) visit(node);
+//                if (statement != null) // can be blank statements
+//                    blockStatements.addStatement(statement);
+//            }
+//        }
+//        return blockStatements;
+//    }
 
     /** RETURN expression? */
     @Override

@@ -1,14 +1,10 @@
+===============
+Rotating arrows
+===============
+
 using graphics lib
-
-	===============
-	Rotating arrows
-	===============
-
 	'the window' : the graphics panel
 	'the animation layer' : 'the window' next layer
-	'the arrows' : 36 arrows
-	place 'the arrows' in 'the animation layer'
-	animate 'the arrows' in 'the window'
 
 	'n' arrows :
 		'arrows' : { }
@@ -20,7 +16,7 @@ using graphics lib
 			append 'the arrow' to 'arrows'
 		return 'arrows'
 
-	an arrow:
+	an arrow :
 		'arrow' : a shape from {
 			{ 0, 1 }
 			{-2, 2 }
@@ -42,3 +38,8 @@ using graphics lib
 				'angle' : -('arrow' heading)
 				add (2 degrees as radians) to 'angle'
 				position 'arrow' at 'angle'
+				
+-------------------------------
+'the arrows' : 36 arrows
+place 'the arrows' in 'the animation layer'
+animate 'the arrows' in 'the window'

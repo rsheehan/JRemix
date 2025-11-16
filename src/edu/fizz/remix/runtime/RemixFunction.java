@@ -5,10 +5,10 @@ import java.util.List;
 /** A function defined in Remix code. */
 public class RemixFunction extends Function {
 
-    private final Block codeBlock;
+    final Block codeBlock;
     final int definitionLine; // only used during editing
 
-    /*
+     /*
      * Even though functions can have multiple names, that is only used when
      * added to the function table.
      */

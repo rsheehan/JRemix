@@ -1,13 +1,27 @@
-'lib' : library
-	a lib func :
-		"lib func"
+using graphics lib, turtle lib 
+	'window' : the graphics panel
 
-using 'lib'
-	a lib func ↲
+	TURTLE : a turtle in (a turtle space in 'window')
+	'turtle' : a turtle in (a turtle space in 'window')
+	'turtle' colour GREEN
+	'x' : 39
+	square 200
+	more squares
+	
+	more squares : ; currently only accessible from the using block
+		repeat 2 times
+			square 200
+			turn TURTLE 90 degrees
 
-'lib2' : library using 'lib'
-	call lib func :
-		a lib func, " from lib2" ↲
+square 'size' : ; accessible from top-level and using block
+	repeat 4 times
+		move TURTLE 'size' steps
+		turn TURTLE 90 degrees
 
-using 'lib2'
-	call lib func
+square 100 ; works because the move and turn functions are method calls
+more squares ; not currently accessible
+'turtle' ↲
+'x' ↲
+move 'turtle'210 steps
+
+'bturtle' : a turtle in (a turtle space in 'window')

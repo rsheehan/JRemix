@@ -17,19 +17,11 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProgram(RemixParser.ProgramContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code libNoUses}
-	 * labeled alternative in {@link RemixParser#library}.
+	 * Visit a parse tree produced by {@link RemixParser#library}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitLibNoUses(RemixParser.LibNoUsesContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code libUses}
-	 * labeled alternative in {@link RemixParser#library}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLibUses(RemixParser.LibUsesContext ctx);
+	T visitLibrary(RemixParser.LibraryContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RemixParser#libraryName}.
 	 * @param ctx the parse tree
@@ -48,12 +40,6 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitUsingBlock(RemixParser.UsingBlockContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link RemixParser#statementBlock}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStatementBlock(RemixParser.StatementBlockContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RemixParser#functionDefinition}.
 	 * @param ctx the parse tree

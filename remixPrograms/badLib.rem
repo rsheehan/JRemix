@@ -1,0 +1,13 @@
+a function :
+	'lib' : library
+		using graphics lib
+			'x' : RED
+			fun :
+				"What?" ↲
+			fun
+	'x' ↲
+	RED ↲
+	fun
+
+a function
+'x' ↲

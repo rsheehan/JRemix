@@ -2,14 +2,14 @@ using graphics lib, turtle lib
 
 	'the window' : the graphics panel
 	'the window' colour SKY-BLUE
-
 	'turtle' : a turtle in (a turtle space in 'the window')
-	'turtle' speed 1000
-	hide 'turtle'
-	'turtle' random walk
 
 	'turtle' random walk :
 		repeat 10000 times
 			'turtle' colour (random colour)
 			move 'turtle' 4 steps
 			turn 'turtle' (random 360) degrees
+
+'turtle' speed 1000
+hide 'turtle'
+'turtle' random walk

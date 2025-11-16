@@ -1,8 +1,5 @@
 using graphics lib
 	'window' : the graphics panel
-	animate 'window'
-
--==============================================================================-
 
 	animate 'window' :
 		'x' : 50
@@ -20,3 +17,5 @@ using graphics lib
 				add 100 to 'y'
 				'x' : 50
 			add 1 to 'n'
+-==============================================================================-
+animate 'window'

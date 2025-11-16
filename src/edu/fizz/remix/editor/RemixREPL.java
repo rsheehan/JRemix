@@ -1,14 +1,13 @@
 package edu.fizz.remix.editor;
 
 import edu.fizz.remix.EvalVisitor;
-import edu.fizz.remix.EvalVisitorForEditor;
 import edu.fizz.remix.PreProcess;
 import edu.fizz.remix.parser.RemixErrorListener;
 import edu.fizz.remix.parser.RemixLexer;
 import edu.fizz.remix.parser.RemixParser;
 import edu.fizz.remix.parser.RemixParserBaseVisitor;
-import edu.fizz.remix.runtime.LibraryExpression;
 import edu.fizz.remix.runtime.LibrariesAndCompletions;
+import edu.fizz.remix.runtime.LibraryExpression;
 import edu.fizz.remix.runtime.Runtime;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -34,9 +33,9 @@ public class RemixREPL {
         RemixParser parser = new RemixParser(tokens);
         ParseTree tree = parser.program(); // parse
         RemixParserBaseVisitor eval;
-        if (RemixEditor.isEditing()) // different roles if editing or running
-            eval = new EvalVisitorForEditor();
-        else
+//        if (RemixEditor.isEditing()) // different roles if editing or running
+//            eval = new EvalVisitorForEditor();
+//        else
             eval = new EvalVisitor();
         return (LibraryExpression)eval.visit(tree);
     }

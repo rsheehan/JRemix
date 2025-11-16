@@ -16,12 +16,17 @@ It is using one or more libraries - in the libraryExpressions.
 public class UsingLibBlock extends Block {
 
     // The libraries which are to be added to the library stack when the block of statements is evaluated.
-    Expression[] libraryExpressions;
+    Expression [] libExpressions;
+    HashMap<Expression, LibraryExpression> librariesToUse;
     // The statements to be executed in the context of the libraries.
     LibraryExpression usingBlock;
 
     public UsingLibBlock(Expression[] libraries, LibraryExpression functionsAndStatements) {
-        libraryExpressions = libraries;
+        libExpressions = libraries; // hold on to this for the ordering
+        librariesToUse = new HashMap<>();
+        for (Expression library : libraries) {
+            librariesToUse.put(library, null);
+        }
         usingBlock = functionsAndStatements;
     }
 
@@ -29,7 +34,16 @@ public class UsingLibBlock extends Block {
         usingBlock.functionTable.putAll(javaLibrary.functionTable);
     }
 
+    public void attachLibsToFunctions() {
+        for (String functionName : (usingBlock.functionTable.keySet())) {
+            RemixFunction function = (RemixFunction)usingBlock.functionTable.get(functionName);
+            FunctionInUsing functionInUsing = new FunctionInUsing(function, librariesToUse);
+            usingBlock.functionTable.put(functionName, functionInUsing);
+        }
+    }
+
     public HashMap functionsDefined() {
+        attachLibsToFunctions();
         return usingBlock.functionTable;
     }
 
@@ -40,22 +54,31 @@ public class UsingLibBlock extends Block {
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         LibraryExpression library;
-        for (Expression libraryExpression : libraryExpressions) {
-            Object exp = libraryExpression.evaluate(context);
+        // grab the current top of library stack before the using libraries
+        // are added as this is where new constants should go
+        /* This is a hack because I really need an expression type
+           like a LibraryExpression but for anonymous libraries. */
+        LibraryExpression activeLib = context.peekLibrary();
+        for (Expression libraryExpression : libExpressions) { //libraryExpressions) {
             try {
-                library = (LibraryExpression) exp;
+                // but I need the std lib from the context libraryStack
+                library = (LibraryExpression) libraryExpression.evaluate(context);
+                // store it so that functions which use the library
+                // don't re-evalute the library
+                librariesToUse.put(libraryExpression, library);
                 context.pushLibrary(library);
             } catch (ClassCastException e) {
-                System.err.printf("%s is not a library.%n", exp);
+                System.err.printf("%s is not a library.%n", libraryExpression);
             }
         }
-
+        context.pushLibrary(activeLib);
         Object result = usingBlock.evaluate(context);
-
-        for (Expression ignored : libraryExpressions) {
+        context.popLibrary();
+        for (Expression ignored : librariesToUse.keySet()) {
             // TODO: should not pop any "non-libraries". These were not added.
             context.popLibrary();
         }
+        context.pushLibrary(activeLib);
         return result;
     }
 }

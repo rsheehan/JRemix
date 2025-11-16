@@ -142,8 +142,12 @@ public class Context {
         libraryStack.push(library);
     }
 
-    public void popLibrary() {
-        libraryStack.pop();
+    public LibraryExpression popLibrary() {
+        return libraryStack.pop();
+    }
+
+    public LibraryExpression peekLibrary() {
+        return libraryStack.peek();
     }
 
 }

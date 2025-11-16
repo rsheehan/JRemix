@@ -7,11 +7,11 @@ options { tokenVocab=RemixLexer; } // use tokens from RemixLexer.g4
 	Parser rules
 */
 
-program				: ( functionDefinition | statement | usingStatement )* EOF ;
+program				: ( functionDefinition | statement )* EOF ;
 
-library				: libraryName LBLOCK EOL* ( functionDefinition | statement )* RBLOCK # libNoUses
-					| libraryName usingStatement		# libUses
-					;
+library				: libraryName LBLOCK EOL* ( functionDefinition | statement )* RBLOCK ; //# libNoUses
+//					| libraryName usingStatement		# libUses
+//					;
 
 libraryName			: LIBRARY STRING? ;
 
@@ -21,7 +21,7 @@ usingBlock 			: LBLOCK (functionDefinition | statement)* RBLOCK ;
 
 //usesStatement		: USES expression (COMMA expression)* statementBlock ; // only statements in the block
 
-statementBlock		: LBLOCK statement+ RBLOCK ;
+//statementBlock		: LBLOCK statement+ RBLOCK ;
 
 functionDefinition	: functionComment? functionSignature COLON COLON? EOL? blockOfStatements ;
 
