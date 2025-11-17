@@ -8,6 +8,7 @@ public class Context {
     protected Context parentContext = null;
     protected HashMap variables = new HashMap<>();
     protected Stack<LibraryExpression> libraryStack = new Stack<>();
+    protected LibraryExpression libForConstants = null;
     /* When we make a function call we need the context to know if it should return higher. */
     private boolean returnHigher = false;
 
@@ -26,6 +27,10 @@ public class Context {
         if (parent != null) // hack
             libraryStack = parent.libraryStack; // TODO: should this clone?
         this.returnHigher = returnHigher;
+    }
+
+    public void setLibForConstants(LibraryExpression libForConstants) {
+        this.libForConstants = libForConstants;
     }
 
     /*

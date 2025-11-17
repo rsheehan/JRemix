@@ -1,0 +1,17 @@
+"Playing with libraries\n" ↲
+- Playing with libraries -
+
+LIB1 : library
+	C : 12
+
+using LIB1
+	C ↲
+
+LIB2 : library
+	C : 97
+
+using LIB2
+	C ↲
+
+LIB1 ↲
+LIB2 ↲

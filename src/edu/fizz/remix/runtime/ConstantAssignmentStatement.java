@@ -21,15 +21,9 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
             i--;
         } while (result == null && i >= 0);
 
-        library = context.libraryStack.peek(); // TOS
-        int penultimate = context.libraryStack.size() - 2;
-        if (penultimate < 0)
-            penultimate = 0;
-        // ensure the library is not a dummy one inside UsingLibBlock block
-        if (!library.isTrueLibrary())
-            library = context.libraryStack.get(penultimate);
-        // determine the location of the first true library (or back to
-        // program base library)
+        library = context.libForConstants;
+        if (library == null)
+            library = context.libraryStack.peek(); // TOS
 
         // Blocks get assigned as they are. They are evaluated with do.
         if (expression instanceof Block block) {

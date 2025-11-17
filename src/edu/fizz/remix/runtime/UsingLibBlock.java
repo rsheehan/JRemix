@@ -16,10 +16,14 @@ It is using one or more libraries - in the libraryExpressions.
 public class UsingLibBlock extends Block {
 
     // The libraries which are to be added to the library stack when the block of statements is evaluated.
-    Expression [] libExpressions;
-    HashMap<Expression, LibraryExpression> librariesToUse;
+    private final Expression [] libExpressions;
+    private final HashMap<Expression, LibraryExpression> librariesToUse;
     // The statements to be executed in the context of the libraries.
-    LibraryExpression usingBlock;
+    private final LibraryExpression usingBlock;
+    // The library this is being created inside.
+    // If top-level then the program library.
+    // Otherwise an explicit library.
+    private LibraryExpression libForConstants = null;
 
     public UsingLibBlock(Expression[] libraries, LibraryExpression functionsAndStatements) {
         libExpressions = libraries; // hold on to this for the ordering
@@ -28,10 +32,16 @@ public class UsingLibBlock extends Block {
             librariesToUse.put(library, null);
         }
         usingBlock = functionsAndStatements;
+//        functionTable = functionsAndStatements.functionTable;
+//        block = functionsAndStatements.block;
     }
 
-    public void addFunctionsFromJavaLibrary(LibraryExpression javaLibrary) {
-        usingBlock.functionTable.putAll(javaLibrary.functionTable);
+//    public void addFunctionsFromJavaLibrary(LibraryExpression javaLibrary) {
+//        usingBlock.functionTable.putAll(javaLibrary.functionTable);
+//    }
+
+    public void setLibForConstants(LibraryExpression libForConstants) {
+        this.libForConstants = libForConstants;
     }
 
     public void attachLibsToFunctions() {
@@ -54,14 +64,9 @@ public class UsingLibBlock extends Block {
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         LibraryExpression library;
-        // grab the current top of library stack before the using libraries
-        // are added as this is where new constants should go
-        /* This is a hack because I really need an expression type
-           like a LibraryExpression but for anonymous libraries. */
-        LibraryExpression activeLib = context.peekLibrary();
+
         for (Expression libraryExpression : libExpressions) { //libraryExpressions) {
             try {
-                // but I need the std lib from the context libraryStack
                 library = (LibraryExpression) libraryExpression.evaluate(context);
                 // store it so that functions which use the library
                 // don't re-evalute the library
@@ -71,14 +76,13 @@ public class UsingLibBlock extends Block {
                 System.err.printf("%s is not a library.%n", libraryExpression);
             }
         }
-        context.pushLibrary(activeLib);
+
+        context.setLibForConstants(libForConstants);
         Object result = usingBlock.evaluate(context);
-        context.popLibrary();
+        context.setLibForConstants(null);
         for (Expression ignored : librariesToUse.keySet()) {
-            // TODO: should not pop any "non-libraries". These were not added.
             context.popLibrary();
         }
-        context.pushLibrary(activeLib);
         return result;
     }
 }

@@ -1,4 +1,4 @@
-using (library
+'lib' : library
 	a function :
 		22
 
@@ -15,7 +15,8 @@ using (library
 			MY method one :
 				'z' : 3 + 4
 				'z' + a function
-)
+
+using 'lib'
 	'O' : make an object
 
 	test {
@@ -40,7 +41,10 @@ test {
 		'O' y 8
 		'O' y
 	… expected 8
+	"Calling function in lib when not in lib"
+		a function ; doesn't work
+	… expected null
 }
 
-a function ; this shouldn't work
+a function ; doesn't work
 - Last error output line should be - "a function" does not exist.

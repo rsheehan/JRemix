@@ -1,0 +1,21 @@
+"LIBRARY" ↲
+LIB : library
+	a :
+		"function"
+
+	'A' : "variable"
+	
+	A : "constant"
+	
+	a ↲
+	'A' ↲
+	A ↲	
+↲
+a ↲
+'A' ↲
+A ↲
+↲
+using LIB
+	a ↲
+	'A' ↲
+	A ↲

@@ -14,6 +14,7 @@ LIB : library
 			'A'
 		… expected "variable"
 	}
+	
 ↲
 "USING" ↲
 using LIB
@@ -23,22 +24,22 @@ using LIB
 		… expected "function"
 
 		"variable in named library using block"
-			'A'
-		… expected "variable"
+			'A' ; should not exist here
+		… expected null
 	}
 ↲
 "TOP-LEVEL" \n
 test {
 	"function call at top-level"
-		a
+		a ; does not exist
 	… expected null
 
 	"variable at top-level"
 		'A'
-	… expected "variable"
+	… expected null
 }
 ↲
-using library
+LIB2 : library
 	'A' : 1
 
 	function 'X' :
@@ -48,16 +49,11 @@ using library
 			function 4
 		… expected 6
 	}
-…
-	↲
+↲
+using LIB2
 	test {
 		"function inside using"
 			function 3
 		… expected 5
 	}
-↲
-test {
-	"variable modified in library"
-		'A'
-	… expected 1
-}
+

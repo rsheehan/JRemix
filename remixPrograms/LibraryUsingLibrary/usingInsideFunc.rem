@@ -1,23 +1,50 @@
 LIB1 : include "remixPrograms/LibraryUsingLibrary/lib1.rem"
 
-function :
-	"Before the using block" ↲
-	'abc' : 1
-	using LIB1
-		"in the using block" ↲
-		'abc' ↲
-		function1
-		function2 'abc' :
-			"what - function2" ↲
-			'abc' ↲
-		function2 'abc'
-		function2
-	"After the using block" ↲
-	function1
+=
+LIB1 looks like this:
+
+library
+
+	function1 :
+		"function1 from library 1"
+
+	function2 :
+		"function2 from library 1"
+=
 
 function1 :
-	"function1 from this program" ↲
+	"function1 from this program"
 	
-function
-function1
-"blah2"↲
+using LIB1
+	
+	test {
+		"Call function from library with same name as program function."
+			function1 ; should find the library 1 version
+		… expected "function1 from library 1"
+	}
+	↲
+	functionCaller
+
+	functionCaller : 
+		"USING" ↲
+		test {
+			"Call function from within function with same name as program function."
+				function1
+			… expected "function1 from library 1"
+		}
+↲
+test {
+	"Call function from program with same name as library function."
+		function1 ; should find the program version
+	… expected "function1 from this program"
+}
+↲
+functionCaller
+↲
+functionCaller :
+	"PROGRAM" ↲
+	test {
+		"This only gets called from the top-level call directly above."
+			function1
+		… expected "function1 from this program"
+	}

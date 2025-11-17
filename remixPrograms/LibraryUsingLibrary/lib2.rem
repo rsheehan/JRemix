@@ -8,9 +8,9 @@ library
 			"function0 from library 2" ↲
 
 		function3 :
-			function1
+			function1 ↲
 			"function3 from library 2" ↲
 
 		function4 :
-			function2
+			function2 ↲
 			"function4 from library 2" ↲

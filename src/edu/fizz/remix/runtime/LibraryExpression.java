@@ -38,13 +38,13 @@ public class LibraryExpression implements Expression {
         block = statementBlock;
     }
 
-    public void setTrueLibrary(boolean trueLibrary) {
-        this.trueLibrary = trueLibrary;
+    public void setTrueLibrary() {
+        this.trueLibrary = true;
     }
 
-    public boolean isTrueLibrary() {
-        return trueLibrary;
-    }
+//    public boolean isTrueLibrary() {
+//        return trueLibrary;
+//    }
 
     public ArrayList<int[]> getActiveLines() {
         return activeLines;
@@ -146,6 +146,9 @@ public class LibraryExpression implements Expression {
         // Now that libraries can include statements they must be executed here
         // when first loaded.
         if (!loaded) {
+            if (trueLibrary) { // true libraries have a new context
+                context = new Context(context, false);
+            }
             context.pushLibrary(this);
             block.evaluate(context);
             context.popLibrary();

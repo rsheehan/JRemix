@@ -46,25 +46,26 @@ using LIB1
 
 "N.B. This is a test with library usage inside." ↲
 "----------------------------------------------" ↲
-test {
-	"Simple function from library again"
-		using LIB1
+using LIB1
+	test {
+		"Simple function from library again"
 			'result' : 4 plus 5
-		'result'
-	… expected 9
+			'result'
+		… expected 9
 
-	"Method call from library"
-		using LIB1
+		"Method call from library"
 			'result' : (name "Peter" age 50) to string
-		'result'
-	… expected "50, Peter years old"
+			'result'
+		… expected "50, Peter years old"
+	}
 
-	"Method call same signature different library"
-		using LIB2
+using LIB2
+	test {
+		"Method call same signature different library"
 			'result' : (name "Peter" age 50) to string
-		'result'
-	… expected "Peter, 50 years old"
-}
+			'result'
+		… expected "Peter, 50 years old"
+	}
 ↲
 
 "N.B. This is a test with reference parameter." ↲

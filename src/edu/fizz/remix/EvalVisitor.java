@@ -43,23 +43,21 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 if (statement != null) {// can be blank statements
                     library.block.addStatement(statement);
                     checkForUnusedValue(statement, i < n - 2);
-//                    if (statement instanceof UsingLibBlock usingLibBlock) {
-//                        // attach functions to this program library
-//                        library.addFunctionsFromUsingLibBlock(usingLibBlock);
-//                    }
                 }
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction) visit(node);
                 library.addFunction(function);
             } else if (node instanceof RemixParser.UsingStatementContext) {
                 UsingLibBlock usingLibBlock = (UsingLibBlock)visit(node);
+                usingLibBlock.setLibForConstants(library);
                 library.block.addStatement(usingLibBlock);
                 library.addFunctionsFromUsingLibBlock(usingLibBlock);
             } else if (node instanceof RemixParser.LibraryContext) {
                 LibraryExpression libraryExpression = (LibraryExpression) visit(node);
                 library.block.addStatement(libraryExpression);
             } else if (node instanceof RemixParser.LibAssignmentContext) {
-
+                AssignmentStatement assignmentStatement = (AssignmentStatement) visit(node);
+                library.block.addStatement(assignmentStatement);
             }
         }
         return library;
@@ -75,7 +73,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             try {
                 Class libClass = Class.forName(libName);
                 library = (LibraryExpression) libClass.getDeclaredConstructor().newInstance();
-                library.setTrueLibrary(true);
                 return library;
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
                      InvocationTargetException e) {
@@ -86,7 +83,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             }
         } else {
             library = new LibraryExpression();
-            library.setTrueLibrary(true);
             return library;
         }
     }
@@ -94,6 +90,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** libraryName LBLOCK EOL* (functionDefinition | statement | usingStatement)* RBLOCK */
     public LibraryExpression visitLibrary(RemixParser.LibraryContext ctx) {
         LibraryExpression library = (LibraryExpression) visit(ctx.libraryName());
+        library.setTrueLibrary();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -107,11 +104,28 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 library.addFunction(function);
             } else if (node instanceof RemixParser.UsingStatementContext) {
                 UsingLibBlock usingLibBlock = (UsingLibBlock) visit(node);
+                usingLibBlock.setLibForConstants(library);
                 library.block.addStatement(usingLibBlock);
                 library.addFunctionsFromUsingLibBlock(usingLibBlock);
             }
         }
         return library;
+    }
+
+    /** IDENTIFIER COLON library */
+    @Override
+    public AssignmentStatement visitSetVarLibrary(RemixParser.SetVarLibraryContext ctx) {
+        String varName = identifier(ctx.IDENTIFIER().getText());
+        LibraryExpression library = (LibraryExpression) visit(ctx.library());
+        return new AssignmentStatement(varName, library);
+    }
+
+    /** CONSTANT COLON library */
+    @Override
+    public ConstantAssignmentStatement visitSetConLibrary(RemixParser.SetConLibraryContext ctx) {
+        String constName = ctx.CONSTANT().getText();
+        LibraryExpression library = (LibraryExpression) visit(ctx.library());
+        return new ConstantAssignmentStatement(constName, library);
     }
 
 //    /** libraryName usingStatement */
