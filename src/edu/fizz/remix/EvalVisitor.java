@@ -128,25 +128,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new ConstantAssignmentStatement(constName, library);
     }
 
-//    /** libraryName usingStatement */
-//    @Override
-//    public Object visitLibUses(RemixParser.LibUsesContext ctx) {
-//        LibraryExpression library = (LibraryExpression) visit(ctx.libraryName());
-//        UsingLibBlock usingLibBlock = (UsingLibBlock) visit(ctx.usingStatement());
-//
-//        if (!library.functionTable.isEmpty())
-//            usingLibBlock.addFunctionsFromJavaLibrary(library);
-//        /*
-//        This is where I need to attach the libraries which are used by this library
-//        into the library itself so that when the library is evaluated it uses them.
-//         */
-//        // need to add the usingLibBlock to the library
-//        library.block.addStatement(usingLibBlock);
-//        // also need to add the functions but they need the library expressions
-//        library.addFunctionsFromUsingLibBlock(usingLibBlock);
-//        return library;
-//    }
-
     /** USING expression (COMMA expression)* usingBlock */
     @Override
     public UsingLibBlock visitUsingStatement(RemixParser.UsingStatementContext ctx) {
@@ -181,21 +162,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         }
         return usingBlock;
     }
-
-//    /** LBLOCK statement+ RBLOCK */
-//    @Override
-//    public Block visitStatementBlock(RemixParser.StatementBlockContext ctx) {
-//        Block blockStatements = new Block();
-//        for (int i = 0; i < ctx.getChildCount(); i++) {
-//            ParseTree node = ctx.getChild(i);
-//            if (node instanceof RemixParser.StatementContext) {
-//                Expression statement = (Expression) visit(node);
-//                if (statement != null) // can be blank statements
-//                    blockStatements.addStatement(statement);
-//            }
-//        }
-//        return blockStatements;
-//    }
 
     /** RETURN expression? */
     @Override

@@ -1,0 +1,59 @@
+using graphics
+	'the window' : the graphics panel
+	'back layer'  : 'the window' base layer
+
+	the mountains :
+		apply
+			a DARK-GREY mountain with BLACK edges of height 300 based at 800
+		… 20 times
+		
+	add 'the mountains' on the 'layer' :
+		for each 'mountain' in 'the mountains'
+			place 'mountain' in 'layer'
+			
+	a 'colour' mountain with 'outline colour' edges of height 'max' based at 'level' :
+		'centre' : random STD-WIDTH
+		'height' : random 'max' + 20
+		'width'  : random 150 + 300
+		'mountain' : a 'colour' shape from {
+			{ 0, -'height' }
+			{ 'width' ÷ 2, 0 }
+			{ -'width' ÷ 2, 0 }
+		} scaled by 1 at { 'centre', 'level' }
+		'mountain' outline colour 'outline colour'
+		'mountain'
+
+using graphics, turtle
+	
+	star explosion in 'space' :
+		'40 turtles' : a group of 40 turtles
+		'point' : random turtle point
+		'angle' : 0
+		
+		for each 'turtle' in '40 turtles'
+			'turtle' heading  (add 9 to 'angle')
+			'turtle' colour   (random colour)
+			'turtle' position 'point'
+			
+		place '40 turtles' group in 'space'
+		'40 turtles'
+		
+	'explosion' effect : 
+		'explosion' speed (4 + random 6)
+		move 'explosion' (random from 50 to 200) steps
+		hide 'explosion'
+		-clear 'space'
+		
+	'turtle space' : a turtle space in 'the window'
+---------------------------------------------------
+'the mountains' : the mountains
+add 'the mountains' on the 'back layer'
+
+repeat 20 times
+	'explosion' : star explosion in 'turtle space'
+	add 'the mountains' on the 'back layer'
+	'explosion' effect
+	clear 'turtle space'
+
+add 'the mountains' on the 'back layer'
+update 'the window'

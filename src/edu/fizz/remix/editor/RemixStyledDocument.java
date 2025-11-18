@@ -3,10 +3,7 @@ package edu.fizz.remix.editor;
 import edu.fizz.remix.runtime.LibrariesAndCompletions;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Style;
+import javax.swing.text.*;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -278,11 +275,17 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     }
 
     /* The start of line position before the given position. */
-    private int lineStartPos(int pos) throws BadLocationException {
-        // assumes pos is
+    int lineStartPos(int pos) throws BadLocationException {
         do
             pos--;
         while (!lineStart(pos));
+        return pos;
+    }
+
+    int lineFinishPos(int pos) throws BadLocationException {
+        do
+            pos++;
+        while (pos < getLength() && !lineStart(pos));
         return pos;
     }
 
@@ -390,7 +393,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 offset += 1;
             } else if (seedWord.startsWith("#")) { // refvar
                 completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord);
-            }else if (seedWord.equals(seedWord.toUpperCase())) { // constant
+            } else if (seedWord.equals(seedWord.toUpperCase())) { // constant
                 completions = LibrariesAndCompletions.constantCompletionsFrom(seedWord, lineNumber);
             } else { // function call
                 seedWord = seedWord.stripLeading();
@@ -610,6 +613,82 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         if (followsOpenBlock || followsListStart) {
             textPane.setCaretPosition(offset + tabs + 2);
         }
+    }
+
+    /**
+     * Add a tab indent to all lines covered by the start to finish positions.
+     * @param start the position inside the first line to indent
+     * @param finish a position inside the last line to indent
+     * @throws BadLocationException if out of document
+     */
+    public void addTabIndent(int start, int finish) throws BadLocationException {
+        start = beginningOfLine(start);
+        int pos = start;
+        if (pos == finish) {
+            super.insertString(pos, "\t", defaultStyle);
+            pos = nextLine(pos);
+        }
+        while (pos < finish) {
+            super.insertString(pos, "\t", defaultStyle);
+            finish++; // added a character
+            pos = nextLine(pos);
+        }
+        Caret caret = textPane.getCaret();
+        caret.setDot(start);
+        caret.moveDot(pos);
+    }
+
+    /*
+    Different from lineStartPos since this goes to the beginning of the line
+    not the first char after a tab.
+     */
+    private int beginningOfLine(int pos) throws BadLocationException {
+        while (pos > 0) {
+            if (getText(pos - 1, 1).equals("\n")) {
+                return pos;
+            }
+            pos--;
+        }
+        return 0;
+    }
+
+    /**
+     * Delete a tab indent to all lines covered by the start to finish positions.
+     * @param start the position inside the first line to indent
+     * @param finish a position inside the last line to indent
+     * @throws BadLocationException if out of document
+     */
+    public void removeTabIndent(int start, int finish) throws BadLocationException {
+        start = beginningOfLine(start);
+        int pos = start;
+        if (pos == finish) {
+            if (getText(pos, 1).equals("\t"))
+                super.remove(pos, 1);
+            pos = nextLine(pos);
+        }
+        while (pos < finish) {
+            if (getText(pos, 1).equals("\t"))
+                super.remove(pos, 1);
+            finish--; // removed a character
+            pos = nextLine(pos);
+        }
+        Caret caret = textPane.getCaret();
+        caret.setDot(start);
+        caret.moveDot(pos);
+    }
+
+    /**
+     * Find the next line.
+     * @param pos
+     * @return The position of the first char of the line following pos.
+     * Could be a non-existent position.
+     */
+    private int nextLine(int pos) throws BadLocationException {
+        while (pos < getLength()) {
+            if (getText(pos++, 1).equals("\n"))
+                return pos;
+        }
+        return getLength();
     }
 
     /**

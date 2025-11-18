@@ -471,9 +471,10 @@ public class RemixEditor extends JFrame {
         InputMap inputMap = editorTextPane.getInputMap();
 
         //Command-r to run
-        KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_R, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
+//        KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_R, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
         JMenuItem menuItem = controlMenu.getItem(0); // run
-        inputMap.put(key, menuItem.getAction());
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.META_DOWN_MASK));
+//        inputMap.put(key, menuItem.getAction());
     }
 
     //Create the file menu.
@@ -519,10 +520,118 @@ public class RemixEditor extends JFrame {
 
         menu.addSeparator();
 
+        Action find = new FindForwardAction("Find forwards");
+        menu.add(find);
+        Action backFind = new FindBackwardAction("Find backwards");
+        menu.add(backFind);
+
+        menu.addSeparator();
+
+        Action indent = new IndentSelection("Indent selection");
+        menu.add(indent);
+        Action dedent = new DedentSelection("Dedent selection");
+        menu.add(dedent);
+
+        menu.addSeparator();
+
         Action select = getActionByName(DefaultEditorKit.selectAllAction);
         select.putValue(Action.NAME, "Select All");
         menu.add(select);
         return menu;
+    }
+
+    public class FindForwardAction extends AbstractAction {
+
+        public FindForwardAction(String name) {
+            super(name);
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.META_DOWN_MASK));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int selectionStart = editorTextPane.getSelectionStart();
+            int selectionEnd = editorTextPane.getSelectionEnd();
+            if (selectionStart != selectionEnd) {
+                String selectedText = editorTextPane.getSelectedText();
+                try {
+                    String allText = doc.getText(0, doc.getLength());
+                    int location = allText.indexOf(selectedText, selectionEnd);
+                    if (location != -1) {
+                        Caret caret = editorTextPane.getCaret();
+                        caret.setDot(location);
+                        caret.moveDot(location + selectedText.length());
+                    }
+                } catch (BadLocationException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public class FindBackwardAction extends AbstractAction {
+
+        public FindBackwardAction(String name) {
+            super(name);
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.META_DOWN_MASK));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int selectionStart = editorTextPane.getSelectionStart();
+            int selectionEnd = editorTextPane.getSelectionEnd();
+            if (selectionStart != selectionEnd) {
+                String selectedText = editorTextPane.getSelectedText();
+                try {
+                    String allText = doc.getText(0, doc.getLength());
+                    int location = allText.lastIndexOf(selectedText, selectionStart - 1);
+                    if (location != -1) {
+                        Caret caret = editorTextPane.getCaret();
+                        caret.setDot(location);
+                        caret.moveDot(location + selectedText.length());
+                    }
+                } catch (BadLocationException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public class IndentSelection extends AbstractAction {
+
+        public IndentSelection(String name) {
+            super(name);
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.META_DOWN_MASK));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int selectionStart = editorTextPane.getSelectionStart();
+            int selectionEnd = editorTextPane.getSelectionEnd();
+            try {
+                doc.addTabIndent(selectionStart, selectionEnd);
+            } catch (BadLocationException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public class DedentSelection extends AbstractAction {
+
+        public DedentSelection(String name) {
+            super(name);
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int selectionStart = editorTextPane.getSelectionStart();
+            int selectionEnd = editorTextPane.getSelectionEnd();
+            try {
+                doc.removeTabIndent(selectionStart, selectionEnd);
+            } catch (BadLocationException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     private JMenu createViewMenu() {
