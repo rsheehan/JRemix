@@ -30,20 +30,22 @@ public class LibrariesAndCompletions {
      */
     private static ArrayList<LibraryExpression> addedLibraries = new ArrayList<>();
 
-    /*
-    This is used when including a library file as we need to preserve the current state.
-     */
-    public static ArrayList<LibraryExpression> copyAddedLibraries() {
-        return new ArrayList<>(addedLibraries);
-    }
+//    /*
+//    This is used when including a library file as we need to preserve the current state.
+//    TODO not used
+//     */
+//    public static ArrayList<LibraryExpression> copyAddedLibraries() {
+//        return new ArrayList<>(addedLibraries);
+//    }
 
-    /*
-    This returns to the state before including a library file.
-    See EvalVisitorForEditor VisitUsingStatement.
-     */
-    public static void replaceAddedLibraries(ArrayList<LibraryExpression> originalAddedLibraries) {
-        addedLibraries = originalAddedLibraries;
-    }
+//    /*
+//    This returns to the state before including a library file.
+//    See EvalVisitorForEditor VisitUsingStatement.
+//    TODO not used
+//     */
+//    public static void replaceAddedLibraries(ArrayList<LibraryExpression> originalAddedLibraries) {
+//        addedLibraries = originalAddedLibraries;
+//    }
 
     /* The base library has the built-in and standard-lib functions. */
     private static LibraryExpression baseLibrary;
@@ -60,13 +62,14 @@ public class LibrariesAndCompletions {
         addedLibraries.addFirst(libraryExpression);
     }
 
-    public static LibraryExpression getProgramLibrary() {
+    public static LibraryExpression getProgramBaseLibrary() {
         return programLibrary;
     }
 
-    public static void setProgramLibrary(LibraryExpression previousProgramLibrary) {
-        programLibrary = previousProgramLibrary;
-    }
+//    TODO not used
+//    public static void setProgramLibrary(LibraryExpression previousProgramLibrary) {
+//        programLibrary = previousProgramLibrary;
+//    }
 
     /*
      * Sets the functions, methods, and context back to the standard version.
@@ -101,6 +104,7 @@ public class LibrariesAndCompletions {
         ArrayList<String> constantCompletions = new ArrayList<>();
         String original = searchWord + "\n";
         for (LibraryExpression lib : addedLibraries) {
+            // TODO should the following use lib.constantTable instead?
             for (String constantName : lib.allConstantNames) {
                 if (constantName.equals(original))
                     continue;
@@ -252,8 +256,8 @@ public class LibrariesAndCompletions {
         LibraryExpression.methodTableStandardLib = new HashMap<>(LibraryExpression.methodTableForCompletions);
         // this also makes the currentLibrary the program one
         // merge the standardLibrary into the baseLibrary
-        baseLibrary.functionTable.putAll(standardLibrary.functionTable);
-        baseLibrary.setActiveLines(LibraryExpression.ALLLINES);
+//        baseLibrary.functionTable.putAll(standardLibrary.functionTable);
+//        baseLibrary.setActiveLines(LibraryExpression.ALLLINES);
         try {
             // currently libraries no longer maintain state in contexts (variables)
             // this means this is only useful for loading other libraries, printing etc.
@@ -262,6 +266,8 @@ public class LibrariesAndCompletions {
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in program.");
         }
+        baseLibrary.mergeFunctionsConstantsNoOverwrite(standardLibrary);
+        System.out.println();
     }
 
 }

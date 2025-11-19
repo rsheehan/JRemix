@@ -33,6 +33,10 @@ public class Context {
         this.libForConstants = libForConstants;
     }
 
+    public LibraryExpression getLibForConstants() {
+        return libForConstants;
+    }
+
     /*
      * Called from FunctionCallExpression when assigning parameters
      * Don't want to use the name to determine if a refVar.

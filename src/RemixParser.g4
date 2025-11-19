@@ -9,6 +9,7 @@ options { tokenVocab=RemixLexer; } // use tokens from RemixLexer.g4
 
 program				: ( functionDefinition
 						| statement
+						| setConstant
 						| usingStatement
 						| library
 						| libAssignment )* EOF ;
@@ -17,6 +18,7 @@ libraryName			: LIBRARY STRING? ;
 
 library				: libraryName LBLOCK EOL* ( functionDefinition
 												| statement
+												| setConstant
 												| usingStatement )* RBLOCK ;
 
 libAssignment		: IDENTIFIER COLON library 			# setVarLibrary
@@ -25,7 +27,9 @@ libAssignment		: IDENTIFIER COLON library 			# setVarLibrary
 
 usingStatement		: USING expression (COMMA expression)* usingBlock ;
 
-usingBlock 			: LBLOCK (functionDefinition | statement)* RBLOCK ;
+usingBlock 			: LBLOCK (functionDefinition | statement | setConstant)* RBLOCK ;
+
+setConstant			: CONSTANT COLON expression ;
 
 //usesStatement		: USES expression (COMMA expression)* statementBlock ; // only statements in the block
 
@@ -82,14 +86,12 @@ statement			: assignmentStatement	# assStatement	// label not used
 					| expression 			# expr			// label only used for error checking
 					| REDO					# redo
 					| RETURN expression?	# return
-//					| usingStatement		# using			// label not used
 					| endOfStatement		# blank // need to reconsider this
 					;
 
 endOfStatement		: EOL | EOS ;
 
 assignmentStatement	: IDENTIFIER COLON expression 			# setVariable
-					| CONSTANT COLON expression				# setConstant
 					| IDENTIFIER listPart+ COLON expression	# setListElement
 					;
 
@@ -119,7 +121,6 @@ expression			: MINUS expression						# exprMinus
 					| blockOfStatements		# exprBlock
 					| list					# exprList
 					| map					# exprMap
-//					| library				# exprLibrary
 					| createObject			# exprObject
 					| extendObject			# exprExtend
 					| LPAREN EOL* expression EOL* RPAREN	# exprParen // after functionCall

@@ -11,19 +11,21 @@ LIB2 : library
 	'A' with 'B' :
 		'A' ⊕ " from LIB2 " ⊕ 'B'
 
-test {
-	"single library"
-		using LIB1
+using LIB1
+	test {
+		"single library"
 			'result' : "a" with "b"
-		'result'
-	… expected "a from LIB1 b"
+			'result'
+		… expected "a from LIB1 b"
+	}
 
-	"single library same name function"
-		using LIB2
+using LIB2
+	test {
+		"single library same name function"
 			'result' : "a" with "b"
-		'result'
-	… expected "a from LIB2 b"
-}
+			'result'
+		… expected "a from LIB2 b"
+	}
 ↲
 using LIB1, LIB2
 	test {
@@ -47,14 +49,13 @@ using LIB2, LIB1
 		… expected "from LIB1"
 	}
 ↲
-using LIB1
-	using LIB2
-		test {
-			"2 nested libraries from first"
-				"a" with "b"
-			… expected "a from LIB2 b"
+using LIB1, LIB2
+	test {
+		"2 nested libraries from first"
+			"a" with "b"
+		… expected "a from LIB2 b"
 
-			"2 nested libraries only first"
-				"a" alone
-			… expected "from LIB1"
-		}
+		"2 nested libraries only first"
+			"a" alone
+		… expected "from LIB1"
+	}

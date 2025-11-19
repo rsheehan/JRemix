@@ -1,0 +1,11 @@
+
+'the lib' : library
+	JKL : 7
+
+JKL : 8 ; this is in the program, different from the one in 'the lib'
+STD-WIDTH : 999
+
+JKL ↲
+using graphics, 'the lib'
+	"using ", STD-WIDTH ↲ ; gets 999 as the version in the graphics lib is not allowed
+	"using ", JKL ↲ ; gets 'the lib' value 7, probably shouldn't work

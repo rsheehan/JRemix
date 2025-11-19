@@ -1,0 +1,26 @@
+LIB1 : library
+	X : 1
+
+using LIB1
+	X ↲
+	Y : 2
+	Y ↲
+↲
+X ↲
+Y ↲
+↲
+LIB2 : library
+	using LIB1
+		X ↲
+		Y ↲
+		Z : 3
+		Z ↲
+↲
+using LIB1, LIB2
+	X ↲
+	Y ↲
+	Z ↲
+↲
+X ↲
+Y ↲
+Z ↲

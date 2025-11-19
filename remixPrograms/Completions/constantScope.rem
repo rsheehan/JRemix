@@ -1,43 +1,44 @@
 ABC : 4
 
 inside func :
-	DEF : 5 ; no error when called again, as it is existing value
 	"inside ", ABC ↲
 	"inside ", DEF ↲
 	"inside ", GHI ↲ ; not found the first time
 	"inside ", JKL ↲ ; not found, then 8 from program lib
-
+	
 inside func
-
+↲
 "outside ", ABC ↲
 "outside ", DEF ↲
 "outside ", GHI ↲ ; not found because doesn't exist yet
 "outside ", JKL ↲ ; ditto
-
+↲
 using graphics
+	DEF : 5
 	GHI : 6
 	"using ", ABC ↲
 	"using ", DEF ↲
 	"using ", GHI ↲
 	"using ", STD-WIDTH ↲
 	"using ", JKL ↲ ; not found
-
+↲
 'the lib' : library
 	JKL : 7
 	"library ", ABC ↲
 	"library ", DEF ↲
 	"library ", GHI ↲
 	"library ", JKL ↲
-
-JKL : 8
+↲
+JKL : 8 ; this is in the program, different from the one in 'the lib'
 inside func
+↲
 "outside ", STD-WIDTH ↲ ; not found
 STD-WIDTH : 999
 "outside ", STD-WIDTH ↲
-
+↲
 using graphics, 'the lib'
 	"using ", ABC ↲
 	"using ", DEF ↲
 	"using ", GHI ↲
-	"using ", STD-WIDTH ↲ ; gets 999 as the version in the graphics lib is not allowed
+	"using ", STD-WIDTH ↲ ; gets 1000 as the version in the graphics lib
 	"using ", JKL ↲ ; works as from 'the lib' value 7

@@ -102,9 +102,10 @@ library
 				'visible' : true
 				'speed' : 10
 				'steps' : 0 ; used with 'speed' when moving
+				'transient' : false
 
 				getter/setter
-					'animation layer'
+					'animation layer', 'transient'
 
 				getter
 					'speed'
@@ -244,7 +245,8 @@ library
 						'steps' : 0
 					- now add the "permanent" layer
 					'finish' : MY position after moving 'n' from 'start'
-					instantly move ME from 'start' to 'finish' in ('turtle space' base layer)
+					if (not 'transient')
+						instantly move ME from 'start' to 'finish' in ('turtle space' base layer)
 					add 'remaining' to 'steps'
 					if ('steps' > 'speed')
 						pause 'turtle space'
@@ -404,9 +406,10 @@ library
 						'steps' : 0
 					- now add the "permanent" layer
 					for each 'turtle' in 'turtles' keeping 'index'
-						'start' : 'starting' {'index'}
-						'finish' : 'turtle' position after moving 'n' from 'start'
-						instantly move 'turtle' from 'start' to 'finish' in ('turtle space' base layer)
+						if (not ('turtle' transient))
+							'start' : 'starting' {'index'}
+							'finish' : 'turtle' position after moving 'n' from 'start'
+							instantly move 'turtle' from 'start' to 'finish' in ('turtle space' base layer)
 					add 'remaining' to 'steps'
 					if ('steps' > 'speed')
 						pause 'turtle space'

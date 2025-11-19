@@ -23,7 +23,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
 
     // TODO: need to remove all unnecessary code, currently mostly a copy
     // of EvalVisitor.
-    private final LibraryExpression thisProgramSoFar = LibrariesAndCompletions.getProgramLibrary();
+    private final LibraryExpression thisProgramSoFar = LibrariesAndCompletions.getProgramBaseLibrary();
     public static final Stack<Boolean> addIdentifierStack;
 
     static {
@@ -31,25 +31,28 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         addIdentifierStack.push(true);
     }
 
-    /** ( functionDefinition | statement | usingStatement | library | libAssignment )* EOF */
+    /** ( functionDefinition | statement | setConstant | usingStatement | library | libAssignment )* EOF */
     /* This is where the Remix functions are added to the function table. */
     @Override
     public LibraryExpression visitProgram(RemixParser.ProgramContext ctx) {
         /*
         The current library could be the baseLibrary, or the programLibrary
          */
-        LibraryExpression thisProgramSoFar = LibrariesAndCompletions.getProgramLibrary();
+        LibraryExpression thisProgramSoFar = LibrariesAndCompletions.getProgramBaseLibrary();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
             /* Bring back the following when linked into the RemixEdLexer. */
             if (node instanceof RemixParser.StatementContext) {
-                Expression statement = (Expression)visit(node);
+                Expression statement = (Expression) visit(node);
                 if (statement != null) {// can be blank statements
                     thisProgramSoFar.block.addStatement(statement);
                 }
-            } else
-            if (node instanceof RemixParser.FunctionDefinitionContext) {
+            } else if (node instanceof RemixParser.SetConstantContext) {
+                ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
+                constantAssignment.setLibraryStoredIn(thisProgramSoFar);
+                thisProgramSoFar.block.addStatement(constantAssignment);
+            } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 thisProgramSoFar.addFunction(function);
             } else if (node instanceof RemixParser.UsingStatementContext) {
@@ -89,7 +92,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         }
     }
 
-    /** libraryName LBLOCK EOL* (functionDefinition | statement | usingStatement)* RBLOCK */
+    /** libraryName LBLOCK EOL* (functionDefinition | statement | setConstant | usingStatement)* RBLOCK */
     public LibraryExpression visitLibrary(RemixParser.LibraryContext ctx) {
         LibraryExpression library = (LibraryExpression) visit(ctx.libraryName());
         // so all statements and functions go to this library
@@ -100,6 +103,10 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                 Expression statement = (Expression) visit(node);
                 if (statement != null) // can be blank statements
                     library.block.addStatement(statement);
+            }  else if (node instanceof RemixParser.SetConstantContext) {
+                ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
+                constantAssignment.setLibraryStoredIn(library);
+                library.block.addStatement(constantAssignment);
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 library.addFunction(function);
@@ -145,7 +152,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
 //                    ArrayList<LibraryExpression> storedLibraries = LibrariesAndCompletions.copyAddedLibraries();
 //                    LibraryExpression savedProgramLibrary = LibrariesAndCompletions.getProgramLibrary();
                     LibrariesAndCompletions.resetToRunStandard(); // program lib back to base lib
-                    Context contextForLib = new Context(LibrariesAndCompletions.getProgramLibrary());
+                    Context contextForLib = new Context(LibrariesAndCompletions.getProgramBaseLibrary());
 
                     libraryExpression = (LibraryExpression) libExp.evaluate(contextForLib); //new Context(thisProgramSoFar));
 

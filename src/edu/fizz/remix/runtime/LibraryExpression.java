@@ -140,6 +140,20 @@ public class LibraryExpression implements Expression {
         return copy;
     }
 
+    /*
+    This was added to enable the current program library to get the functions and constants
+    from the saved programLibrary (comes from baseLibrary) with standard functions and constants
+    without overwriting versions which are declared in the current program (these have precendence).
+     */
+    public void mergeFunctionsConstantsNoOverwrite(LibraryExpression libToMergeIn) {
+        for (Map.Entry<String, Function> functionEntry : libToMergeIn.functionTable.entrySet())
+            functionTable.putIfAbsent(functionEntry.getKey(), functionEntry.getValue());
+        for (Map.Entry<String, Object> constantEntry : libToMergeIn.constantTable.entrySet())
+            constantTable.putIfAbsent(constantEntry.getKey(), constantEntry.getValue());
+        allConstantNames.addAll(libToMergeIn.allConstantNames);
+        activeLines = libToMergeIn.getActiveLines();
+    }
+
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         // The result of the expression is just itself.

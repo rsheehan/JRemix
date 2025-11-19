@@ -1,8 +1,19 @@
 package edu.fizz.remix.runtime;
 
 public class ConstantAssignmentStatement extends AssignmentStatement {
+
+    LibraryExpression libraryStoredIn = null;
+
     public ConstantAssignmentStatement(String name, Expression expression) {
         super(name, expression);
+    }
+
+    public LibraryExpression getLibraryStoredIn() {
+        return libraryStoredIn;
+    }
+
+    public void setLibraryStoredIn(LibraryExpression libraryStoredIn) {
+        this.libraryStoredIn = libraryStoredIn;
     }
 
     /*
@@ -10,21 +21,11 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
      */
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
-        LibraryExpression library;
-        Object result;
+        Object existingValue;
         Object value;
-        // first look for the value
-        int i = context.libraryStack.size() - 1;
-        do {
-            library = context.libraryStack.get(i);
-            result = library.constantTable.get(variableName);
-            i--;
-        } while (result == null && i >= 0);
+        LibraryExpression library = libraryStoredIn;
 
-        library = context.libForConstants;
-        if (library == null)
-            library = context.libraryStack.peek(); // TOS
-
+        // calculate the value
         // Blocks get assigned as they are. They are evaluated with do.
         if (expression instanceof Block block) {
             if (block.getContext() == null) {
@@ -35,10 +36,42 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
         } else {
             value = expression.evaluate(context);
         }
-        if (result == null)
+
+        // then check to see if it already exists
+        /*
+        Could be stored in the libraryStoredIn.
+        Then check to see if already has a value
+            this would be an error
+
+        If libraryStoredIn is null then this must be in a using block.
+        The
+         */
+        if (library == null) {
+            // go back through the contexts looking for a libForConstants
+            Context searchContext = context;
+            do {
+                library = searchContext.getLibForConstants();
+                searchContext = searchContext.parentContext;
+            } while (library == null); // should stop at the top program or library level
+        }
+        existingValue = library.constantTable.get(variableName);
+
+        if (existingValue == null)
             library.constantTable.put(variableName, value);
-        else if (!result.equals(value)) // no error if the value matches
+        else if (!existingValue.equals(value)) // no error if the value matches
             System.err.format("Attempt to reassign constant %s%n", variableName);
+//
+//        // first look for the value
+//        int i = context.libraryStack.size() - 1;
+//        do {
+//            library = context.libraryStack.get(i);
+//            existingValue = library.constantTable.get(variableName);
+//            i--;
+//        } while (existingValue == null && i >= 0); // and !library.trueLibrary, trying to assign to the trueLibrary
+//
+//        library = context.libForConstants;
+//        if (library == null)
+//            library = context.libraryStack.peek(); // TOS
         return value;
     }
 }

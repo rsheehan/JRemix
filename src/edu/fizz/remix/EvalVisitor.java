@@ -26,7 +26,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
 
     // private Map<String, Object> currentVariableContext;
 
-    /** ( functionDefinition | statement | usingStatement | library | libAssignment )* EOF */
+    /** ( functionDefinition | statement | setConstant | usingStatement | library | libAssignment )* EOF */
     /* This is where the Remix functions are added to the function table. */
     @Override
     public LibraryExpression visitProgram(RemixParser.ProgramContext ctx) {
@@ -44,6 +44,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                     library.block.addStatement(statement);
                     checkForUnusedValue(statement, i < n - 2);
                 }
+            } else if (node instanceof RemixParser.SetConstantContext) {
+                ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
+                constantAssignment.setLibraryStoredIn(library);
+                library.block.addStatement(constantAssignment);
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction) visit(node);
                 library.addFunction(function);
@@ -57,6 +61,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 library.block.addStatement(libraryExpression);
             } else if (node instanceof RemixParser.LibAssignmentContext) {
                 AssignmentStatement assignmentStatement = (AssignmentStatement) visit(node);
+                if (assignmentStatement instanceof ConstantAssignmentStatement constantAssignmentStatement)
+                    constantAssignmentStatement.setLibraryStoredIn(library);
                 library.block.addStatement(assignmentStatement);
             }
         }
@@ -87,7 +93,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         }
     }
 
-    /** libraryName LBLOCK EOL* (functionDefinition | statement | usingStatement)* RBLOCK */
+    /** libraryName LBLOCK EOL* (functionDefinition | statement | setConstant | usingStatement)* RBLOCK */
     public LibraryExpression visitLibrary(RemixParser.LibraryContext ctx) {
         LibraryExpression library = (LibraryExpression) visit(ctx.libraryName());
         library.setTrueLibrary();
@@ -99,6 +105,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 if (statement != null) {// can be blank statements
                     library.block.addStatement(statement);
                 }
+            }  else if (node instanceof RemixParser.SetConstantContext) {
+                ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
+                constantAssignment.setLibraryStoredIn(library);
+                library.block.addStatement(constantAssignment);
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 library.addFunction(function);
@@ -145,7 +155,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
     }
 
-    /** LBLOCK (functionDefinition | statement)* RBLOCK */
+    /** LBLOCK (functionDefinition | statement | setConstant)* RBLOCK */
     @Override
     public LibraryExpression visitUsingBlock(RemixParser.UsingBlockContext ctx) {
         LibraryExpression usingBlock = new LibraryExpression();
@@ -155,6 +165,9 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 Expression statement = (Expression)visit(node);
                 if (statement != null) // can be blank statements
                     usingBlock.block.addStatement(statement);
+            }  else if (node instanceof RemixParser.SetConstantContext) {
+                ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
+                usingBlock.block.addStatement(constantAssignment);
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 usingBlock.addFunction(function);

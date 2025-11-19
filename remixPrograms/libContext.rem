@@ -1,11 +1,11 @@
-with
-	library
-		=-
-		From inside library.
-		=-
-		function :
-			"from inside library" ↲
-… do
+LIB : library
+	=-
+	From inside library.
+	=-
+	function :
+		"from inside library" ↲
+
+with LIB do
 	function ; completion doesn't work properly, can't get the lib context
 
 =-
@@ -13,8 +13,6 @@ From top-level.
 =-
 function :
 	"from top-level" ↲
-
-function
 
 =-
 From top-level2.
