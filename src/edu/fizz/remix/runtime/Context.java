@@ -33,9 +33,9 @@ public class Context {
         this.libForConstants = libForConstants;
     }
 
-    public LibraryExpression getLibForConstants() {
-        return libForConstants;
-    }
+//    public LibraryExpression getLibForConstants() {
+//        return libForConstants;
+//    }
 
     /*
      * Called from FunctionCallExpression when assigning parameters

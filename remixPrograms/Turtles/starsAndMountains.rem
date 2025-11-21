@@ -3,7 +3,7 @@ using graphics, turtle
 	the mountains :
 		apply
 			a DARK-GREY mountain with BLACK edges of height 300 based at 800
-		… 10 times
+		… 15 times
 		
 	add 'the mountains' on the 'layer' :
 		for each 'mountain' in 'the mountains'

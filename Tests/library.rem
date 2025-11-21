@@ -16,7 +16,6 @@ LIB1 : library
 
 using LIB1
 	4 plus 6 ↲
-
 	4 plus 7 ↲
 
 LIB2 : library
@@ -43,7 +42,6 @@ using LIB1
 		… expected 7
 	}
 ↲
-
 "N.B. This is a test with library usage inside." ↲
 "----------------------------------------------" ↲
 using LIB1
@@ -58,7 +56,7 @@ using LIB1
 			'result'
 		… expected "50, Peter years old"
 	}
-
+↲
 using LIB2
 	test {
 		"Method call same signature different library"

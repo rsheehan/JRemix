@@ -5,9 +5,21 @@ LIB : library
 	function :
 		"from inside library" ↲
 
-with LIB do
-	function ; completion doesn't work properly, can't get the lib context
+'library' : LIB
 
+using 'library' ; this variable sets the library to do with the inside function when the function is first called
+	with do ['block'] :
+		"inside"↲
+		function
+		do
+			function
+		do 'block'
+
+"before"↲
+with do
+	function 
+	
+"after"↲
 =-
 From top-level.
 =-
@@ -20,7 +32,3 @@ From top-level2.
 function :
 	"from top-level2" ↲
 
-
-with ['library'] do ['block'] :
-	using (do 'library')
-		do 'block' in lib context

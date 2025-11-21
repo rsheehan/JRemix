@@ -32,6 +32,10 @@ using graphics
 JKL : 8 ; this is in the program, different from the one in 'the lib'
 inside func
 ↲
+using 'the lib'
+	"inside using ", JKL ↲
+	inside func ; doesn't find JFK 7 as the function was created at program level
+↲
 "outside ", STD-WIDTH ↲ ; not found
 STD-WIDTH : 999
 "outside ", STD-WIDTH ↲

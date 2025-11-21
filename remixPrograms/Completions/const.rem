@@ -1,10 +1,22 @@
 using graphics
 	CONST : -1
-	CONST ↲
-	abc
+	test {
+		"Constant defined inside using block"
+			CONST
+		… expected -1,
+		"Function defined inside using block"
+			abc
+		… expected 9
+	}
 	
 	abc :
-		9 ↲
-
-CONST ↲
-abc
+		9
+↲
+test {
+	"Outside constant defined inside using block"
+		CONST
+	… expected -1,
+	"Outside function defined inside using block"
+		abc
+	… expected 9
+}

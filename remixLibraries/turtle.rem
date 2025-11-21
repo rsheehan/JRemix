@@ -102,7 +102,7 @@ library
 				'visible' : true
 				'speed' : 10
 				'steps' : 0 ; used with 'speed' when moving
-				'transient' : false
+				'transient' : false ; if transient nothing is stored on the permanent base layer
 
 				getter/setter
 					'animation layer', 'transient'

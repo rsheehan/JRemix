@@ -69,7 +69,7 @@ public class UsingLibBlock extends Block {
             try {
                 library = (LibraryExpression) libraryExpression.evaluate(context);
                 // store it so that functions which use the library
-                // don't re-evalute the library
+                // don't re-evaluate the library
                 librariesToUse.put(libraryExpression, library);
                 context.pushLibrary(library);
             } catch (ClassCastException e) {

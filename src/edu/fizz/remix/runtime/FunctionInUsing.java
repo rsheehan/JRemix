@@ -23,9 +23,16 @@ public class FunctionInUsing extends RemixFunction {
     // I need instead to have a cache of libraries so that we don't
     // load more than once.
     public Object execute(Context context) throws ReturnException, InterruptedException {
-        for (LibraryExpression library : librariesToUse.values()) {
+//        for (LibraryExpression library : librariesToUse.values()) {
+        for (Expression libraryExp : librariesToUse.keySet()) {
+            LibraryExpression library = (LibraryExpression) librariesToUse.get(libraryExp);
             // need to check if the library has been evaluated
             // due to double using blocks being out of order
+            if (library == null) {
+                System.err.printf("The library '%s' has not been evaluated yet in call to '%s'.%n",
+                                  libraryExp, this.getFirstName());
+                throw new RuntimeException();
+            }
             context.pushLibrary(library);
         }
 

@@ -1,37 +1,26 @@
+=================
+ Rotating Arrows
+=================
 using graphics, turtle
 
-	===============
-	Rotating Arrows
-	===============
-
-	'turtle space' : a turtle space in (the graphics panel)
-	
-	RADIUS : 200
-
-	'arrows' : a group of 36 turtles in 'turtle space'
-	prepare 'arrows'
-	'arrows' speed 5
-	turn 'arrows' -90 degrees
-	
-	repeat 180 times
-		rotate 'arrows'
-	
-	'arrows' speed 10
-	'arrows' back to start
-
-	prepare 'arrows' :
+	prepare #arrows :
+		#arrows : a group of 36 turtles in (a turtle space in (the graphics panel))
 		'angle' : 0
-		'arrows' pens up
-		for each 'arrow' in 'arrows'
+		#arrows pens up
+		for each 'arrow' in #arrows
 			'arrow' colour  (random colour)
 			'arrow' heading ('angle' increment by 10)
 			move 'arrow' RADIUS steps
+	
+	move 'arrows' around the circle :
+		'arrows' speed 5
+		turn 'arrows' -90 degrees
+		repeat 180 times
+			move 'arrows' (2π × RADIUS ÷ 180) steps
+			turn 'arrows' -2 degrees
 
-	rotate 'arrows' :
-		move 'arrows' (2π × RADIUS ÷ 180) steps
-		turn 'arrows' -2 degrees
-
-	'arrows' back to start :
+	remove 'arrows' :
+		'arrows' speed 10
 		'prev arrow' : null
 		for each 'arrow' in 'arrows'
 			turn 'arrow' -90 degrees
@@ -40,3 +29,10 @@ using graphics, turtle
 				hide 'prev arrow'
 			'prev arrow' : 'arrow'
 		hide 'arrow'
+		
+-----------------------------------
+RADIUS : 300
+
+prepare 'arrows'
+move 'arrows' around the circle
+remove 'arrows'
