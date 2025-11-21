@@ -104,8 +104,9 @@ public class LibrariesAndCompletions {
         ArrayList<String> constantCompletions = new ArrayList<>();
         String original = searchWord + "\n";
         for (LibraryExpression lib : addedLibraries) {
+            for (String constantName : lib.constantTable.keySet()) {
             // TODO should the following use lib.constantTable instead?
-            for (String constantName : lib.allConstantNames) {
+//            for (String constantName : lib.allConstantNames) {}
                 if (constantName.equals(original))
                     continue;
                 if (constantName.startsWith(searchWord)) {
@@ -117,7 +118,7 @@ public class LibrariesAndCompletions {
                         }
                     }
                     if (activeHere) {
-                        constantCompletions.add(constantName);
+                        constantCompletions.add(constantName + "\n");
                     }
                 }
             }
@@ -252,7 +253,7 @@ public class LibrariesAndCompletions {
         RemixEditor.setEditing(true);
         // the following line is a kludge to get the standard-lib methods and constants into completions
         LibraryExpression libWithConstants = RemixREPL.loadPackage("remixLibraries/standard-lib.rem");
-        baseLibrary.allConstantNames = libWithConstants.allConstantNames;
+//        baseLibrary.allConstantNames = libWithConstants.allConstantNames;
         LibraryExpression.methodTableStandardLib = new HashMap<>(LibraryExpression.methodTableForCompletions);
         // this also makes the currentLibrary the program one
         // merge the standardLibrary into the baseLibrary

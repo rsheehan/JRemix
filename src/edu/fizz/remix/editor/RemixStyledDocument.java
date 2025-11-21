@@ -29,10 +29,13 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             "\"", "\"",
             "'", "'"
     );
-    private CompletionInfo completionsHere = null;
+
     protected final RemixEditor editor;
     private final Style defaultStyle = getStyle("default");
     private RemixEdLexer edLexer;
+
+    private CompletionInfo completionsHere = null;
+    private Style completionStyle = defaultStyle;
 
     public RemixStyledDocument(RemixEditor editor, JTextPane textPane) {
         this.editor = editor;
@@ -64,6 +67,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
     public void insertStringNoLex(int offset, String text, AttributeSet style) throws BadLocationException {
         completionsHere = null; // now always done, repeated completions come from "shift TAB" handler
+        completionStyle = defaultStyle;
         if (text.equals("\t") && !inStringOrComment(offset)) { // don't if in a string or a comment
             handleTab(offset);
         } else {
@@ -98,6 +102,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         }
         super.remove(offset, length);
         completionsHere = null; // otherwise deleting a character doesn't regenerate completions
+        completionStyle = defaultStyle;
         edLexer.fullLex(); // overkill, just to get things going at the moment
     }
 
@@ -375,6 +380,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             }
         }
         completionsHere = null;
+        completionStyle = defaultStyle;
     }
 
     // Called from keystroke event handler set up in RemixEditor.
@@ -388,12 +394,15 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             editor.reparseProgramText(); // editor can be null if printing this document
             String seedWord = wordSoFar(offset);
             if (seedWord.startsWith("'")) { // variable
+                completionStyle = getStyle("variable");
                 completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord);
                 seedWord += "'";
                 offset += 1;
             } else if (seedWord.startsWith("#")) { // refvar
+                completionStyle = getStyle("variable");
                 completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord);
             } else if (seedWord.equals(seedWord.toUpperCase())) { // constant
+                completionStyle = getStyle("constant");
                 completions = LibrariesAndCompletions.constantCompletionsFrom(seedWord, lineNumber);
             } else { // function call
                 seedWord = seedWord.stripLeading();
@@ -410,7 +419,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 completionComment = completionAndDoc.substring(splitPos + 1);
                 // couldn't call super.replace as that calls back into this class
                 super.remove(completionsHere.offset, seedLength);
-                super.insertString(completionsHere.offset, completionText, defaultStyle);
+                super.insertString(completionsHere.offset, completionText, completionStyle);
                 if (completionText.contains("(") || completionText.contains("[")) // don't move on otherwise
                     moveCursorToNextParam(completionsHere.offset);
             }
@@ -422,7 +431,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             completionComment = completionAndDoc.substring(splitPos + 1);
             // see comment above
             super.remove(completionsHere.offset, completionLength);
-            super.insertString(completionsHere.offset, completionText, defaultStyle);
+            super.insertString(completionsHere.offset, completionText, completionStyle);
             // show the popup of documentation here
 
             if (completionText.contains("(") || completionText.contains("["))

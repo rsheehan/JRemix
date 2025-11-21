@@ -486,7 +486,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     @Override
     public ConstantAssignmentStatement visitSetConstant(RemixParser.SetConstantContext ctx) {
         String constName = ctx.CONSTANT().getText();
-        thisProgramSoFar.addConstant(constName); // thisProgramSoFar could be a library
+//        thisProgramSoFar.addConstant(constName); // thisProgramSoFar could be a library
         Expression expression = (Expression) visit(ctx.expression());
         return new ConstantAssignmentStatement(constName, expression);
     }

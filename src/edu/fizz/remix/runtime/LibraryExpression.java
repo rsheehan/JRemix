@@ -24,7 +24,7 @@ public class LibraryExpression implements Expression {
     public HashMap<String, Function> functionTable = new HashMap<>();
     protected HashMap<String, Object> constantTable = new HashMap<>();
     // Constants available in this library.
-    protected SortedSet<String> allConstantNames = new TreeSet<>();
+//    protected SortedSet<String> allConstantNames = new TreeSet<>();
 
     static HashMap<String, Integer> methodTableRefPos = new HashMap<>(); // one table used by all
     static HashMap<String, Function> methodTableStandardLib = new HashMap<>();
@@ -79,10 +79,10 @@ public class LibraryExpression implements Expression {
         }
     }
 
-    /** Add constants for completions from editing. */
-    public void addConstant(String constantName) {
-        allConstantNames.add(constantName + "\n");
-    }
+//    /** Add constants for completions from editing. */
+//    public void addConstant(String constantName) {
+//        allConstantNames.add(constantName + "\n");
+//    }
 
     /** Add functions from the compile phase. */
     public void addFunction(Function function) {
@@ -135,7 +135,7 @@ public class LibraryExpression implements Expression {
         LibraryExpression copy = new LibraryExpression();
         copy.functionTable = new HashMap<>(functionTable);
         copy.constantTable = new HashMap<>(constantTable);
-        copy.allConstantNames = allConstantNames;
+//        copy.allConstantNames = allConstantNames;
         copy.activeLines = new ArrayList<>(activeLines);
         return copy;
     }
@@ -150,7 +150,7 @@ public class LibraryExpression implements Expression {
             functionTable.putIfAbsent(functionEntry.getKey(), functionEntry.getValue());
         for (Map.Entry<String, Object> constantEntry : libToMergeIn.constantTable.entrySet())
             constantTable.putIfAbsent(constantEntry.getKey(), constantEntry.getValue());
-        allConstantNames.addAll(libToMergeIn.allConstantNames);
+//        allConstantNames.addAll(libToMergeIn.allConstantNames);
         activeLines = libToMergeIn.getActiveLines();
     }
 
