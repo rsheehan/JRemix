@@ -28,24 +28,7 @@ public class LibrariesAndCompletions {
        The standard library and the program editor library are valid
        everywhere, all others have a start and finish line.
      */
-    private static ArrayList<LibraryExpression> addedLibraries = new ArrayList<>();
-
-//    /*
-//    This is used when including a library file as we need to preserve the current state.
-//    TODO not used
-//     */
-//    public static ArrayList<LibraryExpression> copyAddedLibraries() {
-//        return new ArrayList<>(addedLibraries);
-//    }
-
-//    /*
-//    This returns to the state before including a library file.
-//    See EvalVisitorForEditor VisitUsingStatement.
-//    TODO not used
-//     */
-//    public static void replaceAddedLibraries(ArrayList<LibraryExpression> originalAddedLibraries) {
-//        addedLibraries = originalAddedLibraries;
-//    }
+    private static final ArrayList<LibraryExpression> addedLibraries = new ArrayList<>();
 
     /* The base library has the built-in and standard-lib functions. */
     private static LibraryExpression baseLibrary;
@@ -105,8 +88,6 @@ public class LibrariesAndCompletions {
         String original = searchWord + "\n";
         for (LibraryExpression lib : addedLibraries) {
             for (String constantName : lib.constantTable.keySet()) {
-            // TODO should the following use lib.constantTable instead?
-//            for (String constantName : lib.allConstantNames) {}
                 if (constantName.equals(original))
                     continue;
                 if (constantName.startsWith(searchWord)) {
@@ -251,14 +232,7 @@ public class LibrariesAndCompletions {
         RemixEditor.setEditing(false);
         LibraryExpression standardLibrary = RemixREPL.loadPackage("remixLibraries/standard-lib.rem");
         RemixEditor.setEditing(true);
-        // the following line is a kludge to get the standard-lib methods and constants into completions
-        LibraryExpression libWithConstants = RemixREPL.loadPackage("remixLibraries/standard-lib.rem");
-//        baseLibrary.allConstantNames = libWithConstants.allConstantNames;
         LibraryExpression.methodTableStandardLib = new HashMap<>(LibraryExpression.methodTableForCompletions);
-        // this also makes the currentLibrary the program one
-        // merge the standardLibrary into the baseLibrary
-//        baseLibrary.functionTable.putAll(standardLibrary.functionTable);
-//        baseLibrary.setActiveLines(LibraryExpression.ALLLINES);
         try {
             // currently libraries no longer maintain state in contexts (variables)
             // this means this is only useful for loading other libraries, printing etc.

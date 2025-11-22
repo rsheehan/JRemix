@@ -10,3 +10,7 @@ library
 	=-
 	function abc2 :
 		2
+	
+	CONSTANT1 : 3
+	CONSTANT2 : 4
+	

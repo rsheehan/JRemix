@@ -1,3 +1,8 @@
+ABC : 1
+
+- should complete with 1 constant
+A
+
 =-
 Function abc3 top-level in program.
 =-
@@ -10,5 +15,18 @@ using (include "remixPrograms/Completions/library.rem")
 	=-
 	function abc4 :
 		4
-	
+	- should complete with 3 functions
 	function
+	- should complete with 2 constants
+	CON
+
+- should complete with 2 functions
+function
+
+using turtle
+	- should complete with TURTLE, currently doesn't
+	TUR
+
+- should not complete this because the completion comes from the graphics lib
+- somehow pulled in when using turtle
+THE

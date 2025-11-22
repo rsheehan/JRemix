@@ -1,7 +1,10 @@
 package edu.fizz.remix.runtime;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A library expression holds a function table.
@@ -21,10 +24,12 @@ public class LibraryExpression implements Expression {
     boolean loaded = false; // set to true when first evaluated
     private ArrayList<int[]> activeLines = new ArrayList<>(); // editor lines where this library is active
     public Block block = new Block();
+
+    // Functions available in this library.
     public HashMap<String, Function> functionTable = new HashMap<>();
-    protected HashMap<String, Object> constantTable = new HashMap<>();
+
     // Constants available in this library.
-//    protected SortedSet<String> allConstantNames = new TreeSet<>();
+    protected HashMap<String, Object> constantTable = new HashMap<>();
 
     static HashMap<String, Integer> methodTableRefPos = new HashMap<>(); // one table used by all
     static HashMap<String, Function> methodTableStandardLib = new HashMap<>();
@@ -62,7 +67,7 @@ public class LibraryExpression implements Expression {
         return functionTable.get(functionName);
     }
 
-    public void setValidLines(int[] lines) {
+    public void addToValidLines(int[] lines) {
         activeLines.add(lines);
     }
 
@@ -78,11 +83,6 @@ public class LibraryExpression implements Expression {
             }
         }
     }
-
-//    /** Add constants for completions from editing. */
-//    public void addConstant(String constantName) {
-//        allConstantNames.add(constantName + "\n");
-//    }
 
     /** Add functions from the compile phase. */
     public void addFunction(Function function) {
@@ -114,6 +114,22 @@ public class LibraryExpression implements Expression {
         }
     }
 
+    public void addConstantsFromUsingLibBlock(UsingLibBlock usingLibBlock) {
+        for (Expression statement : usingLibBlock.statements().statements) {
+            if (statement instanceof ConstantAssignmentStatement constantAssignmentStatement) {
+                constantTable.put(constantAssignmentStatement.variableName, null);
+            }
+        }
+        constantTable.putAll(usingLibBlock.functionsDefined()); //javaLibrary.functionTable);
+    }
+
+    /*
+    Only called when producing completions. See EvalVisitorForEditor.
+     */
+    public void addConstantForCompletions(String constantName) {
+        constantTable.put(constantName, null);
+    }
+
     /** Add a name of method and the reference parameter position. */
     public static void addMethodNameEditing(String name, int refPos, Method method) {
         if (refPos == 0) // private method, currently don't add to completion methods
@@ -135,7 +151,6 @@ public class LibraryExpression implements Expression {
         LibraryExpression copy = new LibraryExpression();
         copy.functionTable = new HashMap<>(functionTable);
         copy.constantTable = new HashMap<>(constantTable);
-//        copy.allConstantNames = allConstantNames;
         copy.activeLines = new ArrayList<>(activeLines);
         return copy;
     }
@@ -150,7 +165,6 @@ public class LibraryExpression implements Expression {
             functionTable.putIfAbsent(functionEntry.getKey(), functionEntry.getValue());
         for (Map.Entry<String, Object> constantEntry : libToMergeIn.constantTable.entrySet())
             constantTable.putIfAbsent(constantEntry.getKey(), constantEntry.getValue());
-//        allConstantNames.addAll(libToMergeIn.allConstantNames);
         activeLines = libToMergeIn.getActiveLines();
     }
 

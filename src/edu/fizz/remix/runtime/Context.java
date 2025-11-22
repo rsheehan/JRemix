@@ -1,5 +1,7 @@
 package edu.fizz.remix.runtime;
 
+import edu.fizz.remix.editor.RemixEditor;
+
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -101,7 +103,8 @@ public class Context {
             result = variables.get(varName);
             if (result == null && !formalReference) {
                 // if the formal is a reference variable then it is allowed to be null.
-                System.err.printf("'%s' has no value.%n", varName);
+                if (!RemixEditor.isEditing()) // a hack to not show the error as we are not running
+                    System.err.printf("'%s' has no value.%n", varName);
             }
         }
         return result;
@@ -153,10 +156,6 @@ public class Context {
 
     public LibraryExpression popLibrary() {
         return libraryStack.pop();
-    }
-
-    public LibraryExpression peekLibrary() {
-        return libraryStack.peek();
     }
 
 }
