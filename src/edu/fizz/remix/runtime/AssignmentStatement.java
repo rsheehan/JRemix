@@ -3,7 +3,7 @@ package edu.fizz.remix.runtime;
 public class AssignmentStatement implements Expression {
 
     protected final String variableName;
-    final Expression expression;
+    public final Expression expression;
 
     public AssignmentStatement(String name, Expression expression) {
         variableName = name;

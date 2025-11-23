@@ -38,7 +38,8 @@ public class LibrariesAndCompletions {
     private static LibraryExpression programLibrary = new LibraryExpression();
 
     public static void addLibrary(LibraryExpression libraryExpression) {
-        addedLibraries.add(libraryExpression);
+        if (!addedLibraries.contains(libraryExpression))
+            addedLibraries.add(libraryExpression);
     }
 
     public static void addFirstLibrary(LibraryExpression libraryExpression) {

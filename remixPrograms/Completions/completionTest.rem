@@ -30,3 +30,17 @@ using turtle
 - should not complete this because the completion comes from the graphics lib
 - somehow pulled in when using turtle
 THE
+
+CPROG : 33
+
+LIB1 : library
+	CL1 : 12
+	- should complete with 3 constants, CR, CL1, CPROG
+	C
+
+using LIB1
+	- should complete with 3 constants, CR, CL1, CPROG
+	C
+
+- should complete with 2 constants, CR, CPROG
+C

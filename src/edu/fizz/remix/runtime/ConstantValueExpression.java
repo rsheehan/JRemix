@@ -10,7 +10,7 @@ public class ConstantValueExpression implements Expression {
         constantName = name;
     }
 
-    String getName() { // necessary if this variable is being passed as ref param
+    public String getName() { // necessary if this variable is being passed as ref param
         return constantName;
     }
 

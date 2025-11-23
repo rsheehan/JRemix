@@ -11,7 +11,7 @@ public class VarValueExpression implements Expression {
         varName = name;
     }
 
-    String getName() { // necessary if this variable is being passed as ref param
+    public String getName() { // necessary if this variable is being passed as ref param
         return varName;
     }
 

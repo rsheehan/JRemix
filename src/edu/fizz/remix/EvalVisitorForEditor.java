@@ -24,6 +24,9 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     // TODO: need to remove all unnecessary code, currently mostly a copy
     // of EvalVisitor.
     public static final Stack<Boolean> addIdentifierStack;
+    // The programLibIdentifiers connect a library name with its library so that
+    // we can find constants declared in the library.
+    private final HashMap<String, LibraryExpression> programLibIdentifiers = new HashMap<>();
 
     static {
         addIdentifierStack = new Stack<>();
@@ -57,16 +60,23 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                 thisProgramSoFar.addFunction(function);
             } else if (node instanceof RemixParser.UsingStatementContext) {
                 UsingLibBlock usingLibBlock = (UsingLibBlock)visit(node);
-                usingLibBlock.setLibForConstants(thisProgramSoFar);
-                thisProgramSoFar.block.addStatement(usingLibBlock);
-                thisProgramSoFar.addFunctionsFromUsingLibBlock(usingLibBlock);
-                thisProgramSoFar.addConstantsFromUsingLibBlock(usingLibBlock);
+                if (usingLibBlock != null) {
+                    usingLibBlock.setLibForConstants(thisProgramSoFar);
+                    thisProgramSoFar.block.addStatement(usingLibBlock);
+                    thisProgramSoFar.addFunctionsFromUsingLibBlock(usingLibBlock);
+                    thisProgramSoFar.addConstantsFromUsingLibBlock(usingLibBlock);
+                }
             } else if (node instanceof RemixParser.LibraryContext) {
                 LibraryExpression libraryExpression = (LibraryExpression) visit(node);
                 thisProgramSoFar.block.addStatement(libraryExpression);
+                if (addIdentifierStack.peek())
+                    LibrariesAndCompletions.addLibrary(libraryExpression);
             } else if (node instanceof RemixParser.LibAssignmentContext) {
                 AssignmentStatement assignmentStatement = (AssignmentStatement) visit(node);
-                thisProgramSoFar.block.addStatement(assignmentStatement);
+                LibrariesAndCompletions.addLibrary((LibraryExpression) assignmentStatement.expression);
+                thisProgramSoFar.block.addStatement(assignmentStatement); // can get rid of all the addStatements?
+                programLibIdentifiers.put(assignmentStatement.name(), (LibraryExpression)assignmentStatement.expression);
+                thisProgramSoFar.addConstantForCompletions(assignmentStatement.name());
             }
         }
         return thisProgramSoFar;
@@ -114,10 +124,17 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                 library.addFunction(function);
             }else if (node instanceof RemixParser.UsingStatementContext) {
                 UsingLibBlock usingLibBlock = (UsingLibBlock) visit(node);
-                usingLibBlock.setLibForConstants(library);
-                library.block.addStatement(usingLibBlock);
-                library.addFunctionsFromUsingLibBlock(usingLibBlock);
+                if (usingLibBlock != null) {
+                    usingLibBlock.setLibForConstants(library);
+                    library.block.addStatement(usingLibBlock);
+                    library.addFunctionsFromUsingLibBlock(usingLibBlock);
+                }
             }
+        }
+        if (addIdentifierStack.peek()) {
+            int blockLineStart = ctx.getStart().getLine() - 1;
+            int blockLineFinish = ctx.getStop().getLine() - 1;
+            library.addToValidLines(new int[]{blockLineStart, blockLineFinish});
         }
         return library;
     }
@@ -150,7 +167,11 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.ExpressionContext) {
                 Expression libExp = (Expression) visit(node);
-                try {
+                if (libExp instanceof ConstantValueExpression constantValueExpression)
+                    libraryExpression = programLibIdentifiers.get(constantValueExpression.getName());
+                else if (libExp instanceof VarValueExpression varValueExpression)
+                    libraryExpression = programLibIdentifiers.get(varValueExpression.getName());
+                else try { // fall back on attempting to evaluate the library expression
                     LibrariesAndCompletions.resetToRunStandard(); // program lib back to base lib
                     Context contextForLib = new Context(LibrariesAndCompletions.getProgramBaseLibrary());
 
@@ -187,7 +208,8 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         int blockLineStart = ctx.getStart().getLine() - 1;
         int blockLineFinish = ctx.getStop().getLine() - 1;
         LibraryExpression usingBlock = new LibraryExpression();
-        usingBlock.addToValidLines(new int[]{blockLineStart, blockLineFinish});
+        if (addIdentifierStack.peek())
+            usingBlock.addToValidLines(new int[]{blockLineStart, blockLineFinish});
         for (int i = 0; i < ctx.getChildCount(); i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.StatementContext) {
