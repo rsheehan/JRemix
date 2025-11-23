@@ -367,6 +367,11 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         return count;
     }
 
+    public void clearCompletions() {
+        completionsHere = null;
+        completionStyle = defaultStyle;
+    }
+
     public void cancelCompletionHandling() {
         String completion;
         if (completionsHere != null) {
@@ -692,7 +697,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
     /**
      * Find the next line.
-     * @param pos
+     * @param pos the current position
      * @return The position of the first char of the line following pos.
      * Could be a non-existent position.
      */

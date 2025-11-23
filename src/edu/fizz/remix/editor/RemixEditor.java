@@ -61,8 +61,8 @@ public class RemixEditor extends JFrame {
     private final HashMap<Object, Action> actions;
 
     private RemixSwingWorker remixRunner;
-    public RunAction runAction;
-    public StopAction stopAction;
+    protected RunAction runAction;
+    protected StopAction stopAction;
     private DarkThemeAction darkThemeAction;
     private LightThemeAction lightThemeAction;
     private static final Font defaultFontForScreen = new Font("monospaced", Font.PLAIN, SIZE);
@@ -383,7 +383,7 @@ public class RemixEditor extends JFrame {
             int startOfLine = root.getElement(lineNumber - 1).getStartOffset();
             SwingUtilities.invokeLater(() -> {
                 if (lineNumber != lastLine) { // added this so moving to a different line clears completions
-                    doc.cancelCompletionHandling();
+                    doc.clearCompletions();
                     popupScreenLocation = null;
                     if (docPopup != null)
                         docPopup.hide();
@@ -468,8 +468,7 @@ public class RemixEditor extends JFrame {
     }
 
     protected void addControlBindings(JMenu controlMenu) {
-        InputMap inputMap = editorTextPane.getInputMap();
-
+//        InputMap inputMap = editorTextPane.getInputMap();
         //Command-r to run
 //        KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_R, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
         JMenuItem menuItem = controlMenu.getItem(0); // run
