@@ -50,11 +50,6 @@ public class LibrariesAndCompletions {
         return programLibrary;
     }
 
-//    TODO not used
-//    public static void setProgramLibrary(LibraryExpression previousProgramLibrary) {
-//        programLibrary = previousProgramLibrary;
-//    }
-
     /*
      * Sets the functions, methods, and context back to the standard version.
      */
