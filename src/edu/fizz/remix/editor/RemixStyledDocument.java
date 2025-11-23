@@ -511,11 +511,27 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     private String wordSoFar(int pos) throws BadLocationException {
         StringBuilder word = new StringBuilder();
         boolean nextCharQuote = false;
+        String ch;
+        boolean couldBeConstant = false;
         if (getLength() > pos) {
-            nextCharQuote = getText(pos, 1).equals("'");
+            ch = getText(pos, 1);
+            nextCharQuote = ch.equals("'");
+        }
+        if (pos > 0) {
+            ch = getText(pos - 1, 1);
+            if (Character.isUpperCase(ch.charAt(0))) {
+                couldBeConstant = true;
+            }
         }
         while (--pos >= 0) {
-            String ch = getText(pos, 1);
+            ch = getText(pos, 1);
+            if (couldBeConstant) {
+                if (" .()[\\]{,}:—§@…’0123456789×÷≤≥≠=√²↲⊕\"\t\n".contains(ch))
+                    break;
+                if (!Character.isUpperCase(ch.charAt(0))) {
+                    couldBeConstant = false;
+                }
+            }
             if (".()[\\]{,}:—§@…’0123456789×÷≤≥≠=√²↲⊕\"\t\n".contains(ch)) // ⊕+*×÷%=≠<≤>≥
                 break;
             if (ch.equals("'")) {
@@ -526,18 +542,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             word.append(ch);
         }
         word.reverse();
-// This was originally to remove extra spaces.
-// I also allowed searches on this which matched the letters in any order. Not currently.
-//        String result = word.toString();
-//        String[] words = result.split(" ");
-//        word = new StringBuilder();
-//        for (String nextWord : words) {
-//            if (!edLexer.isKeyword(nextWord)) {
-//                if (!word.isEmpty())
-//                    word.append(" ");
-//                word.append(nextWord);
-//            }
-//        }
         return word.toString();
     }
 
