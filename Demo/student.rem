@@ -2,84 +2,91 @@
 Student record
 =
 
-students : {
+'students' : {
 	"Martin Developer" age 22 knows {
-		Java   : "Expert"
-		python : "Advanced"
-		Remix  : "Expert"
+		"Java"   : "Expert"
+		"python" : "Advanced"
+		"Remix"  : "Expert"
 	}
 	"May Smith" age 25 knows {
-		C++ : "Expert"
-		C   : "Expert"
-		C#  : "Competent"
+		"C++" : "Advanced"
+		"C"   : "Expert"
+		"C#"  : "Competent"
 	}
 	"Ray Oflight" age 19 knows {
-		python : "Novice"
-		Java   : "Expert"
+		"python" : "Novice"
 	}
 }
 
 "Student data" ↲
 "============" ↲
-for each (student) in (students)
-	student's name ↲
-	student's age ↲
-	student's languages ↲
+for each 'student' in 'students'
+	'student' name ↲
+	'student' age ↲
+	'student' languages ↲
 	↲
 
-merge {BASIC : "Expert"} into (students{2}'s languages)
+merge {"BASIC" : "Expert"} into (('students'{2}) languages)
 
 "Expertise" ↲
 "=========" ↲
-for each (student) in (students)
-	student ↲
+for each 'student' in 'students'
+	'student' ↲
+
 ↲
-the "Java" experts amongst the (students)
-the "C++" experts amongst the (students)
-the "Remix" experts amongst the (students)
+the "Java" experts amongst the 'students'
+the "C++" experts amongst the 'students'
+the "Remix" experts amongst the 'students'
+
+merge {"Java" : "Expert"} into (('students'{3}) languages)
+↲
+the "Java" experts amongst the 'students'
+the "C++" experts amongst the 'students'
+the "Remix" experts amongst the 'students'
 
 ----------------
 
-the (language) experts amongst the (group) :
-	experts : {}
-	for each (programmer) in (group)
-		if ((programmer) is an expert in (language))
-			append (programmer's name) to (experts)
-	"The ", language, " expert", is or are ((experts) length) ," : " ~
-	experts ↲
+the 'language' experts amongst the 'group' :
+	'experts' : filter 'group' by 'programmer' where
+		'programmer' is an expert in 'language'
+	… keeping
+		'programmer' name
 
-is or are (number) :
+	"The ", 'language', " expert", is or are ('experts' length) ," : " ~
+	join 'experts' with separator ", " ↲
+
+is or are 'number' :
 	when
-		[number = 1] do [" is"]
+		['number' = 1] do [" is"]
 		"s are"
 
-(name) age (age) knows (languages) :
+'name' age 'age' knows 'languages' :
 	create
-		name : name
-		age : age
-		languages : languages
+		'name' : 'name'
+		'age' : 'age'
+		'languages' : 'languages'
 
 		getter
-			name, age
-			languages
+			'name', 'age'
+			'languages'
 
-		(my) expert languages :
-			filter (languages) by (language) where
-				languages{language} = "Expert"
+		MY expert languages :
+			filter 'languages' by 'language' where
+				'languages' {'language'} = "Expert"
+				
+		ME is an expert in 'language' :
+			'languages'{'language'} = "Expert"
 
-		(me) is an expert in (language) :
-			languages{language} = "Expert"
-
-		(me) to string :
-			result : name ⊕ " age " ⊕ age ⊕ ", expert in "
-			expertise : (my) expert languages
-			if (no (expertise))
-				result ⊕ "nothing"
+		ME to string :
+			'result' : 'name' ⊕ " age " ⊕ 'age' ⊕ ", expert in "
+			'expertise' : MY expert languages
+			if (no 'expertise')
+				'result' ⊕ "nothing"
 			… otherwise
-				for each (language) in (expertise) keeping (count)
+				for each 'language' in 'expertise' keeping 'count'
 					when
-						[count = 1] do
-							result : result ⊕ language
-						[count < (expertise) length] do
-							result : result ⊕ ", " ⊕ language
-						result ⊕ " and " ⊕ language
+						['count' = 1] do
+							'result' : 'result' ⊕ 'language'
+						['count' < 'expertise' length] do
+							'result' : 'result' ⊕ ", " ⊕ 'language'
+						'result' ⊕ " and " ⊕ 'language'

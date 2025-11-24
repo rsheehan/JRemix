@@ -1,16 +1,14 @@
-graphics : include graphics
-
 using graphics
 
-	window : simple window
+	'the window' : the graphics panel
 
-	x : 50
-	for each (n) from 3 to 12
-		polygon : (n) sided polygon
-		polygon's colour : random colour
-		polygon's size : 40
-		polygon's position : {x, std height ÷ 2}
-		add (polygon) to (window)
-		x : x + 100
+	'x' : 50
+	for each 'n' from 3 to 12
+		'polygon' : an 'n' sided polygon
+		'polygon' colour   (random colour)
+		'polygon' size     40
+		'polygon' position { 'x', STD-HEIGHT ÷ 2 }
+		place 'polygon' in 'the window'
+		'x' : 'x' + 100
 
-	update (window)
+	update 'the window'

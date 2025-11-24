@@ -178,7 +178,7 @@ public class RemixEditor extends JFrame {
         doc = setUpStylesAndSpacing(this, editorTextPane, defaultFontForScreen, 21, true);
 
         JScrollPane editorScrollPane = new JScrollPane(editorTextPane);
-        editorScrollPane.setMinimumSize(new Dimension(711, 800));
+//        editorScrollPane.setMinimumSize(new Dimension(711, 800));
         TextLineNumber lineNumbers = new TextLineNumber(editorTextPane);
         editorScrollPane.setRowHeaderView(lineNumbers);
 
@@ -203,7 +203,7 @@ public class RemixEditor extends JFrame {
 
         Dimension graphicsDimension = new Dimension(1000,800);
         graphicOutput = new GraphicsPanel(graphicsDimension);
-        graphicOutput.setMinimumSize(graphicsDimension);
+        //graphicOutput.setMinimumSize(graphicsDimension);
 
         //Create a split pane for the program editor and system/error output.
         systemSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, editorScrollPane, scrollPaneForSystem);

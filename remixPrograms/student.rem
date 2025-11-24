@@ -1,24 +1,24 @@
 =
-'student' record
+Student record
 =
 
 'students' : {
 	"Martin Developer" age 22 knows {
-		"Java" : "Expert"
+		"Java"   : "Expert"
 		"python" : "Advanced"
-		"Remix" : "Expert"
+		"Remix"  : "Expert"
 	}
 	"May Smith" age 25 knows {
 		"C++" : "Advanced"
-		"C" : "Expert"
-		"C#" : "Competent"
+		"C"   : "Expert"
+		"C#"  : "Competent"
 	}
 	"Ray Oflight" age 19 knows {
 		"python" : "Novice"
 	}
 }
 
-"student data" ↲
+"Student data" ↲
 "============" ↲
 for each 'student' in 'students'
 	'student' name ↲

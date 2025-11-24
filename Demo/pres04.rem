@@ -1,23 +1,22 @@
 an adder :
 	create
-		a : 1
-		b : 2
+		'a' : 1
+		'b' : 2
 
-		add (my) values :
-			a + b
+		add MY values :
+			'a' + 'b'
 
-x : an adder
-add (x) values ↲
+'x' : an adder
+add 'x' values ↲
+subtract 'x' values ↲
 
-a subtractor based on (adder) :
-	extend (adder)
-		subtract (my) values :
-			a - b
+a subtractor based on 'adder' :
+	extend 'adder'
+		subtract MY values :
+			'a' - 'b'
 
-y : a subtractor based on (x)
+a subtractor based on 'x'
+- this extends the object 'x' so it now has the subtract method
 
-y = x ↲
-add (x) values ↲
-add (y) values ↲
-subtract (x) values ↲
-subtract (y) values ↲
+add 'x' values ↲
+subtract 'x' values ↲

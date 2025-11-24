@@ -1,37 +1,35 @@
-graphics : include graphics
-
 using graphics
-	window : window with shape layers
-	base-layer : (window) base layer
-	next-layer : (window) next layer
+	'squares rotation' : every 1 tick
+		for each 'square' in ('layer2' shapes)
+			change 'square' heading by 2 degrees
+
+	'arrows movement' : every 2 ticks
+		for each 'arrow' in ('layer1' shapes)
+			change 'arrow' x-pos by 5
+
+	'window' : the graphics panel
+	'layer1' : 'window' next layer
+	'layer2' : 'window' next layer
 
 	repeat
-		shape : a square
-		shape's colour : random colour
-		shape's position : random point
-		shape's size : random from 10 to 100
-		shape's heading  : random from 1 to 90
-		add (shape) to (next-layer)
+		'shape' : a square
+		'shape' colour    (random colour)
+		'shape' position  (random point)
+		'shape' size      (random from 10 to 100)
+		'shape' heading   (random from 1 to 90)
+		place 'shape' in 'layer2'
 	… 50 times
 
-	for each (y-pos) from 40 to (std height - 20) in steps of 80
-		arrow : a triangle
-		arrow's size : 20
-		arrow's position : {0, y-pos}
-		add (arrow) to (base-layer)
+	for each 'y-pos' from 40 to (STD-HEIGHT - 20) in steps of 80
+		'arrow' : a triangle
+		'arrow' size 20
+		'arrow' position { 0, 'y-pos' }
+		place 'arrow' in 'layer1'
 
-	squares-rotate : every 1 tick
-		for each (square) in (next-layer's shapes)
-			change (square) heading by 2 degrees
-
-	arrows-move : every 2 ticks
-		for each (arrow) in (base-layer's shapes)
-			change (arrow) x-pos by 5
-
-	animate 60 ticks per second
-		(squares-rotate) animation
-		(arrows-move) animation
-		update (window)
-	… until [arrow's x-pos ≥ std width]
+	animate at 50 ticks per second
+		animate 'squares rotation'
+		animate 'arrows movement'
+		update 'window'
+	… until [ 'arrow' x-pos ≥ STD-WIDTH ]
 
 "Finished" ↲

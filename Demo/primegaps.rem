@@ -2,38 +2,38 @@
 Calculate gaps between primes
 =============================
 
-primes : {2}
-gap : 0
+'primes' : { 2 }
+'gap' : 0
 
 repeat
-	biggest-prime : last in (primes)
-	start : biggest-prime + 1
-	finish : biggest-prime × biggest-prime + 1
+	'biggest prime' : last in 'primes'
+	'start' : 'biggest prime' + 1
+	'finish' : 'biggest prime' × 'biggest prime' + 1
 
-	more-primes : filter (x) from ((start) to (finish)) and show (gap) where
-		(x) is not divisible by any number in (primes) up to (√(x))
+	'more primes' : filter 'x' from ('start' to 'finish') and show 'gap' where
+		'x' is not divisible by any number in 'primes' up to (√'x')
 
-	primes : join (primes) and (more-primes)
+	'primes' : join 'primes' and 'more primes'
 … 4 times
 
 -----------
 
-filter (#item) from (list) and show (#gap) where [condition-block] :
-	new-list : {}
-	prev : first in (list) - 1
-	for each (#item) in (list)
-		if (condition-block)
-			append (#item) to (new-list)
-			if (#item - prev > #gap)
-				#gap : #item - prev
-				"gap: ", #gap, " between ", prev, " and ", #item ↲
-			prev : #item
-	new-list
+filter #number from 'list' and show #gap where ['condition'] :
+	'new list' : { }
+	'prev' : first in 'list' - 1
+	for each #number in 'list'
+		if 'condition'
+			append #number to 'new list'
+			if (#number - 'prev' > #gap)
+				#gap : #number - 'prev'
+				"gap: ", #gap, " between ", 'prev', " and ", #number ↲
+			'prev' : #number
+	'new list'
 
-(x) is not divisible by any number in (list) up to (limit) :
-	for each (number) in (list)
-		if ((x) is divisible by (number))
+'x' is not divisible by any number in 'list' up to 'limit' :
+	for each 'number' in 'list'
+		if ('x' is divisible by 'number')
 			return false
-		if (number > limit)
+		if ('number' > 'limit')
 			return true
 		true

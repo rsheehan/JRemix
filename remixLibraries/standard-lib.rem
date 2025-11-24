@@ -432,6 +432,8 @@ Joins the 'list' with 'separator' between elements.
 =-
 join 'list' with separator 'separator' :
 	'string' : EMPTY
+	if ('list' length = 0)
+		return 'string'
 	for each 'item' in 'list' keeping 'count'
 		if ('count' = 'list' length)
 			return 'string' ⊕ ('item' as string)
