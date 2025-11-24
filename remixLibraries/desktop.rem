@@ -2,11 +2,8 @@
 Desktop GUI and event system
 ============================
 
-Desktop-Lib : library
+library
 
 	a window :
 		create
-			Position : { 0, 0 }
-
-"Desktop library loaded." ↲
-Desktop-Lib
+			'position' : { 0, 0 }

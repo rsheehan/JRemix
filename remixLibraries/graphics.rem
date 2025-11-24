@@ -1,7 +1,7 @@
 ===============================
 Graphics Operations and Objects
 ===============================
-library "edu.fizz.remix.libraries.Graphics"
+'graphics lib' : library "edu.fizz.remix.libraries.Graphics"
 
 	=====================
 	Dimensions and points
@@ -445,3 +445,6 @@ library "edu.fizz.remix.libraries.Graphics"
 		… until ['number' < 1]
 
 -==================================================================================================-
+
+"Graphics library loaded." ↲
+'graphics lib'

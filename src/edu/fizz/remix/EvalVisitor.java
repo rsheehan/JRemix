@@ -449,7 +449,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     }
 
     /** (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) */
-    public PrintStatement visitPrntStatement(RemixParser.PrntStatementContext ctx) {
+    public PrintStatement visitPrintStatement(RemixParser.PrintStatementContext ctx) {
         List<Expression> expressionList = new ArrayList<>();
         int n = ctx.getChildCount();
         for (int i = 0; i < n-1; i++) {

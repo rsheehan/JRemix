@@ -1,7 +1,7 @@
 ===============================
 'turtle' Operations and Objects
 ===============================
-library
+'turtle lib' : library
 	using graphics
 
 		'window' : the graphics panel
@@ -473,3 +473,5 @@ library
 
 -==================================================================================================-
 
+"Turtle library loaded." ↲
+'turtle lib'

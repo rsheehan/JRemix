@@ -262,12 +262,11 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSetListElement(RemixParser.SetListElementContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code prntStatement}
-	 * labeled alternative in {@link RemixParser#printStatement}.
+	 * Visit a parse tree produced by {@link RemixParser#printStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPrntStatement(RemixParser.PrntStatementContext ctx);
+	T visitPrintStatement(RemixParser.PrintStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code exprBoolean}
 	 * labeled alternative in {@link RemixParser#expression}.

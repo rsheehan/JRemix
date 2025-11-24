@@ -96,8 +96,7 @@ assignmentStatement	: IDENTIFIER COLON expression 			# setVariable
 					| IDENTIFIER listPart+ COLON expression	# setListElement
 					;
 
-printStatement		: (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) # prntStatement
-					;
+printStatement		: (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) ;
 
 expression			: MINUS expression						# exprMinus
 					| expression MUL expression				# exprMul

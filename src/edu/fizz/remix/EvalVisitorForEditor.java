@@ -517,18 +517,8 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     }
 
     /** (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) */
-    public PrintStatement visitPrntStatement(RemixParser.PrntStatementContext ctx) {
-        List<Expression> expressionList = new ArrayList<>();
-        int n = ctx.getChildCount();
-        for (int i = 0; i < n-1; i++) {
-            ParseTree node = ctx.getChild(i);
-            if (node instanceof RemixParser.ExpressionContext) {
-                expressionList.add((Expression) visit(node));
-            }
-        }
-        String end = ctx.getChild(n-1).getText();
-        boolean newline = "\\n↲".contains(end);
-        return new PrintStatement(expressionList, newline);
+    public PrintStatement visitPrintStatement(RemixParser.PrintStatementContext ctx) {
+        return null;
     }
 
     /** expression ADD expression */

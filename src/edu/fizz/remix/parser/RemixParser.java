@@ -2403,18 +2403,6 @@ public class RemixParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class PrintStatementContext extends ParserRuleContext {
-		public PrintStatementContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_printStatement; }
-	 
-		public PrintStatementContext() { }
-		public void copyFrom(PrintStatementContext ctx) {
-			super.copyFrom(ctx);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class PrntStatementContext extends PrintStatementContext {
 		public TerminalNode ENDPRINT() { return getToken(RemixParser.ENDPRINT, 0); }
 		public TerminalNode PRINTLN() { return getToken(RemixParser.PRINTLN, 0); }
 		public List<ExpressionContext> expression() {
@@ -2427,10 +2415,13 @@ public class RemixParser extends Parser {
 		public TerminalNode COMMA(int i) {
 			return getToken(RemixParser.COMMA, i);
 		}
-		public PrntStatementContext(PrintStatementContext ctx) { copyFrom(ctx); }
+		public PrintStatementContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_printStatement; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RemixParserVisitor ) return ((RemixParserVisitor<? extends T>)visitor).visitPrntStatement(this);
+			if ( visitor instanceof RemixParserVisitor ) return ((RemixParserVisitor<? extends T>)visitor).visitPrintStatement(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2440,7 +2431,6 @@ public class RemixParser extends Parser {
 		enterRule(_localctx, 54, RULE_printStatement);
 		int _la;
 		try {
-			_localctx = new PrntStatementContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(400);
