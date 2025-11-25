@@ -75,7 +75,12 @@ public class Context {
                 }
             } else {
                 RefParameter refValue = (RefParameter) refObject;
-                refValue.assignRefValue(value);
+                try {
+                    refValue.assignRefValue(value);
+                } catch (Exception e) {
+                    System.err.printf("Reference variable %s has no associated variable.%n", varName);
+                    throw new RuntimeException(e);
+                }
             }
         } else {
             variables.put(varName, value);
@@ -97,7 +102,12 @@ public class Context {
                 }
             } else {
                 RefParameter refValue = (RefParameter) value;
-                result = refValue.getRefValue();
+                try {
+                    result = refValue.getRefValue();
+                } catch (Exception e) {
+                    System.err.printf("Reference variable %s has no associated variable.%n", varName);
+                    throw new RuntimeException(e);
+                }
             }
         } else {
             result = variables.get(varName);

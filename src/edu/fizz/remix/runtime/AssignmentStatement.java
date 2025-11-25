@@ -33,7 +33,7 @@ public class AssignmentStatement implements Expression {
 
     @Override
     public String toString() {
-        return variableName + " : " + expression.toString();
+        return "'" + variableName + "' : " + expression.toString();
     }
 
 }

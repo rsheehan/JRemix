@@ -36,7 +36,7 @@ public class SetElementExpression implements Expression {
         }
 
         ArrayList indexes = (ArrayList) ((ArrayList)listElementIds).clone();
-        Object elementId = indexes.remove(0);
+        Object elementId = indexes.removeFirst();
         Object id = null;
         try {
             id = ((Expression) elementId).evaluate(context); // 2
@@ -81,7 +81,7 @@ public class SetElementExpression implements Expression {
             list.set(index - 1, value);
         } else { // more indexes to go
             ArrayList indexes = (ArrayList) listIndexes.clone();
-            Object elementId = indexes.remove(0);
+            Object elementId = indexes.removeFirst();
             Object id = ((Expression) elementId).evaluate(context);
             if (id instanceof Number numIndex) { // the next part is a list
                 int nextIndex = numIndex.intValue();
@@ -103,7 +103,7 @@ public class SetElementExpression implements Expression {
             map.put(key, value);
         } else { // more indexes to go
             ArrayList indexes = (ArrayList) listIndexes.clone();
-            Object elementId = indexes.remove(0);
+            Object elementId = indexes.removeFirst();
             Object id = ((Expression) elementId).evaluate(context);
             if (id instanceof Number numIndex) { // the next part is a list
                 int nextIndex = numIndex.intValue();
@@ -121,11 +121,10 @@ public class SetElementExpression implements Expression {
             list.add(null);
         if (listIndexes.isEmpty()) { // end of indexes so store the value
             list.set(index - 1, value);
-            return;
         } else { // more indexes to go
             Object listMap = list.get(index - 1);
             ArrayList indexes = (ArrayList) listIndexes.clone();
-            Object elementId = indexes.remove(0);
+            Object elementId = indexes.removeFirst();
             Object id = ((Expression) elementId).evaluate(context);
             if (listMap == null || // nothing stored in the ListMap yet
                     listMap instanceof RemixNull ||
@@ -150,11 +149,10 @@ public class SetElementExpression implements Expression {
     private void setMapComponentValue(Context context, HashMap map, String key, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException {
         if (listIndexes.isEmpty()) {
             map.put(key, value);
-            return;
         } else { // more indexes to go
             Object listMap = map.get(key);
             ArrayList indexes = (ArrayList) listIndexes.clone();
-            Object elementId = indexes.remove(0);
+            Object elementId = indexes.removeFirst();
             Object id = ((Expression) elementId).evaluate(context);
             if (listMap == null || // nothing stored in the ListMap yet
                     listMap instanceof RemixNull ||
@@ -174,6 +172,19 @@ public class SetElementExpression implements Expression {
                     setMapComponentValue(context, (HashMap)listMap, (String)id, indexes, value);
             }
         }
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("'").append(listName).append("'");
+        for (Object listElement : listElementIds) {
+            builder.append("{");
+            builder.append(listElement.toString());
+            builder.append("}");
+        }
+        builder.append(" : ");
+        builder.append(expression.toString());
+        return builder.toString();
     }
 
 }

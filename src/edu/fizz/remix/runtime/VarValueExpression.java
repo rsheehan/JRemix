@@ -25,7 +25,7 @@ public class VarValueExpression implements Expression {
 
     @Override
     public String toString() {
-        return varName;
+        return "'" + varName + "'";
     }
 
     public int getLineNumber() {

@@ -60,7 +60,14 @@ public class GetElementExpression implements Expression {
     }
 
     public String toString() {
-        return listName + listElementIds.toString();
+        StringBuilder builder = new StringBuilder();
+        builder.append("'").append(listName).append("'");
+        for (Object listElement : listElementIds) {
+            builder.append("{");
+            builder.append(listElement.toString());
+            builder.append("}");
+        }
+        return builder.toString();
     }
 
 }

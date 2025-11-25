@@ -18,7 +18,7 @@ public class ConstantValueExpression implements Expression {
     public Object evaluate(Context context) {
         // TODO: get constant from corresponding library
         LibraryExpression library;
-        Object result = null;
+        Object result;
         int i = context.libraryStack.size() - 1;
         do {
             library = context.libraryStack.get(i);
@@ -29,5 +29,10 @@ public class ConstantValueExpression implements Expression {
         if (result == null && !RemixEditor.isEditing())
             System.err.format("Constant \"%s\" has no value.%n", constantName);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return constantName;
     }
 }
