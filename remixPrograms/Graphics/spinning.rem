@@ -2,18 +2,21 @@ using graphics
 	'the window' : the graphics panel
 	'animation layer' : 'the window' next layer
 
+	SIZE : 100
 	'triangle' : a triangle
-	'triangle' size 100
+	'triangle' size SIZE
 	'triangle' position { 0, STD-HEIGHT ÷ 2 }
 	'triangle' colour null
 	'triangle' outline colour GREEN
 	place 'triangle' in 'animation layer'
 
-	'rotation' : every 2 ticks
-		change 'triangle' heading by 2 degrees
+	'vertical' : STD-HEIGHT ÷ 2 + SIZE
+	'line' : a RED line from {0, 'vertical'} to {STD-WIDTH, 'vertical'}
+	place 'line' in ('the window'base layer)
 
-	'movement' : every 1 tick
-		change 'triangle' x-pos by 2
+	'rotation' : every 2 ticks [change 'triangle' heading by 2 degrees]
+
+	'movement' : every 1 tick [change 'triangle' x-pos by 2]
 
 	animate at 60 ticks per second
 		animate 'movement'

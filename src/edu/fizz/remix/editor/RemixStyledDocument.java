@@ -524,7 +524,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         }
         if (pos > 0) {
             ch = getText(pos - 1, 1);
-            if (Character.isUpperCase(ch.charAt(0))) {
+            if (Character.isUpperCase(ch.charAt(0)) || ch.equals("-")) {
                 couldBeConstant = true;
             }
         }
@@ -533,7 +533,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             if (couldBeConstant) {
                 if (" .()[\\]{,}:—§@…’0123456789×÷≤≥≠=√²↲⊕\"\t\n".contains(ch))
                     break;
-                if (!Character.isUpperCase(ch.charAt(0))) {
+                if (!Character.isUpperCase(ch.charAt(0)) && !ch.equals("-")) {
                     couldBeConstant = false;
                 }
             }

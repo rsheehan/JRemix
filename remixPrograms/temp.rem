@@ -1,19 +1,4 @@
-LIB1 : library
-	debug "aargh"
-	
-	'X' plus 'Y' :
-		'X' + 'Y'
-
-	name 'name' age 'age' :
-		create
-			'name' : 'age'
-			'age' : 'name'
-
-			ME to string :
-				'name' ⊕ ", " ⊕ 'age' ⊕ " years old"
-
-"what"↲
-using LIB1
-	4 plus 6 ↲
-
-	4 plus 7 ↲
+{ "name" : "New Zealand", "is it" : true, "age" : 156, "coords" : { 9, 3 } } ↲
+debug {9, 3}
+{ 9, 3 } ↲
+type of { 9, 3 } ↲
