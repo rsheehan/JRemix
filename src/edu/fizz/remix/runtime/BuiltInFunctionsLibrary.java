@@ -162,6 +162,13 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public Object execute(Context context) {
             Object value = context.retrieve("value", false);
+            if (value instanceof RemixObject object) {
+                String type = (String) object.getContext().variables.get("type");
+                if (type != null)
+                    return type;
+                else
+                    return "Object";
+            }
             return value.getClass().toString();
         }
     }
@@ -194,8 +201,13 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 return true;
             if (value instanceof Block && typeString.equals("block"))
                 return true;
-            if (value instanceof RemixObject && typeString.equals("object"))
-                return true;
+            if (value instanceof RemixObject object) {
+                String type = (String) object.getContext().variables.get("type");
+                if (type == null && typeString.equals("object"))
+                    return true;
+                else
+                    return type.equals(typeString);
+            }
             return false;
         }
     }

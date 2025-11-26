@@ -16,6 +16,7 @@ File Operations and Objects
 	=-
 	file directory 'directory name':
 		create
+			'type' : "Directory"
 			'directory' : 'directory name' ⊕ path separator
 
 			=-
@@ -44,6 +45,7 @@ File Operations and Objects
 	=-
 	a file with full path 'name' for 'access':
 		create
+			'type' : "File"
 			'name' : 'name'
 			'access' : 'access'
 
