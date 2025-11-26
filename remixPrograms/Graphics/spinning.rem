@@ -8,14 +8,15 @@ using graphics
 	'triangle' position { 0, STD-HEIGHT ÷ 2 }
 	'triangle' colour null
 	'triangle' outline colour GREEN
+	
 	place 'triangle' in 'animation layer'
 
 	'vertical' : STD-HEIGHT ÷ 2 + SIZE
 	'line' : a RED line from {0, 'vertical'} to {STD-WIDTH, 'vertical'}
+
 	place 'line' in ('the window'base layer)
 
 	'rotation' : every 2 ticks [change 'triangle' heading by 2 degrees]
-
 	'movement' : every 1 tick [change 'triangle' x-pos by 2]
 
 	animate at 60 ticks per second

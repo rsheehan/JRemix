@@ -253,12 +253,18 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public Object execute(Context context) {
             Object value = context.retrieve("value", false);
-            printValue(value);
+            if (value instanceof String) {
+                publish(value); // don't put quotes around it
+            } else {
+                printValue(value);
+            }
             return null;
         }
 
         static void printValue(Object value) {
-            if (value instanceof List<?> list) {
+            if (value instanceof String string) {
+                publish("\"" + value + "\"");
+            } else if (value instanceof List<?> list) {
                 publish("{");
                 for (Iterator<?> iter = list.iterator(); iter.hasNext(); ) {
                     Object item = iter.next();
@@ -271,9 +277,9 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 publish("{");
                 for (Iterator<?> iter = map.keySet().iterator(); iter.hasNext(); ) {
                     String key = (String)iter.next();
-                    publish(key);
+                    printValue(key);
                     publish(": ");
-                    publish(map.get(key));
+                    printValue(map.get(key));
                     if (iter.hasNext())
                         publish(", ");
                 }
@@ -288,12 +294,21 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                         throw new RuntimeException(e);
                     }
                 } else {
-                    publish("Object(");
                     Map<String, Object> instanceVars = object.getContext().variables;
                     int numberOfFields = instanceVars.size();
+                    String typeName = (String) instanceVars.get("type");
+                    if (typeName != null) {
+                        publish(typeName);
+                        numberOfFields--;
+                    } else {
+                        publish("Object");
+                    }
+                    publish("(");
                     int n = 1;
                     for (Object key : instanceVars.keySet()) {
                         //noinspection SuspiciousMethodCalls
+                        if (key.equals("type"))
+                            continue;
                         publish(key + ": " + instanceVars.get(key));
                         if (n++ < numberOfFields)
                             publish(", ");

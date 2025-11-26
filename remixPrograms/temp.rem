@@ -2,3 +2,10 @@
 debug {9, 3}
 { 9, 3 } ↲
 type of { 9, 3 } ↲
+'x' : create
+	'type' : "SimpleX"
+	'a' : 1
+	'b' : 2
+'x' ↲
+using turtle
+	TURTLE ↲

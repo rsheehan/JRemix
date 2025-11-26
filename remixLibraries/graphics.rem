@@ -110,7 +110,7 @@ Graphics Operations and Objects
 	a/an 'colour' shape from 'points' scaled by 'size' at 'position':
 
 		extend a shape at 'position'
-			'type'           : "shape"
+			'type'           : "Shape"
 			'colour'         : 'colour'
 			'outline colour' : null ; no outline
 			'polygon'        : 'points'
@@ -174,7 +174,7 @@ Graphics Operations and Objects
 	=-
 	a/an 'colour' line from 'start' to 'finish' :
 		create
-			'type'   : "line"
+			'type'   : "Line"
 			'start'  : 'start'
 			'finish' : 'finish'
 			'width'  : 3
@@ -218,7 +218,7 @@ Graphics Operations and Objects
 	=-
 	a/an 'colour' circle of radius 'radius' at 'position' :
 		extend a shape at 'position'
-			'type'     : "circle"
+			'type'     : "Circle"
 			'colour'   : 'colour'
 			'outline colour' : null ; no outline
 			'radius'   : 'radius'
