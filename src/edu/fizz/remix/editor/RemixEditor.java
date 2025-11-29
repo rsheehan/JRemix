@@ -188,6 +188,7 @@ public class RemixEditor extends JFrame {
         systemOutput.setFont(new Font("Courier New", Font.PLAIN, 14));
         systemOutput.setForeground(Color.orange);
         systemOutput.setEditable(false);
+        systemOutput.setLineWrap( true );
         systemOutput.setWrapStyleWord(true);
         JScrollPane scrollPaneForSystem = new JScrollPane(systemOutput);
 
@@ -257,6 +258,7 @@ public class RemixEditor extends JFrame {
         System.setOut(new PrintStream(new TextAreaOutputStream(remixOutput)));
         System.setErr(new PrintStream(new TextAreaOutputStream(systemOutput)));
 
+        setMinimumSize(new Dimension(1058, 910));
         docArea = new JTextArea("Document goes here.");
         docArea.setForeground(Color.red);
         docPanel.add(docArea);

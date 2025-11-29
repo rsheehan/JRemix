@@ -22,6 +22,7 @@ public class GraphicsPanel extends JPanel {
         super();
         graphicsDimension = size;
         setPreferredSize(graphicsDimension);
+        setMinimumSize(graphicsDimension);
         baseLayer = new GraphicsLayerImage(size);
         setBackground(new Color(0, 0, 50));
         addComponentListener(new ResizeListener());
