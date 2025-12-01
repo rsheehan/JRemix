@@ -269,6 +269,12 @@ apply ['block'] 'n' times :
 	… 'n' times
 	'new list'
 
+=-
+Convert the 'range' into a list of its values.
+=-
+list from 'range' :
+	apply ['n'] to each 'n' from 'range'
+
 ==============================
  List reduce functions
 ==============================
@@ -281,7 +287,7 @@ A sequence here is a list, range, map, string or sequence object.
 =-
 starting with ['initial'] apply ['block'] on each #item in 'sequence' :
 	do 'initial'
-	for each #item in 'sequence''block'
+	for each #item in 'sequence' 'block'
 
 =-
 Sum the 'list' values.
@@ -336,6 +342,18 @@ join 'list 1' and 'list 2' :
 	… apply
 		append 'item' to 'list'
 	… on each 'item' in 'list 2'
+
+=-
+Replace each 'value' in the 'sequence' with the result of executing the 'block'.
+The 'block' will usually use the variable 'value'.
+A sequence here is a list or map.
+=-
+map ['block'] on each #value in #sequence :
+	for each #value in #sequence keeping 'index'
+		if (#sequence is a "map")
+			'index' : #value
+			#value : #sequence{'index'}
+		#sequence{'index'} : do 'block'
 
 ==============================
  String functions

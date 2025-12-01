@@ -517,14 +517,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public String execute(Context context) {
             Object first = context.retrieve("first", false);
             Object second = context.retrieve("second", false);
-            String s1; String s2;
-            if (!(first instanceof String))
-                first = first.toString();
-            if (!(second instanceof String))
-                second = second.toString();
-            s1 = (String)first;
-            s2 = (String)second;
-            return s1 + s2;
+            return first.toString() + second.toString();
         }
     }
 

@@ -1,0 +1,9 @@
+'the list' : list from (1 to 10)
+
+'the list'↲
+add 2 to all elements of 'the list'
+'the list'↲
+
+add 'amount' to all elements of 'list' :
+	for each 'index' from 1 to (length of 'list')
+		add 'amount' to ('list'{'index'})

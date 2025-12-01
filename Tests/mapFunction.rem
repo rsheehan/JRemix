@@ -1,0 +1,26 @@
+'the list' : {2, 3, 5}
+'the map' : {"a" : 2, "b" : 4, "c" : 0}
+'another map' : {"a" : 2, "b" : 4, "c" : 0}
+
+test {
+	"map over list" 
+		map 
+			'x' + 10
+		… on each 'x' in 'the list'
+		'the list'
+	… expected {12, 13, 15}
+
+	"map over map"
+		map 
+			'a' + 5
+		… on each 'a' in 'the map'
+		'the map'
+	… expected {"b" : 9, "a" : 7, "c" : 5}
+
+	"map over map replaced with string"
+		map 
+			"XYZ"
+		… on each 'a' in 'another map'
+		'another map'
+	… expected {"b" : "XYZ", "a" : "XYZ", "c" : "XYZ"}
+}
