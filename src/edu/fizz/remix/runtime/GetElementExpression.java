@@ -1,9 +1,9 @@
 package edu.fizz.remix.runtime;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /*
  * Accessing an element from a Remix list or a Remix map.
@@ -40,16 +40,20 @@ public class GetElementExpression implements Expression {
             for (Object elementId : listElementIds) {
                 // TODO: could be errors at any position
                 id = ((Expression) elementId).evaluate(context);
-
-                if (id instanceof Number numId) {
-                    int i = numId.intValue();
-                    try {
-                        listOrMapPart = ((List<?>) listOrMapPart).get(i - 1); // java zero based, Remix one based
-                    } catch (IndexOutOfBoundsException ex) {
-                        listOrMapPart = RemixNull.value();
+                Object finalId = id;
+                switch (listOrMapPart) {
+                    case List nextList when finalId instanceof Number numId -> {
+                        int i = numId.intValue();
+                        try {
+                            listOrMapPart = nextList.get(i - 1); // java zero based, Remix one based
+                        } catch (IndexOutOfBoundsException ex) {
+                            listOrMapPart = RemixNull.value();
+                        }
                     }
-                } else if (id instanceof String stringId)
-                    listOrMapPart = ((Map<?, ?>) listOrMapPart).get(stringId);
+                    case HashMap nextMap when finalId instanceof String stringId -> listOrMapPart = nextMap.get(stringId);
+                    case Collection listOrMap when listOrMap.isEmpty() -> listOrMapPart = RemixNull.value();
+                    case null, default -> System.err.printf("\"%s\" cannot have index \"%s\".%n", listName, id);
+                }
             }
         } else {
                 System.err.printf("Variable \"%s\" is neither a list or a map.%n", listName);

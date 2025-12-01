@@ -1,11 +1,12 @@
-{ "name" : "New Zealand", "is it" : true, "age" : 156, "coords" : { 9, 3 } } ↲
-debug {9, 3}
-{ 9, 3 } ↲
-type of { 9, 3 } ↲
-'x' : create
-	'type' : "SimpleX"
-	'a' : 1
-	'b' : 2
-'x' ↲
-using turtle
-	TURTLE ↲
+'map or list' : {}
+
+type of 'map or list'↲
+
+'map or list'{"abc"}↲
+'map or list'{"abc"} : 32
+
+type of 'map or list'↲
+
+'map or list'{1} : "what?"
+'map or list'↲
+type of 'map or list'↲

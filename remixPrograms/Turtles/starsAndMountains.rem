@@ -38,14 +38,13 @@ using graphics, turtle
 		move 'explosion' (random from 50 to 200) steps
 
 ---------------------------------------------------
-
 	'the window' : the graphics panel
-	'back layer'  : 'the window' base layer
-	'the mountains' : the mountains
-	add 'the mountains' on the 'back layer'
-
 	'turtle space' : a turtle space in 'the window'
-	repeat 40 times
-		'explosion' : star explosion in 'turtle space'
-		'explosion' effect
-		clear 'the window' leaving the base layer
+---------------------------------------------------
+'back layer'  : 'the window' base layer
+'the mountains' : the mountains
+add 'the mountains' on the 'back layer'
+repeat 40 times
+	'explosion' : star explosion in 'turtle space'
+	'explosion' effect
+	clear 'the window' leaving the base layer

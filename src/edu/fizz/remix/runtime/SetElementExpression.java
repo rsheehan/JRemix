@@ -58,12 +58,12 @@ public class SetElementExpression implements Expression {
                     context.assign(listName, makeMap(context, key, indexes, value));
                 }
             } else {
-                if (listMap instanceof ArrayList nextList)
-                    setListComponentValue(context, nextList, ((Number) id).intValue(), indexes, value);
-                else if (listMap instanceof HashMap nextMap)
-                    setMapComponentValue(context, nextMap, (String) id, indexes, value);
+                if (listMap instanceof ArrayList nextList && id instanceof Number n)
+                    setListComponentValue(context, nextList, n.intValue(), indexes, value);
+                else if (listMap instanceof HashMap nextMap && id instanceof String str)
+                    setMapComponentValue(context, nextMap, str, indexes, value);
                 else {
-                    System.err.printf("Variable \"%s\" is neither a list or a map in assignment.%n", listName);
+                    System.err.printf("\"%s\" cannot set index \"%s\".%n", listName, id);
                 }
             }
         } catch (ReturnException e) {
