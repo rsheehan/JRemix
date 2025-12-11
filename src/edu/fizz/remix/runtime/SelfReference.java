@@ -7,7 +7,11 @@ public class SelfReference extends RemixObject implements Expression {
 
     @Override
     public Object evaluate(Context context) throws ReturnException {
-        return ((MethodContext)context).getObject();
+        if (!(context instanceof MethodContext methodContext)) {
+            System.err.println("Using ME/MY outside an object.");
+            return null;
+        } else
+            return (methodContext.getObject());
     }
 
 }

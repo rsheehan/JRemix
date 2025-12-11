@@ -42,6 +42,8 @@ import static edu.fizz.remix.runtime.LibrariesAndCompletions.resetToEditorStanda
 
 public class RemixEditor extends JFrame {
 
+    private static RemixEditor frame;
+
     public static final int SIZE = 12; // 12 is small but gives 80 col printout on A4
     private final JTextPane editorTextPane;
     private Point caretPoint; // the point of the top left of the caret within the document pane
@@ -258,7 +260,7 @@ public class RemixEditor extends JFrame {
         System.setOut(new PrintStream(new TextAreaOutputStream(remixOutput)));
         System.setErr(new PrintStream(new TextAreaOutputStream(systemOutput)));
 
-        setMinimumSize(new Dimension(1058, 910));
+//        setMinimumSize(new Dimension(1058, 910));
         docArea = new JTextArea("Document goes here.");
         docArea.setForeground(Color.red);
         docPanel.add(docArea);
@@ -694,6 +696,7 @@ public class RemixEditor extends JFrame {
     }
 
     private void newFile() {
+        frame.setTitle("Remix");
         try {
             doc.remove(0, doc.getLength());
             edLexer.fullLex();
@@ -729,6 +732,7 @@ public class RemixEditor extends JFrame {
             currentDirectory = chooser.getCurrentDirectory().getAbsolutePath();
             File file = chooser.getSelectedFile();
             currentFileName = file.getName();
+            frame.setTitle("Remix - " + currentFileName);
             currentAbsoluteFileName = file.getAbsolutePath();
             saveFile();
         }
@@ -766,6 +770,7 @@ public class RemixEditor extends JFrame {
                     currentDirectory = chooser.getCurrentDirectory().getAbsolutePath();
                     File remFile = chooser.getSelectedFile();
                     currentFileName = remFile.getName();
+                    frame.setTitle("Remix - " + currentFileName);
                     currentAbsoluteFileName = remFile.getAbsolutePath();
                     Scanner myReader = new Scanner(remFile);
                     while (myReader.hasNextLine()) {
@@ -951,7 +956,7 @@ public class RemixEditor extends JFrame {
      */
     private static void createAndShowGUI() {
         //Create and set up the window.
-        final RemixEditor frame = new RemixEditor();
+        frame = new RemixEditor();
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent event) {
