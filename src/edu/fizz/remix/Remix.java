@@ -34,7 +34,7 @@ public class Remix {
         LibrariesAndCompletions.resetToEditorStandard();
         if (args.length > 0 && isRemFile(args[0])) {
             LibraryExpression program = loadPackage(args[0]);
-            Runtime.run(program);
+            Runtime.runProgram(program);
         } else {
             System.out.println("Not a Remix file.");
         }

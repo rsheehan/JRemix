@@ -2,18 +2,19 @@
 
 shape 'points' :
 	create
+		'type' : "shape"
 		'points' : 'points'
-
-		ME to string :
-			'points' as string
 
 no string :
 	create
+		'type' : "no string"
+		'field' : "hidden"
+		
 		ME as string :
 			"I have an \"as string\" method."
 
 		ME to string :
-			"no String"
+			"my to string doesn't display fields"
 
 'box' : shape { { 0, 0 }, { 3, 0 }, { 0, 4 } }
 'box' ↲

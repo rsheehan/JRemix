@@ -1,9 +1,8 @@
 package edu.fizz.remix.runtime;
 
 import edu.fizz.remix.EvalVisitorForEditor;
-import edu.fizz.remix.Remix;
 import edu.fizz.remix.editor.RemixEditor;
-import edu.fizz.remix.editor.RemixREPL;
+import edu.fizz.remix.editor.RemixPrepareRun;
 
 import java.util.*;
 
@@ -67,7 +66,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             try {
                 if (RemixEditor.isEditing())
                     EvalVisitorForEditor.addIdentifierStack.push(false);
-                included = RemixREPL.loadPackage(filename);
+                included = RemixPrepareRun.loadPackage(filename);
                 if (RemixEditor.isEditing())
                     EvalVisitorForEditor.addIdentifierStack.pop();
                 /*
@@ -265,71 +264,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public Object execute(Context context) {
             Object value = context.retrieve("value", false);
-            if (value instanceof String) {
-                publish(value); // don't put quotes around it
-            } else {
-                printValue(value);
-            }
-            return null;
-        }
-
-        static void printValue(Object value) {
-            if (value instanceof String string) {
-                publish("\"" + value + "\"");
-            } else if (value instanceof List<?> list) {
-                publish("{");
-                for (Iterator<?> iter = list.iterator(); iter.hasNext(); ) {
-                    Object item = iter.next();
-                    printValue(item);
-                    if (iter.hasNext())
-                        publish(", ");
-                }
-                publish("}");
-            } else if (value instanceof Map<?, ?> map) {
-                publish("{");
-                for (Iterator<?> iter = map.keySet().iterator(); iter.hasNext(); ) {
-                    String key = (String)iter.next();
-                    printValue(key);
-                    publish(": ");
-                    printValue(map.get(key));
-                    if (iter.hasNext())
-                        publish(", ");
-                }
-                publish("}");
-            } else if (value instanceof RemixObject object) {
-                Method method = object.findMethod("⫾ to string");
-                MethodContext methodContext = new MethodContext(null, object);
-                if (method != null) {
-                    try {
-                        publish(method.execute(methodContext)); //object.getContext()));
-                    } catch (ReturnException | InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    Map<String, Object> instanceVars = object.getContext().variables;
-                    int numberOfFields = instanceVars.size();
-                    String typeName = (String) instanceVars.get("type");
-                    if (typeName != null) {
-                        publish(typeName);
-                        numberOfFields--;
-                    } else {
-                        publish("Object");
-                    }
-                    publish("(");
-                    int n = 1;
-                    for (Object key : instanceVars.keySet()) {
-                        //noinspection SuspiciousMethodCalls
-                        if (key.equals("type"))
-                            continue;
-                        publish(key + ": " + instanceVars.get(key));
-                        if (n++ < numberOfFields)
-                            publish(", ");
-                    }
-                    publish(")");
-                }
-            } else {
-                publish(value);
-            }
+            publish(value);
+            return RemixNull.value();
         }
 
         static void publish(Object value) {

@@ -1,9 +1,11 @@
 package edu.fizz.remix.runtime;
 
 import edu.fizz.remix.editor.RemixEditor;
-import edu.fizz.remix.editor.RemixREPL;
+import edu.fizz.remix.editor.RemixPrepareRun;
 
 import java.util.*;
+
+import static edu.fizz.remix.editor.RemixPrepareRun.REPLContext;
 
 /** Includes the standard libraries, any extra libraries
  *  and a library made from the editor window.
@@ -36,6 +38,7 @@ public class LibrariesAndCompletions {
        functions and statements.
      */
     private static LibraryExpression programLibrary = new LibraryExpression();
+    static LibraryExpression REPLLibrary = new LibraryExpression();
 
     public static void addLibrary(LibraryExpression libraryExpression) {
         if (!addedLibraries.contains(libraryExpression))
@@ -50,6 +53,10 @@ public class LibrariesAndCompletions {
         return programLibrary;
     }
 
+//    public static LibraryExpression getREPLBaseLibrary() {
+//        return REPLLibrary;
+//    }
+
     /*
      * Sets the functions, methods, and context back to the standard version.
      */
@@ -58,6 +65,14 @@ public class LibrariesAndCompletions {
         LibraryExpression.methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
         addedLibraries.clear();
         LibrariesAndCompletions.allVariableNames.clear();
+    }
+
+    /*
+     * Called when resetting the REPL input/output window.
+     */
+    public static void resetREPLEnvironment() {
+        REPLLibrary = baseLibrary.copyFunctionsConstants();
+        REPLContext = new Context(REPLLibrary);
     }
 
     /*
@@ -226,8 +241,11 @@ public class LibrariesAndCompletions {
     public static void prepareEnvironment() throws Exception {
         baseLibrary = new BuiltInFunctionsLibrary();
         RemixEditor.setEditing(false);
-        LibraryExpression standardLibrary = RemixREPL.loadPackage("remixLibraries/standard-lib.rem");
+        LibraryExpression standardLibrary = RemixPrepareRun.loadPackage("remixLibraries/standard-lib.rem");
         RemixEditor.setEditing(true);
+        // this unnecessarily repeats the work so that the methodTableForCompletions gets
+        // the one method from the standard-lib
+        RemixPrepareRun.loadPackage("remixLibraries/standard-lib.rem");
         LibraryExpression.methodTableStandardLib = new HashMap<>(LibraryExpression.methodTableForCompletions);
         try {
             // currently libraries no longer maintain state in contexts (variables)
@@ -238,6 +256,7 @@ public class LibrariesAndCompletions {
             System.err.println("ReturnException caught in program.");
         }
         baseLibrary.mergeFunctionsConstantsNoOverwrite(standardLibrary);
+        resetREPLEnvironment();
         System.out.println();
     }
 

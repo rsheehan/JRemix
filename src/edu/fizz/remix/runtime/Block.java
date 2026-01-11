@@ -1,6 +1,6 @@
 package edu.fizz.remix.runtime;
 
-import edu.fizz.remix.editor.RemixREPL;
+import edu.fizz.remix.editor.RemixPrepareRun;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class Block implements Expression {
             Expression expression = iterator.next();
             if (expression instanceof RedoStatement) {
                 // pause in case the program gets interrupted
-                if (RemixREPL.remixRunner != null && RemixREPL.remixRunner.isCancelled())
+                if (RemixPrepareRun.remixRunner != null && RemixPrepareRun.remixRunner.isCancelled())
                     throw new InterruptedException();
                 iterator = statements.iterator();
                 continue;
@@ -96,5 +96,12 @@ public class Block implements Expression {
         if (blockContext != null)
             copy.blockContext = blockContext.copy();
         return copy;
+    }
+
+    /**
+     * @return whether or not there are any statements in the block
+     */
+    public boolean isEmpty() {
+        return statements.isEmpty();
     }
 }

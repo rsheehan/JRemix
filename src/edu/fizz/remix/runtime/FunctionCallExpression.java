@@ -1,7 +1,7 @@
 package edu.fizz.remix.runtime;
 
 import edu.fizz.remix.editor.RemixEditor;
-import edu.fizz.remix.editor.RemixREPL;
+import edu.fizz.remix.editor.RemixPrepareRun;
 
 import java.util.ListIterator;
 import java.util.Stack;
@@ -92,7 +92,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             readable = readable.replace("⫾", "()");
             if (RemixEditor.isEditing())
                 return null;
-            if (!fileName.equals(RemixREPL.EDITORTEXT))
+            if (!fileName.equals(RemixPrepareRun.EDITORTEXT))
                 System.err.format("file: %s, ", fileName);
             System.err.format("line: %d, offset: %d%n\t\"%s\" does not exist or is a method with a null receiver.%n",
                     lineNumber, lineOffset, readable);

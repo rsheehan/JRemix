@@ -1,6 +1,6 @@
 package edu.fizz.remix;
 
-import edu.fizz.remix.editor.RemixREPL;
+import edu.fizz.remix.editor.RemixPrepareRun;
 import edu.fizz.remix.parser.RemixParser;
 import edu.fizz.remix.parser.RemixParserBaseVisitor;
 import edu.fizz.remix.runtime.*;
@@ -9,9 +9,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class EvalVisitor extends RemixParserBaseVisitor<Object> {
 
@@ -542,7 +540,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     public Expression visitExprConcat(RemixParser.ExprConcatContext ctx) {
         Expression first = (Expression) visit(ctx.expression(0));
         Expression second = (Expression) visit(ctx.expression(1));
-        String fileName = RemixREPL.getFileName();
+        String fileName = RemixPrepareRun.getFileName();
         int lineNumber = ctx.getStart().getLine() - 1;
         int lineOffset = ctx.getStart().getCharPositionInLine();
         FunctionCallExpression concatCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
@@ -689,7 +687,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     /** callPart callPart+ | singleWord */
     @Override
     public Expression visitFunctionCall(RemixParser.FunctionCallContext ctx) {
-        String fileName = RemixREPL.getFileName();
+        String fileName = RemixPrepareRun.getFileName();
         int lineNumber = ctx.getStart().getLine() - 1;
         int lineOffset = ctx.getStart().getCharPositionInLine();
         FunctionCallExpression funcCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
@@ -931,25 +929,25 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             String variableName = varValueExpression.toString();
             int lineNumber = varValueExpression.getLineNumber();
             int lineOffset = varValueExpression.getOffSet();
-            System.err.printf("Variable '%s' on line %d, offset %d, value not used.%n",
+            System.err.printf("Variable %s on line %d, offset %d, value not used.%n",
                               variableName, lineNumber, lineOffset);
         }
     }
 
     public RemixListExpression produceListExpression(ParseTree ctx) {
-        List<Expression> list = new ArrayList<>();
+        RemixList<Expression> list = new RemixList<>();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.ExpressionContext) {
-                list.add((Expression)visit(node));
+                list.add(visit(node));
             }
         }
         return new RemixListExpression(list);
     }
 
     public RemixMapExpression produceMapExpression(ParseTree ctx) {
-        Map<String, Expression> map = new HashMap<>();
+        RemixMap<String, Expression> map = new RemixMap<>();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);

@@ -1,19 +1,18 @@
 package edu.fizz.remix.runtime;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class RemixMapExpression implements Expression {
 
-    private final Map<String, Expression> mapExpressions;
+    private final RemixMap<String, Expression> mapExpressions;
 
-    public RemixMapExpression(Map<String, Expression> map) {
+    public RemixMapExpression(RemixMap<String, Expression> map) {
         mapExpressions = map;
     }
 
     @Override
-    public Map<String, Object> evaluate(Context context) throws InterruptedException {
-        Map<String, Object> mapValues = new HashMap<>();
+    public RemixMap evaluate(Context context) throws InterruptedException {
+        RemixMap mapValues = new RemixMap();
         for (Map.Entry<String, Expression> entry : mapExpressions.entrySet()) {
             String key = entry.getKey();
             Expression value = entry.getValue();

@@ -47,8 +47,8 @@ public class SetElementExpression implements Expression {
         try {
             if (listMap == null || // nothing stored in the ListMap yet
                     listMap instanceof RemixNull ||
-                    listMap instanceof Map map && map.isEmpty() ||
-                    listMap instanceof List list && list.isEmpty()) {
+                    listMap instanceof RemixMap map && map.isEmpty() ||
+                    listMap instanceof RemixList list && list.isEmpty()) {
 
                 if (id instanceof Number numIndex) { // so a List
                     int index = numIndex.intValue();
@@ -58,12 +58,12 @@ public class SetElementExpression implements Expression {
                     context.assign(listName, makeMap(context, key, indexes, value));
                 }
             } else {
-                if (listMap instanceof ArrayList nextList && id instanceof Number n)
+                if (listMap instanceof RemixList nextList && id instanceof Number n)
                     setListComponentValue(context, nextList, n.intValue(), indexes, value);
-                else if (listMap instanceof HashMap nextMap && id instanceof String str)
+                else if (listMap instanceof RemixMap nextMap && id instanceof String str)
                     setMapComponentValue(context, nextMap, str, indexes, value);
                 else {
-                    System.err.printf("\"%s\" cannot set index \"%s\".%n", listName, id);
+                    System.err.printf("'%s' cannot set index {%s}.%n", listName, id);
                 }
             }
         } catch (ReturnException e) {
@@ -75,8 +75,8 @@ public class SetElementExpression implements Expression {
     /*
      Makes a list from this point on for all of the listIndexes and eventually assigns the value.
      */
-    private ArrayList makeList(Context context, int index, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException {
-        ArrayList list = new ArrayList(Collections.nCopies(index, null));
+    private RemixList makeList(Context context, int index, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException {
+        RemixList list = new RemixList(Collections.nCopies(index, null));
         if (listIndexes.isEmpty()) { // end of indexes so store the value
             list.set(index - 1, value);
         } else { // more indexes to go
@@ -97,8 +97,8 @@ public class SetElementExpression implements Expression {
     /*
      Makes a map from this point on for all of the listIndexes and eventually assigns the value.
     */
-    private HashMap makeMap(Context context, String key, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException {
-        HashMap map = new HashMap<>();
+    private RemixMap makeMap(Context context, String key, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException {
+        RemixMap map = new RemixMap();
         if (listIndexes.isEmpty()) { // end of indexes so store the value
             map.put(key, value);
         } else { // more indexes to go

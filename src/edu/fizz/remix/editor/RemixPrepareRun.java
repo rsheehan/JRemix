@@ -7,8 +7,7 @@ import edu.fizz.remix.parser.RemixErrorListener;
 import edu.fizz.remix.parser.RemixLexer;
 import edu.fizz.remix.parser.RemixParser;
 import edu.fizz.remix.parser.RemixParserBaseVisitor;
-import edu.fizz.remix.runtime.LibrariesAndCompletions;
-import edu.fizz.remix.runtime.LibraryExpression;
+import edu.fizz.remix.runtime.*;
 import edu.fizz.remix.runtime.Runtime;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -17,9 +16,15 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
 
-public class RemixREPL {
+/**
+ * This contains the code to "compile" the program.
+ * Now used both by the editor, and the interactive windows.
+ */
+public class RemixPrepareRun {
 
     public static final String EDITORTEXT = "*EditorText*";
+    public static final String INTERACTIVETEXT = "*InteractiveText*";
+    public volatile static Context REPLContext; // context when in interactive area
 
     private static String fileName;
 
@@ -52,20 +57,32 @@ public class RemixREPL {
         // need to preprocess the string
         // then create CharStream fromString
         // then lexer, tokens, parse, tree, eval.visit
-        // then run and return the string output
-        final ParseTree tree = processParse(remixSwingWorker.getEditor());
+        // then run
+        final ParseTree tree = processParse(remixSwingWorker.getEditor().getProgramText(), EDITORTEXT);
         EvalVisitor eval = new EvalVisitor();
 
         LibrariesAndCompletions.resetToRunStandard();
-        Runtime.run((LibraryExpression)eval.visit(tree));
+        Runtime.runProgram((LibraryExpression)eval.visit(tree));
         LibrariesAndCompletions.resetToEditorStandard();
     }
 
-    public static ParseTree processParse(RemixEditor editor) {
-        fileName = EDITORTEXT;
+    public static Object runInteractiveText(String interactiveLine) {
+        RemixEditor.systemOutput.setText("");
+        final ParseTree tree = processParse(interactiveLine, INTERACTIVETEXT);
+        EvalVisitor eval = new EvalVisitor();
+        LibraryExpression libraryExpression = (LibraryExpression)eval.visit(tree);
+        if (libraryExpression.block.isEmpty()) {
+            RemixPrepareRun.REPLContext.pushLibrary(libraryExpression);
+            return libraryExpression.functionTable;
+        }
+        return Runtime.runREPL(libraryExpression);
+    }
+
+    public static ParseTree processParse(String programText, String fileName) {
+        RemixPrepareRun.fileName = fileName;
         String processedText;
         try {
-            processedText = PreProcessREPL.processContents(editor.getProgramText());
+            processedText = PreProcessREPL.processContents(programText);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

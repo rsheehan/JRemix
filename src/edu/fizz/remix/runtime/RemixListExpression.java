@@ -1,21 +1,19 @@
 package edu.fizz.remix.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class RemixListExpression implements Expression {
 
-    private final List<Expression> listExpressions;
+    private final RemixList<Expression> listExpressions;
 
-    public RemixListExpression(List<Expression> list) {
+    public RemixListExpression(RemixList<Expression> list) {
         listExpressions = list;
     }
 
     @Override
-    public List<Object> evaluate(Context context) throws ReturnException, InterruptedException {
-        ArrayList<Object> listValues = new ArrayList<>();
+    public RemixList<Expression> evaluate(Context context) throws ReturnException, InterruptedException {
+        RemixList<Expression> listValues = new RemixList<>();
         if (listExpressions != null) {
-            for (Expression exp : listExpressions) {
+            for (Object item : listExpressions) {
+                Expression exp = (Expression)item;
                 if (exp instanceof Block block) {
                     if (block.getContext() == null) {
                         block = block.copy(); // the block could be called recursively we need a copy

@@ -38,6 +38,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static edu.fizz.remix.editor.RemixPrepareRun.EDITORTEXT;
 import static edu.fizz.remix.runtime.LibrariesAndCompletions.resetToEditorStandard;
 
 public class RemixEditor extends JFrame {
@@ -51,7 +52,7 @@ public class RemixEditor extends JFrame {
     private static JSplitPane outputSplitPane;
     private static RemixStyledDocument doc;
     static JTextArea systemOutput;
-    protected static JTextArea remixOutput;
+    protected static REPLInputOutput remixOutput;
     protected static GraphicsPanel graphicOutput;
     private final PopupFactory popupFactory = new PopupFactory();
     private Popup docPopup;
@@ -162,7 +163,7 @@ public class RemixEditor extends JFrame {
     protected void reparseProgramText() {
         systemOutput.setText("");
         resetToEditorStandard();
-        ParseTree tree = RemixREPL.processParse(RemixEditor.this);
+        ParseTree tree = RemixPrepareRun.processParse(RemixEditor.this.getProgramText(), EDITORTEXT);
         EvalVisitorForEditor eval = new EvalVisitorForEditor();
         LibraryExpression programLib = (LibraryExpression) eval.visit(tree);
         programLib.setActiveLines(LibraryExpression.ALLLINES);
@@ -195,11 +196,12 @@ public class RemixEditor extends JFrame {
         JScrollPane scrollPaneForSystem = new JScrollPane(systemOutput);
 
         //Create the text area for the output and configure it.
-        remixOutput = new JTextArea(); // 50, 100);
+        remixOutput = new REPLInputOutput(); //JTextArea(); // 50, 100);
         remixOutput.setBackground(Color.darkGray);
         remixOutput.setFont(new Font("Courier New", Font.PLAIN, 14));
         remixOutput.setForeground(Color.white);
-        remixOutput.setEditable(false);
+//        remixOutput.setEditable(false);
+        remixOutput.setCaretColor(Color.white);
         remixOutput.setLineWrap( true );
         remixOutput.setWrapStyleWord( true );
         JScrollPane scrollPaneForOutput = new JScrollPane(remixOutput);
@@ -427,6 +429,9 @@ public class RemixEditor extends JFrame {
             // hideGraphicsPanel(); // uncomment if you want the graphics panel hidden
             systemOutput.setText("");
             remixOutput.setText("");
+            remixOutput.setFocusable(false); // Temporarily make it non-focusable
+            RemixEditor.this.requestFocusInWindow(); // Request focus for the main panel
+            remixOutput.setFocusable(true); // Make it focusable again for future use
             remixRunner = new RemixSwingWorker(
                     RemixEditor.this
             );
