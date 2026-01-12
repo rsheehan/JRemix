@@ -24,3 +24,10 @@ make an object :
 
 'O' : make an object
 'O' method 2 and 3 ↲
+
+= Should produce
+4
+9
+4
+18
+=

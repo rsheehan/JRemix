@@ -7,5 +7,5 @@ STD-WIDTH : 999
 
 JKL ↲
 using graphics, 'the lib'
-	"using ", STD-WIDTH ↲ ; gets 999 as the version in the graphics lib is not allowed
-	"using ", JKL ↲ ; gets 'the lib' value 7, probably shouldn't work
+	"using ", STD-WIDTH ↲ ; now gets 1000
+	"using ", JKL ↲ ; gets 'the lib' value 7

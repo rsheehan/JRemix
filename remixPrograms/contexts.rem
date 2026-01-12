@@ -1,3 +1,5 @@
+- contexts.rem
+
 a function 'X' :
 	'Y' : 3
 	repeat 'Y' times
@@ -5,3 +7,7 @@ a function 'X' :
 	'X', " ", 'Y' \n
 
 a function 2
+
+= should get
+11 3
+=
