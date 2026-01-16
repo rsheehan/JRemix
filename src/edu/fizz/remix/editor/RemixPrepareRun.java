@@ -74,6 +74,8 @@ public class RemixPrepareRun {
         if (libraryExpression.block.isEmpty()) {
             RemixPrepareRun.REPLContext.pushLibrary(libraryExpression);
             // max of one function defined here
+            if (libraryExpression.functionTable.isEmpty())
+                return null;
             String newFunctionName = libraryExpression.functionTable.keySet().toString();
             newFunctionName = newFunctionName.substring(1, newFunctionName.length() - 1);
             Function newFunction = libraryExpression.functionTable.get(newFunctionName);
