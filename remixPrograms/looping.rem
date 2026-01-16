@@ -1,0 +1,21 @@
+- Different looping constructs
+
+'range' : 1 to 100
+
+for each 'value' in 'range' 
+	('value'²) _
+↲
+for each 'value' in 'range' from position 20 to 10 
+	('value'²) _
+↲
+'range' : 10 to 20
+for each 'value' in 'range' keeping 'index' 
+	'index', ":", 'value'² ↲
+
+for each 'n' from 100 to 110 
+	(√ 'n') _
+↲
+for each 'n' from 1000 to 100 in steps of 100 
+	'n' _
+↲
+'n' ↲

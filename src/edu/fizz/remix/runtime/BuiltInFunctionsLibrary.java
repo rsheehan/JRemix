@@ -249,8 +249,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 //    }
 
     /** The "print" function. Prints the string version of the value.
-     *  Now prints lists as real lists.
-     *  */
+     */
     public static final class PrintFunction extends Function {
         public PrintFunction() {
             super(
@@ -268,7 +267,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             return RemixNull.value();
         }
 
-        static void publish(Object value) {
+        public static void publish(Object value) {
             System.out.print(value);
         }
     }

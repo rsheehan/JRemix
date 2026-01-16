@@ -13,12 +13,9 @@ using graphics, turtle
 		place '40 turtles' group in 'space'
 		'40 turtles' speed (4 + random 6)
 		move '40 turtles' (random from 50 to 200) steps
-		-hide '40 turtles'
-		-clear 'space' turtles
 		clear 'space'
 		
-	'the window' : the graphics panel
-	'turtle space' : a turtle space in 'the window'
+	'turtle space' : a turtle space in (the graphics panel)
 
 repeat 20 times
 	star explosion in 'turtle space'

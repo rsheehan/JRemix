@@ -1,6 +1,7 @@
 package edu.fizz.remix.runtime;
 
 import java.util.AbstractList;
+import java.util.Iterator;
 
 public class RangeExpression extends AbstractList<Long> {
 
@@ -26,6 +27,22 @@ public class RangeExpression extends AbstractList<Long> {
     @Override
     public int size() {
         return (int) (Math.abs(finish - start) + 1);
+    }
+
+    @Override
+    public String toString() {
+        Iterator<Long> it = iterator();
+        if (! it.hasNext())
+            return "[]";
+
+        StringBuilder sb = new StringBuilder();
+        for (;;) {
+            Long e = it.next();
+            sb.append(e);
+            if (! it.hasNext())
+                return sb.toString();
+            sb.append(',').append(' ');
+        }
     }
 
 }

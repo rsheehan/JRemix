@@ -11,7 +11,6 @@ public class Runtime {
      */
     public static void runProgram(LibraryExpression program) {
         LibraryExpression programLibrary = LibrariesAndCompletions.getProgramBaseLibrary();
-//        programLibrary.functionTable.putAll(program.functionTable);
         program.mergeFunctionsConstantsNoOverwrite(programLibrary);
         RemixPrepareRun.REPLContext = new Context(program);
         try {
@@ -24,9 +23,7 @@ public class Runtime {
     }
 
     public static Object runREPL(LibraryExpression program) {
-//        LibraryExpression REPLLibrary = LibrariesAndCompletions.getREPLBaseLibrary();
         Object result = null;
-//        RemixPrepareRun.REPLContext.pushLibrary(program);
         program.mergeFunctionsConstantsNoOverwrite(REPLLibrary);
         REPLLibrary = program; // in case program adds functions/constants
         try {

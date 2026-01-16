@@ -18,7 +18,7 @@ public class RemixList<Expression> extends ArrayList {
     public String toString() {
         Iterator it = iterator();
         if (! it.hasNext())
-            return "[]";
+            return "{}";
 
         StringBuilder sb = new StringBuilder();
         sb.append('{');

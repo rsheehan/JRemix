@@ -52,7 +52,7 @@ public class RemixEditor extends JFrame {
     private static JSplitPane outputSplitPane;
     private static RemixStyledDocument doc;
     static JTextArea systemOutput;
-    protected static REPLInputOutput remixOutput;
+    public static REPLInputOutput remixOutput;
     protected static GraphicsPanel graphicOutput;
     private final PopupFactory popupFactory = new PopupFactory();
     private Popup docPopup;
@@ -197,13 +197,6 @@ public class RemixEditor extends JFrame {
 
         //Create the text area for the output and configure it.
         remixOutput = new REPLInputOutput(); //JTextArea(); // 50, 100);
-        remixOutput.setBackground(Color.darkGray);
-        remixOutput.setFont(new Font("Courier New", Font.PLAIN, 14));
-        remixOutput.setForeground(Color.white);
-//        remixOutput.setEditable(false);
-        remixOutput.setCaretColor(Color.white);
-        remixOutput.setLineWrap( true );
-        remixOutput.setWrapStyleWord( true );
         JScrollPane scrollPaneForOutput = new JScrollPane(remixOutput);
 
         Dimension graphicsDimension = new Dimension(1000,800);

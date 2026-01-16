@@ -1,4 +1,17 @@
-using graphics
-	'window' : the graphics panel
-	'square' : a square
-	'window' base layer ↲
+thing :
+	create
+		'a' : "one"
+		'b' : "two"
+		'a b' : null
+		
+		getter
+			'a b'
+		
+		MY setup :	
+			'a b' : 'a' ⊕ " " ⊕ 'b'
+	
+	
+
+'o' : thing
+'o' ↲
+'o' a b ↲

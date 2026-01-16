@@ -18,7 +18,7 @@ public final class RemixNull implements Expression {
 
     @Override
     public String toString() {
-        return "RemixNull";
+        return "null";
     }
 
 }

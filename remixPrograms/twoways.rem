@@ -1,0 +1,37 @@
+=
+Two ways of setting a field with a value calculated from other fields.
+=
+
+thing1 :
+	'a' : "one"
+	'b' : "two"
+	create ; the context of the create for fields is the existing context
+		'a' : 'a'
+		'b' : 'b'
+		'a b' : 'a' ⊕ " " ⊕ 'b'
+		
+		getter
+			'a b'
+
+'o' : thing1
+'o' ↲
+'o' a b ↲
+
+thing2 :
+	'thing' : create
+		'a' : "one"
+		'b' : "two"
+		'a b' : null
+		
+		getter
+			'a b'
+		
+		setup ME :
+			'a b' : 'a' ⊕ " " ⊕ 'b'
+			ME
+	
+	setup 'thing' ; this also returns the object
+
+'o' : thing2
+'o' ↲
+'o' a b ↲

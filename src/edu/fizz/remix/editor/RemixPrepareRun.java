@@ -73,7 +73,11 @@ public class RemixPrepareRun {
         LibraryExpression libraryExpression = (LibraryExpression)eval.visit(tree);
         if (libraryExpression.block.isEmpty()) {
             RemixPrepareRun.REPLContext.pushLibrary(libraryExpression);
-            return libraryExpression.functionTable;
+            // max of one function defined here
+            String newFunctionName = libraryExpression.functionTable.keySet().toString();
+            newFunctionName = newFunctionName.substring(1, newFunctionName.length() - 1);
+            Function newFunction = libraryExpression.functionTable.get(newFunctionName);
+            return newFunction.displayName(newFunctionName);
         }
         return Runtime.runREPL(libraryExpression);
     }
