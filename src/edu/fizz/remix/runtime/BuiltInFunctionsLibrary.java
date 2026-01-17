@@ -194,6 +194,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 return true;
             if (value instanceof String && typeString.equals("string"))
                 return true;
+            if (value instanceof RangeExpression && typeString.equals("range"))
+                return true;
             if (value instanceof List<?> && typeString.equals("list")) // can be a range
                 return true;
             if (value instanceof HashMap<?,?> && typeString.equals("map"))

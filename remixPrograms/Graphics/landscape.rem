@@ -3,37 +3,37 @@
 =====================
 using graphics
 
-	add the sun on the 'layer' :
+	add the sun on 'the layer' :
 		'sun' : a YELLOW circle of radius 40 at {800, 100}
-		place 'sun' in 'layer'
+		place 'sun' in 'the layer'
 		
-	add the mountains on the 'layer' :
+	add the mountains on 'the layer' :
 		repeat 20 times
 			'mountain' : a DARK-GREY mountain with BLACK edges
 											… of height 300 based at 600
-			place 'mountain' in 'layer'
+			place 'mountain' in 'the layer'
 
-	add the sea on the 'layer' :
+	add the sea on 'the layer' :
 		'sea' : a DARK-BLUE box of STD-WIDTH x 200 at {
 			STD-WIDTH ÷ 2
 			STD-HEIGHT - 100
 		}
-		place 'sea' in 'layer'
+		place 'sea' in 'the layer'
 
-	add the islands on the 'layer' :
+	add the islands on 'the layer' :
 		for each 'location' from 650 to 680 in steps of 3
 			'island' : a GREY mountain with WHITE edges
 				… of height 250 based at 'location'
-			place 'island' in 'layer'
+			place 'island' in 'the layer'
 
-	'n' clouds in the 'layer' :
+	'n' clouds in 'the layer' :
 		apply
 			'cloud' : a cloud
-			place ('cloud' parts) in 'layer'
+			place ('cloud' parts) in 'the layer'
 			'cloud'
 		… 'n' times
 
-	animate the 'the clouds' in 'the window' :
+	animate 'the clouds' in 'the window' :
 		animate 'the window' 600 times at 30 ticks per second
 			for each 'cloud' in 'the clouds'
 				move 'cloud'
@@ -122,15 +122,15 @@ using graphics
 	'the window' colour SKY-BLUE
 	
 -============================================================================-
-'back layer'  : 'the window' base layer
-'cloud layer' : 'the window' next layer
-'front layer' : 'the window' next layer
+'the back layer'  : 'the window' base layer
+'the cloud layer' : 'the window' next layer
+'the front layer' : 'the window' next layer
 	
-add the sun on the 'back layer'
-add the mountains on the 'back layer'
-add the sea on the 'back layer'
-add the islands on the 'front layer'
+add the sun on 'the back layer'
+add the mountains on 'the back layer'
+add the sea on 'the back layer'
+add the islands on 'the front layer'
 update 'the window'	
 
-'the clouds' : 10 clouds in the 'cloud layer'
-animate the 'the clouds' in 'the window'
+'the clouds' : 10 clouds in 'the cloud layer'
+animate 'the clouds' in 'the window'

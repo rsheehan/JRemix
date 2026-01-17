@@ -1,0 +1,17 @@
+- rangelisttype.rem
+
+find type of 'var' :
+	type of 'var' ↲
+	'var' is a "list" ↲
+	'var' is a "range" ↲
+
+'l' : {1, 2, 3}
+find type of 'l'
+'l'{2} : 4
+'l' ↲
+
+'r' : 1 to 10
+find type of 'r'
+'r' : list from 'r'
+'r'{2} : 4
+'r' ↲
