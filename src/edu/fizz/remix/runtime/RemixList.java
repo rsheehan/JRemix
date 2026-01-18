@@ -24,10 +24,16 @@ public class RemixList<Expression> extends ArrayList {
         sb.append('{');
         for (;;) {
             Object e = it.next();
-            sb.append(e == this ? "(this Collection)" : e);
+            try {
+                sb.append(e == this ? "(this List)" : e);
+            } catch (StackOverflowError se) {
+                System.out.println("Stack overflow when printing");
+                break;
+            }
             if (! it.hasNext())
                 return sb.append('}').toString();
             sb.append(',').append(' ');
         }
+        return "";
     }
 }

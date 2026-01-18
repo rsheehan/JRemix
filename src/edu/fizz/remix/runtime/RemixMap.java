@@ -18,10 +18,16 @@ public class RemixMap<String, Expression> extends HashMap<String, Expression> {
             Object value = e.getValue();
             sb.append(key);
             sb.append("\" : ");
-            sb.append(value == this ? "(this Map)" : value);
+            try {
+                sb.append(value == this ? "(this Map)" : value);
+            } catch (StackOverflowError se) {
+                System.out.println("Stack overflow when printing");
+                break;
+            }
             if (! i.hasNext())
                 return sb.append('}').toString();
             sb.append(',').append(' ');
         }
+        return "";
     }
 }

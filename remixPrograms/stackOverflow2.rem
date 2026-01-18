@@ -1,0 +1,11 @@
+'list' : {}
+
+'obj' : create
+	'field' : 'list'
+
+'list' ↲
+'obj' ↲
+
+append 'obj' to 'list'
+
+'obj' ↲

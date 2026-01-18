@@ -1,0 +1,22 @@
+- stackOverflow.rem
+
+make object :
+	create
+		'thing' : null
+		'list' : {}
+		
+		set thing to ME :
+			'thing' : ME
+		
+		ME set 'a list' :
+			'list' : 'a list'
+
+
+'ob' : make object
+'ob' ↲
+set thing to 'ob'
+'ob' ↲
+'ob' set {1}
+'ob' ↲
+'ob' set {'ob'}
+'ob' ↲

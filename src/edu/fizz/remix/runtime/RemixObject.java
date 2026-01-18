@@ -42,12 +42,12 @@ public class RemixObject {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         Method method = findMethod("⫾ to string");
         MethodContext methodContext = new MethodContext(null, this);
         if (method != null) {
             try {
-                stringBuilder.append(method.execute(methodContext));
+                sb.append(method.execute(methodContext));
             } catch (ReturnException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -56,20 +56,27 @@ public class RemixObject {
             int numberOfFields = instanceVars.size();
             String typeName = (String) instanceVars.get("type");
             if (typeName != null) {
-                stringBuilder.append(typeName).append(" ");
+                sb.append(typeName).append(" ");
                 numberOfFields--;
             }
-            stringBuilder.append("object\n");
+            sb.append("object\n");
             int n = 1;
             for (Object key : instanceVars.keySet()) {
                 if (key.equals("type"))
                     continue;
-                stringBuilder.append("\t").append('\'').append(key).append("' : ").append(instanceVars.get(key));
+                sb.append("\t").append('\'').append(key).append("' : ");
+                Object field = instanceVars.get(key);
+                try {
+                    sb.append(field == this ? "(this Object)" : field);
+                } catch (StackOverflowError se) {
+                    System.out.println("Stack overflow when printing");
+                    break;
+                }
                 if (n++ < numberOfFields)
-                    stringBuilder.append("\n");
+                    sb.append("\n");
             }
         }
-        return stringBuilder.toString();
+        return sb.toString();
     }
 
 }
