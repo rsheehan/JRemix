@@ -1,7 +1,7 @@
 package edu.fizz.remix.runtime;
 
-import java.util.Stack;
+import java.util.List;
 
 public interface RemixComplexType {
-    public String toString(Stack callerStack);
+    String toString(List<RemixComplexType> callerStack);
 }

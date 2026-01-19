@@ -1,9 +1,11 @@
 package edu.fizz.remix.runtime;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class RemixObject {
+public class RemixObject implements RemixComplexType {
 
     /*
      * These variables are added to when the initBlock is evaluated in RemixObjectExpression
@@ -47,7 +49,7 @@ public class RemixObject {
         MethodContext methodContext = new MethodContext(null, this);
         if (method != null) {
             try {
-                sb.append(method.execute(methodContext));
+                return sb.append(method.execute(methodContext)).toString();
             } catch (ReturnException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -60,23 +62,74 @@ public class RemixObject {
                 numberOfFields--;
             }
             sb.append("object\n");
-            int n = 1;
-            for (Object key : instanceVars.keySet()) {
+            if (numberOfFields == 0)
+                return sb.toString();
+
+            for (String key : instanceVars.keySet()) {
                 if (key.equals("type"))
                     continue;
                 sb.append("\t").append('\'').append(key).append("' : ");
+
                 Object field = instanceVars.get(key);
-                try {
-                    sb.append(field == this ? "(this Object)" : field);
-                } catch (StackOverflowError se) {
-                    System.out.println("Stack overflow when printing");
-                    break;
+                if (field instanceof RemixComplexType complexField) {
+                    List<RemixComplexType> callerStack = new ArrayList<>();
+                    callerStack.add(this);
+                    sb.append(complexField.toString(callerStack));
+                } else {
+                    sb.append(field);
                 }
-                if (n++ < numberOfFields)
-                    sb.append("\n");
+
+                if (--numberOfFields == 0)
+                    break;
             }
+            return sb.append("\n").toString();
         }
-        return sb.toString();
     }
 
+    @Override
+    public String toString(List<RemixComplexType> callerStack) {
+        StringBuilder sb = new StringBuilder();
+        Method method = findMethod("⫾ to string");
+        MethodContext methodContext = new MethodContext(null, this);
+        if (method != null) {
+            try {
+                return sb.append(method.execute(methodContext)).toString();
+            } catch (ReturnException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            Map<String, Object> instanceVars = getContext().variables;
+            int numberOfFields = instanceVars.size();
+            String typeName = (String) instanceVars.get("type");
+            if (typeName != null) {
+                sb.append(typeName).append(" ");
+                numberOfFields--;
+            }
+            sb.append("object\n");
+            if (numberOfFields == 0)
+                return sb.toString();
+
+            for (String key : instanceVars.keySet()) {
+                if (key.equals("type"))
+                    continue;
+                sb.append("\t").append('\'').append(key).append("' : ");
+
+                Object field = instanceVars.get(key);
+                if (field instanceof RemixComplexType complexField) {
+                    if (callerStack.contains(complexField)) {
+                        sb.append("REC_OBJECT");
+                    } else {
+                        callerStack.add(this);
+                        sb.append(complexField.toString(callerStack));
+                    }
+                } else {
+                    sb.append(field);
+                }
+
+                if (--numberOfFields == 0)
+                    break;
+            }
+            return sb.append("\n").toString();
+        }
+    }
 }
