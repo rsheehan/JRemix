@@ -96,9 +96,11 @@ public class REPLInputOutput extends JTextArea {
             String separatorLine = String.valueOf('=').repeat(lastLineLength);
             System.out.println(separatorLine);
             // execute the lines; this may include many print statements
-            Object output = RemixPrepareRun.runInteractiveText(lines);
+            String output = String.valueOf(RemixPrepareRun.runInteractiveText(lines));
             // print the result returned from the execution
-            System.out.println(output);
+            if (!output.isEmpty() && !output.endsWith("\n"))
+                output = output + "\n";
+            System.out.print(output);
             System.out.println(separatorLine);
             // move the caret to the end of the document
             int length = getDocument().getLength();

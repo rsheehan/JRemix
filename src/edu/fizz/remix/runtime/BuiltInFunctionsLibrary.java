@@ -771,6 +771,9 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             StringBuilder helpSB = new StringBuilder();
             if (what.equals("CONSTANTS")) {
                 dealWithConstants(context.parentContext, helpSB);
+                int length = helpSB.length();
+                if (length > 0) // remove last '\n'
+                    helpSB.delete(length - 1, length);
             } else if (what.equals("VARIABLES")) {
                 dealWithVariables(context.parentContext, helpSB);
             } else {
@@ -782,15 +785,15 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         private void dealWithVariables(Context context, StringBuilder helpSB) {
             for (String name : context.variables.keySet()) {
-                helpSB.append('\n')
-                        .append(name)
+                helpSB.append(name)
                         .append(" : ")
-                        .append(context.variables.get(name));
+                        .append(context.variables.get(name))
+                        .append('\n');
             }
         }
 
         private void dealWithConstants(Context context, StringBuilder helpSB) {
-            Stack<LibraryExpression> libStack = context.cloneLibraryStack();
+            Stack<LibraryExpression> libStack = context.libraryStack;
             for (LibraryExpression lib : libStack) {
                 TreeMap<String, Object> constants = new TreeMap<>(lib.constantTable);
                 // Iterate over the sorted map
@@ -873,7 +876,6 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         private static String tabbedComment(StringBuilder commentBuilder) {
-//            StringBuilder commentBuilder = new StringBuilder("\t" + functionComment);
             int i = commentBuilder.indexOf( "\n", 2);
             while (i != -1) {
                 commentBuilder.replace(i, ++i, "\n\t");

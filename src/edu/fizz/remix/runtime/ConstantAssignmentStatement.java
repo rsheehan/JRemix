@@ -37,6 +37,7 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
             value = expression.evaluate(context);
             if (value == null && expression instanceof ConstantValueExpression constantExpr) { // possible the expression is a constant in the libraryStoredIn
                 value = library.constantTable.get(constantExpr.constantName);
+                // still doesnt' work with WHITE-SPACE : { SPACE, TAB, CR } in standard-lib
             }
         }
         /*
