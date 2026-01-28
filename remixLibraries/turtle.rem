@@ -15,6 +15,7 @@
 		=-
 		a turtle space in 'the window':
 			create
+				'type' : "turtle space"
 				'the window' : 'the window'
 				'turtle rate' : 100
 					- The 'turtle rate' is the time delay fraction of a second
@@ -96,6 +97,7 @@
 				{ 0,-2 }
 				{ 2, 2 }
 			}
+				- 'type' : "turtle" ; can't use this until I have subtypes since it must be a shape
 				'turtle space' : null
 				'animation layer' : null ; its own animation layer
 				'pen down' : true

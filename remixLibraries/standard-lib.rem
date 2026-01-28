@@ -14,6 +14,14 @@ CR : "
 " ; this contains a carriage return character
 WHITE-SPACE : { SPACE, TAB, CR }
 
+==============
+Help constants
+==============
+CONSTANTS : "CONSTANTS"
+CONS : CONSTANTS
+VARIABLES : "VARIABLES"
+VARS : VARIABLES
+
 ==============================
  Simple print functions
 ==============================
@@ -163,7 +171,7 @@ repeat ['block'] forever :
 	do 'block'
 	redo
 
-=--
+=-
 Repeat the 'block' 'count' number of times.
 =-
 repeat ['block'] 'count' times :

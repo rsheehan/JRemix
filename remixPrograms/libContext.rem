@@ -17,7 +17,7 @@ using 'library' ; this variable sets the library to do with the inside function 
 
 "before"↲
 with do
-	function 
+	function ↲
 	
 "after"↲
 =-
@@ -31,4 +31,14 @@ From top-level2.
 =-
 function :
 	"from top-level2" ↲
+	"this is the one used"
 
+= Produces
+before
+inside
+from inside library
+from inside library
+from top-level2		; because outside the library the "function" has been defined twice
+this is the one used
+after
+=

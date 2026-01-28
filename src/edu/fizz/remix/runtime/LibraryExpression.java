@@ -1,10 +1,7 @@
 package edu.fizz.remix.runtime;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A library expression holds a function table.
@@ -26,10 +23,10 @@ public class LibraryExpression implements Expression {
     public Block block = new Block();
 
     // Functions available in this library.
-    public HashMap<String, Function> functionTable = new HashMap<>();
+    public LinkedHashMap<String, Function> functionTable = new LinkedHashMap<>();
 
     // Constants available in this library.
-    protected HashMap<String, Object> constantTable = new HashMap<>();
+    protected LinkedHashMap<String, Object> constantTable = new LinkedHashMap<>();
 
     static HashMap<String, Integer> methodTableRefPos = new HashMap<>(); // one table used by all
     static HashMap<String, Function> methodTableStandardLib = new HashMap<>();
@@ -149,8 +146,8 @@ public class LibraryExpression implements Expression {
     public LibraryExpression copyFunctionsConstants() {
         // not really a clone, doesn't copy the block.
         LibraryExpression copy = new LibraryExpression();
-        copy.functionTable = new HashMap<>(functionTable);
-        copy.constantTable = new HashMap<>(constantTable);
+        copy.functionTable = new LinkedHashMap<>(functionTable);
+        copy.constantTable = new LinkedHashMap<>(constantTable);
         copy.activeLines = new ArrayList<>(activeLines);
         return copy;
     }
@@ -183,6 +180,18 @@ public class LibraryExpression implements Expression {
             loaded = true;
         }
         return this;
+    }
+
+    public Object evaluate(Context context, boolean usingLibBlock) throws ReturnException, InterruptedException {
+        if (!usingLibBlock) {
+            return evaluate(context);
+        }
+        Object result;
+        context.pushLibrary(this);
+        result = block.evaluate(context);
+        context.popLibrary();
+        loaded = true;
+        return result;
     }
 
 }

@@ -1,8 +1,10 @@
 package edu.fizz.remix.runtime;
 
 import edu.fizz.remix.EvalVisitorForEditor;
+import edu.fizz.remix.editor.REPLInputOutput;
 import edu.fizz.remix.editor.RemixEditor;
 import edu.fizz.remix.editor.RemixPrepareRun;
+import edu.fizz.remix.editor.TextAreaOutputStream;
 
 import java.util.*;
 
@@ -87,7 +89,6 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             topOfStackLibrary.functionTable.putAll(included.functionTable);
             if (RemixEditor.isEditing()) {
                 included.setActiveLines(topOfStackLibrary.getActiveLines());
-//                LibrariesAndCompletions.buildAdditionalCompletions(included);
             }
 
             Object result = null;
@@ -728,5 +729,159 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             Thread.sleep((int)(seconds * 1000));
             return null;
         }
+    }
+
+    public static final class ClearFunction extends Function {
+
+        public ClearFunction() {
+            super(
+                    List.of("clear"),
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    false,
+                    "Clear the Input/Output window."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            RemixEditor.remixOutput.clearTextArea();
+            return "";
+        }
+    }
+
+    public static final class HelpFunction extends Function {
+
+        public HelpFunction() {
+            super(
+                    List.of("help ⫾"),
+                    List.of("what"),
+                    List.of(false),
+                    false,
+                    "Give help about 'what'."
+            );
+        }
+
+        // TODO: add a search for all constants invoked by - help CONS
+        // TODO: add some of the keywords too
+        // TODO: make help work inside "using blocks"
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            String what = ((String) context.retrieve("what", false));
+            StringBuilder helpSB = new StringBuilder();
+            if (what.equals("CONSTANTS")) {
+                dealWithConstants(context.parentContext, helpSB);
+            } else if (what.equals("VARIABLES")) {
+                dealWithVariables(context.parentContext, helpSB);
+            } else {
+                dealWithFunctions(context.parentContext, what, helpSB);
+                dealWithMethods(context.parentContext, what, helpSB);
+            }
+            return helpSB.toString();
+        }
+
+        private void dealWithVariables(Context context, StringBuilder helpSB) {
+            for (String name : context.variables.keySet()) {
+                helpSB.append('\n')
+                        .append(name)
+                        .append(" : ")
+                        .append(context.variables.get(name));
+            }
+        }
+
+        private void dealWithConstants(Context context, StringBuilder helpSB) {
+            Stack<LibraryExpression> libStack = context.cloneLibraryStack();
+            for (LibraryExpression lib : libStack) {
+                TreeMap<String, Object> constants = new TreeMap<>(lib.constantTable);
+                // Iterate over the sorted map
+                for (Map.Entry<String, Object> entry : constants.entrySet()) {
+                    helpSB.append(entry.getKey())
+                            .append(": ")
+                            .append(entry.getValue())
+                            .append("\n");
+                }
+            }
+        }
+
+        /**
+         * Use the context variable objects to find possible methods
+         * this is better because it only gives runnable methods
+         */
+        private void dealWithMethods(Context context, String what, StringBuilder helpSB) {
+            for (Object value : context.variables.values()) {
+                if (value instanceof RemixObject object) {
+                    for (Method method : object.methodTable().values()) {
+                        boolean found = false;
+                        boolean foundInComment = method.functionComment.contains(what);
+                        for (String funcName : method.getAllNames()) {
+                            if (funcName.contains(what) || foundInComment) {
+                                found = true;
+                                String name = method.displayName(funcName);
+                                helpSB.append("\nMethod: ")
+                                        .append(name);
+                            }
+                        }
+                        if (found || foundInComment) {
+                            if (!method.functionComment.isEmpty()) {
+                                StringBuilder commentBuilder = new StringBuilder("\n\t");
+                                commentBuilder.append(method.functionComment);
+                                String tabbedComment = tabbedComment(commentBuilder);
+                                helpSB.append(tabbedComment).append("\n");
+                            } else {
+                                helpSB.append("\n");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /**
+         * Goes through the functions searching for ones which match "what"
+         * in both the function name and the comment.
+         */
+        private static void dealWithFunctions(Context context, String what, StringBuilder helpSB) {
+            Stack<LibraryExpression> libStack = context.cloneLibraryStack();
+            List<Function> matchedFunctions = new ArrayList<>();
+            for (LibraryExpression lib : libStack) {
+                for (Function function : lib.functionTable.values()) {
+                    if (matchedFunctions.contains(function))
+                        continue;
+                    boolean found = false;
+                    boolean foundInComment = function.functionComment.contains(what);
+                    for (String funcName : function.getAllNames()) {
+                        if (funcName.contains(what) || foundInComment) {
+                            found = true;
+                            String name = function.displayName(funcName);
+                            helpSB.append("\nFunction: ")
+                                    .append(name);
+                        }
+                    }
+                    if (found || foundInComment) {
+                        if (!function.functionComment.isEmpty()) {
+                            StringBuilder commentBuilder = new StringBuilder("\n\t");
+                            commentBuilder.append(function.functionComment);
+                            String tabbedComment = tabbedComment(commentBuilder);
+                            helpSB.append(tabbedComment).append("\n");
+                        } else {
+                            helpSB.append("\n");
+                        }
+                    }
+                }
+            }
+        }
+
+        private static String tabbedComment(StringBuilder commentBuilder) {
+//            StringBuilder commentBuilder = new StringBuilder("\t" + functionComment);
+            int i = commentBuilder.indexOf( "\n", 2);
+            while (i != -1) {
+                commentBuilder.replace(i, ++i, "\n\t");
+                ++i;
+                i = commentBuilder.indexOf( "\n", i);
+            }
+            return commentBuilder.toString();
+        }
+
     }
 }

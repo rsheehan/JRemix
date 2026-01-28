@@ -39,7 +39,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static edu.fizz.remix.editor.RemixPrepareRun.EDITORTEXT;
-import static edu.fizz.remix.runtime.LibrariesAndCompletions.resetToEditorStandard;
+//import static edu.fizz.remix.runtime.LibrariesAndCompletions;
 
 public class RemixEditor extends JFrame {
 
@@ -162,7 +162,7 @@ public class RemixEditor extends JFrame {
 
     protected void reparseProgramText() {
         systemOutput.setText("");
-        resetToEditorStandard();
+        LibrariesAndCompletions.resetToEditorStandard();
         ParseTree tree = RemixPrepareRun.processParse(RemixEditor.this.getProgramText(), EDITORTEXT);
         EvalVisitorForEditor eval = new EvalVisitorForEditor();
         LibraryExpression programLib = (LibraryExpression) eval.visit(tree);
@@ -197,6 +197,7 @@ public class RemixEditor extends JFrame {
 
         //Create the text area for the output and configure it.
         remixOutput = new REPLInputOutput(); //JTextArea(); // 50, 100);
+        remixOutput.append(REPLInputOutput.INFOSTRING);
         JScrollPane scrollPaneForOutput = new JScrollPane(remixOutput);
 
         Dimension graphicsDimension = new Dimension(1000,800);
@@ -974,7 +975,7 @@ public class RemixEditor extends JFrame {
         // setup the Remix runtime
         try {
             LibrariesAndCompletions.prepareEnvironment();
-            resetToEditorStandard();
+            LibrariesAndCompletions.resetToEditorStandard();
             // after this the currentLibrary is the program library
         } catch (Exception e) {
             System.err.println("Error: initializing REPL");

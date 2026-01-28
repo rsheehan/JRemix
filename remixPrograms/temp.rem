@@ -1,12 +1,12 @@
-'map or list' : {}
+abc one :
+	"first"
 
-type of 'map or list'↲
+ONE : 1
 
-'map or list'{"abc"}↲
-'map or list'{"abc"} : 32
+abc two :
+	"second"
 
-type of 'map or list'↲
-
-'map or list'{1} : "what?"
-'map or list'↲
-type of 'map or list'↲
+TWO : 2
+'a' : 4
+A : 44
+abc one ↲

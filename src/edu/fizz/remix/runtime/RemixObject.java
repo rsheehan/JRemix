@@ -21,6 +21,10 @@ public class RemixObject implements RemixComplexType {
         objectContext.libraryStack = definingContext.cloneLibraryStack();
     }
 
+    public MethodTable methodTable() {
+        return methodTable;
+    }
+
     /* Find the method matching the name. */
     public Method findMethod(String name) {
         return methodTable.get(name);

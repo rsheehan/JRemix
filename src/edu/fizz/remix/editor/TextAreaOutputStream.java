@@ -21,6 +21,10 @@ public class TextAreaOutputStream extends OutputStream {
                 {
                     if (destination == RemixEditor.systemOutput)
                         RemixEditor.expandSystemOutputPanel();
+//                    if (text.equals(clearOutput)) {
+//                        RemixEditor.remixOutput.setText(null);
+//                        return;
+//                    }
                     destination.append (text);
                 }
             });

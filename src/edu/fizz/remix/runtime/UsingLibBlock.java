@@ -78,7 +78,7 @@ public class UsingLibBlock extends Block {
         }
 
         context.setLibForConstants(libForConstants);
-        Object result = usingBlock.evaluate(context);
+        Object result = usingBlock.evaluate(context, true);
         context.setLibForConstants(null);
         for (Expression ignored : librariesToUse.keySet()) {
             context.popLibrary();

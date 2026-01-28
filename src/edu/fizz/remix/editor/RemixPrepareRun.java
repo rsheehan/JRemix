@@ -18,7 +18,7 @@ import java.io.IOException;
 
 /**
  * This contains the code to "compile" the program.
- * Now used both by the editor, and the interactive windows.
+ * Now used both by the editor and the interactive windows.
  */
 public class RemixPrepareRun {
 
@@ -50,6 +50,10 @@ public class RemixPrepareRun {
         return fileName;
     }
 
+    public static boolean interactive() {
+        return fileName.equals(INTERACTIVETEXT);
+    }
+
     public static RemixSwingWorker remixRunner;
 
     public static void runEditorText(RemixSwingWorker remixSwingWorker) {
@@ -71,17 +75,26 @@ public class RemixPrepareRun {
         final ParseTree tree = processParse(interactiveLine, INTERACTIVETEXT);
         EvalVisitor eval = new EvalVisitor();
         LibraryExpression libraryExpression = (LibraryExpression)eval.visit(tree);
-        if (libraryExpression.block.isEmpty()) {
-            RemixPrepareRun.REPLContext.pushLibrary(libraryExpression);
+        // The libraryExpression will either contain a block of code
+        // or a function definition.
+        if (libraryExpression.block.isEmpty()) { // function definition
+            // possibly defining a function
             // max of one function defined here
             if (libraryExpression.functionTable.isEmpty())
                 return null;
-            String newFunctionName = libraryExpression.functionTable.keySet().toString();
-            newFunctionName = newFunctionName.substring(1, newFunctionName.length() - 1);
-            Function newFunction = libraryExpression.functionTable.get(newFunctionName);
+            // add new function to library at top of REPLContext library stack
+            LibraryExpression currentTOSLibrary = REPLContext.peekLibrary();
+            final Object[] FunctionArray = libraryExpression.functionTable.values().toArray();
+            Function newFunction = (Function)FunctionArray[0];
+            currentTOSLibrary.addFunction(newFunction); // add to lib at TOS
+
+            String newFunctionName = newFunction.getFirstName();
             return newFunction.displayName(newFunctionName);
         }
-        return Runtime.runREPL(libraryExpression);
+        RemixEditor.setEditing(false);
+        Object result =  Runtime.runREPL(libraryExpression);
+        RemixEditor.setEditing(true);
+        return result;
     }
 
     public static ParseTree processParse(String programText, String fileName) {

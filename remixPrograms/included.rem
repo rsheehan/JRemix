@@ -6,5 +6,5 @@ extra function :
 'included var' : "Robert"
 'included var' ↲
 
-CONSTANT : "The constant is available in the including file."
+CONSTANT : "The constant is not available in the including file."
 

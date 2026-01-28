@@ -10,6 +10,14 @@ import java.awt.event.KeyEvent;
 public class REPLInputOutput extends JTextArea {
 
     private final AbstractDocument doc;
+    public final static String INFOSTRING = """
+            
+            \t\
+            To execute a line : Command-Return\s
+            \t\
+            To clear this area : Command-shift-C
+            
+            """;
 
     public REPLInputOutput() {
         doc = (AbstractDocument) getDocument();
@@ -24,6 +32,13 @@ public class REPLInputOutput extends JTextArea {
         configureKeyBindings();
     }
 
+    public void clearTextArea() {
+        try {
+            doc.remove(0, doc.getLength());
+        } catch (BadLocationException e) {
+        }
+    }
+
     private void configureKeyBindings() {
         InputMap inputMap = this.getInputMap(JTextArea.WHEN_FOCUSED);
         ActionMap actionMap = this.getActionMap();
@@ -32,10 +47,13 @@ public class REPLInputOutput extends JTextArea {
         // KeyEvent.VK_ENTER is the key code for the Return/Enter key
         // InputEvent.META_DOWN_MASK represents the Command key on Mac
         KeyStroke commandReturn = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.META_DOWN_MASK);
+        KeyStroke commandShiftC = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
 
-        // Map the KeyStroke to a custom Action name
+        // Map the KeyStrokes to a custom Action name
         String commandReturnActionName = "handleCommandReturn";
         inputMap.put(commandReturn, commandReturnActionName);
+        String commandCActionName = "handleCommandC";
+        inputMap.put(commandShiftC, commandCActionName);
 
         // Put the custom Action into the ActionMap
         actionMap.put(commandReturnActionName, new AbstractAction() {
@@ -45,6 +63,15 @@ public class REPLInputOutput extends JTextArea {
                 executeLines(getCaretPosition());
             }
         });
+        // Put the custom Action into the ActionMap
+        actionMap.put(commandCActionName, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // This code executes when Command + C is pressed
+                RemixEditor.remixOutput.clearTextArea();
+            }
+        });
+
     }
 
     private void executeLines(int pos) {
@@ -66,12 +93,13 @@ public class REPLInputOutput extends JTextArea {
                 System.out.println();
             }
             // print that many "-" values on the next line
-            String separatorLine = String.valueOf('-').repeat(lastLineLength);
+            String separatorLine = String.valueOf('=').repeat(lastLineLength);
             System.out.println(separatorLine);
             // execute the lines; this may include many print statements
             Object output = RemixPrepareRun.runInteractiveText(lines);
             // print the result returned from the execution
             System.out.println(output);
+            System.out.println(separatorLine);
             // move the caret to the end of the document
             int length = getDocument().getLength();
             setCaretPosition(length);

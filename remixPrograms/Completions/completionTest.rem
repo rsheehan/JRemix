@@ -17,7 +17,7 @@ using (include "remixPrograms/Completions/library.rem")
 		4
 	- should complete with 3 functions
 	function
-	- should complete with 2 constants
+	- should complete with 3 constants
 	CON
 
 - should complete with 2 functions
@@ -32,15 +32,16 @@ using turtle
 THE
 
 CPROG : 33
+CALONE : 99
 
 LIB1 : library
 	CL1 : 12
-	- should complete with 3 constants, CR, CL1, CPROG
+	- should complete with 5 constants, CR, CONSTANTS, CPROG, CALONE, CL1
 	C
 
 using LIB1
-	- should complete with 3 constants, CR, CL1, CPROG
+	- should complete with 5 constants, CR, CONSTANTS, CPROG, CALONE, CL1
 	C
 
-- should complete with 2 constants, CR, CPROG
+- should complete with 4 constants, CR, CONSTANTS, CPROG, CALONE
 C

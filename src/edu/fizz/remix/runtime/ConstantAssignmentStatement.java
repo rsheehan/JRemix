@@ -35,11 +35,13 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
             value = block;
         } else {
             value = expression.evaluate(context);
+            if (value == null && expression instanceof ConstantValueExpression constantExpr) { // possible the expression is a constant in the libraryStoredIn
+                value = library.constantTable.get(constantExpr.constantName);
+            }
         }
         /*
         Could be stored in the libraryStoredIn.
         If libraryStoredIn is null then this must be in a using block.
-        The
          */
         if (library == null)
             library = context.libForConstants;

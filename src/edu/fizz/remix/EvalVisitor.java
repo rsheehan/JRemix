@@ -269,20 +269,28 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 for (String name : getSetNames) {
                     String getMethodName = methodTable.createGetter(name);
                     LibraryExpression.addMethodName(getMethodName, 1, null);
+//                    Method getter = methodTable.get(getMethodName);
+//                    LibraryExpression.addMethodNameEditing(getMethodName, 1, getter);
                     String setMethodName = methodTable.createSetter(name);
                     LibraryExpression.addMethodName(setMethodName, 1, null);
+//                    Method setter = methodTable.get(setMethodName);
+//                    LibraryExpression.addMethodNameEditing(setMethodName, 1, setter);
                 }
             } else if (node instanceof RemixParser.GetterContext) {
                 List<String> getterNames = (List<String>)visit(node);
                 for (String name : getterNames) {
                     String methodName = methodTable.createGetter(name);
                     LibraryExpression.addMethodName(methodName, 1, null);
+//                    Method getter = methodTable.get(methodName);
+//                    LibraryExpression.addMethodNameEditing(methodName, 1, getter);
                 }
             }else if (node instanceof RemixParser.SetterContext) {
                 List<String> setterNames = (List<String>)visit(node);
                 for (String name : setterNames) {
                     String methodName = methodTable.createSetter(name);
                     LibraryExpression.addMethodName(methodName, 1, null);
+//                    Method setter = methodTable.get(methodName);
+//                    LibraryExpression.addMethodNameEditing(methodName, 1, setter);
                 }
             } else if (node instanceof RemixParser.MethodDefinitionContext) {
                 Method method = (Method)visit(node);
@@ -290,6 +298,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 methodTable.addMethod(method);
                 // add it to the global table
                 LibraryExpression.addMethodName(method.getFirstName(), method.getSelfRef(), method);
+//                for (String name : method.getAllNames())
+//                    LibraryExpression.addMethodNameEditing(name, method.getSelfRef(), method);
             }
         }
         objectExpr.addMethodTable(methodTable);
@@ -929,7 +939,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             String variableName = varValueExpression.toString();
             int lineNumber = varValueExpression.getLineNumber();
             int lineOffset = varValueExpression.getOffSet();
-            System.err.printf("Variable %s on line %d, offset %d, value not used.%n",
+            if (!RemixPrepareRun.interactive())
+                System.err.printf("Variable %s on line %d, offset %d, value not used.%n",
                               variableName, lineNumber, lineOffset);
         }
     }

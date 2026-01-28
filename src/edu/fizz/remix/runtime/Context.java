@@ -8,7 +8,7 @@ import java.util.Stack;
 public class Context {
     /* A context may be linked back to the parent to go searching for reference variables. */
     protected Context parentContext = null;
-    protected HashMap variables = new HashMap<>();
+    protected HashMap<String, Object> variables = new HashMap<>();
     protected Stack<LibraryExpression> libraryStack = new Stack<>();
     protected LibraryExpression libForConstants = null;
     /* When we make a function call we need the context to know if it should return higher. */
@@ -34,10 +34,6 @@ public class Context {
     public void setLibForConstants(LibraryExpression libForConstants) {
         this.libForConstants = libForConstants;
     }
-
-//    public LibraryExpression getLibForConstants() {
-//        return libForConstants;
-//    }
 
     /*
      * Called from FunctionCallExpression when assigning parameters
@@ -166,6 +162,10 @@ public class Context {
 
     public LibraryExpression popLibrary() {
         return libraryStack.pop();
+    }
+
+    public LibraryExpression peekLibrary() {
+        return libraryStack.peek();
     }
 
 }

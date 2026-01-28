@@ -64,7 +64,7 @@ public class LibrariesAndCompletions {
         programLibrary = baseLibrary.copyFunctionsConstants();
         LibraryExpression.methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
         addedLibraries.clear();
-        LibrariesAndCompletions.allVariableNames.clear();
+        allVariableNames.clear();
     }
 
     /*
@@ -72,6 +72,7 @@ public class LibrariesAndCompletions {
      */
     public static void resetREPLEnvironment() {
         REPLLibrary = baseLibrary.copyFunctionsConstants();
+        LibraryExpression.methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
         REPLContext = new Context(REPLLibrary);
     }
 
