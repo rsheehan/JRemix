@@ -257,6 +257,7 @@ public class LibrariesAndCompletions {
             System.err.println("ReturnException caught in program.");
         }
         baseLibrary.mergeFunctionsConstantsNoOverwrite(standardLibrary);
+        baseLibrary.setLibName("Standard base lib");
         resetREPLEnvironment();
         System.out.println();
     }

@@ -77,6 +77,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             try {
                 Class libClass = Class.forName(libName);
                 library = (LibraryExpression) libClass.getDeclaredConstructor().newInstance();
+                library.setLibName(libName);
                 return library;
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
                      InvocationTargetException e) {

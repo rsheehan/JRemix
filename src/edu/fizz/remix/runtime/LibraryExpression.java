@@ -22,6 +22,16 @@ public class LibraryExpression implements Expression {
     private ArrayList<int[]> activeLines = new ArrayList<>(); // editor lines where this library is active
     public Block block = new Block();
 
+    public String getLibName() {
+        return libName;
+    }
+
+    public void setLibName(String libName) {
+        this.libName = libName;
+    }
+
+    private String libName = "Anonymous";
+
     // Functions available in this library.
     public LinkedHashMap<String, Function> functionTable = new LinkedHashMap<>();
 
@@ -36,9 +46,9 @@ public class LibraryExpression implements Expression {
         setUpBuiltIns();
     }
 
-    public LibraryExpression(Block statementBlock) {
-        block = statementBlock;
-    }
+//    public LibraryExpression(Block statementBlock) {
+//        block = statementBlock;
+//    }
 
     public void setTrueLibrary() {
         this.trueLibrary = true;
@@ -149,6 +159,7 @@ public class LibraryExpression implements Expression {
         copy.functionTable = new LinkedHashMap<>(functionTable);
         copy.constantTable = new LinkedHashMap<>(constantTable);
         copy.activeLines = new ArrayList<>(activeLines);
+        copy.libName = libName;
         return copy;
     }
 
