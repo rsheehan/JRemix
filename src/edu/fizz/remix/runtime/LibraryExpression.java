@@ -30,6 +30,13 @@ public class LibraryExpression implements Expression {
         this.libName = libName;
     }
 
+    public String getLibUnderlinedName() {
+        return "\n" +
+                libName +
+                '\n' +
+                String.valueOf('⎺').repeat(libName.length());
+    }
+
     private String libName = "Anonymous";
 
     // Functions available in this library.
@@ -153,16 +160,6 @@ public class LibraryExpression implements Expression {
         }
     }
 
-    public LibraryExpression copyFunctionsConstants() {
-        // not really a clone, doesn't copy the block.
-        LibraryExpression copy = new LibraryExpression();
-        copy.functionTable = new LinkedHashMap<>(functionTable);
-        copy.constantTable = new LinkedHashMap<>(constantTable);
-        copy.activeLines = new ArrayList<>(activeLines);
-        copy.libName = libName;
-        return copy;
-    }
-
     /*
     This was added to enable the current program library to get the functions and constants
     from the saved programLibrary (comes from baseLibrary) with standard functions and constants
@@ -184,25 +181,31 @@ public class LibraryExpression implements Expression {
         if (!loaded) {
             if (trueLibrary) { // true libraries have a new context
                 context = new Context(context, false);
+                context.pushLibrary(this);
             }
-            context.pushLibrary(this);
             block.evaluate(context);
-            context.popLibrary();
+            if (trueLibrary) {
+                context.popLibrary();
+            }
             loaded = true;
         }
         return this;
     }
 
-    public Object evaluate(Context context, boolean usingLibBlock) throws ReturnException, InterruptedException {
-        if (!usingLibBlock) {
-            return evaluate(context);
-        }
-        Object result;
-        context.pushLibrary(this);
-        result = block.evaluate(context);
-        context.popLibrary();
-        loaded = true;
-        return result;
-    }
+    /*
+    Because of the REPL this will not return the libExpression but will
+    return the value of the block.
+     */
+//    public Object evaluate(Context context, boolean usingLibBlock) throws ReturnException, InterruptedException {
+//        if (!usingLibBlock) {
+//            return evaluate(context);
+//        }
+//        Object result;
+////        context.pushLibrary(this);
+//        result = block.evaluate(context);
+////        context.popLibrary();
+//        loaded = true;
+//        return result;
+//    }
 
 }

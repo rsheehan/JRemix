@@ -795,7 +795,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         private void dealWithConstants(Context context, StringBuilder helpSB) {
             Stack<LibraryExpression> libStack = context.libraryStack;
             for (LibraryExpression lib : libStack) {
-                helpSB.append(lib.getLibName()).append('\n');
+                helpSB.append(lib.getLibUnderlinedName()).append('\n');
                 TreeMap<String, Object> constants = new TreeMap<>(lib.constantTable);
                 // Iterate over the sorted map
                 for (Map.Entry<String, Object> entry : constants.entrySet()) {

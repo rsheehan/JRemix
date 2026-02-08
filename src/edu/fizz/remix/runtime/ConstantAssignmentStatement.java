@@ -8,10 +8,6 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
         super(name, expression);
     }
 
-    public LibraryExpression getLibraryStoredIn() {
-        return libraryStoredIn;
-    }
-
     public void setLibraryStoredIn(LibraryExpression libraryStoredIn) {
         this.libraryStoredIn = libraryStoredIn;
     }
@@ -23,7 +19,7 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         Object existingValue;
         Object value;
-        LibraryExpression library = libraryStoredIn;
+        LibraryExpression library = context.peekLibrary();// libraryStoredIn;
 
         // calculate the value
         // Blocks get assigned as they are. They are evaluated with do.
@@ -35,23 +31,12 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
             value = block;
         } else {
             value = expression.evaluate(context);
+            if (value == null)
+                System.out.println();
             if (value == null && expression instanceof ConstantValueExpression constantExpr) { // possible the expression is a constant in the libraryStoredIn
                 value = library.constantTable.get(constantExpr.constantName);
-                // still doesnt' work with WHITE-SPACE : { SPACE, TAB, CR } in standard-lib
             }
         }
-        /*
-        Could be stored in the libraryStoredIn.
-        If libraryStoredIn is null then this must be in a using block.
-         */
-        if (library == null)
-            library = context.libForConstants;
-//            // go back through the contexts looking for a libForConstants
-//            Context searchContext = context;
-//            do {
-//                library = searchContext.getLibForConstants();
-//                searchContext = searchContext.parentContext;
-//            } while (library == null); // should stop at the top program or library level
         existingValue = library.constantTable.get(variableName);
 
         if (existingValue == null)

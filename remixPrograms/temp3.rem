@@ -1,0 +1,10 @@
+using graphics
+	COLOUR : BLUE ; where BLUE is a constant in the graphics library
+
+	generate a colour :
+		random colour
+
+if (COLOUR = generate a colour)
+	"The colour is blue." ↲
+… otherwise
+	"The colour is not blue." ↲

@@ -1,6 +1,8 @@
 package edu.fizz.remix.runtime;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
 The UsingLibBlock is a statement which executes its block of statements.
@@ -17,31 +19,21 @@ public class UsingLibBlock extends Block {
 
     // The libraries which are to be added to the library stack when the block of statements is evaluated.
     private final Expression [] libExpressions;
-    private final HashMap<Expression, LibraryExpression> librariesToUse;
+    private final Map<Expression, LibraryExpression> librariesToUse;
     // The statements to be executed in the context of the libraries.
     private final LibraryExpression usingBlock;
     // The library this is being created inside.
     // If top-level then the program library.
     // Otherwise an explicit library.
-    private LibraryExpression libForConstants = null;
+//    private LibraryExpression libForConstants = null;
 
     public UsingLibBlock(Expression[] libraries, LibraryExpression functionsAndStatements) {
         libExpressions = libraries; // hold on to this for the ordering
-        librariesToUse = new HashMap<>();
+        librariesToUse = new LinkedHashMap<>();
         for (Expression library : libraries) {
             librariesToUse.put(library, null);
         }
         usingBlock = functionsAndStatements;
-//        functionTable = functionsAndStatements.functionTable;
-//        block = functionsAndStatements.block;
-    }
-
-//    public void addFunctionsFromJavaLibrary(LibraryExpression javaLibrary) {
-//        usingBlock.functionTable.putAll(javaLibrary.functionTable);
-//    }
-
-    public void setLibForConstants(LibraryExpression libForConstants) {
-        this.libForConstants = libForConstants;
     }
 
     public void attachLibsToFunctions() {
@@ -65,6 +57,9 @@ public class UsingLibBlock extends Block {
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         LibraryExpression library;
 
+        /* Pop the current TOS of context libStack - in the repl it should be the REPL lib */
+        LibraryExpression wasTopOfLibStack = context.peekLibrary();
+
         for (Expression libraryExpression : libExpressions) { //libraryExpressions) {
             try {
                 library = (LibraryExpression) libraryExpression.evaluate(context);
@@ -77,12 +72,33 @@ public class UsingLibBlock extends Block {
             }
         }
 
-        context.setLibForConstants(libForConstants);
-        Object result = usingBlock.evaluate(context, true);
-        context.setLibForConstants(null);
-        for (Expression ignored : librariesToUse.keySet()) {
+         /* Push the popped lib back on the top before evaluating,
+            so that functions and constants are stored in it.
+            Does this mean that setLibForConstants shouldn't be necessary?
+          */
+        context.pushLibrary(wasTopOfLibStack);
+        /*
+        context libStack starts looking like:
+            baseLibrary
+            programLibrary
+        While evaluating the block inside this usingBlock looks like
+            baseLibrary
+            programLibrary
+            usingLib1
+            usingLib2
+            programLibrary // so that constants and functions are stored in the programLib
+            // also it means they are searched in programLib first
+
+        If inside a library definition then the libLibrary takes the place of programLibrary
+         */
+        Object result = usingBlock.evaluate(context); // , true);
+
+        /* Pop the programLibrary before popping off the rest. */
+        context.popLibrary();
+        for (int libNum = 0; libNum < libExpressions.length; libNum++) {
             context.popLibrary();
         }
+
         return result;
     }
 }

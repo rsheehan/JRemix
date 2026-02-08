@@ -10,7 +10,7 @@ public class Context {
     protected Context parentContext = null;
     protected HashMap<String, Object> variables = new HashMap<>();
     protected Stack<LibraryExpression> libraryStack = new Stack<>();
-    protected LibraryExpression libForConstants = null;
+//    protected LibraryExpression libForConstants = null;
     /* When we make a function call we need the context to know if it should return higher. */
     private boolean returnHigher = false;
 
@@ -31,8 +31,8 @@ public class Context {
         this.returnHigher = returnHigher;
     }
 
-    public void setLibForConstants(LibraryExpression libForConstants) {
-        this.libForConstants = libForConstants;
+    public void addLibraryToStack(LibraryExpression newLib) {
+        libraryStack.push(newLib);
     }
 
     /*

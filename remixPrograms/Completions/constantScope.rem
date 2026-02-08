@@ -2,14 +2,14 @@ ABC : 4
 
 inside func :
 	"inside ", ABC ↲
-	"inside ", DEF ↲
+	"inside ", DEF ↲ ; not found the first time
 	"inside ", GHI ↲ ; not found the first time
 	"inside ", JKL ↲ ; not found, then 8 from program lib
 	
 inside func
 ↲
 "outside ", ABC ↲
-"outside ", DEF ↲
+"outside ", DEF ↲ ; not found because doesn't exist yet
 "outside ", GHI ↲ ; not found because doesn't exist yet
 "outside ", JKL ↲ ; ditto
 ↲
@@ -44,5 +44,5 @@ using graphics, 'the lib'
 	"using ", ABC ↲
 	"using ", DEF ↲
 	"using ", GHI ↲
-	"using ", STD-WIDTH ↲ ; gets 1000 as the version in the graphics lib
-	"using ", JKL ↲ ; works as from 'the lib' value 7
+	"using ", STD-WIDTH ↲ ; gets 999 as the version in the graphics lib is shadowed
+	"using ", JKL ↲ ; 8 not 'the lib' value 7

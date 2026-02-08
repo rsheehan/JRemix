@@ -37,8 +37,11 @@ public class LibrariesAndCompletions {
     /* The program library copies the base library and adds the current
        functions and statements.
      */
-    private static LibraryExpression programLibrary = new LibraryExpression();
-    static LibraryExpression REPLLibrary = new LibraryExpression();
+
+    public static void resetAddedLibraries() {
+        addedLibraries.clear();
+        addedLibraries.add(baseLibrary);
+    }
 
     public static void addLibrary(LibraryExpression libraryExpression) {
         if (!addedLibraries.contains(libraryExpression))
@@ -49,8 +52,8 @@ public class LibrariesAndCompletions {
         addedLibraries.addFirst(libraryExpression);
     }
 
-    public static LibraryExpression getProgramBaseLibrary() {
-        return programLibrary;
+    public static LibraryExpression getBaseLibrary() {
+        return baseLibrary; //programLibrary;
     }
 
 //    public static LibraryExpression getREPLBaseLibrary() {
@@ -61,9 +64,8 @@ public class LibrariesAndCompletions {
      * Sets the functions, methods, and context back to the standard version.
      */
     public static void resetToEditorStandard() {
-        programLibrary = baseLibrary.copyFunctionsConstants();
         LibraryExpression.methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
-        addedLibraries.clear();
+        resetAddedLibraries();
         allVariableNames.clear();
     }
 
@@ -71,18 +73,8 @@ public class LibrariesAndCompletions {
      * Called when resetting the REPL input/output window.
      */
     public static void resetREPLEnvironment() {
-        REPLLibrary = baseLibrary.copyFunctionsConstants();
         LibraryExpression.methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
-        REPLContext = new Context(REPLLibrary);
-    }
-
-    /*
-     * Sets the functions, methods, and context back to the standard version
-     * for running. Only base and program libraries, others are added while
-     * running.
-     */
-    public static void resetToRunStandard() {
-        programLibrary = baseLibrary.copyFunctionsConstants();
+        REPLContext = new Context(baseLibrary);
     }
 
     //    /** Print the names of all the functions. */
@@ -241,6 +233,7 @@ public class LibrariesAndCompletions {
     /** Run the standard library setting up functions. No longer objects and global data */
     public static void prepareEnvironment() throws Exception {
         baseLibrary = new BuiltInFunctionsLibrary();
+        addedLibraries.add(baseLibrary);
         RemixEditor.setEditing(false);
         LibraryExpression standardLibrary = RemixPrepareRun.loadPackage("remixLibraries/standard-lib.rem");
         RemixEditor.setEditing(true);
@@ -258,6 +251,8 @@ public class LibrariesAndCompletions {
         }
         baseLibrary.mergeFunctionsConstantsNoOverwrite(standardLibrary);
         baseLibrary.setLibName("Standard base lib");
+        baseLibrary.setTrueLibrary();
+        baseLibrary.setActiveLines(LibraryExpression.ALLLINES);
         resetREPLEnvironment();
         System.out.println();
     }

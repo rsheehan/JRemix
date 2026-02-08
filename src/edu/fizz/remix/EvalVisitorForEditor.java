@@ -40,7 +40,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         /*
         The current library could be the baseLibrary, or the programLibrary
          */
-        LibraryExpression thisProgramSoFar = LibrariesAndCompletions.getProgramBaseLibrary();
+        LibraryExpression thisProgramSoFar = new LibraryExpression();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -61,7 +61,6 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             } else if (node instanceof RemixParser.UsingStatementContext) {
                 UsingLibBlock usingLibBlock = (UsingLibBlock)visit(node);
                 if (usingLibBlock != null) {
-                    usingLibBlock.setLibForConstants(thisProgramSoFar);
                     thisProgramSoFar.block.addStatement(usingLibBlock);
                     thisProgramSoFar.addFunctionsFromUsingLibBlock(usingLibBlock);
                     thisProgramSoFar.addConstantsFromUsingLibBlock(usingLibBlock);
@@ -107,6 +106,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     public LibraryExpression visitLibrary(RemixParser.LibraryContext ctx) {
         LibraryExpression library = (LibraryExpression) visit(ctx.libraryName());
         // so all statements and functions go to this library
+        library.setTrueLibrary();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -125,7 +125,6 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             }else if (node instanceof RemixParser.UsingStatementContext) {
                 UsingLibBlock usingLibBlock = (UsingLibBlock) visit(node);
                 if (usingLibBlock != null) {
-                    usingLibBlock.setLibForConstants(library);
                     library.block.addStatement(usingLibBlock);
                     library.addFunctionsFromUsingLibBlock(usingLibBlock);
                 }
@@ -172,8 +171,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                 else if (libExp instanceof VarValueExpression varValueExpression)
                     libraryExpression = programLibIdentifiers.get(varValueExpression.getName());
                 else try { // fall back on attempting to evaluate the library expression
-                    LibrariesAndCompletions.resetToRunStandard(); // program lib back to base lib
-                    Context contextForLib = new Context(LibrariesAndCompletions.getProgramBaseLibrary());
+                    Context contextForLib = new Context(LibrariesAndCompletions.getBaseLibrary());
 
                     libraryExpression = (LibraryExpression) libExp.evaluate(contextForLib); //new Context(thisProgramSoFar));
                 } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException e) {

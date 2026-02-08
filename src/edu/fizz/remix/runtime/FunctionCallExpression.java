@@ -82,8 +82,6 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             function = library.searchFunctionTable(routineName);
             if (function != null)
                 break;
-            else
-                inCallLibStack.pop();
         }
         // SHOULD EVALUATE THE PARAMETERS BEFORE RESTRICTING THE LIBSTACK
 

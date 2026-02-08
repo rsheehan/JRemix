@@ -51,7 +51,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 library.addFunction(function);
             } else if (node instanceof RemixParser.UsingStatementContext) {
                 UsingLibBlock usingLibBlock = (UsingLibBlock)visit(node);
-                usingLibBlock.setLibForConstants(library);
                 library.block.addStatement(usingLibBlock);
                 library.addFunctionsFromUsingLibBlock(usingLibBlock);
             } else if (node instanceof RemixParser.LibraryContext) {
@@ -113,7 +112,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 library.addFunction(function);
             } else if (node instanceof RemixParser.UsingStatementContext) {
                 UsingLibBlock usingLibBlock = (UsingLibBlock) visit(node);
-                usingLibBlock.setLibForConstants(library);
                 library.block.addStatement(usingLibBlock);
                 library.addFunctionsFromUsingLibBlock(usingLibBlock);
             }

@@ -12,15 +12,27 @@ library
 		"function2 from library 1"
 =
 
+functionCaller : ; this doesn't get called because overridden in using
+	"PROGRAM" ↲
+	test {
+		"This only gets called from the top-level call directly above."
+			function1
+		… expected "function1 from this program"
+	}
+
 function1 :
 	"function1 from this program"
-	
+
+"INSIDE" ↲↲
 using LIB1
 	
 	test {
-		"Call function from library with same name as program function."
-			function1 ; should find the library 1 version
-		… expected "function1 from library 1"
+		"Call function from program with same name as library function."
+			function1 ; should find the program version
+		… expected "function1 from this program"
+		"Call function from library."
+			function2
+		… expected "function2 from library 1"
 	}
 	↲
 	functionCaller
@@ -28,23 +40,22 @@ using LIB1
 	functionCaller : 
 		"USING" ↲
 		test {
-			"Call function from within function with same name as program function."
-				function1
-			… expected "function1 from library 1"
+			"Call function from program with same name as library function."
+				function1 ; should find the program version
+			… expected "function1 from this program"
+			"Call function from library."
+				function2
+			… expected "function2 from library 1"
 		}
 ↲
+"OUTSIDE"↲↲
 test {
 	"Call function from program with same name as library function."
 		function1 ; should find the program version
 	… expected "function1 from this program"
+	"Call function from library."
+		function2
+	… expected null ; because outside using
 }
 ↲
-functionCaller
-↲
-functionCaller :
-	"PROGRAM" ↲
-	test {
-		"This only gets called from the top-level call directly above."
-			function1
-		… expected "function1 from this program"
-	}
+functionCaller ; can still find the library function2

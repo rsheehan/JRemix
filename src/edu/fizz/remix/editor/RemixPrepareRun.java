@@ -65,7 +65,6 @@ public class RemixPrepareRun {
         final ParseTree tree = processParse(remixSwingWorker.getEditor().getProgramText(), EDITORTEXT);
         EvalVisitor eval = new EvalVisitor();
 
-        LibrariesAndCompletions.resetToRunStandard();
         Runtime.runProgram((LibraryExpression)eval.visit(tree));
         LibrariesAndCompletions.resetToEditorStandard();
     }
@@ -77,13 +76,19 @@ public class RemixPrepareRun {
         LibraryExpression libraryExpression = (LibraryExpression)eval.visit(tree);
         // The libraryExpression will either contain a block of code
         // or a function definition.
+        LibraryExpression currentTOSLibrary = REPLContext.peekLibrary();
+        if (!currentTOSLibrary.getLibName().equals(Runtime.REPL)) {
+            REPLContext.addLibraryToStack(libraryExpression);
+            libraryExpression.setLibName(Runtime.REPL);
+            currentTOSLibrary = libraryExpression;
+        }
         if (libraryExpression.block.isEmpty()) { // function definition
             // possibly defining a function
             // max of one function defined here
             if (libraryExpression.functionTable.isEmpty())
                 return null;
             // add new function to library at top of REPLContext library stack
-            LibraryExpression currentTOSLibrary = REPLContext.peekLibrary();
+
             final Object[] FunctionArray = libraryExpression.functionTable.values().toArray();
             Function newFunction = (Function)FunctionArray[0];
             currentTOSLibrary.addFunction(newFunction); // add to lib at TOS
@@ -91,8 +96,10 @@ public class RemixPrepareRun {
             String newFunctionName = newFunction.getFirstName();
             return newFunction.displayName(newFunctionName);
         }
+        // make the currentTOSLibrary have this block (functions already dealt with
+        currentTOSLibrary.block = libraryExpression.block;
         RemixEditor.setEditing(false);
-        Object result =  Runtime.runREPL(libraryExpression);
+        Object result = Runtime.runREPL(libraryExpression);
         RemixEditor.setEditing(true);
         return result;
     }

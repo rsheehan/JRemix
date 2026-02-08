@@ -15,20 +15,19 @@ using (include "remixPrograms/Completions/library.rem")
 	=-
 	function abc4 :
 		4
-	- should complete with 3 functions
+	- should complete with 4 functions
 	function
-	- should complete with 3 constants
+	- should complete with 4 constants
 	CON
 
-- should complete with 2 functions
+- should complete with abc1, abc3, abc4 functions
 function
 
 using turtle
-	- should complete with TURTLE, currently doesn't
+	- should complete with TURTLE
 	TUR
 
 - should not complete this because the completion comes from the graphics lib
-- somehow pulled in when using turtle
 THE
 
 CPROG : 33
@@ -36,12 +35,12 @@ CALONE : 99
 
 LIB1 : library
 	CL1 : 12
-	- should complete with 5 constants, CR, CONSTANTS, CPROG, CALONE, CL1
+	- should complete with constants, CPROG, CALONE, CR, CONSTANTS, CONS, CL1
 	C
 
 using LIB1
-	- should complete with 5 constants, CR, CONSTANTS, CPROG, CALONE, CL1
+	- should complete with constants, CPROG, CALONE, CR, CONSTANTS, CONS, CL1
 	C
 
-- should complete with 4 constants, CR, CONSTANTS, CPROG, CALONE
+- should complete with constants, CPROG, CALONE, CR, CONSTANTS, CONS
 C

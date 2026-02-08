@@ -1,6 +1,6 @@
 package edu.fizz.remix.runtime;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A RemixFunction which is defined inside a "usingStatement".
@@ -11,9 +11,9 @@ public class FunctionInUsing extends RemixFunction {
     // the following LibraryExpression values will have been filled in
     // by the evaluate method of UsingLibBlock before this object's
     // evaluate method is called.
-    HashMap<Expression, LibraryExpression> librariesToUse = null;
+    Map<Expression, LibraryExpression> librariesToUse;
 
-    public FunctionInUsing(RemixFunction function, HashMap<Expression, LibraryExpression> librariesToUse) {
+    public FunctionInUsing(RemixFunction function, Map<Expression, LibraryExpression> librariesToUse) {
         super(function.functionNames, function.codeBlock, function.formalParameters, function.blockParameters, function.transparent, function.functionComment);
         this.librariesToUse = librariesToUse;
     }
@@ -21,11 +21,13 @@ public class FunctionInUsing extends RemixFunction {
     // Unfortunately in order to maintain out of order execution of functions
     // we need to check if the expression has been turned into a library.
     // I need instead to have a cache of libraries so that we don't
-    // load more than once.
+    // load more than once. Now cached when evaluating UsingLibBlock.
     public Object execute(Context context) throws ReturnException, InterruptedException {
-//        for (LibraryExpression library : librariesToUse.values()) {
-        for (Expression libraryExp : librariesToUse.keySet()) {
-            LibraryExpression library = (LibraryExpression) librariesToUse.get(libraryExp);
+        LibraryExpression wasTopOfLibStack = context.peekLibrary();
+
+        for (Map.Entry<Expression, LibraryExpression> entry : librariesToUse.entrySet()) {
+            Expression libraryExp = entry.getKey();
+            LibraryExpression library = entry.getValue();
             // need to check if the library has been evaluated
             // due to double using blocks being out of order
             if (library == null) {
@@ -35,11 +37,12 @@ public class FunctionInUsing extends RemixFunction {
             }
             context.pushLibrary(library);
         }
+        context.pushLibrary(wasTopOfLibStack);
 
         Object result = codeBlock.evaluate(context);
 
-        for (LibraryExpression ignored : librariesToUse.values()) {
-            // TODO: should not pop any "non-libraries". These were not added.
+        context.popLibrary();
+        for (int libNum = 0; libNum < librariesToUse.size(); libNum++) {
             context.popLibrary();
         }
         return result;
