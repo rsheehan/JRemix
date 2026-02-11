@@ -1,0 +1,27 @@
+'lib' : library
+	lib func :
+		" a function in the library."
+	
+	LIB-CONST : "This is a constant in the library."
+
+-inside use func ↲ ; this causes a crash because currently "using" is a statement
+- and is executed in order
+
+using 'lib'
+	lib func ↲
+	LIB-CONST ↲
+	
+	USING-CONST : "This is a constant in the using block."
+	USING-CONST ↲
+	
+	inside use func ↲
+	
+	inside use func :
+		"This is a function in the using block which calls" ↲ 
+		lib func
+
+lib func ↲
+LIB-CONST ↲
+
+inside use func ↲
+USING-CONST ↲

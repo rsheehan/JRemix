@@ -1,6 +1,5 @@
 package edu.fizz.remix.runtime;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -36,18 +35,22 @@ public class UsingLibBlock extends Block {
         usingBlock = functionsAndStatements;
     }
 
-    public void attachLibsToFunctions() {
-        for (String functionName : (usingBlock.functionTable.keySet())) {
-            RemixFunction function = (RemixFunction)usingBlock.functionTable.get(functionName);
-            FunctionInUsing functionInUsing = new FunctionInUsing(function, librariesToUse);
-            usingBlock.functionTable.put(functionName, functionInUsing);
-        }
+    public Map<Expression, LibraryExpression> libraryMap() {
+        return librariesToUse;
     }
 
-    public HashMap functionsDefined() {
-        attachLibsToFunctions();
-        return usingBlock.functionTable;
-    }
+//    public void attachLibsToFunctions() {
+//        for (String functionName : (usingBlock.functionTable.keySet())) {
+//            RemixFunction function = (RemixFunction)usingBlock.functionTable.get(functionName);
+//            FunctionInUsing functionInUsing = new FunctionInUsing(function, librariesToUse);
+//            usingBlock.functionTable.put(functionName, functionInUsing);
+//        }
+//    }
+//
+//    public HashMap functionsDefined() {
+//        attachLibsToFunctions();
+//        return usingBlock.functionTable;
+//    }
 
     public Block statements() {
         return usingBlock.block;

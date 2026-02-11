@@ -23,6 +23,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
      */
 
     // private Map<String, Object> currentVariableContext;
+    LibraryExpression programLibrary = new LibraryExpression();
 
     /** ( functionDefinition | statement | setConstant | usingStatement | library | libAssignment )* EOF */
     /* This is where the Remix functions are added to the function table. */
@@ -31,7 +32,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         /*
         The current library could be the baseLibrary, or the programLibrary
          */
-        LibraryExpression library = new LibraryExpression();
+//        LibraryExpression library = new LibraryExpression();
 
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
@@ -39,31 +40,31 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             if (node instanceof RemixParser.StatementContext) {
                 Expression statement = (Expression)visit(node);
                 if (statement != null) {// can be blank statements
-                    library.block.addStatement(statement);
+                    programLibrary.block.addStatement(statement);
                     checkForUnusedValue(statement, i < n - 2);
                 }
             } else if (node instanceof RemixParser.SetConstantContext) {
                 ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
-                constantAssignment.setLibraryStoredIn(library);
-                library.block.addStatement(constantAssignment);
+                constantAssignment.setLibraryStoredIn(programLibrary);
+                programLibrary.block.addStatement(constantAssignment);
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction) visit(node);
-                library.addFunction(function);
+                programLibrary.addFunction(function);
             } else if (node instanceof RemixParser.UsingStatementContext) {
                 UsingLibBlock usingLibBlock = (UsingLibBlock)visit(node);
-                library.block.addStatement(usingLibBlock);
-                library.addFunctionsFromUsingLibBlock(usingLibBlock);
+                programLibrary.block.addStatement(usingLibBlock);
+//                programLibrary.addFunctionsFromUsingLibBlock(usingLibBlock);
             } else if (node instanceof RemixParser.LibraryContext) {
                 LibraryExpression libraryExpression = (LibraryExpression) visit(node);
-                library.block.addStatement(libraryExpression);
+                programLibrary.block.addStatement(libraryExpression);
             } else if (node instanceof RemixParser.LibAssignmentContext) {
                 AssignmentStatement assignmentStatement = (AssignmentStatement) visit(node);
                 if (assignmentStatement instanceof ConstantAssignmentStatement constantAssignmentStatement)
-                    constantAssignmentStatement.setLibraryStoredIn(library);
-                library.block.addStatement(assignmentStatement);
+                    constantAssignmentStatement.setLibraryStoredIn(programLibrary);
+                programLibrary.block.addStatement(assignmentStatement);
             }
         }
-        return library;
+        return programLibrary;
     }
 
     /** LIBRARY STRING? */
@@ -111,9 +112,12 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 RemixFunction function = (RemixFunction)visit(node);
                 library.addFunction(function);
             } else if (node instanceof RemixParser.UsingStatementContext) {
+                LibraryExpression program = programLibrary; // only one level
+                programLibrary = library;
                 UsingLibBlock usingLibBlock = (UsingLibBlock) visit(node);
                 library.block.addStatement(usingLibBlock);
-                library.addFunctionsFromUsingLibBlock(usingLibBlock);
+//                library.addFunctionsFromUsingLibBlock(usingLibBlock);
+                programLibrary = program;
             }
         }
         return library;
@@ -149,7 +153,13 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             }
         }
         usingBlock = (LibraryExpression) visit(ctx.usingBlock());
-        return new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
+        UsingLibBlock usingLibBlock = new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
+
+        for (Function function : usingBlock.functionTable.values()) {
+            FunctionInUsing usingFunction = new FunctionInUsing((RemixFunction) function, usingLibBlock.libraryMap());
+            programLibrary.addFunction(usingFunction);
+        }
+        return usingLibBlock;
     }
 
     /** LBLOCK (functionDefinition | statement | setConstant)* RBLOCK */

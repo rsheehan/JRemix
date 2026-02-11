@@ -33,6 +33,8 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         addIdentifierStack.push(true);
     }
 
+    LibraryExpression programLibrary = new LibraryExpression();
+
     /** ( functionDefinition | statement | setConstant | usingStatement | library | libAssignment )* EOF */
     /* This is where the Remix functions are added to the function table. */
     @Override
@@ -40,7 +42,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         /*
         The current library could be the baseLibrary, or the programLibrary
          */
-        LibraryExpression thisProgramSoFar = new LibraryExpression();
+        programLibrary = new LibraryExpression();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -48,37 +50,37 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             if (node instanceof RemixParser.StatementContext) {
                 Expression statement = (Expression) visit(node);
                 if (statement != null) {// can be blank statements
-                    thisProgramSoFar.block.addStatement(statement);
+                    programLibrary.block.addStatement(statement);
                 }
             } else if (node instanceof RemixParser.SetConstantContext) {
                 ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
-                constantAssignment.setLibraryStoredIn(thisProgramSoFar);
-                thisProgramSoFar.block.addStatement(constantAssignment);
-                thisProgramSoFar.addConstantForCompletions(constantAssignment.name());
+                constantAssignment.setLibraryStoredIn(programLibrary);
+                programLibrary.block.addStatement(constantAssignment);
+                programLibrary.addConstantForCompletions(constantAssignment.name());
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
-                thisProgramSoFar.addFunction(function);
+                programLibrary.addFunction(function);
             } else if (node instanceof RemixParser.UsingStatementContext) {
                 UsingLibBlock usingLibBlock = (UsingLibBlock)visit(node);
                 if (usingLibBlock != null) {
-                    thisProgramSoFar.block.addStatement(usingLibBlock);
-                    thisProgramSoFar.addFunctionsFromUsingLibBlock(usingLibBlock);
-                    thisProgramSoFar.addConstantsFromUsingLibBlock(usingLibBlock);
+                    programLibrary.block.addStatement(usingLibBlock);
+//                    thisProgramSoFar.addFunctionsFromUsingLibBlock(usingLibBlock);
+//                    thisProgramSoFar.addConstantsFromUsingLibBlock(usingLibBlock);
                 }
             } else if (node instanceof RemixParser.LibraryContext) {
                 LibraryExpression libraryExpression = (LibraryExpression) visit(node);
-                thisProgramSoFar.block.addStatement(libraryExpression);
+                programLibrary.block.addStatement(libraryExpression);
                 if (addIdentifierStack.peek())
                     LibrariesAndCompletions.addLibrary(libraryExpression);
             } else if (node instanceof RemixParser.LibAssignmentContext) {
                 AssignmentStatement assignmentStatement = (AssignmentStatement) visit(node);
                 LibrariesAndCompletions.addLibrary((LibraryExpression) assignmentStatement.expression);
-                thisProgramSoFar.block.addStatement(assignmentStatement); // can get rid of all the addStatements?
+                programLibrary.block.addStatement(assignmentStatement); // can get rid of all the addStatements?
                 programLibIdentifiers.put(assignmentStatement.name(), (LibraryExpression)assignmentStatement.expression);
-                thisProgramSoFar.addConstantForCompletions(assignmentStatement.name());
+                programLibrary.addConstantForCompletions(assignmentStatement.name());
             }
         }
-        return thisProgramSoFar;
+        return programLibrary;
     }
 
     /** LIBRARY STRING? */
@@ -123,11 +125,13 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                 RemixFunction function = (RemixFunction)visit(node);
                 library.addFunction(function);
             }else if (node instanceof RemixParser.UsingStatementContext) {
+                LibraryExpression program = programLibrary;
                 UsingLibBlock usingLibBlock = (UsingLibBlock) visit(node);
                 if (usingLibBlock != null) {
                     library.block.addStatement(usingLibBlock);
-                    library.addFunctionsFromUsingLibBlock(usingLibBlock);
+//                    library.addFunctionsFromUsingLibBlock(usingLibBlock);
                 }
+                programLibrary = program;
             }
         }
         if (addIdentifierStack.peek()) {
@@ -159,7 +163,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     public UsingLibBlock visitUsingStatement(RemixParser.UsingStatementContext ctx) {
         LibraryExpression libraryExpression = null;
         ArrayList<LibraryExpression> libraryExpressions = new ArrayList<>();
-        LibraryExpression usingBlockLib = null;
+        LibraryExpression usingBlock = null;
 
         int n = ctx.getChildCount();
         for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
@@ -182,18 +186,25 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             }
         }
         try {
-            usingBlockLib = (LibraryExpression) visit(ctx.usingBlock());
+            usingBlock = (LibraryExpression) visit(ctx.usingBlock());
             if (addIdentifierStack.peek()) { // we are dealing with the main program not an included file
                 for (LibraryExpression lib : libraryExpressions) {
-                    lib.addToValidLines(usingBlockLib.getActiveLines().getFirst());
+                    lib.addToValidLines(usingBlock.getActiveLines().getFirst());
                     LibrariesAndCompletions.addLibrary(lib);
                 }
             }
-            LibrariesAndCompletions.addLibrary(usingBlockLib);
+            LibrariesAndCompletions.addLibrary(usingBlock);
         } catch (NullPointerException ex) {
             // just incomplete error while editing
         }
-        return new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlockLib);
+        UsingLibBlock usingLibBlock = new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
+        if (usingBlock != null)
+            for (Function function : usingBlock.functionTable.values()) {
+                FunctionInUsing usingFunction = new FunctionInUsing((RemixFunction) function, usingLibBlock.libraryMap());
+                programLibrary.addFunction(usingFunction);
+            }
+        return usingLibBlock;
+//        return new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
     }
 
     /*

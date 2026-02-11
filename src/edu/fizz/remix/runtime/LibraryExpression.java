@@ -105,11 +105,11 @@ public class LibraryExpression implements Expression {
         }
     }
 
-    public void addFunctionsFromUsingLibBlock(UsingLibBlock usingLibBlock) {
-//        I don't know if this is the right place to connect the libraries with the function
-//        it could also be done as the function definition is being processed.
-        functionTable.putAll(usingLibBlock.functionsDefined()); //javaLibrary.functionTable);
-    }
+//    public void addFunctionsFromUsingLibBlock(UsingLibBlock usingLibBlock) {
+////        I don't know if this is the right place to connect the libraries with the function
+////        it could also be done as the function definition is being processed.
+//        functionTable.putAll(usingLibBlock.functionsDefined()); //javaLibrary.functionTable);
+//    }
 
     /** Add a name of method and the reference parameter position. */
     public static void addMethodName(String name, int refPos, Method method) {
@@ -128,14 +128,14 @@ public class LibraryExpression implements Expression {
         }
     }
 
-    public void addConstantsFromUsingLibBlock(UsingLibBlock usingLibBlock) {
-        for (Expression statement : usingLibBlock.statements().statements) {
-            if (statement instanceof ConstantAssignmentStatement constantAssignmentStatement) {
-                constantTable.put(constantAssignmentStatement.variableName, null);
-            }
-        }
-        constantTable.putAll(usingLibBlock.functionsDefined()); //javaLibrary.functionTable);
-    }
+//    public void addConstantsFromUsingLibBlock(UsingLibBlock usingLibBlock) {
+//        for (Expression statement : usingLibBlock.statements().statements) {
+//            if (statement instanceof ConstantAssignmentStatement constantAssignmentStatement) {
+//                constantTable.put(constantAssignmentStatement.variableName, null);
+//            }
+//        }
+//        constantTable.putAll(usingLibBlock.functionsDefined()); //javaLibrary.functionTable);
+//    }
 
     /*
     Only called when producing completions. See EvalVisitorForEditor.
