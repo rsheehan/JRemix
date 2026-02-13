@@ -15,16 +15,16 @@ using (include "remixPrograms/Completions/library.rem")
 	=-
 	function abc4 :
 		4
-	- should complete with 4 functions
+	- should complete with 3 functions
 	function
 	- should complete with 4 constants
 	CON
 
-- should complete with abc1, abc3, abc4 functions
+- should complete with abc3, abc4 functions
 function
 
 using turtle
-	- should complete with TURTLE
+	- should complete with TURTLE - doesn't work currently
 	TUR
 
 - should not complete this because the completion comes from the graphics lib

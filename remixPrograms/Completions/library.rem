@@ -1,5 +1,6 @@
 =-
 Function abc1 at top-level of included file.
+No longer appears in file which includes this.
 =-
 function abc1 :
 	1
