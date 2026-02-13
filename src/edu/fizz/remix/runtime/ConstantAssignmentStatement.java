@@ -19,10 +19,10 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         Object existingValue;
         Object value;
-        LibraryExpression library = context.peekLibrary();// libraryStoredIn;
 
         // calculate the value
         // Blocks get assigned as they are. They are evaluated with do.
+
         if (expression instanceof Block block) {
             if (block.getContext() == null) {
                 block = block.copy(); // the block could be called recursively we need a copy
@@ -31,18 +31,23 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
             value = block;
         } else {
             value = expression.evaluate(context);
-            if (value == null)
-                System.out.println();
-            if (value == null && expression instanceof ConstantValueExpression constantExpr) { // possible the expression is a constant in the libraryStoredIn
-                value = library.constantTable.get(constantExpr.constantName);
-            }
         }
-        existingValue = library.constantTable.get(variableName);
+
+        // Check it is
+        LibraryExpression library;
+        int i = context.libraryStack.size() - 1;
+        do {
+            library = context.libraryStack.get(i);
+            existingValue = library.constantTable.get(variableName);
+            i--;
+        } while (existingValue == null && i >= 0);
 
         if (existingValue == null)
-            library.constantTable.put(variableName, value);
-        else if (!existingValue.equals(value)) // no error if the value matches
-            System.err.format("Attempt to reassign constant %s%n", variableName);
+            libraryStoredIn.constantTable.put(variableName, value);
+        else if (!existingValue.equals(value)) { // no error if the value matches
+            System.err.format("Attempt to reassign constant \"%s\"%n", variableName);
+            System.err.format("Currently a constant in library \"%s\"%n", library.getLibName());
+        }
         return value;
     }
 }

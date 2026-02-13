@@ -5,8 +5,6 @@ import edu.fizz.remix.editor.RemixPrepareRun;
 
 import java.util.*;
 
-import static edu.fizz.remix.editor.RemixPrepareRun.REPLContext;
-
 /** Includes the standard libraries, any extra libraries
  *  and a library made from the editor window.
  *  Also the completion information for each of these. */
@@ -74,7 +72,7 @@ public class LibrariesAndCompletions {
      */
     public static void resetREPLEnvironment() {
         LibraryExpression.methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
-        REPLContext = new Context(baseLibrary);
+        RemixPrepareRun.REPLContext = new Context(baseLibrary);
     }
 
     //    /** Print the names of all the functions. */
@@ -245,7 +243,9 @@ public class LibrariesAndCompletions {
             // currently libraries no longer maintain state in contexts (variables)
             // this means this is only useful for loading other libraries, printing etc.
             // But they may contain CONSTANTS.
-            standardLibrary.block.evaluate(new Context(baseLibrary));
+            Context context = new Context(baseLibrary);
+            context.pushLibrary(standardLibrary);
+            standardLibrary.block.evaluate(context);
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in program.");
         }

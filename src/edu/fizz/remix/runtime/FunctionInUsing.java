@@ -26,16 +26,26 @@ public class FunctionInUsing extends RemixFunction {
         LibraryExpression wasTopOfLibStack = context.peekLibrary();
 
         for (Map.Entry<Expression, LibraryExpression> entry : librariesToUse.entrySet()) {
+
+            // NEED TO CHECK IF THE LIBRARIES BEING PUSHED ARE ALREADY ON THE LIBSTACK.
+            // COULD HAPPEN WHEN A USING LIB FUNCTION CALLS ANOTHER USING LIB FUNCTION
+
+            // And the error caught below "not been evaluated" can be removed if "using blocks"
+            // and their functions always appear before the calls so before top-level statements
+            // THINK ABOUT THIS
+
             Expression libraryExp = entry.getKey();
             LibraryExpression library = entry.getValue();
             // need to check if the library has been evaluated
             // due to double using blocks being out of order
             if (library == null) {
+                library = (LibraryExpression) libraryExp.evaluate(context);
+                librariesToUse.put(libraryExp, library);
                 System.err.printf("The library '%s' has not been evaluated yet in call to '%s'.%n",
                                   libraryExp, this.getFirstName());
-                throw new RuntimeException();
             }
-            context.pushLibrary(library);
+            if (!context.libraryInStack(library))
+                context.pushLibrary(library);
         }
         context.pushLibrary(wasTopOfLibStack);
 

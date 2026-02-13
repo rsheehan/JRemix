@@ -1,0 +1,13 @@
+using graphics
+	g1 func : 
+		"g1"
+
+g1 func ↲
+g2 func ↲
+
+using graphics
+	g2 func :
+		"g2"
+
+g1 func ↲
+g2 func ↲

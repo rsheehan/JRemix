@@ -30,3 +30,17 @@ function3 :
 
 function4 :
 	"function4 from this file" ↲
+
+= Result
+function0 from library 2
+function1 from library 1
+function3 from library 2
+function2 from library 1
+function4 from library 2
+function1 from library 1
+
+function0 from this file
+function3 from this file
+function4 from this file
+function1 from this file
+=

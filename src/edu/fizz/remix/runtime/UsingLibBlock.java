@@ -61,11 +61,15 @@ public class UsingLibBlock extends Block {
         LibraryExpression library;
 
         /* Pop the current TOS of context libStack - in the repl it should be the REPL lib */
-        LibraryExpression wasTopOfLibStack = context.peekLibrary();
+//        LibraryExpression wasTopOfLibStack = context.peekLibrary();
 
         for (Expression libraryExpression : libExpressions) { //libraryExpressions) {
             try {
                 library = (LibraryExpression) libraryExpression.evaluate(context);
+                // a hack to give most libraries a name
+                if (libraryExpression instanceof FunctionCallExpression functionCall) {
+                    library.setLibName(functionCall.singleName());
+                }
                 // store it so that functions which use the library
                 // don't re-evaluate the library
                 librariesToUse.put(libraryExpression, library);
@@ -79,7 +83,7 @@ public class UsingLibBlock extends Block {
             so that functions and constants are stored in it.
             Does this mean that setLibForConstants shouldn't be necessary?
           */
-        context.pushLibrary(wasTopOfLibStack);
+//        context.pushLibrary(wasTopOfLibStack);
         /*
         context libStack starts looking like:
             baseLibrary
@@ -97,7 +101,7 @@ public class UsingLibBlock extends Block {
         Object result = usingBlock.evaluate(context); // , true);
 
         /* Pop the programLibrary before popping off the rest. */
-        context.popLibrary();
+//        context.popLibrary();
         for (int libNum = 0; libNum < libExpressions.length; libNum++) {
             context.popLibrary();
         }

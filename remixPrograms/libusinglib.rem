@@ -10,11 +10,13 @@ X ↲
 Y ↲
 ↲
 LIB2 : library
+	"LIB2 start" ↲
 	using LIB1
 		X ↲
 		Y ↲
 		Z : 3
 		Z ↲
+	"LIB2 finish" ↲
 ↲
 using LIB1, LIB2
 	X ↲

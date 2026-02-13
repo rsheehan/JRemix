@@ -80,13 +80,13 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 return null;
             }
             /*
-            The included file is at the same level as the
-            context. Functions are added to the existing context.
-            If it contains a "library" block that is different.
-            That would add a library level to the stack in the context.
+            The included file must now evaluate to a library.
+            Everything is enveloped in libraries.
+            Functions and constants are associated with the library.
+            Variables (assigned to in the library block) are only useful when initializing the library.
              */
             LibraryExpression topOfStackLibrary = (LibraryExpression)context.libraryStack.peek();
-            topOfStackLibrary.functionTable.putAll(included.functionTable);
+
             if (RemixEditor.isEditing()) {
                 included.setActiveLines(topOfStackLibrary.getActiveLines());
             }
@@ -98,7 +98,13 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 This means variables assigned in the included file are not visible in the
                 including program.
                  */
-                result = included.block.evaluate(context);
+                Context newLibContext = new Context(LibrariesAndCompletions.getBaseLibrary());
+                newLibContext.addLibraryToStack(included);
+                result = included.block.evaluate(newLibContext);
+                if (!(result instanceof LibraryExpression) || !(((LibraryExpression) result).trueLibrary)) {
+                    System.err.format("Included file \"%s\" does not evaluate to a library.%n", filename);
+                    result = null;
+                }
             } catch (ReturnException exception) {
                 System.err.println("ReturnException caught in program.");
             }

@@ -13,5 +13,8 @@ LIB2 : library
 using LIB2
 	C ↲
 
+using LIB2, LIB1
+	C ↲
+
 LIB1 ↲
 LIB2 ↲

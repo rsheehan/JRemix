@@ -9,3 +9,4 @@ JKL ↲
 using graphics, 'the lib'
 	"using ", STD-WIDTH ↲ ; now gets 1000
 	"using ", JKL ↲ ; gets 'the lib' value 7
+	"using ", CENTRE-X ↲

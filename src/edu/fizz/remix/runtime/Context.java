@@ -168,4 +168,8 @@ public class Context {
         return libraryStack.peek();
     }
 
+    public boolean libraryInStack(LibraryExpression library) {
+        return libraryStack.contains(library);
+    }
+
 }

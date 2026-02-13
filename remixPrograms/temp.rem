@@ -1,12 +1,24 @@
-abc one :
-	"first"
+'lib' : library
+	a lib func :
+		"a lib func"
+	
+	A-LIB-CONST : 42
+	
+-a using-lib func ↲
+A-LIB-CONST : 24
+	
+using 'lib'
+	a lib func ↲
+	A-LIB-CONST ↲
+	a using-lib func ↲
+	
+	a using-lib func :
+		"a using lib func " ⊕ A-LIB-CONST
+			
+	USING-CONST : 23
+	USING-CONST ↲
 
-ONE : 1
-
-abc two :
-	"second"
-
-TWO : 2
-'a' : 4
-A : 44
-abc one ↲
+a lib func ↲
+A-LIB-CONST ↲
+a using-lib func ↲
+USING-CONST ↲

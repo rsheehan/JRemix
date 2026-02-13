@@ -99,7 +99,7 @@ public class RemixPrepareRun {
         // make the currentTOSLibrary have this block (functions already dealt with
         currentTOSLibrary.block = libraryExpression.block;
         RemixEditor.setEditing(false);
-        Object result = Runtime.runREPL(libraryExpression);
+        Object result = Runtime.runREPL(currentTOSLibrary);
         RemixEditor.setEditing(true);
         return result;
     }

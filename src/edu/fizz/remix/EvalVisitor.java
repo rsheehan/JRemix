@@ -22,7 +22,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
      * Only then should the top-level code block be executed.
      */
 
-    // private Map<String, Object> currentVariableContext;
     LibraryExpression programLibrary = new LibraryExpression();
 
     /** ( functionDefinition | statement | setConstant | usingStatement | library | libAssignment )* EOF */
@@ -32,8 +31,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         /*
         The current library could be the baseLibrary, or the programLibrary
          */
-//        LibraryExpression library = new LibraryExpression();
-
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -116,7 +113,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 programLibrary = library;
                 UsingLibBlock usingLibBlock = (UsingLibBlock) visit(node);
                 library.block.addStatement(usingLibBlock);
-//                library.addFunctionsFromUsingLibBlock(usingLibBlock);
                 programLibrary = program;
             }
         }
@@ -159,6 +155,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             FunctionInUsing usingFunction = new FunctionInUsing((RemixFunction) function, usingLibBlock.libraryMap());
             programLibrary.addFunction(usingFunction);
         }
+        usingBlock.block.setConstantAssignmentLibrary(programLibrary);
         return usingLibBlock;
     }
 
