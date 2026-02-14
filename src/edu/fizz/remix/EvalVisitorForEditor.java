@@ -21,8 +21,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
      * Only then should the top-level code block be executed.
      */
 
-    // TODO: need to remove all unnecessary code, currently mostly a copy
-    // of EvalVisitor.
+    // TODO: need to remove all unnecessary code, currently mostly a copy of EvalVisitor.
     public static final Stack<Boolean> addIdentifierStack;
     // The programLibIdentifiers connect a library name with its library so that
     // we can find constants declared in the library.
@@ -42,7 +41,6 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         /*
         The current library could be the baseLibrary, or the programLibrary
          */
-        programLibrary = new LibraryExpression();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -74,6 +72,8 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                     LibrariesAndCompletions.addLibrary(libraryExpression);
             } else if (node instanceof RemixParser.LibAssignmentContext) {
                 AssignmentStatement assignmentStatement = (AssignmentStatement) visit(node);
+                if (assignmentStatement instanceof ConstantAssignmentStatement constantAssignmentStatement)
+                    constantAssignmentStatement.setLibraryStoredIn(programLibrary);
                 LibrariesAndCompletions.addLibrary((LibraryExpression) assignmentStatement.expression);
                 programLibrary.block.addStatement(assignmentStatement); // can get rid of all the addStatements?
                 programLibIdentifiers.put(assignmentStatement.name(), (LibraryExpression)assignmentStatement.expression);
@@ -126,10 +126,13 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                 library.addFunction(function);
             }else if (node instanceof RemixParser.UsingStatementContext) {
                 LibraryExpression program = programLibrary;
+                programLibrary = library;
                 UsingLibBlock usingLibBlock = (UsingLibBlock) visit(node);
                 if (usingLibBlock != null) {
                     library.block.addStatement(usingLibBlock);
 //                    library.addFunctionsFromUsingLibBlock(usingLibBlock);
+                    // add any constants from usingLibBlock to library
+
                 }
                 programLibrary = program;
             }
@@ -198,11 +201,13 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             // just incomplete error while editing
         }
         UsingLibBlock usingLibBlock = new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
-        if (usingBlock != null)
+        if (usingBlock != null) {
             for (Function function : usingBlock.functionTable.values()) {
                 FunctionInUsing usingFunction = new FunctionInUsing((RemixFunction) function, usingLibBlock.libraryMap());
                 programLibrary.addFunction(usingFunction);
             }
+            usingBlock.block.setConstantAssignmentLibrary(programLibrary);
+        }
         return usingLibBlock;
 //        return new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
     }

@@ -1,0 +1,17 @@
+'lib' : library
+	func one :
+		"function one"
+	
+	func two :
+		"function two"
+
+func three ↲
+
+using 'lib'
+	func one ↲
+	func two ↲
+	
+	func three :
+		"func three at program level"
+
+func three ↲

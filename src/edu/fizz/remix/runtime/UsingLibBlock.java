@@ -14,7 +14,7 @@ It is using one or more libraries - in the libraryExpressions.
  the functions in the usingBlock are stored.
  This has to be determined at a higher level in EvalVisitor.
  */
-public class UsingLibBlock extends Block {
+public class UsingLibBlock implements Expression { //extends Block {
 
     // The libraries which are to be added to the library stack when the block of statements is evaluated.
     private final Expression [] libExpressions;

@@ -34,7 +34,7 @@ inside func
 ↲
 using 'the lib'
 	"inside using ", JKL ↲
-	inside func ; doesn't find JFK 7 as the function was created at program level
+	inside func ; currently finds 7 for JKL from 'the lib'
 ↲
 "outside ", STD-WIDTH ↲ ; not found
 STD-WIDTH : 999
@@ -44,5 +44,5 @@ using graphics, 'the lib'
 	"using ", ABC ↲
 	"using ", DEF ↲
 	"using ", GHI ↲
-	"using ", STD-WIDTH ↲ ; gets 999 as the version in the graphics lib is shadowed
-	"using ", JKL ↲ ; 8 not 'the lib' value 7
+	"using ", STD-WIDTH ↲ ; gets 1000 as the version in the main lib is shadowed
+	"using ", JKL ↲ ; 7 'the lib' value not 8

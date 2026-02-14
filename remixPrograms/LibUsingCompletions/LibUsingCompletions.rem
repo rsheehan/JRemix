@@ -1,0 +1,11 @@
+'lib' : library
+	LIB-CONS : "lib constant"
+	
+	lib function :
+		"lib function"
+
+library
+	using 'lib'
+		INCLUDED-LIB-CONS : "included lib constant"
+		- try completing following line
+		IN

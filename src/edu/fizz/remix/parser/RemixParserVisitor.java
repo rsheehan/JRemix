@@ -17,17 +17,17 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProgram(RemixParser.ProgramContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link RemixParser#libraryName}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLibraryName(RemixParser.LibraryNameContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link RemixParser#library}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitLibrary(RemixParser.LibraryContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RemixParser#libraryName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLibraryName(RemixParser.LibraryNameContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code setVarLibrary}
 	 * labeled alternative in {@link RemixParser#libAssignment}.

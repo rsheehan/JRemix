@@ -22,6 +22,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
      * Only then should the top-level code block be executed.
      */
 
+    /*
+    This is the libraryExpression of the program to run, or the real library
+    currently being loaded.
+     */
     LibraryExpression programLibrary = new LibraryExpression();
 
     /** ( functionDefinition | statement | setConstant | usingStatement | library | libAssignment )* EOF */

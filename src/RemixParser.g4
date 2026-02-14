@@ -14,12 +14,12 @@ program				: ( functionDefinition
 						| library
 						| libAssignment )* EOF ;
 
-libraryName			: LIBRARY STRING? ;
-
 library				: libraryName LBLOCK EOL* ( functionDefinition
 												| statement
 												| setConstant
 												| usingStatement )* RBLOCK ;
+
+libraryName			: LIBRARY STRING? ;
 
 libAssignment		: IDENTIFIER COLON library 			# setVarLibrary
 					| CONSTANT COLON library			# setConLibrary
@@ -31,10 +31,6 @@ usingBlock 			: LBLOCK (functionDefinition | statement | setConstant)* RBLOCK ;
 // Want to be able to use a library function to define a constant value in another library.
 
 setConstant			: CONSTANT COLON expression ;
-
-//usesStatement		: USES expression (COMMA expression)* statementBlock ; // only statements in the block
-
-//statementBlock		: LBLOCK statement+ RBLOCK ;
 
 functionDefinition	: functionComment? functionSignature COLON COLON? EOL? blockOfStatements ;
 

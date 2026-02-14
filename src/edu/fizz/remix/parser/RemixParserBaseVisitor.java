@@ -25,14 +25,14 @@ public class RemixParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLibraryName(RemixParser.LibraryNameContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLibrary(RemixParser.LibraryContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLibrary(RemixParser.LibraryContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLibraryName(RemixParser.LibraryNameContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

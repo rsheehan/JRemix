@@ -39,10 +39,10 @@ public class FunctionInUsing extends RemixFunction {
             // need to check if the library has been evaluated
             // due to double using blocks being out of order
             if (library == null) {
-                library = (LibraryExpression) libraryExp.evaluate(context);
+                library = (LibraryExpression) libraryExp.evaluate(context.parentContext);
                 librariesToUse.put(libraryExp, library);
-                System.err.printf("The library '%s' has not been evaluated yet in call to '%s'.%n",
-                                  libraryExp, this.getFirstName());
+//                System.err.printf("The library '%s' has not been evaluated yet in call to '%s'.%n",
+//                                  libraryExp, this.getFirstName());
             }
             if (!context.libraryInStack(library))
                 context.pushLibrary(library);
