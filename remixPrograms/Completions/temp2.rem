@@ -1,0 +1,10 @@
+AB : 1234
+BAA : 23412
+
+LIB : library
+	
+	B
+	"A from library: ", A ↲
+
+using LIB
+	"A from using: ", A ↲

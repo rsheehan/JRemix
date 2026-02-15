@@ -8,6 +8,7 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
         super(name, expression);
     }
 
+    // When the statement is executed this is the library the constant is stored in.
     public void setLibraryStoredIn(LibraryExpression libraryStoredIn) {
         this.libraryStoredIn = libraryStoredIn;
     }
@@ -33,7 +34,8 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
             value = expression.evaluate(context);
         }
 
-        // Check it is
+        // Check constant does not already have a different value.
+        // This includes other libraries currently in scope.
         LibraryExpression library;
         int i = context.libraryStack.size() - 1;
         do {
@@ -43,6 +45,9 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
         } while (existingValue == null && i >= 0);
 
         if (existingValue == null)
+            libraryStoredIn.constantTable.put(variableName, value);
+        else if (existingValue.equals(value) && !library.equals(libraryStoredIn))
+            // already constant with this value but not stored in this library
             libraryStoredIn.constantTable.put(variableName, value);
         else if (!existingValue.equals(value)) { // no error if the value matches
             System.err.format("Attempt to reassign constant \"%s\"%n", variableName);

@@ -16,12 +16,15 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
      * This really needs to visit the entire program before executing anything.
      * It should collect all function definitions and all top-level code.
      * The functions get added to the function table.
-     * The function table should also include all built-in functions.
      * The top-level code is a block sequence.
      * Only then should the top-level code block be executed.
      */
 
     // TODO: need to remove all unnecessary code, currently mostly a copy of EvalVisitor.
+
+    // Every included file adds a false onto the stack.
+    // Popped off when the included file is finished.
+    // So the top of the stack being true means we are in the main program.
     public static final Stack<Boolean> addIdentifierStack;
     // The programLibIdentifiers connect a library name with its library so that
     // we can find constants declared in the library.
@@ -44,38 +47,46 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
-            /* Bring back the following when linked into the RemixEdLexer. */
+
+            // statement
             if (node instanceof RemixParser.StatementContext) {
                 Expression statement = (Expression) visit(node);
-                if (statement != null) {// can be blank statements
+                if (statement != null) // can be blank statements
                     programLibrary.block.addStatement(statement);
-                }
+
+            // setConstant e.g. ABC : 123
             } else if (node instanceof RemixParser.SetConstantContext) {
                 ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
                 constantAssignment.setLibraryStoredIn(programLibrary);
                 programLibrary.block.addStatement(constantAssignment);
                 programLibrary.addConstantForCompletions(constantAssignment.name());
+
+            // functionDefinition
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 programLibrary.addFunction(function);
+
+            // usingStatement
             } else if (node instanceof RemixParser.UsingStatementContext) {
                 UsingLibBlock usingLibBlock = (UsingLibBlock)visit(node);
-                if (usingLibBlock != null) {
+                if (usingLibBlock != null)
                     programLibrary.block.addStatement(usingLibBlock);
-//                    thisProgramSoFar.addFunctionsFromUsingLibBlock(usingLibBlock);
-//                    thisProgramSoFar.addConstantsFromUsingLibBlock(usingLibBlock);
-                }
+
+            // library
             } else if (node instanceof RemixParser.LibraryContext) {
                 LibraryExpression libraryExpression = (LibraryExpression) visit(node);
                 programLibrary.block.addStatement(libraryExpression);
+                // so program and its visible libraries can be used for completions
                 if (addIdentifierStack.peek())
                     LibrariesAndCompletions.addLibrary(libraryExpression);
+
+            // libAssignment
             } else if (node instanceof RemixParser.LibAssignmentContext) {
                 AssignmentStatement assignmentStatement = (AssignmentStatement) visit(node);
                 if (assignmentStatement instanceof ConstantAssignmentStatement constantAssignmentStatement)
                     constantAssignmentStatement.setLibraryStoredIn(programLibrary);
                 LibrariesAndCompletions.addLibrary((LibraryExpression) assignmentStatement.expression);
-                programLibrary.block.addStatement(assignmentStatement); // can get rid of all the addStatements?
+                programLibrary.block.addStatement(assignmentStatement); // needed for embedded lib using constants e.g. TURTLE
                 programLibIdentifiers.put(assignmentStatement.name(), (LibraryExpression)assignmentStatement.expression);
                 programLibrary.addConstantForCompletions(assignmentStatement.name());
             }
@@ -112,32 +123,37 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
+
+            // statement
             if (node instanceof RemixParser.StatementContext) {
                 Expression statement = (Expression) visit(node);
                 if (statement != null) // can be blank statements
                     library.block.addStatement(statement);
+
+            // setConstant e.g. ABC : 123
             }  else if (node instanceof RemixParser.SetConstantContext) {
                 ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
                 constantAssignment.setLibraryStoredIn(library);
                 library.block.addStatement(constantAssignment);
                 library.addConstantForCompletions(constantAssignment.name());
+
+            // functionDefinition
             } else if (node instanceof RemixParser.FunctionDefinitionContext) {
                 RemixFunction function = (RemixFunction)visit(node);
                 library.addFunction(function);
-            }else if (node instanceof RemixParser.UsingStatementContext) {
+
+            // usingStatement
+            } else if (node instanceof RemixParser.UsingStatementContext) {
                 LibraryExpression program = programLibrary;
+                // constants and functions get stored in this library not the main program
                 programLibrary = library;
                 UsingLibBlock usingLibBlock = (UsingLibBlock) visit(node);
-                if (usingLibBlock != null) {
+                if (usingLibBlock != null)
                     library.block.addStatement(usingLibBlock);
-//                    library.addFunctionsFromUsingLibBlock(usingLibBlock);
-                    // add any constants from usingLibBlock to library
-
-                }
                 programLibrary = program;
             }
         }
-        if (addIdentifierStack.peek()) {
+        if (addIdentifierStack.peek()) { // if in main program, not included file
             int blockLineStart = ctx.getStart().getLine() - 1;
             int blockLineFinish = ctx.getStop().getLine() - 1;
             library.addToValidLines(new int[]{blockLineStart, blockLineFinish});
@@ -179,11 +195,8 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                     libraryExpression = programLibIdentifiers.get(varValueExpression.getName());
                 else try { // fall back on attempting to evaluate the library expression
                     Context contextForLib = new Context(LibrariesAndCompletions.getBaseLibrary());
-
-                    libraryExpression = (LibraryExpression) libExp.evaluate(contextForLib); //new Context(thisProgramSoFar));
-                } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException e) {
-                    //throw new RuntimeException(e);
-                }
+                    libraryExpression = (LibraryExpression) libExp.evaluate(contextForLib);
+                } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException _) {}
                 if (libraryExpression != null)
                     libraryExpressions.add(libraryExpression);
             }
@@ -209,7 +222,6 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             usingBlock.block.setConstantAssignmentLibrary(programLibrary);
         }
         return usingLibBlock;
-//        return new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
     }
 
     /*
