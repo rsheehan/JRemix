@@ -87,10 +87,6 @@ public abstract class Function {
         return displayName(name) + "\n" + functionComment;
     }
 
-    public String getFunctionComment() {
-        return functionComment;
-    }
-
     // I could have called this evaluate but a Function isn't an Expression.
     // That is the role of a FunctionCallExpression.
     public abstract Object execute(Context context) throws ReturnException, InterruptedException;
