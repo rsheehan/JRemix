@@ -174,7 +174,7 @@ public class RemixEditor extends JFrame {
         Add programLib
         LibrariesAndCompletions.addLibrary(programLib);
          */
-        LibrariesAndCompletions.addFirstLibrary(programLib);
+        LibrariesAndCompletions.addAfterBaseLibrary(programLib);
         // the visit above fills in addedLibraries in LibrariesAndCompletions
         // this the result program is added as well.
     }

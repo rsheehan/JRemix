@@ -84,7 +84,6 @@ public abstract class Function {
 
     // Simple function only has one comment for all different names.
     public String getDisplayNameAndComment(String name) {
-
         return displayName(name) + "\n" + functionComment;
     }
 

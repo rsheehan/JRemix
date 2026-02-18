@@ -768,7 +768,6 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             );
         }
 
-        // TODO: add a search for all constants invoked by - help CONS
         // TODO: add some of the keywords too
         // TODO: make help work inside "using blocks"
         @Override

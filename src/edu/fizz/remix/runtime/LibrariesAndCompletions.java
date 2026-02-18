@@ -46,17 +46,13 @@ public class LibrariesAndCompletions {
             addedLibraries.add(libraryExpression);
     }
 
-    public static void addFirstLibrary(LibraryExpression libraryExpression) {
-        addedLibraries.addFirst(libraryExpression);
+    public static void addAfterBaseLibrary(LibraryExpression libraryExpression) {
+        addedLibraries.add(1, libraryExpression);
     }
 
     public static LibraryExpression getBaseLibrary() {
         return baseLibrary; //programLibrary;
     }
-
-//    public static LibraryExpression getREPLBaseLibrary() {
-//        return REPLLibrary;
-//    }
 
     /*
      * Sets the functions, methods, and context back to the standard version.
@@ -137,10 +133,7 @@ public class LibrariesAndCompletions {
         HashMap<String, String> functionDisplayNames = new HashMap<>(); // maps display names to comments
         SortedSet<String> completionsAtStart = new TreeSet<>();
         SortedSet<String> completionsConsecutive = new TreeSet<>();
-        // first check against base library
-        //      with activeLines all lines
-        searchForCompletions(searchWord, baseLibrary.functionTable, completionsAtStart, completionsConsecutive, functionDisplayNames);
-        // then each additional library
+        // check against each library
         //      with activeLines retrieved from the library - compare with lineNumber
         for (LibraryExpression library : addedLibraries) {
             // first check lineNumber against activeLines
@@ -166,9 +159,10 @@ public class LibrariesAndCompletions {
 
     private static void searchForCompletions(String searchWord,
                                              HashMap<String, Function> functionTable,
-                                             SortedSet<String> atStart,
-                                             SortedSet<String> consecutive,
-                                             HashMap<String, String> functionDisplayNames) {
+                                             SortedSet<String> atStart, // completions - display name + comment which match searchWord at the beginning
+                                             SortedSet<String> consecutive, // completions which match searchWord as consecutive letters anywhere else
+                                             HashMap<String, String> functionDisplayNames // maps display names to comments
+    ) {
         for (String functionName : functionTable.keySet()) {
             int finish = 0;
             boolean found = false;
@@ -190,21 +184,17 @@ public class LibrariesAndCompletions {
             if (found) {
                 // create name and doc
                 Function function = functionTable.get(functionName);
-                String displayName = function.displayName(functionName);
-                String comment = function.getFunctionComment();
-                String thisCompletion;
+                String thisCompletion = function.getDisplayNameAndComment(functionName);
                 if (functionDisplayNames != null) {
                     // public methods are always available but not functions if overridden in a library
                     // need to replace the comment of the existing one
-                    // the order this is done is libraries first, then
-                    String previousComment = functionDisplayNames.put(displayName, comment);
-                    if (previousComment != null) { // overwrite the previous function
-                        String previousCompletion = displayName + "\n" + previousComment;
+                    String previousCompletion = functionDisplayNames.put(functionName, thisCompletion);
+                    if (previousCompletion != null) {
+                        // remove does nothing if it is not there
                         atStart.remove(previousCompletion);
                         consecutive.remove(previousCompletion);
                     }
                 }
-                thisCompletion = function.getDisplayNameAndComment(functionName);
                 int position = consecutiveLetters(searchWord, functionName, finish);
                 if (position == 0)
                     atStart.add(thisCompletion);
