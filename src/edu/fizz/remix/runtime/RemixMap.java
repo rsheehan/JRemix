@@ -54,7 +54,7 @@ public class RemixMap<String, Expression> extends HashMap<String, Expression> im
                     sb.append("REC_MAP");
                 } else {
                     callerStack.add(this);
-                    sb.append(complexValue.toString(callerStack, new StringBuilder()));
+                    sb.append(complexValue.toString(callerStack, tabs));
                 }
             } else {
                 sb.append(value);

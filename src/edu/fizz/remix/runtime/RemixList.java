@@ -54,7 +54,7 @@ public class RemixList<Expression> extends ArrayList implements RemixComplexType
                     sb.append("REC_LIST");
                 } else {
                     callerStack.add(this);
-                    sb.append(complexItem.toString(callerStack, new StringBuilder()));
+                    sb.append(complexItem.toString(callerStack, tabs));
                 }
             } else {
                 sb.append(item);

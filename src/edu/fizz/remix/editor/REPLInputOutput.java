@@ -13,11 +13,13 @@ public class REPLInputOutput extends JTextArea {
     public final static String INFOSTRING = """
             
             \t\
-            To execute a line : Return
+            To execute a line : return
             \t\
-            To start a new line without executing the current line : Command-Return
+            To start a new line without execution : shift-return
             \t\
-            To clear this area : Command-shift-C
+            To start a new indented line : shift-tab
+            \t\
+            To clear this area : command-shift-C
             
             """;
 
@@ -48,18 +50,20 @@ public class REPLInputOutput extends JTextArea {
         // Define the KeyStroke for Command + Return (Meta + Enter)
         // KeyEvent.VK_ENTER is the key code for the Return/Enter key
         // InputEvent.META_DOWN_MASK represents the Command key on Mac
-        KeyStroke commandReturn = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.META_DOWN_MASK);
+        KeyStroke shiftReturn = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK);
         KeyStroke commandShiftC = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
         KeyStroke simpleReturn = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0,false);
+        KeyStroke indentedReturn = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK);
 
         // Map the KeyStrokes to a custom Action name
         String simpleReturnActionName = "handleSimpleReturn";
         inputMap.put(simpleReturn, simpleReturnActionName);
-        String commandReturnActionName = "handleCommandReturn";
-        inputMap.put(commandReturn, commandReturnActionName);
+        String shiftReturnActionName = "handleShiftReturn";
+        inputMap.put(shiftReturn, shiftReturnActionName);
         String commandCActionName = "handleCommandC";
         inputMap.put(commandShiftC, commandCActionName);
-
+        String indentedReturnActionName = "handleIndentedReturn";
+        inputMap.put(indentedReturn, indentedReturnActionName);
 
         // Put the custom Action into the ActionMap
         actionMap.put(simpleReturnActionName, new AbstractAction() {
@@ -77,7 +81,7 @@ public class REPLInputOutput extends JTextArea {
                 RemixEditor.remixOutput.clearTextArea();
             }
         });
-        actionMap.put(commandReturnActionName, new AbstractAction() {
+        actionMap.put(shiftReturnActionName, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // deal with return to indent to level
@@ -94,7 +98,27 @@ public class REPLInputOutput extends JTextArea {
                 } catch (BadLocationException ex) {
                     throw new RuntimeException(ex);
                 }
-                System.out.print("\n" + "\t".repeat(tabCount));
+                insert("\n" + "\t".repeat(tabCount), pos);
+            }
+        });
+        actionMap.put(indentedReturnActionName, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // deal with return to indent to level
+                int tabCount = 0;
+                int pos = getCaretPosition();
+                try {
+                    int lineNumber = getLineOfOffset(pos);
+                    String currentLine = getLineText(lineNumber);
+                    for (int i = 0; i < currentLine.length(); i++)
+                        if (currentLine.charAt(i) == '\t')
+                            tabCount++;
+                        else
+                            break;
+                } catch (BadLocationException ex) {
+                    throw new RuntimeException(ex);
+                }
+                insert("\n" + "\t".repeat(tabCount + 1), pos);
             }
         });
     }

@@ -4,7 +4,6 @@ import edu.fizz.remix.EvalVisitorForEditor;
 import edu.fizz.remix.editor.REPLInputOutput;
 import edu.fizz.remix.editor.RemixEditor;
 import edu.fizz.remix.editor.RemixPrepareRun;
-import edu.fizz.remix.editor.TextAreaOutputStream;
 
 import java.util.*;
 
@@ -773,7 +772,9 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public Object execute(Context context) throws ReturnException, InterruptedException {
             String what = ((String) context.retrieve("what", false));
             StringBuilder helpSB = new StringBuilder();
-            if (what.equals("CONSTANTS")) {
+            if (what.equals("EDITOR")) {
+                return REPLInputOutput.INFOSTRING;
+            } else if (what.equals("CONSTANTS")) {
                 dealWithConstants(context.parentContext, helpSB);
                 int length = helpSB.length();
                 if (length > 0) // remove last '\n'
@@ -831,14 +832,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                             }
                         }
                         if (found || foundInComment) {
-                            if (!method.functionComment.isEmpty()) {
-                                StringBuilder commentBuilder = new StringBuilder("\n\t");
-                                commentBuilder.append(method.functionComment);
-                                String tabbedComment = tabbedComment(commentBuilder);
-                                helpSB.append(tabbedComment).append("\n");
-                            } else {
-                                helpSB.append("\n");
-                            }
+                            addFunctionComment(method, helpSB);
                         }
                     }
                 }
@@ -853,31 +847,61 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         private static void dealWithFunctions(Context context, String what, StringBuilder helpSB) {
             Stack<LibraryExpression> libStack = context.cloneLibraryStack();
             List<Function> matchedFunctions = new ArrayList<>();
+            List<Function> foundInCommentOnly = new ArrayList<>();
+            boolean foundInComment;
+            boolean firstFunc = true;
             for (LibraryExpression lib : libStack) {
                 for (Function function : lib.functionTable.values()) {
                     if (matchedFunctions.contains(function))
                         continue;
                     boolean found = false;
-                    boolean foundInComment = function.functionComment.contains(what);
+                    foundInComment = function.functionComment.contains(what);
+
                     for (String funcName : function.getAllNames()) {
-                        if (funcName.contains(what) || foundInComment) {
+                        if (funcName.contains(what)) {
                             found = true;
-                            String name = function.displayName(funcName);
-                            helpSB.append("\nFunction: ")
-                                    .append(name);
+                            if (firstFunc)
+                                firstFunc = false;
+                            else
+                                helpSB.append("\n");
+                            displayFunctionName(function, funcName, helpSB);
                         }
                     }
-                    if (found || foundInComment) {
-                        if (!function.functionComment.isEmpty()) {
-                            StringBuilder commentBuilder = new StringBuilder("\n\t");
-                            commentBuilder.append(function.functionComment);
-                            String tabbedComment = tabbedComment(commentBuilder);
-                            helpSB.append(tabbedComment).append("\n");
-                        } else {
-                            helpSB.append("\n");
-                        }
+                    if (found) {
+                        addFunctionComment(function, helpSB);
+                        matchedFunctions.add(function);
+                    } else {
+                        if (foundInComment && !foundInCommentOnly.contains(function))
+                            foundInCommentOnly.add(function);
                     }
                 }
+            }
+            for (Function commentMatchFunction : foundInCommentOnly) {
+                for (String funcName : commentMatchFunction.getAllNames()) {
+                    if (firstFunc)
+                        firstFunc = false;
+                    else
+                        helpSB.append("\n");
+                    displayFunctionName(commentMatchFunction, funcName, helpSB);
+                }
+                addFunctionComment(commentMatchFunction, helpSB);
+            }
+        }
+
+        private static void displayFunctionName(Function function, String funcName, StringBuilder helpSB) {
+            String name = function.displayName(funcName);
+            helpSB.append("Function: ")
+                    .append(name);
+        }
+
+        private static void addFunctionComment(Function function, StringBuilder helpSB) {
+            if (!function.functionComment.isEmpty()) {
+                StringBuilder commentBuilder = new StringBuilder("\n\t");
+                commentBuilder.append(function.functionComment);
+                String tabbedComment = tabbedComment(commentBuilder);
+                helpSB.append(tabbedComment).append("\n");
+            } else {
+                helpSB.append("\n");
             }
         }
 

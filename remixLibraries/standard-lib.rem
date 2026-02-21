@@ -21,6 +21,7 @@ CONSTANTS : "CONSTANTS"
 CONS : CONSTANTS
 VARIABLES : "VARIABLES"
 VARS : VARIABLES
+EDITOR : "EDITOR"
 
 ==============================
  Simple print functions
