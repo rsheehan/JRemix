@@ -68,17 +68,22 @@ public class RemixObject implements RemixComplexType {
             sb.append("object\n");
             if (numberOfFields == 0)
                 return sb.toString();
-
+            StringBuilder tabs = new StringBuilder("\t");
+            boolean firstField = true;
             for (String key : instanceVars.keySet()) {
                 if (key.equals("type"))
                     continue;
-                sb.append("\t").append('\'').append(key).append("' : ");
+                if (firstField)
+                    firstField = false;
+                else
+                    sb.append("\n");
+                sb.append(tabs).append('\'').append(key).append("' : ");
 
                 Object field = instanceVars.get(key);
                 if (field instanceof RemixComplexType complexField) {
                     List<RemixComplexType> callerStack = new ArrayList<>();
                     callerStack.add(this);
-                    sb.append(complexField.toString(callerStack));
+                    sb.append(complexField.toString(callerStack, tabs));
                 } else {
                     sb.append(field);
                 }
@@ -86,12 +91,12 @@ public class RemixObject implements RemixComplexType {
                 if (--numberOfFields == 0)
                     break;
             }
-            return sb.append("\n").toString();
+            return sb.toString();
         }
     }
 
     @Override
-    public String toString(List<RemixComplexType> callerStack) {
+    public String toString(List<RemixComplexType> callerStack, StringBuilder tabs) {
         StringBuilder sb = new StringBuilder();
         Method method = findMethod("⫾ to string");
         MethodContext methodContext = new MethodContext(null, this);
@@ -112,11 +117,16 @@ public class RemixObject implements RemixComplexType {
             sb.append("object\n");
             if (numberOfFields == 0)
                 return sb.toString();
-
+            tabs.append("\t");
+            boolean firstField = true;
             for (String key : instanceVars.keySet()) {
                 if (key.equals("type"))
                     continue;
-                sb.append("\t").append('\'').append(key).append("' : ");
+                if (firstField)
+                    firstField = false;
+                else
+                    sb.append("\n");
+                sb.append(tabs).append('\'').append(key).append("' : ");
 
                 Object field = instanceVars.get(key);
                 if (field instanceof RemixComplexType complexField) {
@@ -124,7 +134,7 @@ public class RemixObject implements RemixComplexType {
                         sb.append("REC_OBJECT");
                     } else {
                         callerStack.add(this);
-                        sb.append(complexField.toString(callerStack));
+                        sb.append(complexField.toString(callerStack, tabs));
                     }
                 } else {
                     sb.append(field);
@@ -133,7 +143,7 @@ public class RemixObject implements RemixComplexType {
                 if (--numberOfFields == 0)
                     break;
             }
-            return sb.append("\n").toString();
+            return sb.toString();
         }
     }
 }

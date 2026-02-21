@@ -769,7 +769,6 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         // TODO: add some of the keywords too
-        // TODO: make help work inside "using blocks"
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
             String what = ((String) context.retrieve("what", false));
@@ -790,8 +789,9 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         private void dealWithVariables(Context context, StringBuilder helpSB) {
             for (String name : context.variables.keySet()) {
-                helpSB.append(name)
-                        .append(" : ")
+                helpSB.append('\'')
+                        .append(name)
+                        .append("\' : ")
                         .append(context.variables.get(name))
                         .append('\n');
             }

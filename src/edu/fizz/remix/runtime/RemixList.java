@@ -28,7 +28,7 @@ public class RemixList<Expression> extends ArrayList implements RemixComplexType
             if (item instanceof RemixComplexType complexItem) {
                 List<RemixComplexType> callerStack = new ArrayList<>();
                 callerStack.add(this);
-                sb.append(complexItem.toString(callerStack));
+                sb.append(complexItem.toString(callerStack, new StringBuilder()));
             } else {
                 sb.append(item);
             }
@@ -40,7 +40,7 @@ public class RemixList<Expression> extends ArrayList implements RemixComplexType
     }
 
     @Override
-    public String toString(List<RemixComplexType> callerStack) {
+    public String toString(List<RemixComplexType> callerStack, StringBuilder tabs) {
         Iterator it = iterator();
         if (! it.hasNext())
             return "{}";
@@ -54,7 +54,7 @@ public class RemixList<Expression> extends ArrayList implements RemixComplexType
                     sb.append("REC_LIST");
                 } else {
                     callerStack.add(this);
-                    sb.append(complexItem.toString(callerStack));
+                    sb.append(complexItem.toString(callerStack, new StringBuilder()));
                 }
             } else {
                 sb.append(item);
