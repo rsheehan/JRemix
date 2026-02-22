@@ -77,6 +77,8 @@ public class Block implements Expression {
                 } else {
                     return exception.getReturnValue();
                 }
+            } catch (NullPointerException _) {
+                return null;
             }
         }
         return result;

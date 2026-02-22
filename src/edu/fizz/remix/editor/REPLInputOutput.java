@@ -69,8 +69,13 @@ public class REPLInputOutput extends JTextArea {
         actionMap.put(simpleReturnActionName, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // This code executes when Command + Return is pressed
-                executeLines(getCaretPosition());
+                // This code executes when Return is pressed
+                int pos = getCaretPosition();
+                if (using(pos)) // line starts with "using"
+                    return;
+                if (definition(pos)) // line ends with ":"
+                    return;
+                executeLines(pos);
             }
         });
         // Put the custom Action into the ActionMap
@@ -121,6 +126,44 @@ public class REPLInputOutput extends JTextArea {
                 insert("\n" + "\t".repeat(tabCount + 1), pos);
             }
         });
+    }
+
+    /*
+    Indent following line if this line ends with ":".
+    Return true iff this line starts with ":".
+ */
+    private boolean definition(int pos) {
+        boolean defn = false;
+        try {
+            int lineNumber = getLineOfOffset(pos);
+            String lineText = getLineText(lineNumber);
+            if (lineText.endsWith(":")) {
+                defn = true;
+                insert("\n\t", pos);
+            }
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
+        return defn;
+    }
+
+    /*
+    Indent following line if this line starts with "using".
+    Return true iff this line starts with "using".
+     */
+    private boolean using(int pos) {
+        boolean using = false;
+        try {
+            int lineNumber = getLineOfOffset(pos);
+            String lineText = getLineText(lineNumber);
+            if (lineText.startsWith("using")) {
+                using = true;
+                insert("\n\t", pos);
+            }
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
+        return using;
     }
 
     private void executeLines(int pos) {

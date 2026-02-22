@@ -141,7 +141,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
 
     /** USING expression (COMMA expression)* usingBlock */
     @Override
-    public UsingLibBlock visitUsingStatement(RemixParser.UsingStatementContext ctx) {
+    public UsingLibBlock visitUsingStatement(RemixParser.UsingStatementContext ctx) throws NullPointerException {
         ArrayList<Expression> libraryExpressions = new ArrayList<>();
         LibraryExpression usingBlock;
 
@@ -152,7 +152,12 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
                 libraryExpressions.add((Expression) visit(node));
             }
         }
-        usingBlock = (LibraryExpression) visit(ctx.usingBlock());
+        try {
+            usingBlock = (LibraryExpression) visit(ctx.usingBlock());
+        } catch (NullPointerException _) {
+            return null;
+        }
+
         UsingLibBlock usingLibBlock = new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
 
         for (Function function : usingBlock.functionTable.values()) {

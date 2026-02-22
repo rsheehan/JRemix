@@ -78,12 +78,6 @@ public class UsingLibBlock implements Expression { //extends Block {
                 System.err.printf("%s is not a library.%n", libraryExpression);
             }
         }
-
-         /* Push the popped lib back on the top before evaluating,
-            so that functions and constants are stored in it.
-            Does this mean that setLibForConstants shouldn't be necessary?
-          */
-//        context.pushLibrary(wasTopOfLibStack);
         /*
         context libStack starts looking like:
             baseLibrary
@@ -93,12 +87,10 @@ public class UsingLibBlock implements Expression { //extends Block {
             programLibrary
             usingLib1
             usingLib2
-            programLibrary // so that constants and functions are stored in the programLib
-            // also it means they are searched in programLib first
-
+        But the programLibrary gets any functions and constants defined in the using block.
         If inside a library definition then the libLibrary takes the place of programLibrary
          */
-        Object result = usingBlock.evaluate(context); // , true);
+        Object result = usingBlock.evaluate(context, true);
 
         /* Pop the programLibrary before popping off the rest. */
 //        context.popLibrary();

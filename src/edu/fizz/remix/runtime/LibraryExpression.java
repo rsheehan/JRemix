@@ -181,16 +181,16 @@ public class LibraryExpression implements Expression {
     Because of the REPL this will not return the libExpression but will
     return the value of the block.
      */
-//    public Object evaluate(Context context, boolean usingLibBlock) throws ReturnException, InterruptedException {
-//        if (!usingLibBlock) {
-//            return evaluate(context);
-//        }
-//        Object result;
-////        context.pushLibrary(this);
-//        result = block.evaluate(context);
-////        context.popLibrary();
-//        loaded = true;
-//        return result;
-//    }
+    public Object evaluate(Context context, boolean usingLibBlock) throws ReturnException, InterruptedException {
+        if (!usingLibBlock) {
+            return evaluate(context);
+        }
+        Object result;
+//        context.pushLibrary(this);
+        result = block.evaluate(context);
+//        context.popLibrary();
+        loaded = true;
+        return result;
+    }
 
 }

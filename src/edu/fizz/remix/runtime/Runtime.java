@@ -23,7 +23,6 @@ public class Runtime {
         } catch (InterruptedException exception) {
             System.err.println("Interrupted while running program.");
         }
-//        LibrariesAndCompletions.REPLLibrary = program;
     }
 
     public static Object runREPL(LibraryExpression program) {
