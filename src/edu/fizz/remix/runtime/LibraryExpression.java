@@ -129,6 +129,10 @@ public class LibraryExpression implements Expression {
         constantTable.put(constantName, null);
     }
 
+    public void setConstantsFromLibrary(LibraryExpression otherLib) {
+        constantTable = otherLib.constantTable;
+    }
+
     /** Add a name of method and the reference parameter position. */
     public static void addMethodNameEditing(String name, int refPos, Method method) {
         if (refPos == 0) // private method, currently don't add to completion methods
@@ -160,36 +164,23 @@ public class LibraryExpression implements Expression {
 
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
-        // The result of the expression is just itself.
+        // The result of the expression is just itself if this is a true library.
+        // Otherwise it is the result of the last statement in the block.
         // Now that libraries can include statements they must be executed here
         // when first loaded.
+        Object result = this;
         if (!loaded) {
             if (trueLibrary) { // true libraries have a new context
                 context = new Context(context, false);
                 context.pushLibrary(this);
             }
-            block.evaluate(context);
+            result = block.evaluate(context);
             if (trueLibrary) {
                 context.popLibrary();
+                result = this; // the result of a "library" is itself
             }
             loaded = true;
         }
-        return this;
-    }
-
-    /*
-    Because of the REPL this will not return the libExpression but will
-    return the value of the block.
-     */
-    public Object evaluate(Context context, boolean usingLibBlock) throws ReturnException, InterruptedException {
-        if (!usingLibBlock) {
-            return evaluate(context);
-        }
-        Object result;
-//        context.pushLibrary(this);
-        result = block.evaluate(context);
-//        context.popLibrary();
-        loaded = true;
         return result;
     }
 

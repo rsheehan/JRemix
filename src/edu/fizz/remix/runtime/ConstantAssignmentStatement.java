@@ -46,12 +46,15 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
 
         if (existingValue == null)
             libraryStoredIn.constantTable.put(variableName, value);
-        else if (existingValue.equals(value) && !library.equals(libraryStoredIn))
-            // already constant with this value but not stored in this library
+        else if (existingValue.equals(value)) // && !library.equals(libraryStoredIn))
+            // already constant with this value but either not stored in this library
+            // or if the same value we store it over the top - does nothing
             libraryStoredIn.constantTable.put(variableName, value);
-        else if (!existingValue.equals(value)) { // no error if the value matches
-            System.err.format("Attempt to reassign constant \"%s\"%n", variableName);
-            System.err.format("Currently a constant in library \"%s\"%n", library.getLibName());
+        else if (library.equals(libraryStoredIn)) // already exists in this library
+            System.err.format("Error: Attempt to reassign constant \"%s\"%n", variableName);
+        else {
+            libraryStoredIn.constantTable.put(variableName, value);
+            System.err.format("Warning: New lib constant \"%s\" currently a constant in library \"%s\"%n", variableName, library.getLibName());
         }
         return value;
     }

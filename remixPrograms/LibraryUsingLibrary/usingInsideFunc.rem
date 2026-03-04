@@ -28,8 +28,8 @@ using LIB1
 	
 	test {
 		"Call function from program with same name as library function."
-			function1 ; should find the program version
-		… expected "function1 from this program"
+			function1 ; should find the LIB1 version
+		… expected "function1 from library 1"
 		"Call function from library."
 			function2
 		… expected "function2 from library 1"
@@ -41,8 +41,8 @@ using LIB1
 		"USING" ↲
 		test {
 			"Call function from program with same name as library function."
-				function1 ; should find the program version
-			… expected "function1 from this program"
+				function1 ; should find the LIB1 version
+			… expected "function1 from library 1"
 			"Call function from library."
 				function2
 			… expected "function2 from library 1"

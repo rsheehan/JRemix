@@ -1,0 +1,7 @@
+using graphics, turtle
+
+	'the window' : the graphics panel
+
+	'turtle' : a turtle in (a turtle space in 'the window')
+	- used to cause RED and STD-WIDTH to be reported as multiple library constants
+

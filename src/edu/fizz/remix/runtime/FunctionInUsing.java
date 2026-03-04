@@ -23,16 +23,10 @@ public class FunctionInUsing extends RemixFunction {
     // I need instead to have a cache of libraries so that we don't
     // load more than once. Now cached when evaluating UsingLibBlock.
     public Object execute(Context context) throws ReturnException, InterruptedException {
-        LibraryExpression wasTopOfLibStack = context.peekLibrary();
-
         for (Map.Entry<Expression, LibraryExpression> entry : librariesToUse.entrySet()) {
 
             // NEED TO CHECK IF THE LIBRARIES BEING PUSHED ARE ALREADY ON THE LIBSTACK.
             // COULD HAPPEN WHEN A USING LIB FUNCTION CALLS ANOTHER USING LIB FUNCTION
-
-            // And the error caught below "not been evaluated" can be removed if "using blocks"
-            // and their functions always appear before the calls so before top-level statements
-            // THINK ABOUT THIS
 
             Expression libraryExp = entry.getKey();
             LibraryExpression library = entry.getValue();
@@ -41,17 +35,15 @@ public class FunctionInUsing extends RemixFunction {
             if (library == null) {
                 library = (LibraryExpression) libraryExp.evaluate(context.parentContext);
                 librariesToUse.put(libraryExp, library);
-//                System.err.printf("The library '%s' has not been evaluated yet in call to '%s'.%n",
-//                                  libraryExp, this.getFirstName());
             }
             if (!context.libraryInStack(library))
                 context.pushLibrary(library);
         }
-        context.pushLibrary(wasTopOfLibStack);
+//        context.pushLibrary(wasTopOfLibStack);
 
         Object result = codeBlock.evaluate(context);
 
-        context.popLibrary();
+//        context.popLibrary();
         for (int libNum = 0; libNum < librariesToUse.size(); libNum++) {
             context.popLibrary();
         }

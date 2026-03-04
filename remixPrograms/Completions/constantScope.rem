@@ -46,3 +46,48 @@ using graphics, 'the lib'
 	"using ", GHI ↲
 	"using ", STD-WIDTH ↲ ; gets 1000 as the version in the main lib is shadowed
 	"using ", JKL ↲ ; 7 'the lib' value not 8
+
+=
+inside 4
+inside null
+inside null
+inside null
+
+outside 4
+outside null
+outside null
+outside null
+
+Graphics library loaded.
+using 4
+using 5
+using 6
+using 1000
+using null
+
+library 4
+library 5
+library 6
+library 7
+
+inside 4
+inside 5
+inside 6
+inside 8
+
+inside using 7
+inside 4
+inside 5
+inside 6
+inside 7
+
+outside null
+outside 999
+
+Graphics library loaded.
+using 4
+using 5
+using 6
+using 1000
+using 7
+=

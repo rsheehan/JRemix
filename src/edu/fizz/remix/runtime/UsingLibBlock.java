@@ -60,9 +60,6 @@ public class UsingLibBlock implements Expression { //extends Block {
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         LibraryExpression library;
 
-        /* Pop the current TOS of context libStack - in the repl it should be the REPL lib */
-//        LibraryExpression wasTopOfLibStack = context.peekLibrary();
-
         for (Expression libraryExpression : libExpressions) { //libraryExpressions) {
             try {
                 library = (LibraryExpression) libraryExpression.evaluate(context);
@@ -90,7 +87,7 @@ public class UsingLibBlock implements Expression { //extends Block {
         But the programLibrary gets any functions and constants defined in the using block.
         If inside a library definition then the libLibrary takes the place of programLibrary
          */
-        Object result = usingBlock.evaluate(context, true);
+        Object result = usingBlock.evaluate(context);
 
         /* Pop the programLibrary before popping off the rest. */
 //        context.popLibrary();

@@ -1,0 +1,17 @@
+'lib' : library
+	LIB-CONST : 99
+
+test {
+	"Calling main program constant before initialised."
+		LIB-CONST
+	… expected null
+}
+↲
+using 'lib'
+	LIB-CONST : LIB-CONST
+
+test {
+	"Calling main program constant before initialised."
+		LIB-CONST
+	… expected 99
+}

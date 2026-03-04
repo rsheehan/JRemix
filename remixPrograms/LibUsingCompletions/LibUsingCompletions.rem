@@ -1,11 +1,16 @@
-'lib' : library
+LIB : library
 	LIB-CONS : "lib constant"
 	
 	lib function :
 		"lib function"
 
 library
-	using 'lib'
+	using LIB
 		INCLUDED-LIB-CONS : "included lib constant"
-		- try completing following line
+		
+		lib function ↲
+		- try completing following lines
+		LI
 		IN
+
+LI

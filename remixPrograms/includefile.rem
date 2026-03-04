@@ -4,7 +4,7 @@ include "remixPrograms/included.rem"
 
 "After including a file." ↲
 
-extra function ↲
+extra function ↲ ; no longer found
 
 'included var' ↲ ; this is not available
 CONSTANT ↲

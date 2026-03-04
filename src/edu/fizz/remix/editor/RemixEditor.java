@@ -19,6 +19,8 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.SystemFlavorMap;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PrinterException;
@@ -186,6 +188,11 @@ public class RemixEditor extends JFrame {
         editorTextPane.addKeyListener(new CatchKeys());
         editorTextPane.setMargin(new Insets(5,10,5,10));
         doc = setUpStylesAndSpacing(this, editorTextPane, defaultFontForScreen, 21, true);
+
+        SystemFlavorMap flavorMap = (SystemFlavorMap) SystemFlavorMap.getDefaultFlavorMap();
+        flavorMap.setFlavorsForNative(
+                "JAVA_DATAFLAVOR:application/x-java-jvm-local-objectref; class=com.intellij.codeInsight.editorActions.FoldingData",
+                new DataFlavor[]{DataFlavor.getTextPlainUnicodeFlavor()});
 
         JScrollPane editorScrollPane = new JScrollPane(editorTextPane);
 //        editorScrollPane.setMinimumSize(new Dimension(711, 800));

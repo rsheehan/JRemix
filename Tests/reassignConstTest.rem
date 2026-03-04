@@ -1,0 +1,23 @@
+X : 123
+'lib' : library
+	A : X
+	X : A + X
+
+test {
+	"Original program constant"
+		X
+	… expected 123
+}
+↲
+using 'lib'
+	test {
+		"Constant in lib assigned from program constant"
+			A
+		… expected 123
+		
+		"Constant with same name but different value in new lib"
+			X
+		… expected 246
+	}
+
+- produces two Warnings

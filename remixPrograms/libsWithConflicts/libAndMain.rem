@@ -1,0 +1,18 @@
+'libA' : library
+	function :
+		"a function in libA"
+
+function :
+	"a function in main"
+
+using 'libA'
+	function in use :
+		"a function in using about to call, " ⊕ function ; should be from libA for both calls
+
+	"calling 'function in use' from within using, ", function in use ↲
+
+	- what if there was also?
+	function :
+		"a function in main from the using block"
+
+"calling 'function in use' from within main, ", function in use ↲
