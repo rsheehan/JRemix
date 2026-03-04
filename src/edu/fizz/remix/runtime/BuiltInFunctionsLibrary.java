@@ -167,6 +167,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public Object execute(Context context) {
             Object value = context.retrieve("value", false);
+//            if (value instanceof RemixExtendedObject)
             if (value instanceof RemixObject object) {
                 String type = (String) object.getContext().variables.get("type");
                 if (type != null)

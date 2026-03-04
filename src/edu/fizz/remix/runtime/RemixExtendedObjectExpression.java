@@ -4,6 +4,7 @@ public class RemixExtendedObjectExpression extends  RemixObjectExpression {
 
     private final Expression originalObject;
     private final RemixObjectExpression extendedObject;
+
     public RemixExtendedObjectExpression(Expression originalObject, RemixObjectExpression extendedObject) {
         super();
         this.originalObject = originalObject;
