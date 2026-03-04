@@ -18,11 +18,15 @@ public class RemixExtendedObjectExpression extends  RemixObjectExpression {
     @Override
     public RemixObject evaluate(Context definingContext) throws ReturnException, InterruptedException {
         RemixObject remixObject = (RemixObject) originalObject.evaluate(definingContext);
+        String existingType = remixObject.typeName();
         // change libstack of original object to be the current context libstack
         remixObject.getContext().libraryStack = definingContext.cloneLibraryStack();
         for (Expression statement : extendedObject.initBlock.statements) {
             FieldAssignmentStatement assStmnt = (FieldAssignmentStatement) statement;
             Object result = assStmnt.evaluate(definingContext);
+            if (assStmnt.name().equals("type"))
+                result = existingType + ":" + result; // does mean could have "null" components.
+            // Also if the extended object doesn't have its own type it will be the same type as the original
             remixObject.instanceAssign(assStmnt.name(), result); // add the instance variable with initial value
         }
         // need to copy the methodTable because other objects may be using it

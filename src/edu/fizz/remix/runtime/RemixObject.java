@@ -46,6 +46,10 @@ public class RemixObject implements RemixComplexType {
         return copy;
     }
 
+    public String typeName() {
+        return (String) getContext().variables.get("type");
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

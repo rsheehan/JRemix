@@ -110,7 +110,6 @@ Graphics Operations and Objects
 	a/an 'colour' shape from 'points' scaled by 'size' at 'position':
 
 		extend a shape at 'position'
-			'type'           : "Shape"
 			'colour'         : 'colour'
 			'outline colour' : null ; no outline
 			'polygon'        : 'points'
@@ -135,6 +134,7 @@ Graphics Operations and Objects
 	=-
 	a shape at 'position' :
 		create
+			'type' : "Shape"
 			'position' : 'position'
 
 			getter/setter

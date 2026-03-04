@@ -332,8 +332,8 @@ public class Graphics extends LibraryExpression {
                 filled = false;
             else
                 fillColour = colorFromRGBorString(fill);
-            final Object retrieve = shapeContext.retrieve("type", false);
-            if (retrieve.equals("Shape")) {
+            final String retrieve = (String) shapeContext.retrieve("type", false);
+            if (retrieve.contains("Shape")) {
                 dealWithShape(filled, fillColour, shapeContext, layerImage, null);
             } else if (retrieve.equals("Circle")) {
                 dealWithCircle(filled, fillColour, shapeContext, layerImage, null);
@@ -370,11 +370,14 @@ public class Graphics extends LibraryExpression {
             else
                 fillColour = colorFromRGBorString(fill);
             final String type = (String) shapeContext.retrieve("type", false);
-            switch (type) {
-                case "Shape" -> dealWithShape(filled, fillColour, shapeContext, null, panel);
-                case "Circle" -> dealWithCircle(filled, fillColour, shapeContext, null, panel);
-                case "Line" -> dealWithLine(fillColour, shapeContext, null, panel);
-                default -> System.err.println("Bad shape - not added to the graphics panel.");
+            if (type.contains("Shape")) {
+                dealWithShape(filled, fillColour, shapeContext, null, panel);
+            } else if (type.equals("Circle")) {
+                dealWithCircle(filled, fillColour, shapeContext, null, panel);
+            } else if (type.equals("Line")) {
+                dealWithLine(fillColour, shapeContext, null, panel);
+            } else {
+                System.err.println("Bad shape - not added to the graphics panel.");
             }
             return null;
         }

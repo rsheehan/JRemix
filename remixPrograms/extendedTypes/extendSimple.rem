@@ -1,0 +1,17 @@
+'ob' : create
+	'type' : "simple"
+	'field1' : 123.45
+
+'ob' ↲
+↲
+'ext' : extend 'ob'
+	'type' : "extended"
+	'field2' : 678.9
+
+'ext' ↲
+↲
+test {
+	"Extended type includes original"
+		type of 'ext'
+	… expected "simple:extended"
+}
