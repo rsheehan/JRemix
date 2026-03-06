@@ -29,9 +29,10 @@ public class RemixList<Expression> extends ArrayList implements RemixComplexType
                 List<RemixComplexType> callerStack = new ArrayList<>();
                 callerStack.add(this);
                 sb.append(complexItem.toString(callerStack, new StringBuilder()));
-            } else {
+            } else if (item instanceof String stringItem)
+                sb.append('"').append(stringItem).append('"');
+            else
                 sb.append(item);
-            }
 
             if (! it.hasNext())
                 return sb.append('}').toString();
@@ -56,9 +57,10 @@ public class RemixList<Expression> extends ArrayList implements RemixComplexType
                     callerStack.add(this);
                     sb.append(complexItem.toString(callerStack, tabs));
                 }
-            } else {
+            } else if (item instanceof String stringItem)
+                sb.append('"').append(stringItem).append('"');
+            else
                 sb.append(item);
-            }
 
             if (! it.hasNext())
                 return sb.append('}').toString();

@@ -1,11 +1,8 @@
 package edu.fizz.remix.runtime;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-public class RemixMap<String, Expression> extends HashMap<String, Expression> implements RemixComplexType{
+public class RemixMap<String, Expression> extends HashMap implements RemixComplexType{
     public java.lang.String toString() {
         Iterator<Entry<String, Expression>> iter = entrySet().iterator();
         if (! iter.hasNext())
@@ -24,9 +21,10 @@ public class RemixMap<String, Expression> extends HashMap<String, Expression> im
                 List<RemixComplexType> callerStack = new ArrayList<>();
                 callerStack.add(this);
                 sb.append(complexValue.toString(callerStack, new StringBuilder()));
-            } else {
+            } else if (value instanceof java.lang.String stringValue) {
+                sb.append('"').append(stringValue).append('"');
+            } else
                 sb.append(value);
-            }
 
             if (! iter.hasNext())
                 return sb.append('}').toString();
@@ -56,13 +54,22 @@ public class RemixMap<String, Expression> extends HashMap<String, Expression> im
                     callerStack.add(this);
                     sb.append(complexValue.toString(callerStack, tabs));
                 }
-            } else {
+            } else if (value instanceof java.lang.String stringValue)
+                sb.append('"').append(stringValue).append('"');
+            else
                 sb.append(value);
-            }
 
             if (! iter.hasNext())
                 return sb.append('}').toString();
             sb.append(',').append(' ');
         }
+    }
+
+    /*
+    I don't understand why this is necessary to make for loop in RemixMapExpression work.
+    Something to do with generics?
+     */
+    public Set<Map.Entry<String, Expression>> entrySet() {
+        return super.entrySet();
     }
 }
