@@ -25,7 +25,7 @@ public class RemixExtendedObjectExpression extends  RemixObjectExpression {
             FieldAssignmentStatement assStmnt = (FieldAssignmentStatement) statement;
             Object result = assStmnt.evaluate(definingContext);
             if (assStmnt.name().equals("type"))
-                result = existingType + ":" + result; // does mean could have "null" components.
+                result = result + "-" + existingType; // does mean could have "null" components.
             // Also if the extended object doesn't have its own type it will be the same type as the original
             remixObject.instanceAssign(assStmnt.name(), result); // add the instance variable with initial value
         }

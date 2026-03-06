@@ -1,5 +1,6 @@
 a person called 'name' :
 	create
+		'type' : "Named person"
 		'name' : 'name'
 
 		MY introduction :
@@ -10,6 +11,7 @@ a person called 'name' :
 
 a person called 'name' age 'years' :
 	extend a person called 'name'
+		'type' : "Aged"
 		'age' : 'years'
 
 		say hello to ME :

@@ -13,5 +13,5 @@
 test {
 	"Extended type includes original"
 		type of 'ext'
-	… expected "simple:extended"
+	… expected "extended-simple"
 }
