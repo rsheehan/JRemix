@@ -4,9 +4,6 @@
 'turtle lib' : library
 	using graphics
 
-		'window' : the graphics panel
-		TURTLE : a turtle in (a turtle space in 'window')
-
 		=-
 		Create a turtle space in 'the window'.
 		'the window' is a graphics panel.

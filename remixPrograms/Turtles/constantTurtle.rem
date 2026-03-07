@@ -1,5 +1,8 @@
-using turtle
-
+using graphics, turtle
+	
+	'window' : the graphics panel
+	TURTLE : a turtle in (a turtle space in 'window')
+	
 	square 'size' :
 		repeat 4 times
 			move TURTLE 'size' steps
