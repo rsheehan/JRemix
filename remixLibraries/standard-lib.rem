@@ -22,6 +22,7 @@ CONS : CONSTANTS
 VARIABLES : "VARIABLES"
 VARS : VARIABLES
 EDITOR : "EDITOR"
+REPL : "REPL"
 
 ==============================
  Simple print functions

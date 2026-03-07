@@ -769,11 +769,12 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            return "help \"term\" - searches for functions which match string \"term\".\n" +
-                    "\te.g. help \"for each\"\n" +
-                    "help EDITOR - shows help about the editor.\n" +
-                    "help CONSTANTS or help CONS - shows all constants at this level.\n" +
-                    "help VARIABLES or help VARS - shows all variables at this level.";
+            return "help \"term\"\n" +
+                    "\tsearches for functions which match string \"term\".\n" +
+                    "\te.g. help \"for each\"\n\n" +
+                    "help REPL - shows help about the Read Evaluate Print Loop.\n\n" +
+                    "help CONSTANTS or help CONS - shows all constants at this level.\n\n" +
+                    "help VARIABLES or help VARS - shows all variables at this level.\n";
         }
     }
 
@@ -787,7 +788,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     false,
                     "Give help about 'what'. 'what' is normally a string.\n" +
                             "Also\n" +
-                            "   help EDITOR\n" +
+                            "   help REPL\n" +
                             "   help CONSTANTS\n" +
                             "   help VARIABLES"
             );
@@ -798,7 +799,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public Object execute(Context context) throws ReturnException, InterruptedException {
             String what = ((String) context.retrieve("what", false));
             StringBuilder helpSB = new StringBuilder();
-            if (what.equals("EDITOR")) {
+            if (what.equals("REPL")) {
                 return REPLInputOutput.INFOSTRING;
             } else if (what.equals("CONSTANTS")) {
                 dealWithConstants(context.parentContext, helpSB);
