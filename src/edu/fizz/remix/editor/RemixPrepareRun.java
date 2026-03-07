@@ -15,6 +15,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This contains the code to "compile" the program.
@@ -76,6 +78,11 @@ public class RemixPrepareRun {
         LibraryExpression libraryExpression = (LibraryExpression)eval.visit(tree);
         // The libraryExpression will either contain a block of code
         // or a function definition.
+        Function addedFunction = null;
+        Iterator<Map.Entry<String, Function>> it = libraryExpression.functionTable.entrySet().iterator();
+        if (it.hasNext()) {
+            addedFunction = it.next().getValue();
+        }
         LibraryExpression currentTOSLibrary = REPLContext.peekLibrary();
         if (!currentTOSLibrary.getLibName().equals(Runtime.REPL)) { // if not the REPL i.e. base or editor program
             REPLContext.addLibraryToStack(libraryExpression);
@@ -89,6 +96,9 @@ public class RemixPrepareRun {
             REPLContext.pushLibrary(libraryExpression);
         }
         libraryExpression.setLibName(Runtime.REPL);
+        if (addedFunction != null) {
+            return "Function: " + addedFunction.displayName(addedFunction.getFirstName());
+        }
         RemixEditor.setEditing(false);
         Object result = Runtime.runREPL(libraryExpression);
         RemixEditor.setEditing(true);

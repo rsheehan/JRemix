@@ -756,6 +756,27 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
     }
 
+    public static final class HelpHelp extends Function {
+
+        public HelpHelp() {
+            super(
+                    List.of("help", "?"),
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    false,
+                    "Provide information about the help function."
+            );
+        }
+
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            return "help \"term\" - searches for functions which match string \"term\".\n" +
+                    "\te.g. help \"for each\"\n" +
+                    "help EDITOR - shows help about the editor.\n" +
+                    "help CONSTANTS or help CONS - shows all constants at this level.\n" +
+                    "help VARIABLES or help VARS - shows all variables at this level.";
+        }
+    }
+
     public static final class HelpFunction extends Function {
 
         public HelpFunction() {
@@ -764,7 +785,11 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     List.of("what"),
                     List.of(false),
                     false,
-                    "Give help about 'what'."
+                    "Give help about 'what'. 'what' is normally a string.\n" +
+                            "Also\n" +
+                            "   help EDITOR\n" +
+                            "   help CONSTANTS\n" +
+                            "   help VARIABLES"
             );
         }
 
@@ -791,10 +816,14 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         private void dealWithVariables(Context context, StringBuilder helpSB) {
             for (String name : context.variables.keySet()) {
+                Object value = context.variables.get(name);
+                if (value instanceof String) {
+                    value = "\"" + value + "\"";
+                }
                 helpSB.append('\'')
                         .append(name)
                         .append("\' : ")
-                        .append(context.variables.get(name))
+                        .append(value)
                         .append('\n');
             }
         }
@@ -806,9 +835,13 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 TreeMap<String, Object> constants = new TreeMap<>(lib.constantTable);
                 // Iterate over the sorted map
                 for (Map.Entry<String, Object> entry : constants.entrySet()) {
+                    Object value = entry.getValue();
+                    if (value instanceof String) {
+                        value = "\"" + value + "\"";
+                    }
                     helpSB.append(entry.getKey())
                             .append(": ")
-                            .append(entry.getValue())
+                            .append(value)
                             .append("\n");
                 }
             }
