@@ -100,6 +100,13 @@ none of 'list' :
 			return false
 		true
 
+=-
+Execute 'block' if 'expression' is false.
+=-
+if not 'expression' ['block'] :
+	if (not 'expression')
+		do 'block'
+	
 ==============================
  Looping functions
 ==============================
@@ -751,24 +758,29 @@ test 'list of tests' :
 			if ('result' = 'expected')
 				increment 'passing'
 				"  Passed" ↲
+				return true
 			… otherwise
 				increment 'failing'
 				"  Failed: produces ", 'result', ", should be ", 'expected' ↲
+				return false
 
 		=-
 		Execute the tests of a test 'OBJECT'.
 		=-
 		execute MY tests :
 			"Starting tests: " ↲
+			'all tests' : true
 			for each 'test' in 'tests' keeping 'test number'
-				assert test 'test number' ('test' {"description"})
-				… ('test' {"code"}) produces ('test' {"expected"})
+				if not (assert test 'test number' ('test' {"description"})
+				… ('test' {"code"}) produces ('test' {"expected"}))
+					'all tests' : false
 			↲
 			'test string' : 'tests' length ⊕ SPACE ⊕ (pluralize "test" for ('tests' length))
 			'test string' ↲
 			"=" ('test string' length) times ↲
 			"expected : ", 'passing' ↲
 			"failing : ", 'failing' ↲
+			'all tests'
 
 	execute 'test object' tests
 

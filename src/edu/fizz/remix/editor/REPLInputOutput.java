@@ -226,7 +226,7 @@ public class REPLInputOutput extends JTextArea {
             int lineNumber = getLineOfOffset(offset);
             String lineText = getLineText(lineNumber);
             lines.append(lineText);
-            if (lineText.startsWith("\t") || lineText.startsWith("…")) {
+            if (lineText.startsWith("}") || lineText.startsWith("\t") || lineText.startsWith("…")) {
                 while (lineNumber > 0) {
                     --lineNumber;
                     String prevLine = getLineText(lineNumber);
