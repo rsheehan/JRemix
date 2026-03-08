@@ -1,12 +1,13 @@
 package edu.fizz.remix.runtime;
 
 import edu.fizz.remix.editor.RemixPrepareRun;
-
-import static edu.fizz.remix.editor.RemixPrepareRun.REPLContext;
+import java.util.HashMap;
 
 public class Runtime {
 
     public static String REPL = "REPL";
+    public static HashMap<String, LibraryExpression> loadedLibraries; // does not include base library
+    // key: library code - usually a function call, value: the LibraryExpression
 
     /**
      * Run the program. This comes from the text in the editor.
@@ -14,10 +15,11 @@ public class Runtime {
     public static void runProgram(LibraryExpression program) {
         program.setLibName("Program");
         program.setTrueLibrary();
-        REPLContext = new Context(LibrariesAndCompletions.getBaseLibrary());
-        REPLContext.addLibraryToStack(program);
+        RemixPrepareRun.REPLContext = new Context(LibrariesAndCompletions.getBaseLibrary());
+        RemixPrepareRun.REPLContext.addLibraryToStack(program);
+        loadedLibraries = new HashMap();
         try {
-            program.block.evaluate(REPLContext);
+            program.block.evaluate(RemixPrepareRun.REPLContext);
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in program.");
         } catch (InterruptedException exception) {

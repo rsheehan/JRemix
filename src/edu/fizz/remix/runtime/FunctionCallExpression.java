@@ -10,7 +10,7 @@ import java.util.Stack;
  * With multiple function names I should really change this as the function call only
  * uses one of the names. We don't have to extend FunctionName anymore.
  */
-public class FunctionCallExpression extends FunctionName<Expression> implements Expression {
+public class FunctionCallExpression extends FunctionName<Expression> implements Expression, NamedExpression {
 
     private final String fileName;
     private final int lineNumber;
@@ -185,7 +185,6 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
 
     public String toString() {
         String call = functionNames.getFirst();
-        //call = call.replaceAll("_", " ");
         String[] callArr = call.split("");
         ListIterator<Expression> paramIter = parameters.listIterator();
         StringBuilder callName = new StringBuilder();
@@ -199,5 +198,10 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             }
         }
         return callName.toString();
+    }
+
+    @Override
+    public String getName() {
+        return toString();
     }
 }

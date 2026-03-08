@@ -243,6 +243,7 @@ public class LibrariesAndCompletions {
         baseLibrary.setLibName("Standard base lib");
         baseLibrary.setTrueLibrary();
         baseLibrary.setActiveLines(LibraryExpression.ALLLINES);
+        Runtime.loadedLibraries = new HashMap<>();
         resetREPLEnvironment();
         System.out.println();
     }

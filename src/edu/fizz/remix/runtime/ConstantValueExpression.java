@@ -2,7 +2,7 @@ package edu.fizz.remix.runtime;
 
 import edu.fizz.remix.editor.RemixEditor;
 
-public class ConstantValueExpression implements Expression {
+public class ConstantValueExpression implements Expression, NamedExpression {
 
     String constantName;
 

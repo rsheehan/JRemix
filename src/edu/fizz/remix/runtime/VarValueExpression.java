@@ -1,7 +1,7 @@
 package edu.fizz.remix.runtime;
 
 /** Gets the value of a variable from its name. */
-public class VarValueExpression implements Expression {
+public class VarValueExpression implements Expression, NamedExpression {
 
     private final String varName;
     private int lineNumber = 0;

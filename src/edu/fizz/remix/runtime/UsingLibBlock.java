@@ -39,41 +39,34 @@ public class UsingLibBlock implements Expression { //extends Block {
         return librariesToUse;
     }
 
-//    public void attachLibsToFunctions() {
-//        for (String functionName : (usingBlock.functionTable.keySet())) {
-//            RemixFunction function = (RemixFunction)usingBlock.functionTable.get(functionName);
-//            FunctionInUsing functionInUsing = new FunctionInUsing(function, librariesToUse);
-//            usingBlock.functionTable.put(functionName, functionInUsing);
-//        }
-//    }
-//
-//    public HashMap functionsDefined() {
-//        attachLibsToFunctions();
-//        return usingBlock.functionTable;
-//    }
-
     public Block statements() {
         return usingBlock.block;
+    }
+
+    private String libIdString(Expression libraryExpression) {
+        if (libraryExpression instanceof NamedExpression namedExpression)
+            return namedExpression.getName();
+        return null;
     }
 
     @Override
     public Object evaluate(Context context) throws ReturnException, InterruptedException {
         LibraryExpression library;
-
         for (Expression libraryExpression : libExpressions) { //libraryExpressions) {
-            try {
-                library = (LibraryExpression) libraryExpression.evaluate(context);
-                // a hack to give most libraries a name
-                if (libraryExpression instanceof FunctionCallExpression functionCall) {
-                    library.setLibName(functionCall.singleName());
+            String libID = libIdString(libraryExpression);
+            library = Runtime.loadedLibraries.get(libID);
+            if (library  == null)
+                try {
+                    library = (LibraryExpression) libraryExpression.evaluate(context);
+                    library.setLibName(libID);
+                    Runtime.loadedLibraries.put(libID, library);
+                } catch (ClassCastException e) {
+                    System.err.printf("%s is not a library.%n", libraryExpression);
                 }
-                // store it so that functions which use the library
-                // don't re-evaluate the library
-                librariesToUse.put(libraryExpression, library);
-                context.pushLibrary(library);
-            } catch (ClassCastException e) {
-                System.err.printf("%s is not a library.%n", libraryExpression);
-            }
+            // store it so that functions which use the library
+            // don't re-evaluate the library
+            librariesToUse.put(libraryExpression, library);
+            context.pushLibrary(library);
         }
         /*
         context libStack starts looking like:
@@ -89,8 +82,6 @@ public class UsingLibBlock implements Expression { //extends Block {
          */
         Object result = usingBlock.evaluate(context);
 
-        /* Pop the programLibrary before popping off the rest. */
-//        context.popLibrary();
         for (int libNum = 0; libNum < libExpressions.length; libNum++) {
             context.popLibrary();
         }
