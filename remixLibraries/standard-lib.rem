@@ -23,6 +23,8 @@ VARIABLES : "VARIABLES"
 VARS : VARIABLES
 EDITOR : "EDITOR"
 REPL : "REPL"
+LIBRARIES : "LIBRARIES"
+LIBS : LIBRARIES
 
 ==============================
  Simple print functions

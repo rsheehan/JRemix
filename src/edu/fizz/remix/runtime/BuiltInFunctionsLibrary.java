@@ -774,7 +774,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     "\te.g. help \"for each\"\n\n" +
                     "help REPL - shows help about the Read Evaluate Print Loop.\n\n" +
                     "help CONSTANTS or help CONS - shows all constants at this level.\n\n" +
-                    "help VARIABLES or help VARS - shows all variables at this level.\n";
+                    "help VARIABLES or help VARS - shows all variables at this level.\n\n" +
+                    "help LIBRARIES or help LIBS - shows all loaded libraries.\n";
         }
     }
 
@@ -790,7 +791,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                             "Also\n" +
                             "   help REPL\n" +
                             "   help CONSTANTS\n" +
-                            "   help VARIABLES"
+                            "   help VARIABLES\n" +
+                            "   help LIBRARIES"
             );
         }
 
@@ -808,11 +810,20 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     helpSB.delete(length - 1, length);
             } else if (what.equals("VARIABLES")) {
                 dealWithVariables(context.parentContext, helpSB);
+            } else if (what.equals("LIBRARIES")) {
+                dealWithLibraries(context.parentContext, helpSB);
             } else {
                 dealWithFunctions(context.parentContext, what, helpSB);
                 dealWithMethods(context.parentContext, what, helpSB);
             }
             return helpSB.toString();
+        }
+
+        private void dealWithLibraries(Context parentContext, StringBuilder helpSB) {
+            for (String libName : Runtime.loadedLibraries.keySet()) {
+                helpSB.append(libName)
+                        .append('\n');
+            }
         }
 
         private void dealWithVariables(Context context, StringBuilder helpSB) {
