@@ -270,6 +270,9 @@ public class REPLInputOutput extends JTextArea {
                 } else if (str.equals(".")) {
                     if (possibleEllipsis(fb, offset, a))
                         return;
+                } else if (str.equals("+")) {
+                    if (possibleConcatOperator(fb, offset, a))
+                        return;
                 }
             super.replace(fb, offset, length, str, a);
         }
@@ -292,6 +295,18 @@ public class REPLInputOutput extends JTextArea {
             String prevChar = getDocument().getText(offset, 2);
             if (prevChar.equals("..")) {
                 super.replace(fb, offset, 2, "…", a);
+                return true;
+            }
+            return false;
+        }
+
+        private boolean possibleConcatOperator(FilterBypass fb, int offset, AttributeSet a) throws BadLocationException {
+            if (offset < 1)
+                return false;
+            offset -= 1;
+            String prevChar = getDocument().getText(offset, 1);
+            if (prevChar.equals("(")) {
+                super.replace(fb, offset, 1, "⊕ ", a);
                 return true;
             }
             return false;

@@ -19,8 +19,6 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.SystemFlavorMap;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PrinterException;
@@ -189,10 +187,10 @@ public class RemixEditor extends JFrame {
         editorTextPane.setMargin(new Insets(5,10,5,10));
         doc = setUpStylesAndSpacing(this, editorTextPane, defaultFontForScreen, 21, true);
 
-        SystemFlavorMap flavorMap = (SystemFlavorMap) SystemFlavorMap.getDefaultFlavorMap();
-        flavorMap.setFlavorsForNative(
-                "JAVA_DATAFLAVOR:application/x-java-jvm-local-objectref; class=com.intellij.codeInsight.editorActions.FoldingData",
-                new DataFlavor[]{DataFlavor.getTextPlainUnicodeFlavor()});
+//        SystemFlavorMap flavorMap = (SystemFlavorMap) SystemFlavorMap.getDefaultFlavorMap();
+//        flavorMap.setFlavorsForNative(
+//                "JAVA_DATAFLAVOR:application/x-java-jvm-local-objectref; class=com.intellij.codeInsight.editorActions.FoldingData",
+//                new DataFlavor[]{DataFlavor.getTextPlainUnicodeFlavor()});
 
         JScrollPane editorScrollPane = new JScrollPane(editorTextPane);
 //        editorScrollPane.setMinimumSize(new Dimension(711, 800));
@@ -210,20 +208,28 @@ public class RemixEditor extends JFrame {
         JScrollPane scrollPaneForSystem = new JScrollPane(systemOutput);
 
         //Create the text area for the output and configure it.
-        remixOutput = new REPLInputOutput(); //JTextArea(); // 50, 100);
+        JPanel replWrapper = new JPanel(new BorderLayout());
+        replWrapper.setBorder(BorderFactory.createTitledBorder("Read Evaluate Print Loop"));
+
+        remixOutput = new REPLInputOutput();
         remixOutput.append(REPLInputOutput.INFOSTRING);
         JScrollPane scrollPaneForOutput = new JScrollPane(remixOutput);
+        replWrapper.add(scrollPaneForOutput, BorderLayout.CENTER);
+
+        JPanel graphicsWrapper = new JPanel(new BorderLayout());
+        graphicsWrapper.setBorder(BorderFactory.createTitledBorder("Graphics Panel"));
 
         Dimension graphicsDimension = new Dimension(1000,800);
         graphicOutput = new GraphicsPanel(graphicsDimension);
         //graphicOutput.setMinimumSize(graphicsDimension);
+        graphicsWrapper.add(graphicOutput, BorderLayout.CENTER);
 
         //Create a split pane for the program editor and system/error output.
         systemSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, editorScrollPane, scrollPaneForSystem);
         systemSplitPane.setOneTouchExpandable(true);
 
         //Create a split pane for the graphics and text output.
-        outputSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, graphicOutput, scrollPaneForOutput);
+        outputSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, graphicsWrapper, replWrapper);
         outputSplitPane.setOneTouchExpandable(true);
 
         //Create a split pane for the output and the text area.

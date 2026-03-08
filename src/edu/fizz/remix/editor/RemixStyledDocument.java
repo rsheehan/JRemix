@@ -19,8 +19,8 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             Map.entry("sqrt", "√"),
             Map.entry("sqrd", "²"),
             Map.entry("\\n", "↲"),
-            Map.entry("...", "…"),
-            Map.entry(" (+", " ⊕")
+            Map.entry("...", "… "),
+            Map.entry(" (+", " ⊕ ")
     );
     private final Map<String, String> matchingPairs = Map.of(
             "(", ")",
@@ -264,7 +264,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                             return false; // don't replace as pi is part of word
                     }
                 }
-                if (replacement.equals(" ⊕") && getText(offset, 1).equals(")")) {
+                if (replacement.equals(" ⊕ ") && getText(offset, 1).equals(")")) {
                     super.replace(offset - targetLen, targetLen + 1, replacement, defaultStyle);
                 } else {
                     super.replace(offset - targetLen, targetLen, replacement, defaultStyle);
