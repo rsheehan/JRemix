@@ -1,5 +1,5 @@
 # Remix
-![landscape1.png](images/landscapeImage.png)
+![Remix Insertion Sort](images/RemixInsertionSort.png)
 ## This is the current Remix - implemented in Java
 Remix is a flexible programming language based around the idea of mix-fix (as opposed to pre-fix or post-fix) 
 function names. With as many space-separated words and parameters as you want in a function name you can make these 
