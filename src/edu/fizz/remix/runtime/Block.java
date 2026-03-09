@@ -46,7 +46,7 @@ public class Block implements Expression {
     }
 
     @Override
-    public Object evaluate(Context context) throws ReturnException, InterruptedException {
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
         Object result = RemixNull.value();
         if (blockContext != null) { // anonymous block, use its blockContext
             // this is where the problem is - the blockContext doesn't have the correct libStack

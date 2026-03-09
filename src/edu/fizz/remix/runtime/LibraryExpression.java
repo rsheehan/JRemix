@@ -163,7 +163,7 @@ public class LibraryExpression implements Expression {
     }
 
     @Override
-    public Object evaluate(Context context) throws ReturnException, InterruptedException {
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
         // The result of the expression is just itself if this is a true library.
         // Otherwise it is the result of the last statement in the block.
         // Now that libraries can include statements they must be executed here

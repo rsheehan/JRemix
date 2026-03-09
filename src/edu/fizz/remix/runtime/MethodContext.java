@@ -53,7 +53,7 @@ public class MethodContext extends Context {
         localContext.variables.put(varName, value);
     }
 
-    public void assign(String varName, Object value) {
+    public void assign(String varName, Object value) throws VarNotFoundException {
         // check to see if the variable is an instance variable
         // i.e. in the variables map
         // otherwise use the method local context
@@ -71,7 +71,7 @@ public class MethodContext extends Context {
     then check the local context.
 
     */
-    public Object retrieve(String varName, boolean formalReference) {
+    public Object retrieve(String varName, boolean formalReference) throws VarNotFoundException {
         if (varName.startsWith("#")) {
             if (localContext.variables.containsKey(varName)) {
                 RefParameter refValue = (RefParameter) localContext.variables.get(varName);

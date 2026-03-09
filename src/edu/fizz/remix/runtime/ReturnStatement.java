@@ -9,7 +9,7 @@ public class ReturnStatement implements Expression {
     }
 
     @Override
-    public Object evaluate(Context context) throws InterruptedException {
+    public Object evaluate(Context context) throws InterruptedException, VarNotFoundException {
         if (returnExpression != null) {
             try {
                 return returnExpression.evaluate(context);

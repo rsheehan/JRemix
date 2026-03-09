@@ -89,5 +89,5 @@ public abstract class Function {
 
     // I could have called this evaluate but a Function isn't an Expression.
     // That is the role of a FunctionCallExpression.
-    public abstract Object execute(Context context) throws ReturnException, InterruptedException;
+    public abstract Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException;
 }

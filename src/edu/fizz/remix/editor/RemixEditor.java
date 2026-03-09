@@ -198,6 +198,8 @@ public class RemixEditor extends JFrame {
         editorScrollPane.setRowHeaderView(lineNumbers);
 
         //Create the text area for the system/error output.
+        JPanel systemWrapper = new JPanel(new BorderLayout());
+        systemWrapper.setBorder(BorderFactory.createTitledBorder("Errors and warnings"));
         systemOutput = new JTextArea();
         systemOutput.setBackground(Color.black);
         systemOutput.setFont(new Font("Courier New", Font.PLAIN, 14));
@@ -206,6 +208,7 @@ public class RemixEditor extends JFrame {
         systemOutput.setLineWrap( true );
         systemOutput.setWrapStyleWord(true);
         JScrollPane scrollPaneForSystem = new JScrollPane(systemOutput);
+        systemWrapper.add(scrollPaneForSystem, BorderLayout.CENTER);
 
         //Create the text area for the output and configure it.
         JPanel replWrapper = new JPanel(new BorderLayout());
@@ -225,7 +228,7 @@ public class RemixEditor extends JFrame {
         graphicsWrapper.add(graphicOutput, BorderLayout.CENTER);
 
         //Create a split pane for the program editor and system/error output.
-        systemSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, editorScrollPane, scrollPaneForSystem);
+        systemSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, editorScrollPane, systemWrapper);
         systemSplitPane.setOneTouchExpandable(true);
 
         //Create a split pane for the graphics and text output.

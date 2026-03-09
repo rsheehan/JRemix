@@ -31,7 +31,7 @@ public class RemixObjectExpression implements Expression {
     /* Just evaluates and stores the instance variables
      * in the object context. */
     @Override
-    public RemixObject evaluate(Context definingContext) throws ReturnException, InterruptedException {
+    public RemixObject evaluate(Context definingContext) throws ReturnException, InterruptedException, VarNotFoundException {
         RemixObject remixObject = new RemixObject(definingContext, methodTable);
         for (Expression statement : initBlock.statements) {
             FieldAssignmentStatement assStmnt = (FieldAssignmentStatement) statement;

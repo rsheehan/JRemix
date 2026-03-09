@@ -5,6 +5,7 @@ import edu.fizz.remix.editor.RemixEditor;
 public class ConstantValueExpression implements Expression, NamedExpression {
 
     String constantName;
+    private int lineNumber;
 
     public ConstantValueExpression(String name) {
         constantName = name;
@@ -14,9 +15,12 @@ public class ConstantValueExpression implements Expression, NamedExpression {
         return constantName;
     }
 
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
     @Override
     public Object evaluate(Context context) {
-        // TODO: get constant from corresponding library
         LibraryExpression library;
         LibraryExpression previousMatchingLibrary = null;
         Object result = null;
@@ -43,8 +47,14 @@ public class ConstantValueExpression implements Expression, NamedExpression {
             }
         }
 
-        if (result == null && !RemixEditor.isEditing())
-            System.err.format("Constant \"%s\" has no value.%n", constantName);
+        if (result == null && !RemixEditor.isEditing()) {
+            System.err.format("Constant \"%s\" has no value ", constantName);
+            if (Runtime.REPLRunning)
+                System.err.println("in REPL.");
+            else  {
+                System.err.printf("on line %d.%n\"", lineNumber);
+            }
+        }
         return result;
     }
 

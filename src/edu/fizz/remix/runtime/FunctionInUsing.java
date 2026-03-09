@@ -22,7 +22,7 @@ public class FunctionInUsing extends RemixFunction {
     // we need to check if the expression has been turned into a library.
     // I need instead to have a cache of libraries so that we don't
     // load more than once. Now cached when evaluating UsingLibBlock.
-    public Object execute(Context context) throws ReturnException, InterruptedException {
+    public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
         for (Map.Entry<Expression, LibraryExpression> entry : librariesToUse.entrySet()) {
 
             // NEED TO CHECK IF THE LIBRARIES BEING PUSHED ARE ALREADY ON THE LIBSTACK.

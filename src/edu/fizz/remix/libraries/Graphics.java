@@ -106,7 +106,7 @@ public class Graphics extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context)  {
+        public Object execute(Context context) throws VarNotFoundException {
             String title = (String)context.retrieve("title", false);
             int width = ((Long)context.retrieve("width", false)).intValue();
             int height = ((Long)context.retrieve("height", false)).intValue();
@@ -127,7 +127,7 @@ public class Graphics extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             GraphicsWindow window = (GraphicsWindow)context.retrieve("JWindow", false);
             return window.drawPanel;
         }
@@ -146,7 +146,7 @@ public class Graphics extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             GraphicsPanel panel = (GraphicsPanel) context.retrieve("graphics panel", false);
             return panel.getBaseLayer();
         }
@@ -165,7 +165,7 @@ public class Graphics extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             GraphicsPanel panel = (GraphicsPanel) context.retrieve("graphics panel", false);
             panel.clearBaseLayer();
             return null;
@@ -185,7 +185,7 @@ public class Graphics extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             GraphicsPanel panel = (GraphicsPanel) context.retrieve("graphics panel", false);
             Color backgroundColour = colorFromRGBorString(context.retrieve("colour", false));
             panel.setBackground(backgroundColour);
@@ -205,7 +205,7 @@ public class Graphics extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             GraphicsWindow window = (GraphicsWindow) context.retrieve("window", false);
             window.setVisible(true);
             return null;
@@ -224,7 +224,7 @@ public class Graphics extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             GraphicsPanel panel = (GraphicsPanel) context.retrieve("graphics panel", false);
             panel.exchangeShapesAndRepaint();
             return null;
@@ -243,14 +243,14 @@ public class Graphics extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             GraphicsPanel panel = (GraphicsPanel) context.retrieve("graphics panel", false);
             panel.removeShapes();
             return null;
         }
     }
 
-    private static void dealWithLine(Color fillColour, Context shapeContext, GraphicsLayerImage layerImage, GraphicsPanel panel) {
+    private static void dealWithLine(Color fillColour, Context shapeContext, GraphicsLayerImage layerImage, GraphicsPanel panel) throws VarNotFoundException {
         int[] start = integerPoint(pointsFromMapOrList(shapeContext.retrieve("start", false)));
         int[] finish = integerPoint(pointsFromMapOrList(shapeContext.retrieve("finish", false)));
         double width = ((Number) shapeContext.retrieve("width", false)).doubleValue();
@@ -260,7 +260,7 @@ public class Graphics extends LibraryExpression {
             panel.addLineForDrawing(fillColour, start, finish, width);
     }
 
-    private static void dealWithShape(boolean filled, Color fillColour, Context shapeContext, GraphicsLayerImage layerImage, GraphicsPanel panel) {
+    private static void dealWithShape(boolean filled, Color fillColour, Context shapeContext, GraphicsLayerImage layerImage, GraphicsPanel panel) throws VarNotFoundException {
         // get the polygon
         Path2D.Double shapePath = polygonFromPoints((ArrayList<?>) shapeContext.retrieve("polygon", false));
         // get the position
@@ -288,7 +288,7 @@ public class Graphics extends LibraryExpression {
                     scaledShapePath, position, heading, filled, outlined);
     }
 
-    private static void dealWithCircle(boolean filled, Color fillColour, Context shapeContext, GraphicsLayerImage layerImage, GraphicsPanel panel) {
+    private static void dealWithCircle(boolean filled, Color fillColour, Context shapeContext, GraphicsLayerImage layerImage, GraphicsPanel panel) throws VarNotFoundException {
         double radius = ((Number) shapeContext.retrieve("radius", false)).doubleValue();
         int[] position = integerPoint(pointsFromMapOrList(shapeContext.retrieve("position", false)));
         // get the outline colour
@@ -320,7 +320,7 @@ public class Graphics extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             RemixObject shape = (RemixObject) context.retrieve("shape", false);
             GraphicsLayerImage layerImage = (GraphicsLayerImage) context.retrieve("base layer", false);
             Context shapeContext = shape.getContext();
@@ -357,7 +357,7 @@ public class Graphics extends LibraryExpression {
             );
         }
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             RemixObject shape = (RemixObject) context.retrieve("shape", false);
             GraphicsPanel panel = (GraphicsPanel) context.retrieve("graphics panel", false);
             Context shapeContext = shape.getContext();
@@ -396,7 +396,7 @@ public class Graphics extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             AnimateFunction.AnimationBlock animationBlock = (AnimateFunction.AnimationBlock) context.retrieve("animation", false);
             double seconds = ((Number) context.retrieve("time", false)).doubleValue();
             animationBlock.pauseTimer((int)(seconds * 1000));
@@ -420,7 +420,7 @@ public class Graphics extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             double rate = ((Number) context.retrieve("rate", false)).doubleValue();
             Block animation = (Block) context.retrieve("animation", false);
             Block condition = (Block) context.retrieve("condition", false);
@@ -470,7 +470,7 @@ public class Graphics extends LibraryExpression {
             public void actionPerformed(ActionEvent e) {
                 try {
                     animation.evaluate(null); // uses the block context
-                } catch (ReturnException | InterruptedException ex) {
+                } catch (ReturnException | InterruptedException | VarNotFoundException ex) {
                     System.err.println("Problem animating");
                     throw new RuntimeException(ex);
                 }
@@ -478,7 +478,7 @@ public class Graphics extends LibraryExpression {
                     if ((Boolean)condition.evaluate(null)) { // see above
                         stopAnimation();
                     }
-                } catch (ReturnException | InterruptedException ex) {
+                } catch (ReturnException | InterruptedException | VarNotFoundException ex) {
                     System.err.println("Problem evaluating animation stop");
                     throw new RuntimeException(ex);
                 }

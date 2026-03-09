@@ -11,7 +11,7 @@ public class AssignmentStatement implements Expression {
     }
 
     @Override
-    public Object evaluate(Context context) throws ReturnException, InterruptedException {
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
         Object result;
         // Blocks get assigned as they are. They are evaluated with do.
         if (expression instanceof Block block) {

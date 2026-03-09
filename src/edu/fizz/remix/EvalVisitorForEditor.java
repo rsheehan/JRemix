@@ -196,7 +196,8 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                 else try { // fall back on attempting to evaluate the library expression
                     Context contextForLib = new Context(LibrariesAndCompletions.getBaseLibrary());
                     libraryExpression = (LibraryExpression) libExp.evaluate(contextForLib);
-                } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException _) {}
+                } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException |
+                         VarNotFoundException _) {}
                 if (libraryExpression != null)
                     libraryExpressions.add(libraryExpression);
             }

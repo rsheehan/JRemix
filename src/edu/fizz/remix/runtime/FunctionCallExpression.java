@@ -24,7 +24,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
     }
 
     @Override
-    public Object evaluate(Context context) throws ReturnException, InterruptedException {
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
 
         /*
          Need to check the methodTable for a corresponding method.
@@ -109,7 +109,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
     we add the parameters to this.
     Any local variables also go into the functionContext not the callingContext
      */
-    private Object executeFunctionOrMethod(Function routine, Context functionContext) throws ReturnException, InterruptedException {
+    private Object executeFunctionOrMethod(Function routine, Context functionContext) throws ReturnException, InterruptedException, VarNotFoundException {
         Context callingContext = functionContext.parentContext;
         for (int i = 0; i < routine.numArgs(); i++) {
             String formal = routine.getArgument(i);

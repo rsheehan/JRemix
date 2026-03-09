@@ -50,7 +50,7 @@ public class UsingLibBlock implements Expression { //extends Block {
     }
 
     @Override
-    public Object evaluate(Context context) throws ReturnException, InterruptedException {
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
         LibraryExpression library;
         for (Expression libraryExpression : libExpressions) { //libraryExpressions) {
             String libID = libIdString(libraryExpression);
@@ -60,7 +60,7 @@ public class UsingLibBlock implements Expression { //extends Block {
                     library = (LibraryExpression) libraryExpression.evaluate(context);
                     library.setLibName(libID);
                     Runtime.loadedLibraries.put(libID, library);
-                } catch (ClassCastException e) {
+                } catch (ClassCastException | VarNotFoundException e) {
                     System.err.printf("%s is not a library.%n", libraryExpression);
                 }
             // store it so that functions which use the library

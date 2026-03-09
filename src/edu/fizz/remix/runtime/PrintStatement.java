@@ -21,7 +21,7 @@ public class PrintStatement implements Expression {
     }
 
     @Override
-    public Object evaluate(Context context) throws ReturnException, InterruptedException {
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
         for (Expression expression : expressionList) {
             Object value = expression.evaluate(context);
             BuiltInFunctionsLibrary.PrintFunction.publish(value); // don't put quotes around it

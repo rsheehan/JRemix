@@ -17,7 +17,17 @@ public class VarValueExpression implements Expression, NamedExpression {
 
     @Override
     public Object evaluate(Context context) {
-        Object value = context.retrieve(varName, false);
+        Object value = null;
+        try {
+            value = context.retrieve(varName, false);
+        } catch (VarNotFoundException e) {
+            System.err.printf("'%s' has no value ", varName);
+            if (Runtime.REPLRunning)
+                System.err.println("in REPL.");
+            else  {
+                System.err.printf("on line %d.%n", lineNumber);
+            }
+        }
         if (value == null)
             value = RemixNull.value();
         return value;

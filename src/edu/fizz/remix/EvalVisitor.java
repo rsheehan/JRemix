@@ -448,19 +448,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return new ConstantAssignmentStatement(constName, expression);
     }
 
-    /** expression (from statement) */
-    public Expression visitExpr(RemixParser.ExprContext ctx) {
-        // This is only necessary to catch a single stand alone variable
-        // which can be misinterpreted as a statement. This is legal but
-        // probably not was intended by a programmer.
-        Expression expression = (Expression) visit(ctx.expression());
-        if (expression instanceof VarValueExpression varValue) {
-            varValue.setLineNumber(ctx.getStart().getLine() - 1);
-            varValue.setOffSet(ctx.getStart().getCharPositionInLine());
-        }
-        return expression;
-    }
-
     /** (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) */
     public PrintStatement visitPrintStatement(RemixParser.PrintStatementContext ctx) {
         List<Expression> expressionList = new ArrayList<>();
@@ -576,14 +563,19 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     @Override
     public Expression  visitExprVar(RemixParser.ExprVarContext ctx) {
         String varName = identifier(ctx.IDENTIFIER().getText());
-        return new VarValueExpression(varName);
+        VarValueExpression varValue = new VarValueExpression(varName);
+        varValue.setLineNumber(ctx.getStart().getLine() - 1);
+        varValue.setOffSet(ctx.getStart().getCharPositionInLine());
+        return varValue;
     }
 
     /** CONSTANT (from expression) */
     @Override
     public Expression visitExprConstant(RemixParser.ExprConstantContext ctx) {
         String constantName = ctx.CONSTANT().getText();
-        return new ConstantValueExpression(constantName);
+        ConstantValueExpression constantValue = new ConstantValueExpression(constantName);
+        constantValue.setLineNumber(ctx.getStart().getLine() - 1);
+        return constantValue;
     }
 
     /** SELFREF (from expression) */

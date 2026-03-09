@@ -20,7 +20,7 @@ public class BinaryExpression implements Expression {
      * The "=" and "!=" can also deal other types.
      */
     @Override
-    public Object evaluate(Context context) throws InterruptedException {
+    public Object evaluate(Context context) throws InterruptedException, VarNotFoundException {
         Object val1;
         Object val2;
         try {
@@ -150,7 +150,7 @@ public class BinaryExpression implements Expression {
                 };
             }
         } catch (RuntimeException e) {
-            System.err.printf("Error in binary expression: %s : %s %s %s.%n", this.toString(), val1, operator, val2);
+            System.err.printf("Error in binary expression: %s : %s %s %s.%n", this, val1, operator, val2);
             return false;
         }
     }

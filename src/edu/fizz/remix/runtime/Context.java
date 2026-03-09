@@ -56,7 +56,7 @@ public class Context {
     Now need to determine if the context is an anonymous block.
     If so the assignment is only in the local anonymous context.
      */
-    public void assign(String varName, Object value) {
+    public void assign(String varName, Object value) throws VarNotFoundException {
         if (varName.startsWith("#")) {
             /*
             This is where I need to deal with a listMap element reference.
@@ -83,7 +83,7 @@ public class Context {
         }
     }
 
-    public Object retrieve(String varName, boolean formalReference) {
+    public Object retrieve(String varName, boolean formalReference) throws VarNotFoundException {
         Object result;
         if (varName.startsWith("#")) {
             /*
@@ -110,7 +110,7 @@ public class Context {
             if (result == null && !formalReference) {
                 // if the formal is a reference variable then it is allowed to be null.
                 if (!RemixEditor.isEditing()) // a hack to not show the error as we are not running
-                    System.err.printf("'%s' has no value.%n", varName);
+                    throw new VarNotFoundException();
             }
         }
         return result;

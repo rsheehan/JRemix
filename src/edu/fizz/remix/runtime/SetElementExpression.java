@@ -4,6 +4,8 @@ import java.util.*;
 
 public class SetElementExpression implements Expression {
 
+    // TODO: need to get Test/reference.rem to work
+
     private final String listName;
     private final List listElementIds;
     private final Expression expression;
@@ -23,7 +25,7 @@ public class SetElementExpression implements Expression {
     }
 
     @Override
-    public Object evaluate(Context context) throws InterruptedException {
+    public Object evaluate(Context context) throws InterruptedException, VarNotFoundException {
         Object value = null;
 
         // don't evaluate the expression if it is a block
@@ -43,7 +45,11 @@ public class SetElementExpression implements Expression {
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in element of set element statement.");
         }
-        Object listMap = context.retrieve(listName, false);
+        Object listMap = null;
+        try {
+            listMap = context.retrieve(listName, false);
+        } catch (VarNotFoundException _) {
+        }
         try {
             if (listMap == null || // nothing stored in the ListMap yet
                     listMap instanceof RemixNull ||
@@ -75,7 +81,7 @@ public class SetElementExpression implements Expression {
     /*
      Makes a list from this point on for all of the listIndexes and eventually assigns the value.
      */
-    private RemixList makeList(Context context, int index, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException {
+    private RemixList makeList(Context context, int index, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException, VarNotFoundException {
         RemixList list = new RemixList(Collections.nCopies(index, null));
         if (listIndexes.isEmpty()) { // end of indexes so store the value
             list.set(index - 1, value);
@@ -97,7 +103,7 @@ public class SetElementExpression implements Expression {
     /*
      Makes a map from this point on for all of the listIndexes and eventually assigns the value.
     */
-    private RemixMap makeMap(Context context, String key, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException {
+    private RemixMap makeMap(Context context, String key, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException, VarNotFoundException {
         RemixMap map = new RemixMap();
         if (listIndexes.isEmpty()) { // end of indexes so store the value
             map.put(key, value);
@@ -116,7 +122,7 @@ public class SetElementExpression implements Expression {
         return map;
     }
 
-    private void setListComponentValue(Context context, ArrayList list, int index, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException {
+    private void setListComponentValue(Context context, ArrayList list, int index, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException, VarNotFoundException {
         while (list.size() < index)
             list.add(null);
         if (listIndexes.isEmpty()) { // end of indexes so store the value
@@ -140,13 +146,15 @@ public class SetElementExpression implements Expression {
             } else {
                 if (listMap instanceof ArrayList nextList)
                     setListComponentValue(context, nextList, ((Number)id).intValue(), indexes, value);
-                else
+                else {
+                    assert listMap instanceof HashMap;
                     setMapComponentValue(context, (HashMap)listMap, (String)id, indexes, value);
+                }
             }
         }
     }
 
-    private void setMapComponentValue(Context context, HashMap map, String key, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException {
+    private void setMapComponentValue(Context context, HashMap map, String key, ArrayList listIndexes, Object value) throws InterruptedException, ReturnException, VarNotFoundException {
         if (listIndexes.isEmpty()) {
             map.put(key, value);
         } else { // more indexes to go
@@ -168,8 +176,10 @@ public class SetElementExpression implements Expression {
             } else {
                 if (listMap instanceof ArrayList nextList)
                     setListComponentValue(context, nextList, ((Number)id).intValue(), indexes, value);
-                else
+                else {
+                    assert listMap instanceof HashMap;
                     setMapComponentValue(context, (HashMap)listMap, (String)id, indexes, value);
+                }
             }
         }
     }

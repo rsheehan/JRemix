@@ -29,11 +29,15 @@ public class GetElementExpression implements Expression {
     }
 
     @Override
-    public Object evaluate(Context context) throws InterruptedException, ReturnException {
+    public Object evaluate(Context context) throws InterruptedException, ReturnException, VarNotFoundException {
         if (originalContext != null)
             context = originalContext; // must be passed as a reference parameter
         Object id;
-        Object listOrMapPart = context.retrieve(listName, false);
+        Object listOrMapPart = null;
+        try {
+            listOrMapPart = context.retrieve(listName, false);
+        } catch (VarNotFoundException _) {
+        }
         if (listOrMapPart instanceof ArrayList<?> ||
                 listOrMapPart instanceof HashMap<?, ?> ||
                 listOrMapPart instanceof RangeExpression) {

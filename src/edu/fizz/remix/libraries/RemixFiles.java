@@ -1,9 +1,6 @@
 package edu.fizz.remix.libraries;
 
-import edu.fizz.remix.runtime.Context;
-import edu.fizz.remix.runtime.Function;
-import edu.fizz.remix.runtime.LibraryExpression;
-import edu.fizz.remix.runtime.ReturnException;
+import edu.fizz.remix.runtime.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +59,7 @@ public class RemixFiles extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             String fileName = (String)context.retrieve("name", false);
             String result = "";
             try {
@@ -89,7 +86,7 @@ public class RemixFiles extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             String data = (String)context.retrieve("contents", false);
             String fileName = (String)context.retrieve("name", false);
             try {
@@ -115,7 +112,7 @@ public class RemixFiles extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
             String fileName = (String)context.retrieve("name", false);
             byte[] result;
             try {
