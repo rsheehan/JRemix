@@ -937,7 +937,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             int lineNumber = varValueExpression.getLineNumber();
             int lineOffset = varValueExpression.getOffSet();
             if (!RemixPrepareRun.interactive())
-                System.err.printf("Variable %s on line %d, offset %d, value not used.%n",
+                System.err.printf("Warning: Variable %s on line %d, offset %d, value not used.%n",
                               variableName, lineNumber, lineOffset);
         }
     }

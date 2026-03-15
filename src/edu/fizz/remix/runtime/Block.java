@@ -49,7 +49,6 @@ public class Block implements Expression {
     public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
         Object result = RemixNull.value();
         if (blockContext != null) { // anonymous block, use its blockContext
-            // this is where the problem is - the blockContext doesn't have the correct libStack
             context = blockContext;
         }
         Iterator<Expression> iterator = statements.iterator();
