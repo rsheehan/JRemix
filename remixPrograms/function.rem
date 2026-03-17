@@ -25,3 +25,7 @@
 'my sine' {"x" : 0.2} ↲
 
 (function [sine 'x']) {"x" : 0.1} ↲
+
+'sin' : function [sine 'a']
+'sin' ↲
+'sin' 0.3 ↲

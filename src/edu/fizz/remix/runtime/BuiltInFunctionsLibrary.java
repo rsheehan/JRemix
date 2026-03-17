@@ -245,7 +245,12 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     List.of("body", "parameter context"),
                     List.of(true, false),
                     false,
-                    "Execute the 'body' in the context of 'parameter context'."
+                    "Execute the 'body' in the context of 'parameter context'.\n" +
+                            "'parameter context' is either a map, a list or a single value.\n" +
+                            "If a map then each key is a parameter name.\n" +
+                            "If a list then the 'body' must have alphabetical parameters starting with 'a'.\n" +
+                            "If a single value then it matches the parameter 'a'."
+
             );
         }
 
@@ -256,13 +261,25 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             try {
                 body = (Block)context.retrieve("body", false);
                 body.setContext(null);
-                map = (RemixMap)context.retrieve("parameter context", false);
-            } catch (VarNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-            Context callContext = new Context(context, false);
-            callContext.variables = map;
-            try {
+                Object parameters = context.retrieve("parameter context", false);
+                if (parameters instanceof RemixList list) {
+                    if (list.size() > 26) {
+                        System.err.println("Too many parameters executing function.");
+                    }
+                    char name = 'a';
+                    map = new RemixMap();
+                    for (Object value : list) {
+                        map.put(String.valueOf(name), value);
+                        name++;
+                    }
+                } else if (parameters instanceof RemixMap) {
+                    map = (RemixMap) parameters;
+                } else { // we assume one variable only if not a list or map
+                    map = new RemixMap();
+                    map.put("a", parameters);
+                }
+                Context callContext = new Context(context, false);
+                callContext.variables = map;
                 return body.evaluate(callContext);
             } catch (VarNotFoundException e) {
                 throw new RuntimeException(e);

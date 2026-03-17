@@ -380,8 +380,11 @@ map ['block'] on each #value in #sequence :
 
 =-
 Create a function object with 'body' as the function body.
-When the function is called with "OBJECT params" 'params' is a map
-with all necessary parameter names as keys.
+When the function is called with "OBJECT params" 'params' is either a
+map, list, or single value.
+If a map all necessary parameter names are keys.
+If a list each value represents a parameter named 'a', 'b', 'c' etc in sequence.
+If a single value it represents the single parameter 'a'.
 =-
 function ['body'] :
 	create
