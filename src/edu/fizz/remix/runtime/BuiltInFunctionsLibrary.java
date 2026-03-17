@@ -238,24 +238,37 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
     }
 
-//    /** The "do" function but in the context of the "do" not of the block. Evaluates the block parameter. */
-//    public static final class DoInContextFunction extends Function {
-//        public DoInContextFunction() {
-//            super(
-//                    List.of("do ⫾ in lib context"),
-//                    List.of("block"),
-//                    List.of(true),
-//                    false,
-//                    "Execute the 'block' in library contexts."
-//            );
-//        }
-//
-//        public Object execute(Context context) throws ReturnException, InterruptedException {
-//            Block block = (Block)context.retrieve("block", false);
-//            block.clearContext();
-//            return block.evaluate(context);
-//        }
-//    }
+    public static final class DoFunctionInContext extends Function {
+        public DoFunctionInContext() {
+            super(
+                    List.of("do ⫾ with ⫾"),
+                    List.of("body", "parameter context"),
+                    List.of(true, false),
+                    false,
+                    "Execute the 'body' in the context of 'parameter context'."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            Block body = null;
+            RemixMap map = null;
+            try {
+                body = (Block)context.retrieve("body", false);
+                body.setContext(null);
+                map = (RemixMap)context.retrieve("parameter context", false);
+            } catch (VarNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            Context callContext = new Context(context, false);
+            callContext.variables = map;
+            try {
+                return body.evaluate(callContext);
+            } catch (VarNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     /** The "print" function. Prints the string version of the value.
      */

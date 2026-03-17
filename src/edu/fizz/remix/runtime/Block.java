@@ -38,7 +38,10 @@ public class Block implements Expression {
     }
 
     public void setContext(Context context) { // could this push the context
-        blockContext = context.copy();
+        if (context == null)
+            blockContext = context;
+        else
+            blockContext = context.copy();
     }
 
     public void addStatement(Expression statement) {

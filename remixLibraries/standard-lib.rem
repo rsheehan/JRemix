@@ -375,6 +375,26 @@ map ['block'] on each #value in #sequence :
 		#sequence{'index'} : do 'block'
 
 ==============================
+ Function functions
+==============================
+
+=-
+Create a function object with 'body' as the function body.
+When the function is called with "OBJECT params" 'params' is a map
+with all necessary parameter names as keys.
+=-
+function ['body'] :
+	create
+		'type' : "function"
+		'body' : 'body'
+
+		=-
+		Execute the function, using the parameters in map 'params'.
+		=-
+		ME 'params' :
+			do 'body' with 'params'
+
+==============================
  String functions
 ==============================
 

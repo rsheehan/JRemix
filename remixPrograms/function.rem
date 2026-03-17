@@ -1,0 +1,27 @@
+'x' : 1
+
+'a' : [
+'x' : 'y' + 10
+2'x'
+]
+
+'neg square "x" plus 1' : function
+	'result' : ('x' sqrd) + 1
+	help VARS ↲
+	'result'
+
+'neg square "x" plus 1' {"x" : 3} ↲
+
+'a func "y"' : function 'a'
+'a func "y"' {"y" : 5} ↲
+
+(function 'a') {"y" : 10} ↲
+
+'neg square "x" plus 1' {"x" : 2} ↲
+
+'my sine' : function
+	sine 'x'
+
+'my sine' {"x" : 0.2} ↲
+
+(function [sine 'x']) {"x" : 0.1} ↲
