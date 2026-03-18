@@ -505,7 +505,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     Arrays.asList("index", "sequence"),
                     List.of(false, false),
                     false,
-                    "Extract an item from 'sequence' at 'index'\n" +
+                    "Extract an item from 'sequence' at 'index'.\n" +
                             "A sequence is a list, range or string."
             );
         }
@@ -894,7 +894,9 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
          * this is better because it only gives runnable methods
          */
         private void dealWithMethods(Context context, String what, StringBuilder helpSB) {
+            List<String> methodNames = new ArrayList<>();
             for (Object value : context.variables.values()) {
+                boolean already = false;
                 if (value instanceof RemixObject object) {
                     for (Method method : object.methodTable().values()) {
                         boolean found = false;
@@ -903,11 +905,17 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                             if (funcName.contains(what) || foundInComment) {
                                 found = true;
                                 String name = method.displayName(funcName);
+                                if (methodNames.contains(name)) {
+                                    already = true;
+                                    break;
+                                } else {
+                                    methodNames.add(name);
+                                }
                                 helpSB.append("\nMethod: ")
                                         .append(name);
                             }
                         }
-                        if (found || foundInComment) {
+                        if (!already && (found || foundInComment)) {
                             addFunctionComment(method, helpSB);
                         }
                     }
