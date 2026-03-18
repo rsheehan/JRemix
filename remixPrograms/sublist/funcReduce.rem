@@ -1,0 +1,38 @@
+'list' : {1, 2, 4, 8, 16, 32, 64, 128, 256}
+
+'add' : function
+	'a' + 'b'
+
+'multiply' : function
+	'a' × 'b'
+
+using sublist
+	'sublist' : a sublist from 'list'
+	'sublist' ↲
+	
+	'sublist' start 2
+	'sublist' ↲
+	
+	'sublist' finish 2
+	'sublist' ↲
+	
+	'sublist' start 1
+	'sublist' ↲
+	
+	'sublist' finish (('sublist' base) length)
+	'sublist' ↲
+	
+	"head: ", 'sublist' head, ", rest: ", 'sublist' after head ↲
+	
+	reduce 'func' over 'sublist' starting with 'initial' :
+		if ('sublist' length > 0)
+			'func' { reduce 'func' over ('sublist' after head) 
+								… starting with ('sublist' head), 'initial'}
+		… otherwise
+			'initial'
+	
+	reduce 'add' over 'sublist' starting with 0 ↲
+	'hundred' : sublist (1 to 100)
+	'hundred' ↲
+	reduce 'add' over 'hundred' starting with 0 ↲
+	reduce 'multiply' over (sublist (1 to 10)) starting with 1 ↲

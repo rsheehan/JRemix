@@ -1,0 +1,109 @@
+================================
+'sublist' Operations and Objects
+================================
+'sublist lib' : library
+
+	=-
+	Create a sublist from 'list' beginning at index 'start' and ending at index 'finish'.
+	An efficient list which can be used to represent a sublist of an existing list.
+	=-
+	a sublist from 'list' between 'start' and 'finish' :
+		create
+			'type' : "list"
+			'base' : 'list'
+			'start' : 'start'
+			'finish' : 'finish'
+
+			getter
+				'base'
+			setters
+				'start', 'finish'
+
+			=-
+			Return the first value of the sublist 'OBJECT'.
+			=-
+			MY head :
+				'base' {'start'}
+
+			=-
+			Return a sublist based on 'OBJECT' without the first value.
+			=-
+			MY after head :
+				a sublist from 'base' between ('start' + 1) and 'finish'
+
+			=-
+			Return the last value of the sublist.
+			=-
+			MY tail :
+				'base' {'finish'}
+
+			=-
+			Return a sublist based on 'OBJECT' without the last value.
+			=-
+			MY before tail :
+				a sublist from 'base' between 'start' and ('finish' - 1)
+
+			=-
+			Moves the head of the sublist OBJECT on.
+			This reduces the size of the sublist by one.
+			If the sublist is empty, this does nothing.
+			=-
+			move MY head forward :
+				if ('start' ≤ 'finish')
+					inc 'start'
+
+			=-
+			Moves the tail of the sublist OBJECT back.
+			This reduces the size of the sublist by one.
+			If the sublist is empty, this does nothing.
+			=-
+			move MY tail back :
+				if ('finish' > 'start')
+					dec 'finish'
+
+			start ME :
+				iterator
+
+			MY length :
+				'finish' - 'start' + 1
+
+			ME to string :
+				ME as string ; calls the std-lib - 'list' as string
+
+			iterator :
+				create
+					'list' : 'base'
+					'pos' : 'start'
+					'finish' : 'finish'
+
+					end ME :
+						'pos' > 'finish'
+
+					next ME :
+						if ('pos' ≤ 'finish')
+							'result' : 'list' {'pos'}
+							inc 'pos'
+						'result'
+
+	=-
+	Create a sublist from the 'list'.
+	=-
+	/a sublist /from 'list' :
+		a sublist from 'list' between 1 and ('list' length)
+
+	=-
+	Create a sublist from the 'list' beginning at 'start'.
+	=-
+	a sublist from 'list' starting at 'start' :
+		a sublist from 'list' between 'start' and ('list' length)
+
+	=-
+	Create a sublist from the 'list' ending at 'finish'.
+	=-
+	a sublist from 'list' ending at 'finish' :
+		a sublist from 'list' between 1 and 'finish'
+
+-==================================================================================================-
+
+"Sublist library loaded." ↲
+'sublist lib'

@@ -836,6 +836,12 @@ The files library.
 files :
 	from "files"
 
+=-
+The sublist library.
+=-
+sublist :
+	from "sublist"
+
 -==============================-
 
 "Standard library loaded." ↲

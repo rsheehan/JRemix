@@ -1,0 +1,41 @@
+'func1' : function 
+	'a' + 10
+	
+'func2' : function 
+	'a'²
+
+'func3' : {'func1', 'func2'}
+
+chain 'func list' 'value' :
+	for each 'func' in 'func list' 
+		'value' : 'func' 'value'
+
+chain 'func3' 1 ↲
+
+'pipeline' : function 
+	for each 'func' in 'b'
+		'a' : 'func' 'a' ; could pipe into and out of buffer instead
+	help VARS ↲
+	'a'
+
+'pipeline' {2, 'func3'} ↲
+
+for each 'n' from 1 to 10 
+	'pipeline'{
+		'n'
+		{
+			'func1'
+			'func2'
+		}
+	} ↲
+
+'list' : apply 
+	'pipeline' {
+		'i'
+		{
+			'func1'
+			'func2'
+		}
+	}
+… to each 'i' from (1 to 10)
+'list' ↲
