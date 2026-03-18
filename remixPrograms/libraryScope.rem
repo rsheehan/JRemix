@@ -19,3 +19,18 @@ using LIB
 	a ↲
 	'A' ↲
 	A ↲
+
+= Produces
+LIBRARY
+function
+variable
+constant
+
+null
+null
+null
+
+function
+null
+constant
+=

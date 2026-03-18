@@ -26,3 +26,25 @@ using LIB1, LIB2
 X ↲
 Y ↲
 Z ↲
+
+= output
+1
+2
+
+null
+2
+
+LIB2 start
+1
+2
+3
+LIB2 finish
+
+1
+2
+3
+
+null
+2
+null
+=

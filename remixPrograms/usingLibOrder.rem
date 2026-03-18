@@ -25,3 +25,16 @@ LIB-CONST ↲
 
 inside use func ↲
 USING-CONST ↲
+
+= output
+ a function in the library.
+This is a constant in the library.
+This is a constant in the using block.
+This is a function in the using block which calls
+ a function in the library.
+null
+null
+This is a function in the using block which calls
+ a function in the library.
+This is a constant in the using block.
+=

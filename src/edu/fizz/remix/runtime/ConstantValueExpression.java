@@ -52,7 +52,7 @@ public class ConstantValueExpression implements Expression, NamedExpression {
             if (Runtime.REPLRunning)
                 System.err.println("in REPL.");
             else  {
-                System.err.printf("on line %d.%n\"", lineNumber);
+                System.err.printf("on line %d.%n", lineNumber);
             }
         }
         return result;
