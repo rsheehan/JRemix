@@ -130,7 +130,7 @@ Graphics Operations and Objects
 				add ('δd' degrees as radians) to 'heading'
 
 	=-
-	Create a shape object with a 'position'.
+	Create a graphic object with a 'position'.
 	=-
 	a shape at 'position' :
 		create
