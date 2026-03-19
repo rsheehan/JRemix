@@ -805,7 +805,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     "help REPL - shows help about the Read Evaluate Print Loop.\n\n" +
                     "help CONSTANTS or help CONS - shows all constants at this level.\n\n" +
                     "help VARIABLES or help VARS - shows all variables at this level.\n\n" +
-                    "help LIBRARIES or help LIBS - shows all loaded libraries.\n";
+                    "help LIBRARIES or help LIBS - shows all loaded libraries.\n\n" +
+                    "help 'variableName' or help CONSTANT-NAME - shows all methods for the object.\n";
         }
     }
 
@@ -822,29 +823,35 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                             "   help REPL\n" +
                             "   help CONSTANTS\n" +
                             "   help VARIABLES\n" +
-                            "   help LIBRARIES"
+                            "   help LIBRARIES\n" +
+                            "   help 'variableName'\n" +
+                            "   help CONSTANT-NAME"
             );
         }
 
         // TODO: add some of the keywords too
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
-            String what = ((String) context.retrieve("what", false));
+            Object what = context.retrieve("what", false);
             StringBuilder helpSB = new StringBuilder();
-            if (what.equals("REPL")) {
-                return REPLInputOutput.INFOSTRING;
-            } else if (what.equals("CONSTANTS")) {
-                dealWithConstants(context.parentContext, helpSB);
-                int length = helpSB.length();
-                if (length > 0) // remove last '\n'
-                    helpSB.delete(length - 1, length);
-            } else if (what.equals("VARIABLES")) {
-                dealWithVariables(context.parentContext, helpSB);
-            } else if (what.equals("LIBRARIES")) {
-                dealWithLibraries(context.parentContext, helpSB);
-            } else {
-                dealWithFunctions(context.parentContext, what, helpSB);
-                dealWithMethods(context.parentContext, what, helpSB);
+            if (what instanceof String whatString) {
+                if (whatString.equals("REPL")) {
+                    return REPLInputOutput.INFOSTRING;
+                } else if (whatString.equals("CONSTANTS")) {
+                    dealWithConstants(context.parentContext, helpSB);
+                    int length = helpSB.length();
+                    if (length > 0) // remove last '\n'
+                        helpSB.delete(length - 1, length);
+                } else if (whatString.equals("VARIABLES")) {
+                    dealWithVariables(context.parentContext, helpSB);
+                } else if (whatString.equals("LIBRARIES")) {
+                    dealWithLibraries(context.parentContext, helpSB);
+                } else {
+                    boolean firstFunc = dealWithFunctions(context.parentContext, whatString, helpSB);
+                    dealWithMethods(context.parentContext, whatString, helpSB, firstFunc);
+                }
+            } else if (what instanceof RemixObject whatObject) {
+                showAllMethods(whatObject, helpSB);
             }
             return helpSB.toString();
         }
@@ -889,11 +896,36 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             }
         }
 
+        private void showAllMethods(RemixObject whatObject, StringBuilder helpSB) {
+            List<String> methodNames = new ArrayList<>();
+            boolean firstMethod = true;
+            for (Method method : whatObject.methodTable.values()) {
+                boolean already = false;
+                for (String methodName : method.getAllNames()) {
+                    String name = method.displayName(methodName);
+                    if (methodNames.contains(name)) {
+                        already = true;
+                        break;
+                    } else {
+                        methodNames.add(name);
+                    }
+                    if (!firstMethod) {
+                        helpSB.append('\n');
+                    } else
+                        firstMethod = false;
+                    helpSB.append("Method: ")
+                            .append(name);
+                }
+                if (!already)
+                    addFunctionComment(method, helpSB);
+            }
+        }
+
         /**
          * Use the context variable and constant objects and to find possible methods
          * this is better because it only gives runnable methods.
          */
-        private static void dealWithMethods(Context context, String what, StringBuilder helpSB) {
+        private static void dealWithMethods(Context context, String what, StringBuilder helpSB, boolean firstFunc) {
             List<String> methodNames = new ArrayList<>();
             List varAndConsValues = new ArrayList(context.variables.values());
             for (LibraryExpression lib : context.libraryStack) {
@@ -916,7 +948,11 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                                 } else {
                                     methodNames.add(name);
                                 }
-                                helpSB.append("\nMethod: ")
+                                if (!firstFunc) {
+                                    helpSB.append("\n");
+                                } else
+                                    firstFunc = false;
+                                helpSB.append("Method: ")
                                         .append(name);
                             }
                         }
@@ -933,7 +969,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
          * Goes through the functions searching for ones which match "what"
          * in both the function name and the comment.
          */
-        private static void dealWithFunctions(Context context, String what, StringBuilder helpSB) {
+        private static boolean dealWithFunctions(Context context, String what, StringBuilder helpSB) {
             Stack<LibraryExpression> libStack = context.cloneLibraryStack();
             List<Function> matchedFunctions = new ArrayList<>();
             List<Function> foundInCommentOnly = new ArrayList<>();
@@ -975,6 +1011,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 }
                 addFunctionComment(commentMatchFunction, helpSB);
             }
+            return firstFunc;
         }
 
         private static void displayFunctionName(Function function, String funcName, StringBuilder helpSB) {
