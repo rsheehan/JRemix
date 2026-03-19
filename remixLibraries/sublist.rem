@@ -32,7 +32,7 @@
 				a sublist from 'base' between ('start' + 1) and 'finish'
 
 			=-
-			Return the last value of the sublist.
+			Return the last value of the sublist 'OBJECT'.
 			=-
 			MY tail :
 				'base' {'finish'}
@@ -44,7 +44,7 @@
 				a sublist from 'base' between 'start' and ('finish' - 1)
 
 			=-
-			Moves the head of the sublist OBJECT on.
+			Moves the head of the sublist 'OBJECT' on.
 			This reduces the size of the sublist by one.
 			If the sublist is empty, this does nothing.
 			=-
@@ -53,7 +53,7 @@
 					inc 'start'
 
 			=-
-			Moves the tail of the sublist OBJECT back.
+			Moves the tail of the sublist 'OBJECT' back.
 			This reduces the size of the sublist by one.
 			If the sublist is empty, this does nothing.
 			=-
