@@ -849,14 +849,14 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             return helpSB.toString();
         }
 
-        private void dealWithLibraries(Context parentContext, StringBuilder helpSB) {
+        private static void dealWithLibraries(Context parentContext, StringBuilder helpSB) {
             for (String libName : Runtime.loadedLibraries.keySet()) {
                 helpSB.append(libName)
                         .append('\n');
             }
         }
 
-        private void dealWithVariables(Context context, StringBuilder helpSB) {
+        private static void dealWithVariables(Context context, StringBuilder helpSB) {
             for (String name : context.variables.keySet()) {
                 Object value = context.variables.get(name);
                 if (value instanceof String) {
@@ -870,7 +870,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             }
         }
 
-        private void dealWithConstants(Context context, StringBuilder helpSB) {
+        private static void dealWithConstants(Context context, StringBuilder helpSB) {
             Stack<LibraryExpression> libStack = context.libraryStack;
             for (LibraryExpression lib : libStack) {
                 helpSB.append(lib.getLibUnderlinedName()).append('\n');
@@ -890,12 +890,17 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         /**
-         * Use the context variable objects to find possible methods
-         * this is better because it only gives runnable methods
+         * Use the context variable and constant objects and to find possible methods
+         * this is better because it only gives runnable methods.
          */
-        private void dealWithMethods(Context context, String what, StringBuilder helpSB) {
+        private static void dealWithMethods(Context context, String what, StringBuilder helpSB) {
             List<String> methodNames = new ArrayList<>();
-            for (Object value : context.variables.values()) {
+            List varAndConsValues = new ArrayList(context.variables.values());
+            for (LibraryExpression lib : context.libraryStack) {
+                TreeMap<String, Object> constants = new TreeMap<>(lib.constantTable);
+                varAndConsValues.addAll(constants.values());
+            }
+            for (Object value : varAndConsValues) {
                 boolean already = false;
                 if (value instanceof RemixObject object) {
                     for (Method method : object.methodTable().values()) {
