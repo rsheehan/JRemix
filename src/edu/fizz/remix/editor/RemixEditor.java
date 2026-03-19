@@ -545,8 +545,10 @@ public class RemixEditor extends JFrame {
 
         menu.addSeparator();
 
-        Action find = new FindForwardAction("Find forwards");
+        Action find = new FindAction("Find");
         menu.add(find);
+        Action findForwards = new FindForwardAction("Find forwards");
+        menu.add(findForwards);
         Action backFind = new FindBackwardAction("Find backwards");
         menu.add(backFind);
 
@@ -565,11 +567,34 @@ public class RemixEditor extends JFrame {
         return menu;
     }
 
+    public class FindAction extends AbstractAction {
+
+        public FindAction(String name) {
+            super(name);
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.META_DOWN_MASK));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String searchTerm = JOptionPane.showInputDialog(
+                    editorTextPane,         // Parent component
+                    "Enter search term:",   // Message
+                    "Find",                 // Title
+                    JOptionPane.QUESTION_MESSAGE // Message type (icon)
+            );
+
+            // Process the input
+            if (searchTerm != null && !searchTerm.isEmpty()) {
+                searchForward(searchTerm, 0, editorTextPane);
+            }
+        }
+    }
+
     public class FindForwardAction extends AbstractAction {
 
         public FindForwardAction(String name) {
             super(name);
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.META_DOWN_MASK));
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.META_DOWN_MASK));
         }
 
         @Override
@@ -578,18 +603,22 @@ public class RemixEditor extends JFrame {
             int selectionEnd = editorTextPane.getSelectionEnd();
             if (selectionStart != selectionEnd) {
                 String selectedText = editorTextPane.getSelectedText();
-                try {
-                    String allText = doc.getText(0, doc.getLength());
-                    int location = allText.indexOf(selectedText, selectionEnd);
-                    if (location != -1) {
-                        Caret caret = editorTextPane.getCaret();
-                        caret.setDot(location);
-                        caret.moveDot(location + selectedText.length());
-                    }
-                } catch (BadLocationException ex) {
-                    ex.printStackTrace();
-                }
+                searchForward(selectedText, selectionEnd, editorTextPane);
             }
+        }
+    }
+
+    private static void searchForward(String selectedText, int selectionEnd, JTextPane editorTextPane) {
+        try {
+            String allText = doc.getText(0, doc.getLength());
+            int location = allText.indexOf(selectedText, selectionEnd);
+            if (location != -1) {
+                Caret caret = editorTextPane.getCaret();
+                caret.setDot(location);
+                caret.moveDot(location + selectedText.length());
+            }
+        } catch (BadLocationException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -606,18 +635,22 @@ public class RemixEditor extends JFrame {
             int selectionEnd = editorTextPane.getSelectionEnd();
             if (selectionStart != selectionEnd) {
                 String selectedText = editorTextPane.getSelectedText();
-                try {
-                    String allText = doc.getText(0, doc.getLength());
-                    int location = allText.lastIndexOf(selectedText, selectionStart - 1);
-                    if (location != -1) {
-                        Caret caret = editorTextPane.getCaret();
-                        caret.setDot(location);
-                        caret.moveDot(location + selectedText.length());
-                    }
-                } catch (BadLocationException ex) {
-                    ex.printStackTrace();
-                }
+                searchBack(selectedText, selectionStart, editorTextPane);
             }
+        }
+    }
+
+    private static void searchBack(String selectedText, int selectionStart, JTextPane editorTextPane) {
+        try {
+            String allText = doc.getText(0, doc.getLength());
+            int location = allText.lastIndexOf(selectedText, selectionStart - 1);
+            if (location != -1) {
+                Caret caret = editorTextPane.getCaret();
+                caret.setDot(location);
+                caret.moveDot(location + selectedText.length());
+            }
+        } catch (BadLocationException ex) {
+            ex.printStackTrace();
         }
     }
 
