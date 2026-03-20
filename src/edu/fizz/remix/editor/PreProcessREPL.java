@@ -54,7 +54,8 @@ public class PreProcessREPL {
         } else { // print all characters until either '\n' or ';'
             // doesn't deal with ';' comment in first position on line
             while (ch != '\n' && ch != ';') {
-                writer.write(ch);
+                if (ch != 0) // coming back from ellipsis handling
+                    writer.write(ch);
                 if (ch == '"') {
                     gobbleString(reader, writer);
                 }
@@ -74,7 +75,7 @@ public class PreProcessREPL {
                         restOfLine.append(possibleTabEllipsis);
                         writer.write(restOfLine.toString());
                         restOfLine = new StringBuilder();
-                        ch = '…'; // just so it continues at the while
+                        ch = 0; // just so it continues at the while
                     }
                 } else if (ch == ';') {
                     // scan to end of the line keeping the string for writing later
@@ -123,9 +124,9 @@ public class PreProcessREPL {
             switch (ch) {
                 case '\t' -> tabEllipsis.append((char) ch);
                 case '…' -> {
-                    // don't add here added in dealWithLine
                     if (tabEllipsis.length() < prevLineTabs)
                         break scanner;
+                    tabEllipsis.append((char) ch);
                     return tabEllipsis.toString();
                 }
                 default -> {
