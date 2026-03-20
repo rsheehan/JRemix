@@ -231,7 +231,7 @@ public class REPLInputOutput extends JTextArea {
                     --lineNumber;
                     String prevLine = getLineText(lineNumber);
                     lines.insert(0, prevLine);
-                    if (!prevLine.startsWith("\t") && !prevLine.startsWith("\n")) {
+                    if (!prevLine.startsWith("\t") && !prevLine.startsWith("\n") && !prevLine.startsWith("…")) {
                         break;
                     }
                 }
