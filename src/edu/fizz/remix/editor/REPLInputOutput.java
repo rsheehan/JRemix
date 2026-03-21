@@ -10,6 +10,8 @@ import java.awt.event.KeyEvent;
 public class REPLInputOutput extends JTextArea {
 
     private final AbstractDocument doc;
+    private int topOfCodePos = 0; // offset to the top of the statement
+    private int bottomOfCodeLine = 0; // line at the bottom of the statement to be executed
     public final static String INFOSTRING = """
             
             \t\
@@ -34,13 +36,6 @@ public class REPLInputOutput extends JTextArea {
         setWrapStyleWord( true );
         setTabSize(4);
         configureKeyBindings();
-    }
-
-    public void clearTextArea() {
-        try {
-            doc.remove(0, doc.getLength());
-        } catch (BadLocationException e) {
-        }
     }
 
     private void configureKeyBindings() {
@@ -83,7 +78,7 @@ public class REPLInputOutput extends JTextArea {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // This code executes when Command + C is pressed
-                RemixEditor.remixOutput.clearTextArea();
+                RemixEditor.remixOutput.setText(null); // clearTextArea();
             }
         });
         actionMap.put(shiftReturnActionName, new AbstractAction() {
@@ -131,7 +126,7 @@ public class REPLInputOutput extends JTextArea {
     /*
     Indent following line if this line ends with ":".
     Return true iff this line starts with ":".
- */
+     */
     private boolean definition(int pos) {
         boolean defn = false;
         try {
@@ -173,12 +168,10 @@ public class REPLInputOutput extends JTextArea {
             if (lines.isEmpty())
                 return;
             // check the line against the length of the document
-            int lineNumber = getLineOfOffset(pos);
-            int lastLineNumber = getLastLineNumber();
             // find the length of the last line
             int lastLineLength = getLastLineLength(lines);
             // If not the last line, copy the lines to the end of the document
-            if (lineNumber < lastLineNumber) {
+            if (bottomOfCodeLine != getLastLineNumber()) {
                 System.out.print(lines); // System.out is redirected to the textArea - see TextAreaOutputStream
             } else {
                 // after a newline
@@ -222,21 +215,33 @@ public class REPLInputOutput extends JTextArea {
     }
 
     private String linesToExecute(int offset) throws BadLocationException {
+        int lastLineNumber = getLastLineNumber();
         StringBuilder lines = new StringBuilder();
-            int lineNumber = getLineOfOffset(offset);
-            String lineText = getLineText(lineNumber);
-            lines.append(lineText);
-            if (lineText.startsWith("}") || lineText.startsWith("\t") || lineText.startsWith("…")) {
-                while (lineNumber > 0) {
-                    --lineNumber;
-                    String prevLine = getLineText(lineNumber);
-                    lines.insert(0, prevLine);
-                    if (!prevLine.startsWith("\t") && !prevLine.startsWith("\n") && !prevLine.startsWith("…")) {
-                        break;
-                    }
+        int lineNumber = getLineOfOffset(offset);
+        String lineText = getLineText(lineNumber);
+        if (lineText.startsWith("}") || lineText.startsWith("\t") || lineText.startsWith("…")) {
+            while (lineNumber > 0) {
+                --lineNumber;
+                lineText = getLineText(lineNumber);
+                if (!lineText.startsWith("\t") && !lineText.startsWith("\n") && !lineText.startsWith("…")) {
+                    break;
                 }
             }
-
+        }
+        topOfCodePos = getLineStartOffset(lineNumber);
+        lines.append(lineText);
+        bottomOfCodeLine = lineNumber;
+        while (lineNumber < lastLineNumber) {
+            ++lineNumber;
+            lineText = getLineText(lineNumber);
+            // finish if line has non-tab at the beginning
+            // but include the line if it starts with "}" or "..." and carry on, it could have an indented block
+            if (!lineText.startsWith("\t") && !lineText.startsWith("\n") && !lineText.startsWith("…") && !lineText.startsWith("}")) {
+                break;
+            }
+            lines.append(lineText);
+            bottomOfCodeLine = lineNumber;
+        }
         return lines.toString();
     }
 
@@ -257,12 +262,60 @@ public class REPLInputOutput extends JTextArea {
         return getText(lineStartOffset, lineEndOffset - lineStartOffset);
     }
 
+    private boolean atEndOfText(int offset) throws BadLocationException {
+        int lineNumber = getLineOfOffset(offset);
+        int lastLineNumber = getLastLineNumber();
+        while (lineNumber < lastLineNumber) {
+            ++lineNumber;
+            String lineText = getLineText(lineNumber);
+            // finish if line has non-tab at the beginning
+            // but include the line if it starts with "}" or "..." and carry on, it could have an indented block
+            if (!lineText.startsWith("\t") && !lineText.startsWith("\n") && !lineText.startsWith("…") && !lineText.startsWith("}")) {
+                break;
+            }
+        }
+        return lineNumber == lastLineNumber;
+    }
+
     private class FilterLineInput extends DocumentFilter {
+
+        public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+            int newPos = afterPossibleCopy(fb, offset);
+            fb.remove(newPos, length);
+            setCaretPosition(newPos);
+        }
+
+        /*
+        Returns the position after possibly copying code to the end of the document.
+         */
+        private int afterPossibleCopy(FilterBypass fb, int offset) throws BadLocationException {
+            int displacement = -1;
+            int endOfText = doc.getLength();
+            if (!atEndOfText(offset)) {
+                // copy the linesToExecute to the end of the text
+                String linesToCopy = linesToExecute(offset);
+                linesToCopy = linesToCopy.stripTrailing();
+                displacement =  offset - topOfCodePos;
+                fb.replace(endOfText, 0, linesToCopy, null);
+            }
+            if (displacement == -1) {
+                return offset;
+            } else
+                return endOfText + displacement;
+        }
 
         @Override
         public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet a)
                 throws BadLocationException {
+            if (offset == 0 && length == doc.getLength() && str == null) {
+                fb.replace(offset, length, str, a);
+                return;
+            }
             RemixEditor.systemOutput.setText(null);
+            // check to see if the offset is at the end of the REPL text
+            int newPos = afterPossibleCopy(fb, offset);
+            setCaretPosition(newPos);
+
             if (REPLInputOutput.this.isFocusOwner())
                 if (str.equals("n")) {
                     if (possiblePrint(fb, offset, a))
@@ -274,7 +327,7 @@ public class REPLInputOutput extends JTextArea {
                     if (possibleConcatOperator(fb, offset, a))
                         return;
                 }
-            super.replace(fb, offset, length, str, a);
+            fb.replace(newPos, length, str, a);
         }
 
         private boolean possiblePrint(FilterBypass fb, int offset, AttributeSet a) throws BadLocationException {
@@ -282,7 +335,7 @@ public class REPLInputOutput extends JTextArea {
                 return false;
             String prevChar = getDocument().getText(--offset, 1);
             if (prevChar.equals("\\")) {
-                super.replace(fb, offset, 1, "↲", a);
+                fb.replace(offset, 1, "↲", a);
                 return true;
             }
             return false;
@@ -294,7 +347,7 @@ public class REPLInputOutput extends JTextArea {
             offset -= 2;
             String prevChar = getDocument().getText(offset, 2);
             if (prevChar.equals("..")) {
-                super.replace(fb, offset, 2, "…", a);
+                fb.replace(offset, 2, "…", a);
                 return true;
             }
             return false;
@@ -306,7 +359,7 @@ public class REPLInputOutput extends JTextArea {
             offset -= 1;
             String prevChar = getDocument().getText(offset, 1);
             if (prevChar.equals("(")) {
-                super.replace(fb, offset, 1, "⊕ ", a);
+                fb.replace(offset, 1, "⊕ ", a);
                 return true;
             }
             return false;

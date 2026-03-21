@@ -305,8 +305,11 @@ Then each 'item' in the 'sequence' is executed in the 'block'.
 A sequence here is a list, range, map, string or sequence object.
 =-
 starting with ['initial'] apply ['block'] on each #item in 'sequence' :
-	do 'initial'
-	for each #item in 'sequence' 'block'
+	'result' : do 'initial'
+	if ('sequence' length = 0)
+		'result'
+	… otherwise
+		for each #item in 'sequence' 'block'
 
 =-
 Sum the 'list' values.

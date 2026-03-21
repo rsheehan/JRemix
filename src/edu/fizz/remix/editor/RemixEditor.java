@@ -187,11 +187,6 @@ public class RemixEditor extends JFrame {
         editorTextPane.setMargin(new Insets(5,10,5,10));
         doc = setUpStylesAndSpacing(this, editorTextPane, defaultFontForScreen, 21, true);
 
-//        SystemFlavorMap flavorMap = (SystemFlavorMap) SystemFlavorMap.getDefaultFlavorMap();
-//        flavorMap.setFlavorsForNative(
-//                "JAVA_DATAFLAVOR:application/x-java-jvm-local-objectref; class=com.intellij.codeInsight.editorActions.FoldingData",
-//                new DataFlavor[]{DataFlavor.getTextPlainUnicodeFlavor()});
-
         JScrollPane editorScrollPane = new JScrollPane(editorTextPane);
 //        editorScrollPane.setMinimumSize(new Dimension(711, 800));
         TextLineNumber lineNumbers = new TextLineNumber(editorTextPane);
@@ -444,8 +439,8 @@ public class RemixEditor extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             // hideGraphicsPanel(); // uncomment if you want the graphics panel hidden
-            systemOutput.setText("");
-            remixOutput.setText("");
+            systemOutput.setText(null);
+            remixOutput.setText(null);
             remixOutput.setFocusable(false); // Temporarily make it non-focusable
             RemixEditor.this.requestFocusInWindow(); // Request focus for the main panel
             remixOutput.setFocusable(true); // Make it focusable again for future use
@@ -1027,7 +1022,7 @@ public class RemixEditor extends JFrame {
     }
 
     //The standard main method.
-    public static void main(String[] args) {
+    public static void main() {
         // setup the Remix runtime
         try {
             LibrariesAndCompletions.prepareEnvironment();

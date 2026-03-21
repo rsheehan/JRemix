@@ -88,8 +88,10 @@ public class RemixPrepareRun {
             REPLContext.addLibraryToStack(libraryExpression);
         } else {
             // replace currentTOS REPL library with this one after merging functions and constants
-            for (Function function : currentTOSLibrary.functionTable.values()) {
-                libraryExpression.addFunction(function);
+            for (Map.Entry<String, Function> entry : currentTOSLibrary.functionTable.entrySet()) {
+                if (!libraryExpression.functionTable.containsKey(entry.getKey())) { // don't overwrite new versions
+                    libraryExpression.functionTable.put(entry.getKey(), entry.getValue());
+                }
             }
             libraryExpression.setConstantsFromLibrary(currentTOSLibrary);
             REPLContext.popLibrary(); // remove previous REPL

@@ -1,0 +1,34 @@
+=
+Quicksort
+=
+
+quicksort 'list' :
+	if ('list' length < 2)
+		return 'list'
+	'pivot' : choose pivot from 'list'
+	'left' : {}. 'middle' : {}. 'right' : {}
+	for each 'value' in 'list'
+		when
+			['value' = 'pivot'] do [append 'value' to 'middle']
+			['value' < 'pivot'] do [append 'value' to 'left']
+			['value' > 'pivot'] do [append 'value' to 'right']
+	join (join (quicksort 'left') and 'middle') and (quicksort 'right')
+
+quicksort {1} ↲
+quicksort {3, 2, 1} ↲
+
+'list' : apply [random 1000] 100 times
+quicksort 'list' ↲
+
+choose pivot from 'list' :
+	'p' : apply [choose from 'list'] 3 times
+	middle of ('p' {1}) ('p' {2}) ('p' {3})
+
+middle of 'n1' 'n2' 'n3' :
+	when
+		['n1' between 'n2' and 'n3'] do ['n1']
+		['n2' between 'n1' and 'n3'] do ['n2']
+		'n3'
+
+'n1' between 'n2' and 'n3' :
+	(('n2' ≤ 'n1') and ('n1' ≤ 'n3')) or (('n3' ≤ 'n1') and ('n1' ≤ 'n2'))

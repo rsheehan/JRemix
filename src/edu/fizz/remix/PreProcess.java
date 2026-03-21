@@ -291,7 +291,7 @@ public class PreProcess {
         }
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         if (args.length == 1) {
             System.out.println(args[0]);
             try {
