@@ -847,8 +847,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 } else if (whatString.equals("LIBRARIES")) {
                     dealWithLibraries(context.parentContext, helpSB);
                 } else {
-                    boolean firstFunc = dealWithFunctions(context.parentContext, whatString, helpSB);
-                    dealWithMethods(context.parentContext, whatString, helpSB, firstFunc);
+                    boolean firstLine = dealWithFunctions(context.parentContext, whatString, helpSB);
+                    dealWithMethods(context.parentContext, whatString, helpSB, firstLine);
                 }
             } else if (what instanceof RemixObject whatObject) {
                 showAllMethods(whatObject, helpSB);
@@ -925,7 +925,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
          * Use the context variable and constant objects and to find possible methods
          * this is better because it only gives runnable methods.
          */
-        private static void dealWithMethods(Context context, String what, StringBuilder helpSB, boolean firstFunc) {
+        private static void dealWithMethods(Context context, String what, StringBuilder helpSB, boolean firstLine) {
             List<String> methodNames = new ArrayList<>();
             List varAndConsValues = new ArrayList(context.variables.values());
             for (LibraryExpression lib : context.libraryStack) {
@@ -948,10 +948,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                                 } else {
                                     methodNames.add(name);
                                 }
-                                if (!firstFunc) {
-                                    helpSB.append("\n");
-                                } else
-                                    firstFunc = false;
+                                firstLine = isFirstLine(helpSB, firstLine);
                                 helpSB.append("Method: ")
                                         .append(name);
                             }
@@ -974,7 +971,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             List<Function> matchedFunctions = new ArrayList<>();
             List<Function> foundInCommentOnly = new ArrayList<>();
             boolean foundInComment;
-            boolean firstFunc = true;
+            boolean firstLine = true;
             for (LibraryExpression lib : libStack) {
                 for (Function function : lib.functionTable.values()) {
                     if (matchedFunctions.contains(function))
@@ -985,14 +982,14 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     for (String funcName : function.getAllNames()) {
                         if (funcName.contains(what)) {
                             found = true;
-                            if (firstFunc)
-                                firstFunc = false;
-                            else
-                                helpSB.append("\n");
-                            displayFunctionName(function, funcName, helpSB);
                         }
                     }
                     if (found) {
+                        // add all names here
+                        for (String funcName : function.getAllNames()) {
+                            firstLine = isFirstLine(helpSB, firstLine);
+                            displayFunctionName(function, funcName, helpSB);
+                        }
                         addFunctionComment(function, helpSB);
                         matchedFunctions.add(function);
                     } else {
@@ -1003,15 +1000,20 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             }
             for (Function commentMatchFunction : foundInCommentOnly) {
                 for (String funcName : commentMatchFunction.getAllNames()) {
-                    if (firstFunc)
-                        firstFunc = false;
-                    else
-                        helpSB.append("\n");
+                    firstLine = isFirstLine(helpSB, firstLine);
                     displayFunctionName(commentMatchFunction, funcName, helpSB);
                 }
                 addFunctionComment(commentMatchFunction, helpSB);
             }
-            return firstFunc;
+            return firstLine;
+        }
+
+        private static boolean isFirstLine(StringBuilder helpSB, boolean firstLine) {
+            if (firstLine)
+                firstLine = false;
+            else
+                helpSB.append("\n");
+            return firstLine;
         }
 
         private static void displayFunctionName(Function function, String funcName, StringBuilder helpSB) {
