@@ -138,9 +138,9 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             else if (original instanceof Boolean)
                 copied = original;
             else if (original instanceof List<?>)
-                copied = new ArrayList<>((List<?>)original);
+                copied = new RemixList((List<?>)original);
             else if (original instanceof Map<?,?>)
-                copied = new HashMap<>((Map<?, ?>) original);
+                copied = new RemixMap((Map<?, ?>) original);
             else if (original instanceof Iterator<?>)
                 throw new RuntimeException("Can't copy Iterator");
             else if (original instanceof RemixObject)

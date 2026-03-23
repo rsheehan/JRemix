@@ -3,6 +3,15 @@ package edu.fizz.remix.runtime;
 import java.util.*;
 
 public class RemixMap<String, Expression> extends HashMap implements RemixComplexType{
+
+    public RemixMap() {
+        super();
+    }
+
+    public RemixMap(Map<String, Expression> map) {
+        super(map);
+    }
+
     public java.lang.String toString() {
         Iterator<Entry<String, Expression>> iter = entrySet().iterator();
         if (! iter.hasNext())

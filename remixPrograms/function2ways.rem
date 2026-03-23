@@ -1,0 +1,23 @@
+prepend 'item' to 'list' :
+	'item list' : {'item'}
+	join 'item list' and 'list'
+
+'list' : {2, 4, 8, 16, 32}
+'result1' : prepend 1 to 'list'
+
+'prepend' : function
+	'item list' : {'item'}
+	join 'item list' and 'list'
+
+'result2' : 'prepend' {"item" : 1, "list" : 'list'}
+
+'prepend2' : function
+	'item list' : {'a'}
+	join 'item list' and 'b'
+
+'result3' : 'prepend2' {1, 'list'}
+
+'square plus 1' : function 
+	'a'² + 1
+
+'square plus 1' 50 ↲
