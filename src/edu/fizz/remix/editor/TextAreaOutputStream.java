@@ -14,20 +14,9 @@ public class TextAreaOutputStream extends OutputStream {
         @Override
         public void write(byte[] buffer, int offset, int length) {
             final String text = new String (buffer, offset, length);
-            SwingUtilities.invokeLater(new Runnable ()
-            {
-                @Override
-                public void run()
-                {
-                    if (destination == RemixEditor.systemOutput)
-                        RemixEditor.expandSystemOutputPanel();
-//                    if (text.equals(clearOutput)) {
-//                        RemixEditor.remixOutput.setText(null);
-//                        return;
-//                    }
-                    destination.append (text);
-                }
-            });
+            if (destination == RemixEditor.systemOutput)
+                RemixEditor.expandSystemOutputPanel();
+            destination.append (text);
         }
 
         @Override

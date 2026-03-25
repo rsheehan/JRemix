@@ -1,5 +1,7 @@
 package edu.fizz.remix.editor;
 
+import edu.fizz.remix.runtime.Runtime;
+
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
@@ -22,8 +24,13 @@ public class REPLInputOutput extends JTextArea {
             To start a new indented line : shift-tab
             \t\
             To clear this area : command-shift-C
+            \t\
+            To stop a runaway computation : control-C
             
             """;
+
+    private Runtime.REPLSwingWorker REPLworker;
+    private String separatorLine;
 
     public REPLInputOutput() {
         doc = (AbstractDocument) getDocument();
@@ -49,6 +56,7 @@ public class REPLInputOutput extends JTextArea {
         KeyStroke commandShiftC = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
         KeyStroke simpleReturn = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0,false);
         KeyStroke indentedReturn = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK);
+        KeyStroke interruptExecution = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK);
 
         // Map the KeyStrokes to a custom Action name
         String simpleReturnActionName = "handleSimpleReturn";
@@ -59,6 +67,8 @@ public class REPLInputOutput extends JTextArea {
         inputMap.put(commandShiftC, commandCActionName);
         String indentedReturnActionName = "handleIndentedReturn";
         inputMap.put(indentedReturn, indentedReturnActionName);
+        String interruptExecutionActionName = "handleInterruptExecution";
+        inputMap.put(interruptExecution, interruptExecutionActionName);
 
         // Put the custom Action into the ActionMap
         actionMap.put(simpleReturnActionName, new AbstractAction() {
@@ -121,6 +131,13 @@ public class REPLInputOutput extends JTextArea {
                 insert("\n" + "\t".repeat(tabCount + 1), pos);
             }
         });
+        actionMap.put(interruptExecutionActionName, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (REPLworker != null)
+                    REPLworker.cancel(true);
+            }
+        });
     }
 
     /*
@@ -178,21 +195,31 @@ public class REPLInputOutput extends JTextArea {
                 System.out.println();
             }
             // print that many "-" values on the next line
-            String separatorLine = String.valueOf('=').repeat(lastLineLength);
+            separatorLine = String.valueOf('=').repeat(lastLineLength);
             System.out.println(separatorLine);
             // execute the lines; this may include many print statements
-            String output = String.valueOf(RemixPrepareRun.runInteractiveText(lines));
+            Object result = RemixPrepareRun.runInteractiveText(lines, this);
+            if (result instanceof Runtime.REPLSwingWorker) {
+                REPLworker = ((Runtime.REPLSwingWorker) result);
+                return;
+            }
+            // result is function information, I think
+            String output = String.valueOf(result);
             // print the result returned from the execution
-            if (!output.isEmpty() && !output.endsWith("\n"))
-                output = output + "\n";
-            System.out.print(output);
-            System.out.println(separatorLine);
-            // move the caret to the end of the document
-            int length = getDocument().getLength();
-            setCaretPosition(length);
+            displayOutput(output);
         } catch (BadLocationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void displayOutput(String output) {
+        if (!output.isEmpty() && !output.endsWith("\n"))
+            output = output + "\n";
+        System.out.print(output);
+        System.out.println(separatorLine);
+        // move the caret to the end of the document
+        int length = getDocument().getLength();
+        setCaretPosition(length);
     }
 
     private int getLastLineLength(String executableLines) {
@@ -308,7 +335,7 @@ public class REPLInputOutput extends JTextArea {
         public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet a)
                 throws BadLocationException {
             if (offset == 0 && length == doc.getLength() && str == null) {
-                fb.replace(offset, length, str, a);
+                fb.replace(offset, length, null, a);
                 return;
             }
             RemixEditor.systemOutput.setText(null);

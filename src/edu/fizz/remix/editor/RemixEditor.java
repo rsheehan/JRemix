@@ -466,7 +466,7 @@ public class RemixEditor extends JFrame {
         public void actionPerformed(ActionEvent e) {
             remixRunner.cancel(true);
             stopAllAnimations();
-            System.out.println("cancel called");
+            System.out.println("Program cancelled.");
             setEnabled(false);
             runAction.setEnabled(true);
             setEditing(true);

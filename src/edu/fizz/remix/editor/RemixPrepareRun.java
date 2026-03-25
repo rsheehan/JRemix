@@ -14,6 +14,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class RemixPrepareRun {
         return fileName.equals(INTERACTIVETEXT);
     }
 
-    public static RemixSwingWorker remixRunner;
+    public static SwingWorker remixRunner;
 
     public static void runEditorText(RemixSwingWorker remixSwingWorker) {
         remixRunner = remixSwingWorker; // so it can be cancelled
@@ -71,7 +72,7 @@ public class RemixPrepareRun {
         LibrariesAndCompletions.resetToEditorStandard();
     }
 
-    public static Object runInteractiveText(String interactiveLine) {
+    public static Object runInteractiveText(String interactiveLine, REPLInputOutput inputOutputArea) {
         RemixEditor.systemOutput.setText("");
         final ParseTree tree = processParse(interactiveLine, INTERACTIVETEXT);
         EvalVisitor eval = new EvalVisitor();
@@ -98,13 +99,13 @@ public class RemixPrepareRun {
             REPLContext.pushLibrary(libraryExpression);
         }
         libraryExpression.setLibName(Runtime.REPL);
-        if (addedFunction != null) {
+        if (addedFunction != null) { // defined a function
             return "Function: " + addedFunction.displayName(addedFunction.getFirstName());
         }
         RemixEditor.setEditing(false);
-        Object result = Runtime.runREPL(libraryExpression);
+        remixRunner = Runtime.runREPL(libraryExpression, inputOutputArea);
         RemixEditor.setEditing(true);
-        return result;
+        return remixRunner;
     }
 
     public static ParseTree processParse(String programText, String fileName) {
