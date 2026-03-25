@@ -15,7 +15,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             Map.entry(" <=", " ≤"),
             Map.entry(" >=", " ≥"),
             Map.entry(" !=", " ≠"),
-            Map.entry("pi", "π"),
+            Map.entry("pi ", "π"),
             Map.entry("sqrt", "√"),
             Map.entry("sqrd", "²"),
             Map.entry("\\n", "↲"),
