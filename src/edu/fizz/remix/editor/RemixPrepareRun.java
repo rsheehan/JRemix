@@ -102,9 +102,7 @@ public class RemixPrepareRun {
         if (addedFunction != null) { // defined a function
             return "Function: " + addedFunction.displayName(addedFunction.getFirstName());
         }
-        RemixEditor.setEditing(false);
         remixRunner = Runtime.runREPL(libraryExpression, inputOutputArea);
-        RemixEditor.setEditing(true);
         return remixRunner;
     }
 

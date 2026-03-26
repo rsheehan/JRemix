@@ -1,6 +1,7 @@
 package edu.fizz.remix.runtime;
 
 import edu.fizz.remix.editor.REPLInputOutput;
+import edu.fizz.remix.editor.RemixEditor;
 import edu.fizz.remix.editor.RemixPrepareRun;
 
 import javax.swing.*;
@@ -56,7 +57,9 @@ public class Runtime {
             Object result = null;
             REPLRunning = true;
             try {
+                RemixEditor.setEditing(false);
                 result = program.block.evaluate(RemixPrepareRun.REPLContext);
+                RemixEditor.setEditing(true);
             } catch (ReturnException exception) {
                 System.err.println("ReturnException caught in program.");
             } catch (InterruptedException e) {
