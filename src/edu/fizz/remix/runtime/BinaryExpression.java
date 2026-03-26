@@ -130,7 +130,7 @@ public class BinaryExpression implements Expression {
                     case "!=", "≠" -> l1 != l2;
                     default -> null;
                 };
-            } else {
+            } else if (val1 instanceof Number && val2 instanceof Number) {
                 double d1, d2;
                 d1 = ((Number) val1).doubleValue();
                 d2 = ((Number) val2).doubleValue();
@@ -148,7 +148,7 @@ public class BinaryExpression implements Expression {
                     case "!=", "≠" -> d1 != d2;
                     default -> false;
                 };
-            }
+            } else throw new RuntimeException();
         } catch (RuntimeException e) {
             System.err.printf("Error in binary expression: %s : %s %s %s.%n", this, val1, operator, val2);
             return false;

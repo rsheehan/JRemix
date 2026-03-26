@@ -26,6 +26,8 @@ public class REPLInputOutput extends JTextArea {
             To clear this area : command-shift-C
             \t\
             To stop a runaway computation : control-C
+            \t\
+            Lines starting with "-" are comments. e.g. "-2 + 4"
             
             """;
 
@@ -331,6 +333,33 @@ public class REPLInputOutput extends JTextArea {
                 return endOfText + displacement;
         }
 
+        // based on similar method in RemixStyledDocument
+        private boolean replaceOperator(FilterBypass fb, String target, String input, int offset) throws BadLocationException {
+            int targetLen = target.length() - 1; // not counting last character
+            if (offset >= targetLen) {
+                String match = doc.getText(offset - targetLen, targetLen) + input; // existing plus new char
+                if (match.equals(target)) {
+                    String replacement = RemixStyledDocument.operators.get(target);
+                    if ("π√²".contains(replacement)) {
+                        // if the previous character is a word character don't do the replacement
+                        int pos = offset - targetLen - 1;
+                        if (pos >= 0) {
+                            String ch = getText(pos, 1);
+                            if (!" .()[\\]{,}:—|§@…'’⊕+-*×÷%=≠<≤>≥0123456789\"\t\n".contains(ch))
+                                return false; // don't replace as pi is part of word
+                        }
+                    }
+                    if (replacement.equals(" ⊕ ") && getText(offset, 1).equals(")")) {
+                        fb.replace(offset - targetLen, targetLen + 1, replacement, null);
+                    } else {
+                        fb.replace(offset - targetLen, targetLen, replacement, null);
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
         @Override
         public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet a)
                 throws BadLocationException {
@@ -343,53 +372,13 @@ public class REPLInputOutput extends JTextArea {
             int newPos = afterPossibleCopy(fb, offset);
             setCaretPosition(newPos);
 
-            if (REPLInputOutput.this.isFocusOwner())
-                if (str.equals("n")) {
-                    if (possiblePrint(fb, offset, a))
-                        return;
-                } else if (str.equals(".")) {
-                    if (possibleEllipsis(fb, offset, a))
-                        return;
-                } else if (str.equals("+")) {
-                    if (possibleConcatOperator(fb, offset, a))
-                        return;
+            for (String target : RemixStyledDocument.operators.keySet()) {
+                if (replaceOperator(fb, target, str, offset)) {
+                    return;
                 }
+            }
             fb.replace(newPos, length, str, a);
         }
 
-        private boolean possiblePrint(FilterBypass fb, int offset, AttributeSet a) throws BadLocationException {
-            if (offset == 0)
-                return false;
-            String prevChar = getDocument().getText(--offset, 1);
-            if (prevChar.equals("\\")) {
-                fb.replace(offset, 1, "↲", a);
-                return true;
-            }
-            return false;
-        }
-
-        private boolean possibleEllipsis(FilterBypass fb, int offset, AttributeSet a) throws BadLocationException {
-            if (offset < 2)
-                return false;
-            offset -= 2;
-            String prevChar = getDocument().getText(offset, 2);
-            if (prevChar.equals("..")) {
-                fb.replace(offset, 2, "…", a);
-                return true;
-            }
-            return false;
-        }
-
-        private boolean possibleConcatOperator(FilterBypass fb, int offset, AttributeSet a) throws BadLocationException {
-            if (offset < 1)
-                return false;
-            offset -= 1;
-            String prevChar = getDocument().getText(offset, 1);
-            if (prevChar.equals("(")) {
-                fb.replace(offset, 1, "⊕ ", a);
-                return true;
-            }
-            return false;
-        }
     }
 }

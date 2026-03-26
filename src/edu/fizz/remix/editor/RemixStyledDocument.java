@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class RemixStyledDocument extends DefaultStyledDocument {
     private final JTextPane textPane;
-    private final Map<String, String> operators = Map.ofEntries(
+    public static final Map<String, String> operators = Map.ofEntries(
             Map.entry(" *", " ×"),
             Map.entry(" /", " ÷"),
             Map.entry(" <=", " ≤"),
@@ -248,6 +248,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
 
     /*
      If the characters before plus the input match a replacement character, then replace it.
+     Very similar to version in REPLInputOutput.FilterLineInput
      */
     private boolean replaceOperator(String target, String input, int offset) throws BadLocationException {
         int targetLen = target.length() - 1; // not counting last character
