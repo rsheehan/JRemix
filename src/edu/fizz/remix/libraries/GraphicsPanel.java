@@ -22,7 +22,6 @@ public class GraphicsPanel extends JPanel {
         super();
         graphicsDimension = size;
         setPreferredSize(graphicsDimension);
-        setMinimumSize(graphicsDimension);
         baseLayer = new GraphicsLayerImage(size);
         setBackground(new Color(0, 0, 50));
         addComponentListener(new ResizeListener());
@@ -92,7 +91,7 @@ public class GraphicsPanel extends JPanel {
             if (filled) {
                 g2d.setColor(fillColour);
                 g2d.fill(positionedShape);
-            };
+            }
             if (outlined) {
                 g2d.setColor(outlineColour);
                 g2d.draw(positionedShape);
@@ -134,7 +133,7 @@ public class GraphicsPanel extends JPanel {
             if (filled) {
                 g2d.setColor(fillColour);
                 g2d.fillOval(centreX, centreY, diameter, diameter);
-            };
+            }
             if (outlined) {
                 g2d.setColor(outlineColour);
                 g2d.drawOval(centreX, centreY, diameter, diameter);
