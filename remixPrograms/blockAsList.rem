@@ -1,0 +1,17 @@
+'block' :
+	"one" ↲
+	"two" ↲
+	"three" ↲
+
+for each 'b' in 'block'
+	'b' ↲
+
+2 in 'block' ↲
+
+'complete' : [ ]
+append 'b' to 'complete'
+
+'c' : join 'complete' and 'block'
+
+'c' ↲
+do 'c'

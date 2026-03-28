@@ -117,7 +117,7 @@ if not 'expression' ['block'] :
 Run 'block' for each 'item' in the 'sequence'.
 'block' will usually use the variable passed as 'item'.
 Return either the last statement value or whatever is returned from 'block'.
-A sequence here is a list, range, map, string or sequence object.
+A sequence here is a list, range, map, string, block or sequence object.
 =-
 for each #item in 'sequence' ['block'] :
 	'pos' : start 'sequence'
@@ -302,7 +302,7 @@ list from 'range' :
 Can be used to construct 'list' reduce functions.
 'initial' is executed first.
 Then each 'item' in the 'sequence' is executed in the 'block'.
-A sequence here is a list, range, map, string or sequence object.
+A sequence here is a list, range, map, string, block or sequence object.
 =-
 starting with ['initial'] apply ['block'] on each #item in 'sequence' :
 	'result' : do 'initial'
@@ -356,7 +356,8 @@ average 'key' of 'list of maps' :
 
 =-
 Join the contents of 'list 1' and 'list 2'.
-The original lists remain unchanged.
+Works with lists or blocks.
+The parameters remain unchanged.
 =-
 join 'list 1' and 'list 2' :
 	starting with

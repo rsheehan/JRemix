@@ -91,14 +91,15 @@ public class Block implements Expression {
         for (Expression expression : statements) {
             result.append(expression.toString()).append(". ");
         }
-        result.delete(result.length() - 2, result.length());
+        if (result.length() > 2)
+            result.delete(result.length() - 2, result.length());
         result.append(" ]");
         return result.toString();
     }
 
     public Block copy() {
         Block copy = new Block();
-        copy.statements = statements; //new ArrayList<>(statements);
+        copy.statements = new ArrayList<>(statements);
         if (blockContext != null)
             copy.blockContext = blockContext.copy();
         return copy;

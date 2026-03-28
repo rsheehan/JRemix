@@ -35,9 +35,17 @@ public class PrintStatement implements Expression {
     public String toString() {
         StringBuilder result = new StringBuilder("print ");
         for (Expression expression : expressionList) {
+            if (expression instanceof SimpleExpression simple) {
+                Object value = simple.evaluate(null);
+                if (value instanceof String) {
+                    result.append("\"").append(value).append("\"");
+                    return result.toString();
+                }
+            }
             result.append(expression.toString()).append(", ");
         }
-        result.delete(result.length() - 2, result.length());
+        if (!expressionList.isEmpty())
+            result.delete(result.length() - 2, result.length());
         return result.toString();
     }
 }

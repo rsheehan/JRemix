@@ -4,6 +4,7 @@ import edu.fizz.remix.EvalVisitorForEditor;
 import edu.fizz.remix.editor.REPLInputOutput;
 import edu.fizz.remix.editor.RemixEditor;
 import edu.fizz.remix.editor.RemixPrepareRun;
+import edu.fizz.remix.parser.RemixParser;
 
 import java.util.*;
 
@@ -367,7 +368,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
     }
 
-    /** Return an iterator over a list or over the keys of a map, now includes strings. */
+    /** Return an iterator over a list or over the keys of a map, now includes strings and blocks. */
     public static final class StartFunction extends Function {
 
         public StartFunction() {
@@ -376,7 +377,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     List.of("list"),
                     List.of(false),
                     false,
-                    "Create an iterator from a list, range, map or string."
+                    "Create an iterator from a list, range, map, string or block."
             );
         }
 
@@ -384,12 +385,14 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public Iterator<?> execute(Context context) throws VarNotFoundException {
             Iterator<?> iterator = null;
             Object listMapOrString = context.retrieve("list", false);
-            if (listMapOrString instanceof List)
-                iterator = ((List<?>)listMapOrString).iterator();
-            else if (listMapOrString instanceof Map)
-                iterator = ((Map<?, ?>)listMapOrString).keySet().iterator();
-            else if (listMapOrString instanceof String) {
-                iterator = new CharsList((String)listMapOrString).iterator();
+            if (listMapOrString instanceof List list)
+                iterator = list.iterator();
+            else if (listMapOrString instanceof Map map)
+                iterator = map.keySet().iterator();
+            else if (listMapOrString instanceof String string) {
+                iterator = new CharsList(string).iterator();
+            } else if (listMapOrString instanceof Block block) {
+                iterator = block.statements.iterator();
             }
             return iterator;
         }
@@ -479,7 +482,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public ConcatFunction() {
             super(
-                    List.of("⫾ ⊕ ⫾", "⫾ (+) ⫾"),
+                    List.of("⫾ ⊕ ⫾", "⫾ (+) ⫾", "⫾ concatenated with ⫾"),
                     Arrays.asList("first", "second"),
                     List.of(false, false),
                     false,
@@ -506,7 +509,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     List.of(false, false),
                     false,
                     "Extract an item from 'sequence' at 'index'.\n" +
-                            "A sequence is a list, range or string."
+                            "A sequence is a list, range, string or block."
             );
         }
 
@@ -539,12 +542,18 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 } else {
                     return (long)array[index - 1]; // converts to long
                 }
+            } else if(object instanceof Block block) {
+                if (index < 1 || index > block.statements.size()) {
+                    return null;
+                } else {
+                    return block.statements.get(index - 1);
+                }
             }
             return null;
         }
     }
 
-    /** Append a value onto a list. */
+    /** Append a value onto a list or block. */
     // does not do strings or ranges, maps
     public static final class AppendFunction extends Function {
 
@@ -554,7 +563,9 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     Arrays.asList("value", "list"),
                     List.of(false, false),
                     false,
-                    "Append 'value' to the end of 'list'."
+                    "Append 'value' to the end of 'list'.\n" +
+                            "'list' is a list or block.\n" +
+                            "If a block then 'value' must be a statement."
             );
         }
 
@@ -562,9 +573,16 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public Object execute(Context context) throws VarNotFoundException {
             Object value = context.retrieve("value", false);
             @SuppressWarnings ("unchecked")
-            List<Object> list = (List<Object>)context.retrieve("list", false);
-            list.add(value);
-            return list;
+            Object listOrBlock = context.retrieve("list", false);
+            if (listOrBlock instanceof List list) {
+                list = (List<Object>) context.retrieve("list", false);
+                list.add(value);
+                return list;
+            } else if (listOrBlock instanceof Block block) {
+                block.addStatement((Expression) value);
+                return block;
+            }
+            return null;
         }
     }
 
@@ -577,7 +595,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     List.of("list"),
                     List.of(false),
                     false,
-                    "Return the length of a list, range, map or string."
+                    "Return the length of a list, range, map, string or block."
             );
         }
 
@@ -593,8 +611,11 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 length = map.size();
             } else if (object instanceof RangeExpression range) {
                 length = range.size();
-            } else if (object instanceof byte[] array)
+            } else if (object instanceof byte[] array) {
                 length = array.length;
+            } else if (object instanceof Block block) {
+                length = block.statements.size();
+            }
             return length;
         }
     }

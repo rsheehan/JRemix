@@ -1,0 +1,34 @@
+'block' :
+	"one"
+	"two"
+	"three"
+
+'expected' : {"one", "two", "three"}
+
+for each 'b' in 'block' keeping 'index'
+	test {
+		("Statement " ⊕ 'index' ⊕  " in block.")
+			'b'
+		… expected ('expected'{'index'})
+	}
+	↲
+
+test {
+	"Extract statement from block."
+		2 in 'block'
+	… expected "two"
+}
+↲
+
+'complete' : [ ]
+test {
+	"Append statement to block."
+		append (3 in 'block') to 'complete'
+		do 'complete'
+	… expected "three"
+}
+↲
+
+join 'complete' and 'block' ↲
+
+
