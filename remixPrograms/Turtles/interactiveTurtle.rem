@@ -1,0 +1,47 @@
+using graphics, turtle
+	
+	'window' : a graphics window
+	TSPACE : a turtle space in 'window'
+	TURTLE : a turtle in TSPACE
+	
+using graphics
+	random turtle colour :
+		TURTLE colour (random colour)
+
+square 'size' :
+	repeat 4 times
+		move 'size'
+		turn 90
+	{"position" : TURTLE position, "heading" : TURTLE heading}
+	
+move 'steps' :
+	move TURTLE 'steps' steps
+	TURTLE position
+
+move to 'position' :
+	move TURTLE to 'position'
+	TURTLE position
+
+turn 'angle' :
+	turn TURTLE 'angle' degrees
+	TURTLE heading
+
+turn to 'position' :
+	turn TURTLE to 'position'
+
+jump to 'position' :
+	TURTLE position 'position'
+	update TSPACE
+	TURTLE position
+
+pen up :
+	TURTLE pen up
+
+pen down :
+	TURTLE pen down
+
+hide :
+	hide TURTLE
+
+show :
+	show TURTLE

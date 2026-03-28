@@ -149,7 +149,7 @@
 				The heading in degrees of the turtle 'OBJECT'.
 				=-
 				MY heading :
-					('heading' radians as degrees) heading to direction
+					normalize (('heading' radians as degrees) heading to direction)
 
 				=-
 				Set the heading of the turtle 'OBJECT' to 'angle' degrees.
@@ -469,6 +469,16 @@
 		=-
 		random turtle point :
 			panel coordinate (random point) to turtle coordinate
+
+		=-
+		Make 'angle' a value between -180 to +180 degrees.
+		=-
+		normalize 'angle' :
+			'angle' : 'angle' % 360
+			when
+				['angle' > 180] do [add -360 to 'angle']
+				['angle' < -180] do [add 360 to 'angle']
+				['angle']
 
 -==================================================================================================-
 
