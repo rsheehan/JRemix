@@ -220,17 +220,6 @@ while ['condition'] ['block'] :
 		'last' : do 'block'
 		redo
 
-=-
-A while loop which always executes 'first' just before the 'condition'.
-'body' repeats until 'condition' is true and then 'result' is returned.
-=-
-while ['first'] ['condition'] ['body'] result ['result'] :
-	do 'first'
-	while 'condition'
-		do 'body'
-		do 'first'
-	do 'result'
-
 ==============================
  List create functions
 ==============================
@@ -782,10 +771,10 @@ The parameters must be positive integers.
 greatest common factor of 'n1' and 'n2' :
 	if ('n1' > 'n2')
 		'n1' swap 'n2' ; n2 is bigger
-	while ['remainder' : 'n2' % 'n1'] ['remainder' > 0]
+	while ['remainder' : 'n2' % 'n1'. 'remainder' > 0]
 		'n2' : 'n1'
 		'n1' : 'remainder'
-	… result ['n1']
+	'n1'
 
 =-
 The greatest common factor of 'n1' and 'n2'.
