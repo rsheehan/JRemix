@@ -220,6 +220,17 @@ while ['condition'] ['block'] :
 		'last' : do 'block'
 		redo
 
+=-
+A while loop which always executes 'first' just before the 'condition'.
+'body' repeats until 'condition' is true and then 'result' is returned.
+=-
+while ['first'] ['condition'] ['body'] result ['result'] :
+	do 'first'
+	while 'condition'
+		do 'body'
+		do 'first'
+	do 'result'
+
 ==============================
  List create functions
 ==============================
@@ -522,13 +533,13 @@ to 'list' append 'value' :
 	append 'value' to 'list'
 
 =-
-The first 'value' in the 'list'.
+The first value in the 'list'.
 =-
 first in 'list' :
 	'list' {1}
 
 =-
-The last 'value' in the 'list'.
+The last value in the 'list'.
 =-
 last in 'list' :
 	'list' {'list' length}
@@ -572,6 +583,31 @@ Merge the 'extra' map into 'map'.
 merge 'extra' into 'map' :
 	for each 'item' in 'extra'
 		'map' {'item'} : 'extra' {'item'}
+
+==============================
+ Block functions
+==============================
+
+=-
+The first  statement in the 'block'.
+=-
+first statement in 'block' :
+	1 in 'block'
+
+=-
+The last statement in the 'block'.
+=-
+last statement in 'block' :
+	('block' length) in 'block'
+
+=-
+Extract the statement within 'block'.
+'block' should be a block containing one statement.
+Because statements are usually executed putting one inside
+a block means it can be accessed without execution.
+=-
+statement from 'block' :
+	first statement in 'block'
 
 ==============================
  Selection functions
@@ -738,6 +774,39 @@ Degree equivalent of 'angle' radians.
 =-
 'angle' radians as degrees :
 	'angle' ÷ π × 180.0
+
+=-
+The greatest common factor of 'n1' and 'n2'.
+The parameters must be positive integers.
+=-
+greatest common factor of 'n1' and 'n2' :
+	if ('n1' > 'n2')
+		'n1' swap 'n2' ; n2 is bigger
+	while ['remainder' : 'n2' % 'n1'] ['remainder' > 0]
+		'n2' : 'n1'
+		'n1' : 'remainder'
+	… result ['n1']
+
+=-
+The greatest common factor of 'n1' and 'n2'.
+The parameters must be positive integers.
+=-
+gcf 'n1' 'n2' :
+	greatest common factor of 'n1' and 'n2'
+
+=-
+The least common multiple of 'n1' and 'n2'.
+The parameters must be positive integers.
+=-
+least common multiple of 'n1' and 'n2' :
+	'n1' × 'n2' ÷ greatest common factor of 'n1' and 'n2'
+
+=-
+The least common multiple of 'n1' and 'n2'.
+The parameters must be positive integers.
+=-
+lcm 'n1' 'n2' :
+	least common multiple of 'n1' and 'n2'
 
 ==============================
  Swapping functions
