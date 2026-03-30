@@ -598,6 +598,13 @@ a block means it can be accessed without execution.
 statement from 'block' :
 	first statement in 'block'
 
+=-
+Enclose the 'statement' in a block.
+The block can then be executed with "do".
+=-
+block 'statement' :
+	append 'statement' to []
+
 ==============================
  Selection functions
 ==============================

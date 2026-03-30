@@ -15,3 +15,8 @@ append 'b' to 'complete'
 
 'c' ↲
 do 'c'
+
+'s' : first statement in 'c'
+
+'bs' : block 's'
+do 'bs'

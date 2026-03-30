@@ -12,3 +12,6 @@ using files
 
 	'iterator' : byte iterator from 'abc file'
 	"iterator: ", 'iterator'↲
+	
+	for each 'byte' in (bytes from 'abc file')
+		'byte' _

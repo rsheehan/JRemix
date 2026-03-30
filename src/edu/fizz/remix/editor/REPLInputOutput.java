@@ -85,7 +85,7 @@ public class REPLInputOutput extends JTextArea {
                 executeLines(pos);
             }
         });
-        // Put the custom Action into the ActionMap
+
         actionMap.put(commandCActionName, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -93,12 +93,14 @@ public class REPLInputOutput extends JTextArea {
                 RemixEditor.remixOutput.setText(null); // clearTextArea();
             }
         });
+
         actionMap.put(shiftReturnActionName, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // deal with return to indent to level
                 int tabCount = 0;
                 int pos = getCaretPosition();
+                pos = adjustToEndIfNecessary(pos);
                 try {
                     int lineNumber = getLineOfOffset(pos);
                     String currentLine = getLineText(lineNumber);
@@ -113,12 +115,14 @@ public class REPLInputOutput extends JTextArea {
                 insert("\n" + "\t".repeat(tabCount), pos);
             }
         });
+
         actionMap.put(indentedReturnActionName, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // deal with return to indent to level
                 int tabCount = 0;
                 int pos = getCaretPosition();
+                pos = adjustToEndIfNecessary(pos);
                 try {
                     int lineNumber = getLineOfOffset(pos);
                     String currentLine = getLineText(lineNumber);
@@ -133,6 +137,7 @@ public class REPLInputOutput extends JTextArea {
                 insert("\n" + "\t".repeat(tabCount + 1), pos);
             }
         });
+
         actionMap.put(interruptExecutionActionName, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -140,6 +145,34 @@ public class REPLInputOutput extends JTextArea {
                     REPLworker.cancel(true);
             }
         });
+    }
+
+    private int adjustToEndIfNecessary(int pos) {
+        try {
+            // collect the lines to execute
+            String lines = linesToExecute(pos);
+            if (lines.isEmpty())
+                return pos;
+            // If not the last line, copy the lines to the end of the document
+            if (bottomOfCodeLine != getLastLineNumber()) {
+                // first find displacement in linesToExecute
+                int displacement = -1;
+                int endOfText = doc.getLength();
+                if (notEndOfText(pos)) {
+                    // copy the linesToExecute to the end of the text
+                    lines = lines.stripTrailing();
+                    displacement =  pos - topOfCodePos;
+                    System.out.print(lines);
+                }
+                if (displacement != -1) {
+                    pos = endOfText + displacement;
+                    setCaretPosition (pos);
+                }
+            }
+        } catch (BadLocationException ex) {
+            throw new RuntimeException(ex);
+        }
+        return pos;
     }
 
     /*
@@ -291,7 +324,7 @@ public class REPLInputOutput extends JTextArea {
         return getText(lineStartOffset, lineEndOffset - lineStartOffset);
     }
 
-    private boolean atEndOfText(int offset) throws BadLocationException {
+    private boolean notEndOfText(int offset) throws BadLocationException {
         int lineNumber = getLineOfOffset(offset);
         int lastLineNumber = getLastLineNumber();
         while (lineNumber < lastLineNumber) {
@@ -303,7 +336,7 @@ public class REPLInputOutput extends JTextArea {
                 break;
             }
         }
-        return lineNumber == lastLineNumber;
+        return lineNumber != lastLineNumber;
     }
 
     private class FilterLineInput extends DocumentFilter {
@@ -320,10 +353,13 @@ public class REPLInputOutput extends JTextArea {
         private int afterPossibleCopy(FilterBypass fb, int offset) throws BadLocationException {
             int displacement = -1;
             int endOfText = doc.getLength();
-            if (!atEndOfText(offset)) {
+            if (notEndOfText(offset)) {
                 // copy the linesToExecute to the end of the text
                 String linesToCopy = linesToExecute(offset);
-                linesToCopy = linesToCopy.stripTrailing();
+//                linesToCopy = linesToCopy.stripTrailing();
+                if (linesToCopy.endsWith("\n")) {
+                    linesToCopy = linesToCopy.substring(0, linesToCopy.length() - 1);
+                }
                 displacement =  offset - topOfCodePos;
                 fb.replace(endOfText, 0, linesToCopy, null);
             }
