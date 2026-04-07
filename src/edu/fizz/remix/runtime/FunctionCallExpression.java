@@ -3,6 +3,7 @@ package edu.fizz.remix.runtime;
 import edu.fizz.remix.editor.RemixEditor;
 import edu.fizz.remix.editor.RemixPrepareRun;
 
+import java.util.Collections;
 import java.util.ListIterator;
 import java.util.Stack;
 
@@ -21,6 +22,19 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         this.fileName = fileName;
         this.lineNumber = lineNumber;
         this.lineOffset = lineOffset;
+    }
+
+    public Function getFunction(Context context) {
+        Stack<LibraryExpression> libraryStack = (Stack) context.libraryStack.clone();
+        Collections.reverse(libraryStack);
+        Function function = null;
+        String routineName = singleName();
+        for (LibraryExpression library : libraryStack) {
+            function = library.searchFunctionTable(routineName);
+            if (function != null)
+                break;
+        }
+        return function;
     }
 
     @Override

@@ -20,4 +20,8 @@ public class ReturnStatement implements Expression {
         return null;
     }
 
+    public String toString() {
+        return "return " + returnExpression;
+    }
+
 }

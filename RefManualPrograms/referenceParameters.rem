@@ -1,0 +1,12 @@
+add 'amount' to variable #var :
+	#var : #var + 'amount'
+
+'value' : 12
+add 4 to variable 'value'
+'value' ↲ ; this displays the value 16 on the screen
+
+add 7 to 23 ; this causes an error message
+
+'map' : {"a" : 9}
+add 1 to ('map'{"a"})
+'map' ↲

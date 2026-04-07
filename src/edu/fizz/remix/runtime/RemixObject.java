@@ -121,7 +121,12 @@ public class RemixObject implements RemixComplexType {
             sb.append("object\n");
             if (numberOfFields == 0)
                 return sb.toString();
-            tabs.append("\t");
+            if (tabs.length() < 13)
+                tabs.append("\t");
+            else {
+                tabs.delete(0, tabs.length());
+                tabs.append("…\t");
+            }
             boolean firstField = true;
             for (String key : instanceVars.keySet()) {
                 if (key.equals("type"))

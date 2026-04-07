@@ -586,7 +586,39 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
     }
 
-    /** Return the length of a list, range, map or string. */
+    /** Return the body of the function. */
+    public static final class BodyOfFunction extends Function {
+
+        public BodyOfFunction() {
+            super(
+                    List.of("body of ⫾"),
+                    Arrays.asList("function block"),
+                    List.of(true),
+                    false,
+                    "Return the body of the function which is the first statement in ['function block']."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws VarNotFoundException {
+            Object value = context.retrieve("function block", false);
+            if (value instanceof Block block) {
+                if (block.statements.size() > 0) {
+                    Expression expression = block.statements.get(0);
+                    if (expression instanceof FunctionCallExpression functionCall) {
+                        Function function = functionCall.getFunction(context);
+                        if (function instanceof RemixFunction remixFunction) {
+                            return remixFunction.getCodeBlock();
+                        }
+                    }
+                }
+            }
+            System.err.printf("Error: in \"body of %s\". Parameter must be a block with a function call.%n", value.toString());
+            return null;
+        }
+    }
+
+    /** Return the length of a list, range, map, string or block. */
     public static final class LengthFunction extends Function {
 
         public LengthFunction() {

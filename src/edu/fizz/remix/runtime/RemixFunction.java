@@ -28,4 +28,8 @@ public class RemixFunction extends Function {
         return codeBlock.evaluate(context);
     }
 
+    protected Block getCodeBlock() {
+        return codeBlock;
+    }
+
 }

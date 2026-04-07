@@ -1,0 +1,29 @@
+- Concatenation always converts to strings first
+
+'l1' : list from (1 to 10)
+'l2' : list from (11 to 20)
+'l3' : 'l1' ⊕ 'l2'
+
+'m1' : {"a" : 1, "b" : 2, "c" : 3}
+'m2' : {"d" : 3, "e" : 2, "c" : 5}
+'m3' : 'm1' ⊕ 'm2'
+
+'b1' : 
+	1
+	2
+	3
+
+'b2' :
+	3
+	4
+	5
+
+'b3' : 'b1' ⊕ 'b2'
+
+'s1' : "Robert "
+'s2' : "Sheehan"
+'s3' : 's1' ⊕ 's2'
+
+'s4' : 3456 ⊕  's3'
+
+help VARS ↲
