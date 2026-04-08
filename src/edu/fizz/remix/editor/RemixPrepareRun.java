@@ -109,6 +109,7 @@ public class RemixPrepareRun {
     public static ParseTree processParse(String programText, String fileName) {
         RemixPrepareRun.fileName = fileName;
         String processedText;
+        programText = programText.replaceAll("\\r", "");
         try {
             processedText = PreProcessREPL.processContents(programText);
         } catch (IOException e) {
