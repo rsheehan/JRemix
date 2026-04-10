@@ -58,7 +58,7 @@ public class UsingLibBlock implements Expression { //extends Block {
             if (library  == null)
                 try {
                     library = (LibraryExpression) libraryExpression.evaluate(context);
-                    library.setLibName(libID);
+                    library.addLibName(libID);
                     Runtime.loadedLibraries.put(libID, library);
                 } catch (ClassCastException | VarNotFoundException e) {
                     System.err.printf("%s is not a library.%n", libraryExpression);

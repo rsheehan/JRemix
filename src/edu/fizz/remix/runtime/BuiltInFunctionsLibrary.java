@@ -104,7 +104,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 if (!(result instanceof LibraryExpression) || !(((LibraryExpression) result).trueLibrary)) {
                     System.err.format("Included file \"%s\" does not evaluate to a library.%n", filename);
                     result = null;
-                }
+                } else
+                    ((LibraryExpression) result).addLibName(filename);
             } catch (ReturnException exception) {
                 System.err.println("ReturnException caught in program.");
             }

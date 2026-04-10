@@ -30,6 +30,10 @@ public class LibraryExpression implements Expression {
         this.libName = libName;
     }
 
+    public void addLibName(String libID) {
+        libName += " - " + libID;
+    }
+
     public String getLibUnderlinedName() {
         return "\n" +
                 libName +
@@ -182,6 +186,11 @@ public class LibraryExpression implements Expression {
             loaded = true;
         }
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Library : " + getLibName();
     }
 
 }
