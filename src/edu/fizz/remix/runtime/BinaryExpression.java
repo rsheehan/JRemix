@@ -45,6 +45,8 @@ public class BinaryExpression implements Expression {
                     case "!=" -> result = !map1.equals(map2);
                 }
                 return result;
+            } else if (val1 instanceof LibraryExpression lib1 && val2 instanceof LibraryExpression lib2) {
+                return lib1.equals(lib2);
             } else if (val1 instanceof RemixObject object1 && val2 instanceof RemixObject object2) {
 //          To compare objects you need a (other) equals (me) method.
                 Method method = object2.findMethod("⫾ equals ⫾");

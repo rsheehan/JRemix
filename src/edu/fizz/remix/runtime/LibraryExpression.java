@@ -21,27 +21,69 @@ public class LibraryExpression implements Expression {
     boolean loaded = false; // set to true when first evaluated
     private ArrayList<int[]> activeLines = new ArrayList<>(); // editor lines where this library is active
     public Block block = new Block();
+    private String javaFileName = "";
+    private String remixFileName = "";
+    private String callName = "";
 
-    public String getLibName() {
-        return libName;
+
+    public String getRemixFileName() {
+        return remixFileName;
     }
 
     public void setLibName(String libName) {
         this.libName = libName;
     }
 
-    public void addLibName(String libID) {
-        libName += " - " + libID;
+    public String getLibName() {
+        if (!libName.isEmpty()) { // currently only used by the REPL library expression
+            return libName;
+        }
+        StringBuilder idBuilder = new StringBuilder();
+        if (!javaFileName.isEmpty()) {
+            idBuilder.append(javaFileName);
+        }
+        if (!remixFileName.isEmpty()) {
+            if (!idBuilder.isEmpty()) {
+                idBuilder.append(" - ");
+            }
+            idBuilder.append(remixFileName);
+        }
+        if (!callName.isEmpty() && idBuilder.isEmpty()) {
+            idBuilder.append(callName);
+        }
+        libName = idBuilder.toString();
+        return libName;
+    }
+
+    /*
+    Set the Java component name of a library.
+     */
+    public void setJavaFileName(String javaFile) {
+        javaFileName = javaFile;
+    }
+
+    /*
+    Set the Remix component name of a library.
+     */
+    public void setRemixFileName(String remixFile) {
+        remixFileName = remixFile;
+    }
+
+    /*
+   Set the call component name of a library.
+    */
+    public void setCallName(String callName) {
+        this.callName = callName;
     }
 
     public String getLibUnderlinedName() {
         return "\n" +
-                libName +
+                getLibName() +
                 '\n' +
                 String.valueOf('⎺').repeat(libName.length());
     }
 
-    private String libName = "Anonymous";
+    private String libName = "";
 
     // Functions available in this library.
     public LinkedHashMap<String, Function> functionTable = new LinkedHashMap<>();
@@ -57,17 +99,9 @@ public class LibraryExpression implements Expression {
         setUpBuiltIns();
     }
 
-//    public LibraryExpression(Block statementBlock) {
-//        block = statementBlock;
-//    }
-
     public void setTrueLibrary() {
         this.trueLibrary = true;
     }
-
-//    public boolean isTrueLibrary() {
-//        return trueLibrary;
-//    }
 
     public ArrayList<int[]> getActiveLines() {
         return activeLines;
@@ -190,7 +224,16 @@ public class LibraryExpression implements Expression {
 
     @Override
     public String toString() {
-        return "Library : " + getLibName();
+        return getLibName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LibraryExpression that = (LibraryExpression) o;
+
+        return ((!remixFileName.isEmpty() && remixFileName.equals(that.remixFileName)) || callName.equals(that.callName));
     }
 
 }

@@ -105,7 +105,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     System.err.format("Included file \"%s\" does not evaluate to a library.%n", filename);
                     result = null;
                 } else
-                    ((LibraryExpression) result).addLibName(filename);
+                    ((LibraryExpression) result).setRemixFileName(filename);
             } catch (ReturnException exception) {
                 System.err.println("ReturnException caught in program.");
             }
@@ -911,9 +911,15 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         private static void dealWithLibraries(Context parentContext, StringBuilder helpSB) {
+            Set<LibraryExpression> librariesReported = new HashSet<>();
             for (String libName : Runtime.loadedLibraries.keySet()) {
-                helpSB.append(libName)
-                        .append('\n');
+                LibraryExpression lib = Runtime.loadedLibraries.get(libName);
+                if (!librariesReported.contains(lib)) { // don't report the same library with a different name
+                    String libID = Runtime.loadedLibraries.get(libName).getLibName();
+                    helpSB.append(libID)
+                            .append('\n');
+                    librariesReported.add(lib);
+                }
             }
         }
 
@@ -932,8 +938,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         private static void dealWithConstants(Context context, StringBuilder helpSB) {
-            Stack<LibraryExpression> libStack = context.libraryStack;
-            for (LibraryExpression lib : libStack) {
+            for (LibraryExpression lib : context.libraryStack) {
                 helpSB.append(lib.getLibUnderlinedName()).append('\n');
                 TreeMap<String, Object> constants = new TreeMap<>(lib.constantTable);
                 // Iterate over the sorted map

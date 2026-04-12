@@ -215,7 +215,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
     }
 
     @Override
-    public String getName() {
+    public String getLibIDName() {
         return toString();
     }
 }

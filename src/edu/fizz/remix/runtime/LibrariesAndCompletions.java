@@ -10,6 +10,8 @@ import java.util.*;
  *  Also the completion information for each of these. */
 public class LibrariesAndCompletions {
 
+    private static final String builtInFunctions = "edu.fizz.remix.BuiltInFunctions";
+    private static final String standardLib = "remixLibraries/standard-lib.rem";
     /*
        All of the variable identifiers.
      */
@@ -221,13 +223,14 @@ public class LibrariesAndCompletions {
     /** Run the standard library setting up functions. No longer objects and global data */
     public static void prepareEnvironment() throws Exception {
         baseLibrary = new BuiltInFunctionsLibrary();
+        baseLibrary.setJavaFileName(builtInFunctions);
         addedLibraries.add(baseLibrary);
         RemixEditor.setEditing(false);
-        LibraryExpression standardLibrary = RemixPrepareRun.loadPackage("remixLibraries/standard-lib.rem");
+        LibraryExpression standardLibrary = RemixPrepareRun.loadPackage(standardLib);
         RemixEditor.setEditing(true);
         // this unnecessarily repeats the work so that the methodTableForCompletions gets
         // the one method from the standard-lib
-        RemixPrepareRun.loadPackage("remixLibraries/standard-lib.rem");
+        RemixPrepareRun.loadPackage(standardLib);
         LibraryExpression.methodTableStandardLib = new HashMap<>(LibraryExpression.methodTableForCompletions);
         try {
             // currently libraries no longer maintain state in contexts (variables)
@@ -240,7 +243,7 @@ public class LibrariesAndCompletions {
             System.err.println("ReturnException caught in program.");
         }
         baseLibrary.mergeFunctionsConstantsNoOverwrite(standardLibrary);
-        baseLibrary.setLibName("Standard base lib");
+        baseLibrary.setRemixFileName(standardLib);
         baseLibrary.setTrueLibrary();
         baseLibrary.setActiveLines(LibraryExpression.ALLLINES);
         Runtime.loadedLibraries = new HashMap<>();

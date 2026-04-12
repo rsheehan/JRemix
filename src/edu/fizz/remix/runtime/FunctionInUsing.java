@@ -39,11 +39,7 @@ public class FunctionInUsing extends RemixFunction {
             if (!context.libraryInStack(library))
                 context.pushLibrary(library);
         }
-//        context.pushLibrary(wasTopOfLibStack);
-
         Object result = codeBlock.evaluate(context);
-
-//        context.popLibrary();
         for (int libNum = 0; libNum < librariesToUse.size(); libNum++) {
             context.popLibrary();
         }

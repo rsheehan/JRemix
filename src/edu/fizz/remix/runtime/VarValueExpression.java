@@ -15,6 +15,10 @@ public class VarValueExpression implements Expression, NamedExpression {
         return varName;
     }
 
+    public String getLibIDName() {
+        return toString();
+    }
+
     @Override
     public Object evaluate(Context context) {
         Object value = null;

@@ -86,6 +86,7 @@ public class RemixPrepareRun {
         }
         LibraryExpression currentTOSLibrary = REPLContext.peekLibrary();
         if (!currentTOSLibrary.getLibName().equals(Runtime.REPL)) { // if not the REPL i.e. base or editor program
+            libraryExpression.setLibName(Runtime.REPL);
             REPLContext.addLibraryToStack(libraryExpression);
         } else {
             // replace currentTOS REPL library with this one after merging functions and constants

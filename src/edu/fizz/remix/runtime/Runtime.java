@@ -20,7 +20,7 @@ public class Runtime {
      * Run the program. This comes from the text in the editor.
      */
     public static void runProgram(LibraryExpression program) {
-        program.setLibName("Program");
+        program.setCallName("Program");
         program.setTrueLibrary();
         RemixPrepareRun.REPLContext = new Context(LibrariesAndCompletions.getBaseLibrary());
         RemixPrepareRun.REPLContext.addLibraryToStack(program);

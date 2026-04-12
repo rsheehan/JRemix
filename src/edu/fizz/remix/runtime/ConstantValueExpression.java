@@ -15,6 +15,10 @@ public class ConstantValueExpression implements Expression, NamedExpression {
         return constantName;
     }
 
+    public String getLibIDName() {
+        return constantName;
+    }
+
     public void setLineNumber(int lineNumber) {
         this.lineNumber = lineNumber;
     }
