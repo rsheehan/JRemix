@@ -56,6 +56,9 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
             libraryStoredIn.constantTable.put(variableName, value);
             System.err.format("Warning: New lib constant \"%s\" currently a constant in library \"%s\"%n", variableName, library.getLibName());
         }
+        if (value instanceof LibraryExpression newLibrary) {
+            newLibrary.setCallName(variableName);
+        }
         return value;
     }
 }

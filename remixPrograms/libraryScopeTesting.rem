@@ -1,4 +1,4 @@
-'lib' : library
+LIB : library
 	a lib func :
 		"a lib func"
 	
@@ -12,7 +12,7 @@ test {
 
 A-LIB-CONST : 24
 ↲
-using 'lib'
+using LIB
 	test {
 		"Calling library func from using."
 			a lib func
@@ -43,19 +43,19 @@ USING-CONST ↲
 Should the libraryStack be associated with blocks rather than function calls?
 =
 
-'alib' : library
+A-LIB : library
 	lib func one :
 		"lib func one"
 		
 	lib func two ↲
 
-'alib' ↲
+A-LIB ↲
 
--using 'alib'
+-using A-LIB
 
 lib func two :
 	lib func one ⊕ " lib func two"
 
-'alib' ↲
+A-LIB ↲
 
 lib func two ↲

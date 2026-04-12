@@ -1,7 +1,7 @@
 ===============================
 'turtle' Operations and Objects
 ===============================
-'turtle lib' : library
+TURTLE-LIB : library
 	using graphics
 
 		=-
@@ -483,4 +483,4 @@
 -==================================================================================================-
 
 "Turtle library loaded." ↲
-'turtle lib'
+TURTLE-LIB

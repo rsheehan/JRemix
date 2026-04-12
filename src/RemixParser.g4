@@ -21,9 +21,7 @@ library				: libraryName LBLOCK EOL* ( functionDefinition
 
 libraryName			: LIBRARY STRING? ;
 
-libAssignment		: IDENTIFIER COLON library 			# setVarLibrary
-					| CONSTANT COLON library			# setConLibrary
-					;
+libAssignment		: CONSTANT COLON library ;
 
 usingStatement		: USING expression (COMMA expression)* usingBlock ;
 

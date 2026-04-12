@@ -1,4 +1,4 @@
-'lib' : library
+LIB : library
 	a function :
 		22
 
@@ -16,7 +16,7 @@
 				'z' : 3 + 4
 				'z' + a function
 
-using 'lib'
+using LIB
 	'O' : make an object
 
 	test {

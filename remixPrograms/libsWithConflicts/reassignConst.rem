@@ -1,9 +1,9 @@
 X : 123
-'lib' : library
+LIB : library
 	A : X
 	X : A + X
 
 X ↲
-using 'lib'
+using LIB
 	A ↲
 	X ↲

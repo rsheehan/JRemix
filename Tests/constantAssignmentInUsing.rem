@@ -1,4 +1,4 @@
-'lib' : library
+LIB : library
 	LIB-CONST : 99
 
 test {
@@ -7,7 +7,7 @@ test {
 	… expected null
 }
 ↲
-using 'lib'
+using LIB
 	LIB-CONST : LIB-CONST
 
 test {

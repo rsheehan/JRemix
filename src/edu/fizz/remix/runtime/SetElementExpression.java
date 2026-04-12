@@ -4,8 +4,6 @@ import java.util.*;
 
 public class SetElementExpression implements Expression {
 
-    // TODO: need to get Test/reference.rem to work
-
     private final String listName;
     private final List listElementIds;
     private final Expression expression;

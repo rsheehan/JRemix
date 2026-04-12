@@ -1,5 +1,5 @@
 
-'lib' : library
+LIB : library
 	using graphics
 		
 		'x' : RED
@@ -12,6 +12,6 @@
 	a function :
 		fun
 	
-using 'lib'
+using LIB
 	fun
 	a function

@@ -1,12 +1,12 @@
 
-'the lib' : library
+THE-LIB : library
 	JKL : 7
 
-JKL : 8 ; this is in the program, different from the one in 'the lib'
+JKL : 8 ; this is in the program, different from the one in THE-LIB
 STD-WIDTH : 999
 
 JKL ↲
-using graphics, 'the lib'
+using graphics, THE-LIB
 	"using ", STD-WIDTH ↲ ; now gets 1000
-	"using ", JKL ↲ ; gets 'the lib' value 7
+	"using ", JKL ↲ ; gets THE-LIB value 7
 	"using ", CENTRE-X ↲

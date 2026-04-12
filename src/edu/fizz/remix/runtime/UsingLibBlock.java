@@ -63,18 +63,14 @@ public class UsingLibBlock implements Expression { //extends Block {
                     It is possible the library is already loaded under another libID then we need
                     to check the remix file to see if it is the same.
                      */
-                    boolean matchedLibrary = false;
                     String remixFileName = library.getRemixFileName();
                     if (!remixFileName.isEmpty()) {
                         for (LibraryExpression loadedLibrary : Runtime.loadedLibraries.values()) {
                             if (loadedLibrary.getRemixFileName().equals(remixFileName)) { // already loaded
                                 library = loadedLibrary;
-                                matchedLibrary = true;
                             }
                         }
                     }
-                    if (!matchedLibrary)
-                        library.setCallName(libID);
                     Runtime.loadedLibraries.put(libID, library);
                 } catch (ClassCastException | VarNotFoundException e) {
                     System.err.printf("%s is not a library.%n", libraryExpression);

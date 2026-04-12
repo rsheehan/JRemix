@@ -1,7 +1,7 @@
 ================================
 'sublist' Operations and Objects
 ================================
-'sublist lib' : library
+SUBLIST-LIB : library
 
 	=-
 	Create a sublist from 'list' beginning at index 'start' and ending at index 'finish'.
@@ -106,4 +106,4 @@
 -==================================================================================================-
 
 "Sublist library loaded." ↲
-'sublist lib'
+SUBLIST-LIB

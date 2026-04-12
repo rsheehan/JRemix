@@ -161,17 +161,9 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         return library;
     }
 
-    /** IDENTIFIER COLON library */
-    @Override
-    public AssignmentStatement visitSetVarLibrary(RemixParser.SetVarLibraryContext ctx) {
-        String varName = identifier(ctx.IDENTIFIER().getText());
-        LibraryExpression library = (LibraryExpression) visit(ctx.library());
-        return new AssignmentStatement(varName, library);
-    }
-
     /** CONSTANT COLON library */
     @Override
-    public ConstantAssignmentStatement visitSetConLibrary(RemixParser.SetConLibraryContext ctx) {
+    public ConstantAssignmentStatement visitLibAssignment(RemixParser.LibAssignmentContext ctx) {
         String constName = ctx.CONSTANT().getText();
         LibraryExpression library = (LibraryExpression) visit(ctx.library());
         return new ConstantAssignmentStatement(constName, library);

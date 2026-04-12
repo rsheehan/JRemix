@@ -1,5 +1,5 @@
 X : 123
-'lib' : library
+LIB : library
 	A : X
 	X : A + X
 
@@ -9,7 +9,7 @@ test {
 	… expected 123
 }
 ↲
-using 'lib'
+using LIB
 	test {
 		"Constant in lib assigned from program constant"
 			A

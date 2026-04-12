@@ -1,11 +1,11 @@
-'libA' : library
+LIB-A : library
 	function :
 		"a function in libA"
 
 function :
 	"a function in main"
 
-using 'libA'
+using LIB-A
 	function in use :
 		"a function in using about to call, " ⊕ function ; should be from libA for both calls
 

@@ -859,7 +859,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     "help REPL - shows help about the Read Evaluate Print Loop.\n\n" +
                     "help CONSTANTS or help CONS - shows all constants at this level.\n\n" +
                     "help VARIABLES or help VARS - shows all variables at this level.\n\n" +
-                    "help LIBRARIES or help LIBS - shows all loaded libraries.\n\n" +
+                    "help LIBRARIES or help LIBS - shows all libraries at this level.\n\n" +
                     "help 'variableName' or help CONSTANT-NAME - shows all methods for the object.\n";
         }
     }
@@ -910,16 +910,11 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             return helpSB.toString();
         }
 
-        private static void dealWithLibraries(Context parentContext, StringBuilder helpSB) {
-            Set<LibraryExpression> librariesReported = new HashSet<>();
-            for (String libName : Runtime.loadedLibraries.keySet()) {
-                LibraryExpression lib = Runtime.loadedLibraries.get(libName);
-                if (!librariesReported.contains(lib)) { // don't report the same library with a different name
-                    String libID = Runtime.loadedLibraries.get(libName).getLibName();
-                    helpSB.append(libID)
-                            .append('\n');
-                    librariesReported.add(lib);
-                }
+        private static void dealWithLibraries(Context context, StringBuilder helpSB) {
+            for (LibraryExpression library : context.libraryStack) {
+                String libName = library.getLibName();
+                helpSB.append(libName)
+                        .append('\n');
             }
         }
 

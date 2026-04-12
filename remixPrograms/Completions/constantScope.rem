@@ -22,30 +22,30 @@ using graphics
 	"using ", STD-WIDTH ↲
 	"using ", JKL ↲ ; not found
 ↲
-'the lib' : library
+THE-LIB : library
 	JKL : 7
 	"library ", ABC ↲
 	"library ", DEF ↲
 	"library ", GHI ↲
 	"library ", JKL ↲
 ↲
-JKL : 8 ; this is in the program, different from the one in 'the lib'
+JKL : 8 ; this is in the program, different from the one in THE-LIB
 inside func
 ↲
-using 'the lib'
+using THE-LIB
 	"inside using ", JKL ↲
-	inside func ; currently finds 7 for JKL from 'the lib'
+	inside func ; currently finds 7 for JKL from THE-LIB
 ↲
 "outside ", STD-WIDTH ↲ ; not found
 STD-WIDTH : 999
 "outside ", STD-WIDTH ↲
 ↲
-using graphics, 'the lib'
+using graphics, THE-LIB
 	"using ", ABC ↲
 	"using ", DEF ↲
 	"using ", GHI ↲
 	"using ", STD-WIDTH ↲ ; gets 1000 as the version in the main lib is shadowed
-	"using ", JKL ↲ ; 7 'the lib' value not 8
+	"using ", JKL ↲ ; 7 THE-LIB value not 8
 
 =
 inside 4

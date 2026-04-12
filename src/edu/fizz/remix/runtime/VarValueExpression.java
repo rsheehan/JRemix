@@ -1,7 +1,7 @@
 package edu.fizz.remix.runtime;
 
 /** Gets the value of a variable from its name. */
-public class VarValueExpression implements Expression, NamedExpression {
+public class VarValueExpression implements Expression {
 
     private final String varName;
     private int lineNumber = 0;
@@ -13,10 +13,6 @@ public class VarValueExpression implements Expression, NamedExpression {
 
     public String getName() { // necessary if this variable is being passed as ref param
         return varName;
-    }
-
-    public String getLibIDName() {
-        return toString();
     }
 
     @Override

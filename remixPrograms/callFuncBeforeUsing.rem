@@ -1,5 +1,6 @@
-'lib' : library
+LIB : library
 	func one :
+		func three ↲
 		"function one"
 	
 	func two :
@@ -7,11 +8,23 @@
 
 func three ↲
 
-using 'lib'
+using LIB
 	func one ↲
 	func two ↲
 	
 	func three :
+		func two ↲
 		"func three at program level"
 
 func three ↲
+
+=
+function two
+func three at program level
+function two
+func three at program level
+function one
+function two
+function two
+func three at program level
+=

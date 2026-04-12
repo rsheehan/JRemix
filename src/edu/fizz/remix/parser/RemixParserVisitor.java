@@ -29,19 +29,11 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLibraryName(RemixParser.LibraryNameContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code setVarLibrary}
-	 * labeled alternative in {@link RemixParser#libAssignment}.
+	 * Visit a parse tree produced by {@link RemixParser#libAssignment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSetVarLibrary(RemixParser.SetVarLibraryContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code setConLibrary}
-	 * labeled alternative in {@link RemixParser#libAssignment}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSetConLibrary(RemixParser.SetConLibraryContext ctx);
+	T visitLibAssignment(RemixParser.LibAssignmentContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RemixParser#usingStatement}.
 	 * @param ctx the parse tree

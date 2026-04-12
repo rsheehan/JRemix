@@ -1,24 +1,30 @@
-'lib' : library
-	a lib func :
-		"a lib func"
-	
-	A-LIB-CONST : 42
-	
--a using-lib func ↲
-A-LIB-CONST : 24
-	
-using 'lib'
-	a lib func ↲
-	A-LIB-CONST ↲
-	a using-lib func ↲
-	
-	a using-lib func :
-		"a using lib func " ⊕ A-LIB-CONST
-			
-	USING-CONST : 23
-	USING-CONST ↲
 
-a lib func ↲
-A-LIB-CONST ↲
-a using-lib func ↲
-USING-CONST ↲
+=
+Should the libraryStack be associated with blocks rather than function calls?
+=
+
+A-LIB : library
+	lib func one :
+		"lib func one"
+		
+	lib func two ↲
+	
+	run 
+		"inside run - " ~
+		lib func one ↲
+	… from lib
+
+"A-LIB:", A-LIB ↲
+
+using A-LIB
+	lib func two ↲
+
+lib func two :
+	lib func one ⊕ " lib func two"
+
+"A-LIB:", A-LIB ↲
+
+lib func two ↲
+
+run ['block'] from lib :
+	do 'block'
