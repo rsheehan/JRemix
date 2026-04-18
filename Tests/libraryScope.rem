@@ -1,0 +1,69 @@
+A-LIB-CONST : 24
+
+a lib func :
+	"NOT a lib func"
+
+
+LIB : library
+	a lib func :
+		"a lib func"
+	
+	A-LIB-CONST : 42
+	
+	test {
+		"Calling func in lib from within lib when main program func."
+			a lib func
+		… expected "a lib func"
+		
+		"Accessing lib constant from with lib when main program constant."
+			A-LIB-CONST
+		… expected 42
+		
+		"Call function in using block which calls lib function."
+			func one ; in the using block, can't find "a lib func" yet
+		…  expected "null"
+	}
+↲
+
+test {
+	"Calling main program func when shadowed in lib."
+		a lib func
+	… expected "NOT a lib func"
+	
+	"Call function in main which calls lib function."
+		func one ; calls the one in the using block which calls lib
+	…  expected "a lib func"
+		
+	"Calling func in using before using reached."
+		a using-lib func
+	… expected "a using lib func 42"
+		
+	"Accessing main program constant when duplicated in a library"
+		A-LIB-CONST
+	… expected 24
+}
+↲
+using LIB
+	test {
+		"Calling library func from using."
+			a lib func
+		… expected "a lib func"
+		
+		"Accessing lib constant when main program constant."
+			A-LIB-CONST
+		… expected 42
+		
+		"Calling func in using block from using block."
+			a using-lib func
+		… expected "a using lib func 42"
+			
+		"Call function in using block which calls lib function."
+			func one ; in this using block
+		…  expected "a lib func"
+	}
+	
+	func one :
+		a lib func
+	↲
+	a using-lib func :
+		"a using lib func " ⊕ A-LIB-CONST

@@ -91,8 +91,9 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         Stack<LibraryExpression> inCallLibStack = (Stack) context.libraryStack.clone();
         Function function = null;
         int libNumber;
+        LibraryExpression library = null; // the library of the function
         for (libNumber = inCallLibStack.size() - 1; libNumber >= 0; libNumber--) {
-            LibraryExpression library = inCallLibStack.get(libNumber);
+            library = inCallLibStack.get(libNumber);
             function = library.searchFunctionTable(routineName);
             if (function != null)
                 break;
@@ -111,6 +112,9 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             return null;
         }
         Context functionContext = new Context(context, function.isTransparent());
+        while (!library.equals(inCallLibStack.peek())) { // to enforce lexical scoping of functions in libraries
+            inCallLibStack.pop();
+        }
         functionContext.libraryStack = inCallLibStack;
         return executeFunctionOrMethod(function, functionContext);
     }

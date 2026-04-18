@@ -34,6 +34,10 @@ public class FunctionInUsing extends RemixFunction {
             // due to double using blocks being out of order
             if (library == null) {
                 library = (LibraryExpression) libraryExp.evaluate(context.parentContext);
+                if (library == null) {
+                    System.err.printf("Library %s not created yet.%n", libraryExp);
+                    return null;
+                }
                 librariesToUse.put(libraryExp, library);
             }
             if (!context.libraryInStack(library))
