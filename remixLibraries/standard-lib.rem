@@ -14,6 +14,13 @@ CR : "
 " ; this contains a carriage return character
 WHITE-SPACE : { SPACE, TAB, CR }
 
+=================
+Ordinal constants
+=================
+FIRST : 1
+SECOND : 2
+THIRD : 3
+
 ==============
 Help constants
 ==============
@@ -453,7 +460,7 @@ place 'this string' into #string at 'pos' overwrite 'overwrite' :
 	'left' : if ('pos' > #string length)
 		#string
 	… otherwise
-		#string from 1 to ('pos' - 1)
+		#string from FIRST to ('pos' - 1)
 	'right start' : if 'overwrite'
 		'pos' + 'this string' length
 	… otherwise
@@ -525,7 +532,7 @@ to 'list' append 'value' :
 The first value in the 'list'.
 =-
 first in 'list' :
-	'list' {1}
+	'list' {FIRST}
 
 =-
 The last value in the 'list'.
@@ -581,7 +588,7 @@ merge 'extra' into 'map' :
 The first  statement in the 'block'.
 =-
 first statement in 'block' :
-	1 in 'block'
+	FIRST in 'block'
 
 =-
 The last statement in the 'block'.
