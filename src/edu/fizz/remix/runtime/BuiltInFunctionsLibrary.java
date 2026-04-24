@@ -331,7 +331,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             if (condition instanceof Block) {
                 condition = ((Block)condition).evaluate(context);
             }
-            if ((Boolean)condition) {
+            if (condition instanceof Boolean bcondition && bcondition) {
                 // this is when the block is evaluated
                 Expression consequence = (Expression) context.retrieve("consequence", false);
                 return consequence.evaluate(context);
@@ -358,7 +358,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             if (condition instanceof Block) {
                 condition = ((Block)condition).evaluate(context);
             }
-            if ((Boolean)condition) {
+            if (condition instanceof Boolean bcondition && bcondition) {
                 // this is when the block is evaluated
                 Expression consequence = (Expression) context.retrieve("consequence", false);
                 return consequence.evaluate(context);
