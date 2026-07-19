@@ -39,10 +39,11 @@ public class PrintStatement implements Expression {
                 Object value = simple.evaluate(null);
                 if (value instanceof String) {
                     result.append("\"").append(value).append("\"");
-                    return result.toString();
-                }
-            }
-            result.append(expression.toString()).append(", ");
+                } else
+                    result.append(expression);
+            } else
+                result.append(expression.toString());
+            result.append(", ");
         }
         if (!expressionList.isEmpty())
             result.delete(result.length() - 2, result.length());

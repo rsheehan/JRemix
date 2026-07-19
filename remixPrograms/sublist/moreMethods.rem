@@ -1,0 +1,45 @@
+using sublist
+	'list' : apply [random 1000] 100 times
+	
+	'list' ↲
+	
+	'front' : a sublist from 'list' between 1 and 0
+	
+	'front' ↲
+	
+	move 'front' tail forward
+	'front' ↲
+	move 'front' tail forward
+	'front' ↲
+	move 'front' head forward
+	'front' ↲
+	
+	'rear' : a sublist from 'list' between ('list' length + 1) and ('list' length )
+	
+	'rear' ↲
+	
+	move 'rear' head back
+	'rear' ↲
+	move 'rear' head back
+	'rear' ↲
+	
+using sublist 
+	's' : a sublist from 'list' between 10 and 20
+	't' : a sublist from 'list' between 10 and 19
+	
+	repeat 10 times 
+		(choose from 's') _
+	↲
+
+choose pivot from 'list' :
+	'p' : apply [choose from 'list'] 3 times
+	middle of ('p' {1}) ('p' {2}) ('p' {3})
+
+middle of 'n1' 'n2' 'n3' :
+	when
+		['n1' between 'n2' and 'n3'] do ['n1']
+		['n2' between 'n1' and 'n3'] do ['n2']
+		'n3'
+
+'n1' between 'n2' and 'n3' :
+	(('n2' ≤ 'n1') and ('n1' ≤ 'n3')) or (('n3' ≤ 'n1') and ('n1' ≤ 'n2'))

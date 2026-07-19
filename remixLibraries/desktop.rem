@@ -4,6 +4,10 @@ Desktop GUI and event system
 
 library
 
-	a window :
+	a gui window :
 		create
 			'position' : { 0, 0 }
+			'size' : { 800, 600 }
+			'title' : "Window"
+			
+			

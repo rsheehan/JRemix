@@ -1,0 +1,49 @@
+=
+An attempt at having a number of turtles execute in parallel with each other.
+The existing turtle group mechanism does this but all turtles in the group
+execute the exact same moves and turns.
+=
+
+using turtle
+
+	=-
+	Create a parallel turtle.
+	Parallel turtles have blocks of code which run in parallel to other
+	parallel turtles.
+	=-
+
+	a parallel turtle :
+		extend a turtle
+
+			ME ['block of commands'] :
+				- calculate total distance travelled
+				- using this turtle's speed determine number of intervals
+
+
+=== After this is notes on how it could be called.
+
+parallel {
+	'turtle1'
+		move 'turtle1' 100 steps
+		turn 'turtle1' 90 degrees
+	'turtle2'
+		move 'turtle2' 200 steps
+		turn 'turtle2' 45 degrees
+}
+
+Need to have the ability to add extra statements to a block.
+Now have append to add a statement to the end of a block and
+join to create a new block consisting of the statements in the
+two blocks to be joined.
+
+Or for a single turtle with moves and turns combined
+do in parallel {
+	[move 'turtle' 314 steps]
+	[turn 'turtle' 360 degrees]
+}
+
+Find lcm of move and turn function call parameters e.g. 314 and 360 - 56520
+We are going to count to this for the move 314 we do every 180 counts - move 314/180,
+for turn 360 we do every 157 counts - turn 360/157
+
+I may need to be able to pull statements apart to get the function words and parameter values.

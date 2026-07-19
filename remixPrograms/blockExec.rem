@@ -1,0 +1,18 @@
+-'a' : 11
+'b' : 22
+'block' :
+	"'a' is ", 'a' ↲ ; The variables at the top-level context
+	"'b' is ", 'b' ↲ ; because 'block' is a variable not a function
+
+'block' ↲
+do 'block'
+
+dummy 'param' :
+	'a' : 101 ; changing them here has no effect on the block
+	'b' : 202 ; because these are local to the function
+	do 'param'
+
+dummy 'block'
+'a' : 1001 
+'b' : 2002
+dummy 'block'

@@ -1,0 +1,29 @@
+'a' : create
+	- a number of fields and their initial values
+	'type' : "adder"
+	'field-1' : 3
+	'field-2' : 5
+
+	- a list of fields whose value can be accessed from outside the Remix object
+	getter
+		'field-1', 'field-2'
+
+	- a list of fields whose value can be altered from outside the Remix object
+	setter
+		'field-2'
+
+	- a number of object methods (functions)
+	MY simple method :
+		'field-1' + 'field-2'
+
+	- an optional "to string" method which is called when the object is printed
+	ME to string :
+		'field-1' ⊕ " + " ⊕ 'field-2'
+
+	- an optional "equals" method which is called when the Remix object is compared
+	- to another Remix value with "=" or "≠"
+	'other' equals ME :
+		all of {
+			['other' field-1 = 'field-1']
+			['other' field-2 = 'field-2']
+		}

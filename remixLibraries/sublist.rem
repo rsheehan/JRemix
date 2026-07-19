@@ -14,10 +14,10 @@ SUBLIST-LIB : library
 			'start' : 'start'
 			'finish' : 'finish'
 
+			getters/setters
+				'start', 'finish'
 			getter
 				'base'
-			setters
-				'start', 'finish'
 
 			=-
 			Return the first value of the sublist 'OBJECT'.
@@ -53,6 +53,24 @@ SUBLIST-LIB : library
 					inc 'start'
 
 			=-
+			Moves the head of the sublist 'OBJECT' back.
+			This increases the size of the sublist by one.
+			If the head is at the start of the underlying list, this does nothing.
+			=-
+			move MY head back :
+				if ('start' > 1)
+					dec 'start'
+
+			=-
+			Moves the tail of the sublist 'OBJECT' on.
+			This increases the size of the sublist by one.
+			If the tail is at the end of the underlying list, this does nothing.
+			=-
+			move MY tail forward :
+				if ('finish' < length of 'base')
+					inc 'finish'
+
+			=-
 			Moves the tail of the sublist 'OBJECT' back.
 			This reduces the size of the sublist by one.
 			If the sublist is empty, this does nothing.
@@ -61,12 +79,41 @@ SUBLIST-LIB : library
 				if ('finish' > 'start')
 					dec 'finish'
 
+			=-
+			Choose a random item from the sublist 'OBJECT'.
+			=-
+			choose from ME :
+				'i' : random (MY length) + 'start' - 1
+				'base'{'i'}
+
 			start ME :
 				iterator
 
+			=-
+			The length of the sublist 'OBJECT'.
+			=-
 			MY length :
 				'finish' - 'start' + 1
 
+			=-
+			Whether 'other' equals the sublist 'OBJECT'.
+			N.B. Need to add ability to compare sublist with an equivalent list.
+			=-
+			'other' equals ME :
+				all of {
+					['other' length = MY length]
+					[for each 'value' in 'other' keeping 'count'
+						if ('value' ≠ extract 'count')
+							return false
+					true]
+				}
+
+			extract 'item' :
+				'base'{'item' + 'start' - 1}
+
+			=-
+			The string representation of the sublist 'OBJECT'.
+			=-
 			ME to string :
 				ME as string ; calls the std-lib - 'list' as string
 

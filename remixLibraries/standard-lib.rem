@@ -532,13 +532,13 @@ to 'list' append 'value' :
 The first value in the 'list'.
 =-
 first in 'list' :
-	'list' {FIRST}
+	'list'{FIRST}
 
 =-
 The last value in the 'list'.
 =-
 last in 'list' :
-	'list' {'list' length}
+	'list'{'list' length}
 
 =-
 Is the 'sequence' empty?
@@ -551,7 +551,7 @@ no/empty 'sequence' :
 Choose a random item from the 'list'.
 =-
 choose from 'list' :
-	'list' {random ('list' length)}
+	'list'{random ('list' length)}
 
 =-
 Is the 'element' in the 'list'?
@@ -578,7 +578,7 @@ Merge the 'extra' map into 'map'.
 =-
 merge 'extra' into 'map' :
 	for each 'item' in 'extra'
-		'map' {'item'} : 'extra' {'item'}
+		'map'{'item'} : 'extra'{'item'}
 
 ==============================
  Block functions
@@ -756,8 +756,8 @@ distance from 'a' to 'b' :
 		'a' : xy map from 'a'
 	if ('b' is a "list")
 		'b' : xy map from 'b'
-	'δx' : 'b' {"x"} - 'a' {"x"}
-	'δy' : 'b' {"y"} - 'a' {"y"}
+	'δx' : 'b'{"x"} - 'a'{"x"}
+	'δy' : 'b'{"y"} - 'a'{"y"}
 	√('δx'² + 'δy'²)
 
 =-

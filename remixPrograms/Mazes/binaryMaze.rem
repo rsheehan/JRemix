@@ -1,0 +1,43 @@
+SCALE : 20
+
+using graphics
+	a cell of size 'size' :
+		extend a RED box of 'size' x 'size' at {0, 0}
+			
+			MY top-left 'cell-pos' :
+				'position' ↲
+				'position' : {('cell-pos'{1}) to centre, ('cell-pos'{2}) to centre}
+				'position' ↲
+					
+			'num' to centre : 
+				'num' × 'size' + 'size' ÷ 2
+
+using graphics
+	'panel' : the graphics panel
+	
+	'square' : a cell of size SCALE
+	'square' top-left {0, 0}
+	place 'square' in 'panel'
+
+=	place 'square' at {0, 0} in 'panel'
+=	place 'square' at {1, 0} in 'panel'
+	update 'panel'
+	
+	place 'square' at 'position' in 'panel' :
+		'x-pos' : 'position'{1} × SCALE + SCALE ÷ 2
+		'y-pos' : 'position'{2} × SCALE + SCALE ÷ 2
+		"position: {", 'x-pos', ", ", 'y-pos', "}" ↲
+		'square' position {'x-pos', 'y-pos'}
+		place 'square' in 'panel'
+		
+	a 'colour' square of 'size' with top-left at 'top-left' :
+		'half' : 'size' ÷ 2
+		'centre' : {'top-left'{1} + 'half', 'top-left'{2} + 'half'}
+		'square' : a 'colour'box of 'size' x 'size' at 'centre'
+
+maze cell from 'square' :
+	'square' size (SCALE ÷ 2)
+	"size: ", 'square' size ↲
+	'square' heading (π ÷ 4)
+	-'square' outline colour WHITE
+	'square'
