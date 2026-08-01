@@ -17,7 +17,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.*;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
@@ -73,7 +72,7 @@ public class RemixEditor extends JFrame {
     //undo helpers
     private UndoAction undoAction;
     private RedoAction redoAction;
-    private final UndoManager undo = new UndoManager();
+    private final RevealUndoManager undo = new RevealUndoManager();
 
     private static boolean editing = true;
 
@@ -238,7 +237,7 @@ public class RemixEditor extends JFrame {
 
         //Create the status area.
         JPanel statusPane = new JPanel();
-        CaretListenerLabel caretListenerLabel = new CaretListenerLabel("line: 1, offset: 0, style: default");
+        CaretListenerLabel caretListenerLabel = new CaretListenerLabel("line: 1, line offset: 0, offset from start: 0, style: default");
         statusPane.add(caretListenerLabel);
 
         //Add the components.
@@ -387,6 +386,11 @@ public class RemixEditor extends JFrame {
             int mark = event.getMark();
             displayPositionInfo(mark);
             Rectangle2D rect;
+            int docLength = ((JTextComponent)event.getSource()).getDocument().getLength();
+            if (docLength == 0) {
+                caretPoint = new Point(10, 5);
+                return;
+            }
             try {
                 rect = ((JTextComponent)event.getSource()).modelToView2D(mark);
             } catch (BadLocationException e) {
@@ -408,7 +412,8 @@ public class RemixEditor extends JFrame {
                 }
                 lastLine = lineNumber;
                 setText("line: " + lineNumber +
-                        ", offset: " + (mark - startOfLine) +
+                        ", line offset: " + (mark - startOfLine) +
+                        ", offset from start: " + mark +
                         ", style: " + edLexer.getStyleName(mark));
             });
         }
@@ -421,7 +426,7 @@ public class RemixEditor extends JFrame {
             //  Check for an attribute change
             AbstractDocument.DefaultDocumentEvent event = (AbstractDocument.DefaultDocumentEvent)e.getEdit();
             if  (!event.getType().equals(DocumentEvent.EventType.CHANGE)) {
-                undo.addEdit(e.getEdit());
+                undo.addEdit(event);
                 //Remember the edit and update the menus.
                 undoAction.updateUndoState();
                 redoAction.updateRedoState();
@@ -757,6 +762,9 @@ public class RemixEditor extends JFrame {
         editorContentSaved = true;
         currentFileName = null;
         currentAbsoluteFileName = null;
+        undo.discardAllEdits();
+        undoAction.updateUndoState();
+        redoAction.updateRedoState();
     }
 
     private void saveFile() {
@@ -832,6 +840,9 @@ public class RemixEditor extends JFrame {
                     myReader.close();
                     editorTextPane.setCaretPosition(0);
                     editorContentSaved = true;
+                    undo.discardAllEdits();
+                    undoAction.updateUndoState();
+                    redoAction.updateRedoState();
                 } catch (FileNotFoundException | BadLocationException e) {
                     throw new RuntimeException(e);
                 }
@@ -949,11 +960,12 @@ public class RemixEditor extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
             try {
+                AbstractDocument.DefaultDocumentEvent event =
+                        (AbstractDocument.DefaultDocumentEvent) undo.peekUndo();
                 undo.undo();
-                edLexer.fullLex(); // THIS IS REALLY OVERKILL NEEDS TO CHANGE
+                edLexer.lexAfterUndoRedo(event, true);
             } catch (CannotUndoException | BadLocationException ex) {
-                System.out.println("Unable to undo: " + ex);
-                ex.printStackTrace();
+                return;
             }
             updateUndoState();
             redoAction.updateRedoState();
@@ -978,11 +990,12 @@ public class RemixEditor extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
             try {
+                AbstractDocument.DefaultDocumentEvent event =
+                        (AbstractDocument.DefaultDocumentEvent) undo.peekRedo();
                 undo.redo();
-                edLexer.fullLex(); // THIS IS REALLY OVERKILL NEEDS TO CHANGE
+                edLexer.lexAfterUndoRedo(event, false);
             } catch (CannotRedoException | BadLocationException ex) {
-                System.out.println("Unable to redo: " + ex);
-                ex.printStackTrace();
+                return;
             }
             updateRedoState();
             undoAction.updateUndoState();
