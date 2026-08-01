@@ -233,7 +233,7 @@ public class LibraryExpression implements Expression {
         if (o == null || getClass() != o.getClass()) return false;
         LibraryExpression that = (LibraryExpression) o;
 
-        return ((!remixFileName.isEmpty() && remixFileName.equals(that.remixFileName)) || callName.equals(that.callName));
+        return ((!remixFileName.isEmpty() && remixFileName.equals(that.remixFileName)) || (!callName.isEmpty() && callName.equals(that.callName)));
     }
 
 }
