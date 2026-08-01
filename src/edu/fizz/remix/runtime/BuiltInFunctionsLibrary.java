@@ -624,7 +624,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public LengthFunction() {
             super(
-                    List.of("⫾ length", "length of ⫾"),
+                    List.of("⫾ length", "length of ⫾", "end of ⫾"),
                     List.of("list"),
                     List.of(false),
                     false,
