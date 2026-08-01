@@ -896,7 +896,7 @@ public class RemixEditor extends JFrame {
             }
             PrinterJob job = PrinterJob.getPrinterJob();
             job.setPrintable(printTextPane.getPrintable(
-                    currentFileName == null ? null : new MessageFormat(currentFileName),
+                    null, // currentFileName == null ? null : new MessageFormat(currentFileName),
                     new MessageFormat("Page {0}")));
             if (job.printDialog()) {
                 try {
