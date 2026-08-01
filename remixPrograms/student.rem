@@ -3,17 +3,17 @@ Student record
 =
 
 'students' : {
-	"Martin Developer" age 22 knows {
+	"Martin Developer" age 22 knows these languages {
 		"Java"   : "Expert"
 		"python" : "Advanced"
 		"Remix"  : "Expert"
 	}
-	"May Smith" age 25 knows {
+	"May Smith" age 25 knows these languages {
 		"C++" : "Advanced"
 		"C"   : "Expert"
 		"C#"  : "Competent"
 	}
-	"Ray Oflight" age 19 knows {
+	"Ray Oflight" age 19 knows these languages {
 		"python" : "Novice"
 	}
 }
@@ -35,7 +35,7 @@ for each 'student' in 'students'
 
 ----------------
 
-'name' age 'age' knows 'languages' :
+'name' age 'age' knows these languages 'languages' :
 	create
 		'name' : 'name'
 		'age' : 'age'

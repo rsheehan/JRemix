@@ -18,21 +18,21 @@ check for missing values in 'list' :
 
 count each item in 'list' into 'tally' :
 	for each 'item' in 'list'
-		increment ('tally' {'item'})
+		increment ('tally'{'item'})
 
 ================
  Insertion Sort
 ================
 
 insertion sort 'list' :
-	for each 'position' from 2 to ('list' length)
+	for each 'position' from 2 to (length of 'list')
 		for each 'this' from 'position' to 2
 			swap if element to the left is greater than 'this' in 'list'
 
 swap if element to the left is greater than 'this' in 'list' ::
 - N.B. transparent short circuit
 	'left' : 'this' - 1
-	if ('list' {'left'} > 'list' {'this'})
-		('list' {'left'}) swap ('list' {'this'})
+	if ('list'{'left'} > 'list'{'this'})
+		('list'{'left'}) swap ('list'{'this'})
 	… otherwise
 		return
