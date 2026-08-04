@@ -2,19 +2,13 @@ package edu.fizz.remix.editor;
 
 import javax.swing.text.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
-import java.util.*;
 
 import static java.lang.Character.isDigit;
-import static java.lang.System.err;
 
 public class RemixEdLexer {
 
-    private enum LexMode {
-        startOfLine,
-        insideLine,
-    }
-//    private static JTextPane textPane;
     private final RemixStyledDocument document;
 
     private final Style defaultStyle;
@@ -23,14 +17,14 @@ public class RemixEdLexer {
     private final Style singleQuote;
     private final Style parentheses;
     private final Style comment;
+    private final Style multilineComment;
     private final Style operator;
     private final Style literal;
     private final Style string;
     private final Style keyword;
     private final Style separator;
+    private final Style error;
 
-    // horrible global state variables
-    private LexMode mode;
 
     private static final List<String> keywords = Arrays.asList("return", "redo", "create", "extend", "ME", "MY",
             "setter", "setters", "getter", "getters", "getter/setter", "getters/setters", "library", "using", "uses");
@@ -88,8 +82,10 @@ public class RemixEdLexer {
         singleQuote = makeStyle("singleQuote", singleQuoteColour, false, false, defaultStyle);
         // parentheses
         parentheses = makeStyle("parentheses", new Color(150,150,250), false, false, defaultStyle);
-        // comments, all sorts
+        // comment from here to end of line
         comment = makeStyle("comment",new Color(170,121,66), true, false, defaultStyle);
+        // multiline comment from starting "=" to ending "="
+        multilineComment = makeStyle("multilineComment",new Color(170,121,66), false, false, defaultStyle);
         // operator text
         operator = makeStyle("operator", operatorColour, false, false, defaultStyle); // was italic
         // literals
@@ -100,6 +96,9 @@ public class RemixEdLexer {
         keyword = makeStyle("keyword", Color.red, false, false, defaultStyle);
         // separator
         separator = makeStyle("separator", Color.magenta, false, false, defaultStyle);
+        // error
+        error = makeStyle("error", Color.red, false, false, defaultStyle );
+        StyleConstants.setBackground(error, Color.red);
     }
 
     private Style makeStyle(String name, Color colour, boolean italic, boolean underline, Style base) {
@@ -113,93 +112,171 @@ public class RemixEdLexer {
         return newStyle;
     }
 
-    public void fullLex() throws BadLocationException {
-        RemixEditor.systemOutput.setText("");
-        mode = LexMode.startOfLine;
-        int pos = 0;
-        while (pos < document.getLength()) {
-            pos = processChar(pos);
+    /**
+     * Goes to start of a selected line and relexes the code from
+     * here until no more changes are necessary.
+     * Needs to take into account multiline comments and strings.
+     * @param pos the location inside the line to start lexing
+     * @return the location after all necessary changes have been made
+     */
+    public int lexFromHere(int pos) throws BadLocationException {
+        String styleName;
+        pos = startOfLine(pos);
+
+        if (pos == 0) {
+            styleName = "default";
+        } else // the style at the end of the previous line
+            styleName = getStyleName(pos - 1);
+        if (styleName.equals("multilineComment")) {
+            pos = dealWithMultiLineComment(pos);
+        } else if (styleName.equals("string")) {
+            pos = dealWithString(pos);
         }
+        // deal with rest of line
+        pos = lexUntilEndOfLine(pos);
+        pos = lexOverFollowingMultilineCommentLines(pos);
+        pos = lexOverFollowingMultilineStrings(pos);
+        return pos;
     }
 
-    private char getChar(int pos) throws BadLocationException {
-        return document.getText(pos, 1).toCharArray()[0];
+    /**
+     * Find the position at the start of this line.
+     * @param pos the position
+     * @return the position at the start of the line containing pos
+     */
+    private int startOfLine(int pos) throws BadLocationException {
+        while (pos > 0 && getChar(pos - 1) != '\n')
+            pos--;
+        return pos;
     }
 
-    public String getStyleName(int pos) {
-        return (String) document
-                .getCharacterElement(pos)
-                .getAttributes()
-                .getAttribute(StyleConstants.NameAttribute);
+    private boolean isStartOfLine(int pos) throws BadLocationException {
+        return pos == startOfLine(pos);
     }
 
-    private int processChar(int pos) throws BadLocationException {
+    /**
+     * Keeps relexing over lines if they were originally inside a
+     * multiline comment block.
+     * @param pos must be start of a line
+     * @return first position of line not a comment line
+     */
+    private int lexOverFollowingMultilineCommentLines(int pos) throws BadLocationException {
+        final int docLength = document.getLength();
+        if (pos >= docLength) {
+            return pos;
+        }
+        String lineStartStyle = getStyleName(pos);
+        while (pos < docLength && (lineStartStyle.equals("multilineComment")  || lineStartStyle.equals("comment") || defaultTabsEqual(pos))) {
+            pos = lexUntilEndOfLine(pos);
+            lineStartStyle = getStyleName(pos);
+        }
+        return pos;
+    }
+
+    /**
+     * Keeps relexing over lines if they were originally inside a
+     * multiline string.
+     * @param pos must be start of a line
+     * @return first position of line not starting with a string
+     */
+    private int lexOverFollowingMultilineStrings(int pos) throws BadLocationException {
+        final int docLength = document.getLength();
+        if (pos >= docLength) {
+            return docLength;
+        }
+        while (pos < docLength && (getStyleName(pos).equals("string"))) {
+            pos = lexUntilEndOfLine(pos);
+        }
+        return pos;
+    }
+
+    /**
+     * Check to see if the starting pos is just tabs before '='
+     * @param pos the position
+     * @return true if this is the start of a multiline comment
+     */
+    private boolean defaultTabsEqual(int pos) throws BadLocationException {
+        String style = getStyleName(pos);
+        if (!style.equals("default"))
+            return false;
         char ch = getChar(pos);
-
-        switch (mode) {
-            case startOfLine -> {
-                return dealWithStartOfLine(ch, pos);
-            }
-            case insideLine -> {
-                return dealWithInsideLine(ch, pos);
-            }
+        final int docLength = document.getLength();
+        while (ch == '\t') {
+            if (!(pos < docLength)) break;
+            ch = getChar(++pos);
         }
-        return pos + 1;
+        return ch == '=';
     }
 
-    private int dealWithStartOfLine(char ch, int pos) throws BadLocationException {
-        switch (ch) {
-            case ' ' -> {
-                err.println("Lines cannot start with a space.");
-                mode = LexMode.insideLine;
-            }
-            case '\t' -> {
-                mode = LexMode.insideLine;
-                return dealWithTabs(pos);
-            }
-            case '\n' -> { // mode stays startOfLine
-            }
-            case '\"' -> {
-                mode = LexMode.insideLine;
-                return dealWithString(pos);
-            }
-            case '\'' -> {
-                mode = LexMode.insideLine;
-                return dealWithVariable(pos);
-            }
-            case '-', ';' -> {
-                return dealWithSingleLineComment(pos);
-            }
-            case '=' -> {
-                mode = LexMode.startOfLine;
-                return dealWithMultiLineComment(pos);
-            }
-            default -> {
-                mode = LexMode.insideLine;
-                if (firstWordChar(ch)) {
-                    return dealWithWord(pos);
-                } else if (isSeparator(ch)) {
-                    return dealWithSeparator(ch, pos);
-                } else if (isOperator(ch)) {
-                    return dealWithOperator(pos);
-                } else if (isDigit(ch)) {
-                    return dealWithNumber(pos);
-                } else if (ch == 'π')
-                    return dealWithPi(pos);
-            }
+    /**
+     * Keep lexing from pos until a newline or end of doc is reached.
+     * Can go over more than one line if we encounter multiline comments or strings.
+     * @param pos the position to start lexing from
+     * @return the position after the end of the line
+     */
+    public int lexUntilEndOfLine(int pos) throws BadLocationException {
+        final int length = document.getLength();
+        // can get stuck in an infinite loop if pos comes back unchanged or less.
+        // This can happen if a character is inserted before a tab.
+        while (pos < length && getChar(pos) != '\n') {
+            pos = dealWithRun(pos);
         }
-        return pos + 1;
+        document.setCharacterAttributes(pos, 1, defaultStyle, true);
+        return pos >= length ? length : pos + 1;
     }
 
-    private int dealWithInsideLine(char ch, int pos) throws BadLocationException {
+    /**
+     * The main lexing function.
+     * Lexes from pos until a lexical type has been dealt with.
+     * Must move pos on before returning.
+     * @param pos the start position
+     * @return the position after this run
+     */
+    private int dealWithRun(int pos) throws BadLocationException {
+        // being at the start of a line is different
+        // for single line and multiline comments.
+        // The same chars "-" and "=" are interpreted differently
+        // if not at the start of a line.
+        char ch;
+        if (isStartOfLine(pos)) {
+            int tabPos = pos;
+            pos = gobbleTabs(pos);
+            document.setCharacterAttributes(tabPos,pos - tabPos, defaultStyle, true);
+            ch = getChar(pos);
+            switch (ch) {
+                case ' ' -> { // spaces not allowed at the start of lines (even after tabs)
+                    document.setCharacterAttributes(pos, 1, error, true);
+                    return pos + 1;
+                }
+                case '-' -> {
+                    pos = dealWithSingleLineComment(pos);
+                    return pos;
+                }
+                case '=' -> {
+                    document.setCharacterAttributes(pos, 1, multilineComment, true);
+                    pos = dealWithMultiLineComment(pos + 1);
+                    pos = lexOverFollowingMultilineCommentLines(pos);
+                    return pos;
+                }
+            }
+        }
+        ch = getChar(pos);
+        // now back to normal processing
         switch (ch) {
             case ' ' -> {
-                return dealWithSpaces(pos);
+                pos = dealWithSpaces(pos);
+                return pos;
             }
-//            case '\t' -> err.println("Only use tabs at the start of a line.");
-            case '\n' -> mode = LexMode.startOfLine;
+            case '\n' -> {
+                return pos + 1;
+            }
             case '\"' -> {
-                return dealWithString(pos);
+                pos = dealWithString(pos);
+                // possible the next line was a continuation of the string
+                // if so and the string is now terminated need to relex the next line
+                // and so on
+                pos = lexOverFollowingMultilineStrings(pos);
+                return pos;
             }
             case '\'' -> {
                 return dealWithVariable(pos);
@@ -218,40 +295,68 @@ public class RemixEdLexer {
                     return dealWithNumber(pos);
                 } else if (ch == 'π') {
                     return dealWithPi(pos);
+                } else if (ch == '\t') { // tabs must only be at the start of lines, not following non-tabs
+                    document.setCharacterAttributes(pos, 1, error, true);
+                    return pos + 1;
                 } else { // make the current character default?
                     document.setCharacterAttributes(pos, 1, defaultStyle, true);
+                    return pos + 1;
                 }
             }
         }
-        return pos + 1;
     }
 
-    /*
-    The next two functions dealWithTabs and dealWithSpaces currently
-    use "pos" as the moving pointer into the text.
-    The rest of the methods use the local variable and keep pos as the
-    starting location. Just style consistency things which needs correcting.
-     */
-    private int dealWithTabs(int pos) throws BadLocationException {
-        char ch = 0;
-        int tabStart = pos;
-        for (pos++; pos < document.getLength(); pos++) {
-            ch = getChar(pos);
-            if (ch == ' ')
-                err.println("Lines cannot have a space following a tab.");
-            if (ch != '\t')
-                break;
+    public void lexAfterUndoRedo(AbstractDocument.DefaultDocumentEvent event, boolean undoing) throws BadLocationException {
+        String type = event.getType().toString();
+        int offset = event.getOffset();
+        int length = event.getLength();
+        if (undoing && type.equals("REMOVE") || !undoing && type.equals("INSERT")) {
+            // we are inserting
+            int pos = lexFromHere(offset);
+            if (pos - offset < length) {
+                System.out.println("should do more lexing?");
+            }
+        } else if (undoing && type.equals("INSERT") || !undoing && type.equals("REMOVE")) {
+            lexFromHere(offset);
         }
-        document.setCharacterAttributes(tabStart, pos - tabStart, defaultStyle, true);
-        if (ch == '-') // can be single line comment after tabs
-            return dealWithSingleLineComment(pos);
-        else if (ch == '=') // can be a multiline comment after tabs
-            return dealWithMultiLineComment(pos);
-        return pos;
+    }
+
+    public void fullLex() throws BadLocationException {
+        RemixEditor.systemOutput.setText("");
+        int pos = 0;
+        while (pos < document.getLength()) {
+            pos = lexUntilEndOfLine(pos);
+        }
+    }
+
+    private char getChar(int pos) throws BadLocationException {
+        return document.getText(pos, 1).toCharArray()[0];
+    }
+
+    public String getStyleName(int pos) {
+        if (pos < 0 || pos >= document.getLength())
+            return "default";
+        else
+            return (String) document
+                    .getCharacterElement(pos)
+                    .getAttributes()
+                    .getAttribute(StyleConstants.NameAttribute);
+    }
+
+    /**
+     * Move past any tabs.
+     * @param pos   the position to start inspecting for tabs
+     * @return the first position not a tab or else the document length
+     */
+    private int gobbleTabs(int pos) throws BadLocationException {
+        int tabPos = pos;
+        while (tabPos < document.getLength() && getChar(tabPos) == '\t') {
+            tabPos++;
+        }
+        return tabPos;
     }
 
     private int dealWithSpaces(int pos) throws BadLocationException {
-//        String prevStyle = pos > 0 ? getStyleName(pos - 1) : "default"; // should just get Style
         int spacePos = pos;
         for (pos++; pos < document.getLength(); pos++) {
             char ch = getChar(pos);
@@ -262,51 +367,77 @@ public class RemixEdLexer {
         return pos;
     }
 
+    /**
+     * Starting at pos keep going until the comment
+     * finishes or at end of document.
+     * pos is the position of the first character after "-"
+     * or after "=" when a multline comment has finished
+     * The style changes after the closing "=" to be "comment"
+     * and at the following '\n' to be "default"
+     *
+     * @param pos the starting position
+     * @return the position after newline at the end of the comment
+     */
     private int dealWithSingleLineComment(int pos) throws BadLocationException {
         int commentPos;
-        mode = LexMode.startOfLine; // after throwing the rest away
-        for (commentPos = pos + 1; commentPos < document.getLength(); commentPos++) {
+        for (commentPos = pos; commentPos < document.getLength(); commentPos++) {
             char ch = getChar(commentPos);
             if (ch == '\n')
                 break;
         }
         document.setCharacterAttributes(pos, commentPos - pos, comment, true);
+        document.setCharacterAttributes(commentPos, 1, defaultStyle, true);
+
         return commentPos + 1;
     }
 
+    /**
+     * We are already inside a multiline comment.
+     * Starting at pos keep going until the comment
+     * finishes or at end of document.
+     * The pos could be at the start of a line
+     * The style changes after the closing "=" to be "comment"
+     * and at the following '\n' to be "default"
+     *
+     * @param pos a position inside a multiline comment
+     * @return the position after newline at the end of the comment
+     */
     private int dealWithMultiLineComment(int pos) throws BadLocationException {
-        int commentPos;
-        boolean tabbedStartOfLine = false;
-        for (commentPos = pos + 1; commentPos < document.getLength(); commentPos++) {
-            char ch = getChar(commentPos);
-            if (tabbedStartOfLine && ch == '=') {// finishing
-                commentPos++;
-                break;
-            }
-            if (ch == '\n') {
-                tabbedStartOfLine = true;
-            } else {
-                if (tabbedStartOfLine) {
-                    tabbedStartOfLine = ch == '\t';
+        int commentPos = pos;
+        int docLength = document.getLength();
+        while (commentPos < docLength) {
+            if (isStartOfLine(commentPos)) { // could be terminating "=" if at start of line
+                commentPos = gobbleTabs(commentPos);
+                char ch = getChar(commentPos);
+                if (ch == '=') { // finishing
+                    document.setCharacterAttributes(pos, commentPos - pos, multilineComment, true);
+                    return dealWithSingleLineComment(commentPos);
                 }
             }
+            // keep moving on until end of line or document
+            while (commentPos < docLength) {
+                char ch = getChar(commentPos++);
+                if (ch == '\n')
+                    break;
+            }
+            document.setCharacterAttributes(pos, commentPos - pos, multilineComment, true);
         }
-        for (; commentPos < document.getLength(); commentPos++) { // mop up any remaining characters on the line
-            char ch = getChar(commentPos);
-            if (ch == '\n')
-                break;
-        }
-        mode = LexMode.startOfLine;
-        document.setCharacterAttributes(pos, commentPos - pos, comment, true);
-        return commentPos + 1;
+        return commentPos;
     }
 
+    /**
+     * Starting at the next character after pos keep going until the string
+     * finishes or end of document.
+     * @param pos the position
+     * @return the position after the concluding "
+     */
     private int dealWithString(int pos) throws BadLocationException {
         // check the '\' escape character.
         boolean escape = false;
         int stringPos;
         char ch = 0;
-        for (stringPos = pos + 1; stringPos < document.getLength(); stringPos++) {
+        final int docLength = document.getLength();
+        for (stringPos = pos + 1; stringPos < docLength; stringPos++) {
             ch = getChar(stringPos);
             if (escape) { // skip over this character
                 escape = false;
@@ -317,12 +448,12 @@ public class RemixEdLexer {
                 break;
             }
         }
-        // N.B + 1 in line below because of ending and starting "
-        int length = stringPos - pos;
-        if (ch == '\"')
-            length++; // only extend style if necessary
-        document.setCharacterAttributes(pos, length, string, true);
-        return stringPos + 1;
+        if (ch == '\"') {
+            stringPos++; // only extend style if necessary
+        }
+        document.setCharacterAttributes(pos, stringPos - pos, string, true);
+        document.setCharacterAttributes(stringPos, 1, defaultStyle, true);
+        return stringPos;
     }
 
     private int dealWithNumber(int pos) throws BadLocationException {

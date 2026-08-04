@@ -32,3 +32,20 @@ using graphics
 		'degree' : ('shape' heading) radians as degrees
 		'degree'↲
 	… until ['degree' ≥ 90]
+
+=======
+When doing
+	using turtle
+    	help "group"
+
+The last two methods don't pick up the function documentation:
+
+Method: hide (OBJECT)
+Method: (OBJECT) speed (new speed)
+
+Could be associated with the fact these methods match both for turtles and turtle groups.
+
+=======
+If a deletion leaves an error style on a tab and then the tab is moved to start a line it keeps the error style.
+The auto indent is adding tabs along with any existing ones. Not a big problem, just not nice.
+Still some problems of not lexing through lines which were multiline strings but aren't currently.

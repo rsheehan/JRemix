@@ -62,7 +62,15 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     @Override
     public void insertString(int offset, String text, AttributeSet style) throws BadLocationException {
         insertStringNoLex(offset, text, style);
-        edLexer.fullLex(); // overkill, just to get things going at the moment
+        int length = text.length();
+        int pos = edLexer.lexFromHere(offset);
+        int posWas = pos;
+        while (pos < offset + length) {
+            pos = edLexer.lexUntilEndOfLine(pos);
+            if (pos == posWas) // didn't move
+                break;
+            posWas = pos;
+        }
     }
 
     public void insertStringNoLex(int offset, String text, AttributeSet style) throws BadLocationException {
@@ -79,11 +87,8 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 super.insertString(offset, text, defaultStyle);
             } else if (text.equals("/") && setterBefore(offset)) {
                 super.insertString(offset, text, defaultStyle);
-            } else {
-                if (notTransformed(offset, text)) {
+            } else if (notTransformed(offset, text)) {
                     super.insertString(offset, text, defaultStyle);
-//                    spacesAroundBooleanOps(offset);
-                }
             }
         }
     }
@@ -103,7 +108,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         super.remove(offset, length);
         completionsHere = null; // otherwise deleting a character doesn't regenerate completions
         completionStyle = defaultStyle;
-        edLexer.fullLex(); // overkill, just to get things going at the moment
+        edLexer.lexFromHere(offset);
     }
 
     @Override
@@ -124,29 +129,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 result = true;
         }
         return result;
-    }
-
-    // should make this selectable by the user
-    private void spacesAroundBooleanOps(int offset) throws BadLocationException {
-        String ch = getText(offset, 1);
-        if (booleanOperator(ch) && !lineStart(offset)) {
-            if (offset < getLength()) {
-                // check if there is a space after
-                String after = getText(offset + 1, 1);
-                if (!after.equals(" "))
-                    super.insertString(offset + 1, " ", defaultStyle);
-                else {
-                    // already a space so move the cursor on to after the space
-                    textPane.setCaretPosition(offset + 1);
-                }
-            }
-            if (offset > 0) {
-                // check if there is a space before
-                String before = getText(offset - 1, 1);
-                if (!before.equals(" "))
-                    super.insertString(offset, " ", defaultStyle);
-            }
-        }
     }
 
     private boolean notTransformed(int offset, String input) throws BadLocationException {
