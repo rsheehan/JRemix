@@ -823,6 +823,12 @@ Swap 'a' with 'b'.
 	#a : #b
 	#b : 'temp'
 
+=-
+Swap 'a' with 'b'.
+=-
+swap #a with #b :
+	#a swap #b
+	
 ==============================
  Testing functions
 ==============================

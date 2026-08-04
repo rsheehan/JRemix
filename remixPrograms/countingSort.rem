@@ -23,7 +23,7 @@ sort #list with values from 'start' to 'finish' :
 
 	for each 'value' in #list
 		'place' : 'value' - 'start' + 1
-		increment ('collect counts' {'place'})
+		increment ('collect counts'{'place'})
 
 	#list : { }
 	for each 'item' in 'collect counts' keeping 'index'

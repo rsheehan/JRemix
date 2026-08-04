@@ -9,7 +9,7 @@ merge-sort 'my list'
 ============
 
 merge-sort 'list' :
-	sort 'list' from 1 to ('list' length)
+	sort 'list' from 1 to (end of 'list')
 
 sort 'list' from 'start' to 'finish' :
 	if ('start' ≥ 'finish')
@@ -25,10 +25,10 @@ merge 'list' from 'start' to 'middle' to 'finish' :
 	'working list' : { }
 	- while values on both sides
 	while [('left' ≤ 'middle') and ('right' ≤ 'finish')]
-		if ('list' {'left'} ≤ 'list' {'right'})
-			append ('list' {'left' inc}) to 'working list'
+		if ('list'{'left'} ≤ 'list'{'right'})
+			append ('list'{'left' inc}) to 'working list'
 		… otherwise
-			append ('list' {'right' inc}) to 'working list'
+			append ('list'{'right' inc}) to 'working list'
 	- remaining values on the 'left'
 	if ('left' ≤ 'middle')
 		for each 'item' in 'list' from position 'left' to 'middle'
@@ -39,4 +39,4 @@ merge 'list' from 'start' to 'middle' to 'finish' :
 			append 'item' to 'working list'
 	- put back in original 'list'
 	for each 'item' from 'start' to 'finish'
-		'list' {'item'} : 'working list' {'item' - 'start' + 1}
+		'list'{'item'} : 'working list'{'item' - 'start' + 1}

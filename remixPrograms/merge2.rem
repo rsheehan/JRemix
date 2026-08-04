@@ -1,7 +1,7 @@
 'my list' : apply [random 1000] 1000 times
 'my list' ↲
 
-mergesort 'my list' from 1 to ('my list' length)
+mergesort 'my list' from 1 to (end of 'my list')
 'my list' ↲
 
 =-
@@ -39,10 +39,10 @@ half way between 'start' and 'finish' :
 while values on both sides of #left to 'middle' and #right to 'finish' of 'list'
 	… move smallest to 'work' :
 	while [(#left ≤ 'middle') and (#right ≤ 'finish')]
-		if ('list' {#left} ≤ 'list' {#right})
-			append ('list' {#left inc}) to 'work'
+		if ('list'{#left} ≤ 'list'{#right})
+			append ('list'{#left inc}) to 'work'
 		… otherwise
-			append ('list' {#right inc}) to 'work'
+			append ('list'{#right inc}) to 'work'
 
 move remaining values from 'location' to 'end' of 'list' to 'work' :
 	if ('location' ≤ 'end')
@@ -51,4 +51,4 @@ move remaining values from 'location' to 'end' of 'list' to 'work' :
 
 put items from 'start' to 'finish' in 'work' into 'list' :
 	for each 'item' from 'start' to 'finish'
-		'list' {'item'} : 'work' {'item' - 'start' + 1}
+		'list'{'item'} : 'work'{'item' - 'start' + 1}

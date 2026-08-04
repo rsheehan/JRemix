@@ -30,8 +30,8 @@ show top half of diamond of 'size' and store the #lines :
 			'num stars'  : 'row' × 2 - 1
 			'spaces'     : SPACE 'num spaces' times
 			'stars'      : " *" 'num stars' times
-			#lines {'row'} : 'spaces' ⊕ 'stars'
-			#lines {'row'} ↲
+			#lines{'row'} : 'spaces' ⊕ 'stars'
+			#lines{'row'} ↲
 
 =-
 Show the middle line of the diamond of 'size'.
@@ -46,4 +46,4 @@ Uses the 'lines' list.
 show bottom half of diamond of 'size' from the 'lines' :
 	if ('size' ≥ 3)
 		for each 'row' from ('size' ÷ 2) to 1
-			'lines' {'row'} ↲
+			'lines'{'row'} ↲

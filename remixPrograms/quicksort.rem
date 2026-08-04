@@ -17,12 +17,12 @@ quicksort 'list' :
 quicksort {1} ↲
 quicksort {3, 2, 1} ↲
 
-'list' : apply [random 1000] 100 times
+'list' : apply [random 1000] 1000 times
 quicksort 'list' ↲
 
 choose pivot from 'list' :
 	'p' : apply [choose from 'list'] 3 times
-	middle of ('p' {1}) ('p' {2}) ('p' {3})
+	middle of ('p'{1}) ('p'{2}) ('p'{3})
 
 middle of 'n1' 'n2' 'n3' :
 	when

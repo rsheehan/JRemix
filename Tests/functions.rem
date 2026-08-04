@@ -16,6 +16,7 @@ test {
 	"Multiple unnamed parameters."
 		(function ['a' + 'b']) {4, 7}
 	… expected 11
+	
 	"Multiple unnamed parameters via variable."
 		'multi func' : function 
 			'sum' : 'a' + 'b'

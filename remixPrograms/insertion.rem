@@ -11,7 +11,7 @@ swap position if element to the left is greater than 'this' in 'the list' ::
 - N.B. transparent short circuit
 	'left' : 'this' - 1
 	if ('the list'{'left'} > 'the list'{'this'})
-		('the list'{'left'}) swap ('the list'{'this'})
+		swap ('the list'{'left'}) with ('the list'{'this'})
 	… otherwise
 		return
 
