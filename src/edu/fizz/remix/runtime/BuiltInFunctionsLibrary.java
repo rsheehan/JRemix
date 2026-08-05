@@ -500,7 +500,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
     }
 
     /** Extract a particular item from a sequence.
-     * A sequence is a list, range or string.  */
+     * A sequence is a list, range, string or block.  */
     public static final class ExtractFunction extends Function {
 
         public ExtractFunction() {

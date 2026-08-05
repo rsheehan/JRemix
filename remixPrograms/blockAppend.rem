@@ -5,11 +5,11 @@
 'statement' : first statement in 'statement block'
 'statement' ↲
 
-append (statement from [" finished" ↲]) to 'statement block'
+append (statement [" finished" ↲]) to 'statement block'
 
 'statement' : last statement in 'statement block'
 'statement' ↲
 
 do 'statement block'
 
-help VARS
+help VARS ↲

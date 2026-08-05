@@ -279,7 +279,7 @@ keep #item from 'list' where ['condition'] until ['termination'] :
 Create a new 'list' by applying 'block' to each element of 'list'.
 'block' will usually use the variable passed as 'item'.
 =-
-apply ['block'] to each #item from 'list' :
+apply ['block'] to each #item in 'list' :
 	'new list' : { }
 	for each #item in 'list'
 		append (do 'block') to 'new list'
@@ -299,7 +299,7 @@ apply ['block'] 'n' times :
 Convert the 'range' into a list of its values.
 =-
 list from 'range' :
-	apply ['n'] to each 'n' from 'range'
+	apply ['n'] to each 'n' in 'range'
 
 ==============================
  List reduce functions
@@ -602,7 +602,7 @@ Extract the statement within 'block'.
 Because statements are usually executed putting one inside
 a block means it can be accessed without execution.
 =-
-statement from 'block' :
+statement 'block' :
 	first statement in 'block'
 
 =-
