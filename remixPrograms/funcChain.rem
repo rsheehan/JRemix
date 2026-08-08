@@ -37,5 +37,5 @@ for each 'n' from 1 to 10
 			'func2'
 		}
 	}
-… to each 'i' from (1 to 10)
+… to each 'i' in (1 to 10)
 'list' ↲
