@@ -260,6 +260,7 @@ GRAPHICS-LIB : library "edu.fizz.remix.libraries.Graphics"
 	=-
 	a 'JGraphics panel' with layers :
 		'panel' : create
+			'type' : "Graphics Panel"
 			'JGraphics' : 'JGraphics panel'
 			'layers' : { a base layer for 'JGraphics panel' }
 			'colour' : DARK-BLUE ; set by "MY colour 'the colour'"
@@ -343,6 +344,7 @@ GRAPHICS-LIB : library "edu.fizz.remix.libraries.Graphics"
 	=-
 	a shape layer :
 		create
+			'type' : "Shape Layer"
 			'shapes' : { }
 
 			getter
@@ -380,6 +382,7 @@ GRAPHICS-LIB : library "edu.fizz.remix.libraries.Graphics"
 	=-
 	a base layer for 'JGraphics panel' :
 		create
+			'type' : "Base Layer"
 			'JGraphics panel' : 'JGraphics panel' ; base layer can change so need this
 
 			MY shapes : ; a getter for shapes which are not stored
