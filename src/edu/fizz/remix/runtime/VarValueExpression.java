@@ -3,12 +3,16 @@ package edu.fizz.remix.runtime;
 /** Gets the value of a variable from its name. */
 public class VarValueExpression implements Expression {
 
+    private final String fileName;
     private final String varName;
     private int lineNumber = 0;
     private int offSet;
 
-    public VarValueExpression(String name) {
+    public VarValueExpression(String name, String fileName, int lineNumber, int offset) {
         varName = name;
+        this.fileName = fileName;
+        this.lineNumber = lineNumber;
+        this.offSet = offset;
     }
 
     public String getName() { // necessary if this variable is being passed as ref param
@@ -16,17 +20,14 @@ public class VarValueExpression implements Expression {
     }
 
     @Override
-    public Object evaluate(Context context) {
+    public Object evaluate(Context context) throws VarNotFoundException, FunctionNotFoundException {
         Object value = null;
         try {
             value = context.retrieve(varName, false);
         } catch (VarNotFoundException e) {
-            System.err.printf("'%s' has no value ", varName);
-            if (Runtime.REPLRunning)
-                System.err.println("in REPL.");
-            else  {
-                System.err.printf("on line %d.%n", lineNumber);
-            }
+            Runtime.showErrorPosition(fileName, lineNumber, -1);
+            Runtime.showErrorMessage("Variable '" + varName + "' has no value");
+            throw e;
         }
         if (value == null)
             value = RemixNull.value();

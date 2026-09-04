@@ -1,5 +1,6 @@
 package edu.fizz.remix.editor;
 
+import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ public class RemixEdLexer {
     private final Style separator;
     private final Style error;
 
+    private final Segment textSegment = new Segment();
 
     private static final List<String> keywords = Arrays.asList("return", "redo", "create", "extend", "ME", "MY",
             "setter", "setters", "getter", "getters", "getter/setter", "getters/setters", "library", "using", "uses");
@@ -116,27 +118,33 @@ public class RemixEdLexer {
      * Goes to start of a selected line and relexes the code from
      * here until no more changes are necessary.
      * Needs to take into account multiline comments and strings.
-     * @param pos the location inside the line to start lexing
+     * @param start the location inside the line to start lexing
      * @return the location after all necessary changes have been made
      */
-    public int lexFromHere(int pos) throws BadLocationException {
-        String styleName;
-        pos = startOfLine(pos);
-
-        if (pos == 0) {
-            styleName = "default";
-        } else // the style at the end of the previous line
-            styleName = getStyleName(pos - 1);
-        if (styleName.equals("multilineComment")) {
-            pos = dealWithMultiLineComment(pos);
-        } else if (styleName.equals("string")) {
-            pos = dealWithString(pos);
-        }
-        // deal with rest of line
-        pos = lexUntilEndOfLine(pos);
-        pos = lexOverFollowingMultilineCommentLines(pos);
-        pos = lexOverFollowingMultilineStrings(pos);
-        return pos;
+    public void lexFromHere(final int start) { // throws BadLocationException {
+        SwingUtilities.invokeLater(() -> {
+           String styleName;
+            int pos = 0;
+            try {
+                pos = startOfLine(start);
+                if (pos == 0) {
+                   styleName = "default";
+               } else // the style at the end of the previous line
+                   styleName = getStyleName(pos - 1);
+               if (styleName.equals("multilineComment")) {
+                   pos = dealWithMultiLineComment(pos);
+               } else if (styleName.equals("string")) {
+                   pos = dealWithString(pos);
+               }
+               // deal with rest of line
+               pos = lexUntilEndOfLine(pos);
+               pos = lexOverFollowingMultilineCommentLines(pos);
+               pos = lexOverFollowingMultilineStrings(pos);
+            } catch (BadLocationException e) {
+                System.err.println("Bad location");
+            }
+       });
+//        return pos;
     }
 
     /**
@@ -221,7 +229,7 @@ public class RemixEdLexer {
         while (pos < length && getChar(pos) != '\n') {
             pos = dealWithRun(pos);
         }
-        document.setCharacterAttributes(pos, 1, defaultStyle, true);
+        document.setCharacterAttributes(pos, 1, defaultStyle, false);
         return pos >= length ? length : pos + 1;
     }
 
@@ -241,11 +249,11 @@ public class RemixEdLexer {
         if (isStartOfLine(pos)) {
             int tabPos = pos;
             pos = gobbleTabs(pos);
-            document.setCharacterAttributes(tabPos,pos - tabPos, defaultStyle, true);
+            document.setCharacterAttributes(tabPos,pos - tabPos, defaultStyle, false);
             ch = getChar(pos);
             switch (ch) {
                 case ' ' -> { // spaces not allowed at the start of lines (even after tabs)
-                    document.setCharacterAttributes(pos, 1, error, true);
+                    document.setCharacterAttributes(pos, 1, error, false);
                     return pos + 1;
                 }
                 case '-' -> {
@@ -253,7 +261,7 @@ public class RemixEdLexer {
                     return pos;
                 }
                 case '=' -> {
-                    document.setCharacterAttributes(pos, 1, multilineComment, true);
+                    document.setCharacterAttributes(pos, 1, multilineComment, false);
                     pos = dealWithMultiLineComment(pos + 1);
                     pos = lexOverFollowingMultilineCommentLines(pos);
                     return pos;
@@ -296,33 +304,34 @@ public class RemixEdLexer {
                 } else if (ch == 'π') {
                     return dealWithPi(pos);
                 } else if (ch == '\t') { // tabs must only be at the start of lines, not following non-tabs
-                    document.setCharacterAttributes(pos, 1, error, true);
+                    document.setCharacterAttributes(pos, 1, error, false);
                     return pos + 1;
                 } else { // make the current character default?
-                    document.setCharacterAttributes(pos, 1, defaultStyle, true);
+                    document.setCharacterAttributes(pos, 1, defaultStyle, false);
                     return pos + 1;
                 }
             }
         }
     }
 
-    public void lexAfterUndoRedo(AbstractDocument.DefaultDocumentEvent event, boolean undoing) throws BadLocationException {
-        String type = event.getType().toString();
-        int offset = event.getOffset();
-        int length = event.getLength();
-        if (undoing && type.equals("REMOVE") || !undoing && type.equals("INSERT")) {
-            // we are inserting
-            int pos = lexFromHere(offset);
-            if (pos - offset < length) {
-                System.out.println("should do more lexing?");
-            }
-        } else if (undoing && type.equals("INSERT") || !undoing && type.equals("REMOVE")) {
-            lexFromHere(offset);
-        }
-    }
+//    public void lexAfterUndoRedo(AbstractDocument.DefaultDocumentEvent event, boolean undoing) throws BadLocationException {
+//        String type = event.getType().toString();
+//        int offset = event.getOffset();
+//        int length = event.getLength();
+//        if (undoing && type.equals("REMOVE") || !undoing && type.equals("INSERT")) {
+//            // we are inserting
+//            lexFromHere(offset);
+////            int pos = lexFromHere(offset);
+////            if (pos - offset < length) {
+////                System.out.println("should do more lexing?");
+////            }
+//        } else if (undoing && type.equals("INSERT") || !undoing && type.equals("REMOVE")) {
+//            lexFromHere(offset);
+//        }
+//    }
 
     public void fullLex() throws BadLocationException {
-        RemixEditor.systemOutput.setText("");
+//        RemixEditor.systemOutput.setText("");
         int pos = 0;
         while (pos < document.getLength()) {
             pos = lexUntilEndOfLine(pos);
@@ -330,7 +339,8 @@ public class RemixEdLexer {
     }
 
     private char getChar(int pos) throws BadLocationException {
-        return document.getText(pos, 1).toCharArray()[0];
+        document.getText(pos, 1, textSegment);
+        return textSegment.first(); // document.getText(pos, 1).toCharArray()[0];
     }
 
     public String getStyleName(int pos) {
@@ -363,7 +373,7 @@ public class RemixEdLexer {
             if (ch != ' ')
                 break;
         }
-        document.setCharacterAttributes(spacePos, pos - spacePos, defaultStyle,true);
+        document.setCharacterAttributes(spacePos, pos - spacePos, defaultStyle,false);
         return pos;
     }
 
@@ -385,8 +395,8 @@ public class RemixEdLexer {
             if (ch == '\n')
                 break;
         }
-        document.setCharacterAttributes(pos, commentPos - pos, comment, true);
-        document.setCharacterAttributes(commentPos, 1, defaultStyle, true);
+        document.setCharacterAttributes(pos, commentPos - pos, comment, false);
+        document.setCharacterAttributes(commentPos, 1, defaultStyle, false);
 
         return commentPos + 1;
     }
@@ -410,7 +420,7 @@ public class RemixEdLexer {
                 commentPos = gobbleTabs(commentPos);
                 char ch = getChar(commentPos);
                 if (ch == '=') { // finishing
-                    document.setCharacterAttributes(pos, commentPos - pos, multilineComment, true);
+                    document.setCharacterAttributes(pos, commentPos - pos, multilineComment, false);
                     return dealWithSingleLineComment(commentPos);
                 }
             }
@@ -420,7 +430,7 @@ public class RemixEdLexer {
                 if (ch == '\n')
                     break;
             }
-            document.setCharacterAttributes(pos, commentPos - pos, multilineComment, true);
+            document.setCharacterAttributes(pos, commentPos - pos, multilineComment, false);
         }
         return commentPos;
     }
@@ -451,8 +461,8 @@ public class RemixEdLexer {
         if (ch == '\"') {
             stringPos++; // only extend style if necessary
         }
-        document.setCharacterAttributes(pos, stringPos - pos, string, true);
-        document.setCharacterAttributes(stringPos, 1, defaultStyle, true);
+        document.setCharacterAttributes(pos, stringPos - pos, string, false);
+        document.setCharacterAttributes(stringPos, 1, defaultStyle, false);
         return stringPos;
     }
 
@@ -463,12 +473,12 @@ public class RemixEdLexer {
             if (!isDigit(ch))
                 break;
         }
-        document.setCharacterAttributes(pos, numPos - pos, literal, true);
+        document.setCharacterAttributes(pos, numPos - pos, literal, false);
         return numPos;
     }
 
     private int dealWithPi(int pos) {
-        document.setCharacterAttributes(pos, 1, literal, true);
+        document.setCharacterAttributes(pos, 1, literal, false);
         return pos + 1;
     }
 
@@ -480,12 +490,12 @@ public class RemixEdLexer {
             if (ch == '\'' || ch == '\n')
                 break;
         }
-        document.setCharacterAttributes(pos, 1, singleQuote, true);
-        document.setCharacterAttributes(pos + 1, varPos - pos - 1, variable, true);
+        document.setCharacterAttributes(pos, 1, singleQuote, false);
+        document.setCharacterAttributes(pos + 1, varPos - pos - 1, variable, false);
         if (ch == '\'')
-            document.setCharacterAttributes(varPos, 1, singleQuote, true);
+            document.setCharacterAttributes(varPos, 1, singleQuote, false);
         else // could be a bad location if at the end of the document
-            document.setCharacterAttributes(varPos, 1, defaultStyle, true);
+            document.setCharacterAttributes(varPos, 1, defaultStyle, false);
         return varPos + 1;
     }
 
@@ -500,7 +510,9 @@ public class RemixEdLexer {
         }
         // should work out if the word is a keyword, variable or not
         AttributeSet wordStyle;
-        String word = document.getText(pos, wordPos - pos);
+        document.getText(pos, wordPos - pos, textSegment);
+        String word = String.valueOf(textSegment); //new String(textSegment.array, pos, wordPos - pos);
+//        String word = document.getText(pos, wordPos - pos);
         if (isKeyword(word))
             wordStyle = keyword;
         else if (isConstantWord(word))
@@ -547,14 +559,14 @@ public class RemixEdLexer {
 
     private int dealWithSeparator(char ch, int pos) {
         if (ch == '(' || ch == ')') {
-            document.setCharacterAttributes(pos, 1, parentheses, true);
+            document.setCharacterAttributes(pos, 1, parentheses, false);
         } else
-            document.setCharacterAttributes(pos, 1, separator, true);
+            document.setCharacterAttributes(pos, 1, separator, false);
         return pos + 1;
     }
 
     private int dealWithOperator(int pos) {
-        document.setCharacterAttributes(pos, 1, operator, true);
+        document.setCharacterAttributes(pos, 1, operator, false);
         return pos + 1;
     }
 

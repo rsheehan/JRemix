@@ -3,10 +3,7 @@ package edu.fizz.remix.editor;
 import edu.fizz.remix.EvalVisitor;
 import edu.fizz.remix.EvalVisitorForEditor;
 import edu.fizz.remix.PreProcess;
-import edu.fizz.remix.parser.RemixErrorListener;
-import edu.fizz.remix.parser.RemixLexer;
-import edu.fizz.remix.parser.RemixParser;
-import edu.fizz.remix.parser.RemixParserBaseVisitor;
+import edu.fizz.remix.parser.*;
 import edu.fizz.remix.runtime.*;
 import edu.fizz.remix.runtime.Runtime;
 import org.antlr.v4.runtime.CharStream;
@@ -25,32 +22,32 @@ import java.util.Map;
  */
 public class RemixPrepareRun {
 
-    public static final String EDITORTEXT = "*EditorText*";
-    public static final String INTERACTIVETEXT = "*InteractiveText*";
+//    public static final String EDITORTEXT = "*EditorText*";
+    public static final String INTERACTIVETEXT = "REPL";
     public volatile static Context REPLContext; // context when in interactive area
 
-    private static String fileName;
+    private static String fileName; // only one file can be parsed at a time
 
-    public static LibraryExpression loadPackage(String libName) throws Exception {
+    public static LibraryExpression loadPackage(String libName, boolean editing) throws Exception {
         String preRemFile;
         // Preprocess the .rem file
         fileName = libName;
-        preRemFile = PreProcess.processFile(libName);
+        preRemFile = PreProcess.processFile(fileName);
         CharStream input = CharStreams.fromFileName(preRemFile);
         RemixLexer lexer = new RemixLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         RemixParser parser = new RemixParser(tokens);
         ParseTree tree = parser.program(); // parse
         RemixParserBaseVisitor eval;
-        if (RemixEditor.isEditing()) // different roles if editing or running
-            eval = new EvalVisitorForEditor();
+        if (editing) // different roles if editing or running
+            eval = new EvalVisitorForEditor(fileName);
         else
-            eval = new EvalVisitor();
+            eval = new EvalVisitor(fileName);
         return (LibraryExpression)eval.visit(tree);
     }
 
     public static String getFileName() {
-        return fileName;
+        return "REMIXPREPARERUN: " + fileName;
     }
 
     public static boolean interactive() {
@@ -60,22 +57,27 @@ public class RemixPrepareRun {
     public static SwingWorker remixRunner;
 
     public static void runEditorText(RemixSwingWorker remixSwingWorker) {
+        RemixApp.remixOutput.clearText();
         remixRunner = remixSwingWorker; // so it can be cancelled
         // need to preprocess the string
         // then create CharStream fromString
         // then lexer, tokens, parse, tree, eval.visit
         // then run
-        final ParseTree tree = processParse(remixSwingWorker.getEditor().getProgramText(), EDITORTEXT);
-        EvalVisitor eval = new EvalVisitor();
+        RemixEditorWindow editor = remixSwingWorker.getEditor();
+        // filename added here so compile errors can use it
+        fileName = editor.getCurrentFileName();
+        EvalVisitor eval = new EvalVisitor(fileName);
+        final ParseTree tree = processParse(editor.getProgramText());
+        // filename added here so runtime errors can use it
+        Runtime.runProgram((LibraryExpression) eval.visit(tree), fileName);
 
-        Runtime.runProgram((LibraryExpression)eval.visit(tree));
         LibrariesAndCompletions.resetToEditorStandard();
     }
 
     public static Object runInteractiveText(String interactiveLine, REPLInputOutput inputOutputArea) {
-        RemixEditor.systemOutput.setText("");
-        final ParseTree tree = processParse(interactiveLine, INTERACTIVETEXT);
-        EvalVisitor eval = new EvalVisitor();
+        fileName = INTERACTIVETEXT;
+        EvalVisitor eval = new EvalVisitor(INTERACTIVETEXT);
+        final ParseTree tree = processParse(interactiveLine);
         LibraryExpression libraryExpression = (LibraryExpression)eval.visit(tree);
         // The libraryExpression will either contain a block of code
         // or a function definition.
@@ -98,6 +100,7 @@ public class RemixPrepareRun {
             libraryExpression.setConstantsFromLibrary(currentTOSLibrary);
             REPLContext.popLibrary(); // remove previous REPL
             REPLContext.pushLibrary(libraryExpression);
+            REPLContext.setFileWindowREPL(Runtime.REPL);
         }
         libraryExpression.setLibName(Runtime.REPL);
         if (addedFunction != null) { // defined a function
@@ -107,8 +110,7 @@ public class RemixPrepareRun {
         return remixRunner;
     }
 
-    public static ParseTree processParse(String programText, String fileName) {
-        RemixPrepareRun.fileName = fileName;
+    public static ParseTree processParse(String programText) { // TODO fileName needed?
         String processedText;
         programText = programText.replaceAll("\\r", "");
         try {
@@ -124,7 +126,8 @@ public class RemixPrepareRun {
         final RemixErrorListener listener = new RemixErrorListener();
         parser.addErrorListener(listener);
         // parse
-        return parser.program();
+        RemixParser.ProgramContext program = parser.program();
+        return program;
     }
 
 }

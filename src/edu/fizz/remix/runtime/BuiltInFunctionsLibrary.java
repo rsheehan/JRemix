@@ -2,9 +2,10 @@ package edu.fizz.remix.runtime;
 
 import edu.fizz.remix.EvalVisitorForEditor;
 import edu.fizz.remix.editor.REPLInputOutput;
-import edu.fizz.remix.editor.RemixEditor;
+import edu.fizz.remix.editor.RemixApp;
+import edu.fizz.remix.editor.RemixEditorWindow;
 import edu.fizz.remix.editor.RemixPrepareRun;
-import edu.fizz.remix.parser.RemixParser;
+//import edu.fizz.remix.editor.RemixPrepareRunOld;
 
 import java.util.*;
 
@@ -22,7 +23,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             );
         }
 
-        public Object execute(Context context) throws VarNotFoundException {
+        public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             String message = context.retrieve("message", false).toString();
             System.err.println(message);
             System.exit(1);
@@ -42,7 +43,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             );
         }
 
-        public Object execute(Context context) throws VarNotFoundException {
+        public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Object object = context.retrieve("object", false);
             System.out.println(object);
             return null;
@@ -62,14 +63,16 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             );
         }
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
             String filename = context.retrieve("file-name", false).toString();
             LibraryExpression included;
+            boolean editing = context.getFileWindowREPL().equals(Runtime.REPL);
             try {
-                if (RemixEditor.isEditing())
+                // COULD HAVE EDITING INFORMATION IN THE CONTEXT
+                if (editing)
                     EvalVisitorForEditor.addIdentifierStack.push(false);
-                included = RemixPrepareRun.loadPackage(filename);
-                if (RemixEditor.isEditing())
+                included = RemixPrepareRun.loadPackage(filename, editing);
+                if (editing)
                     EvalVisitorForEditor.addIdentifierStack.pop();
                 /*
                 If the package finishes with a statement which is a "library" that
@@ -87,7 +90,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
              */
             LibraryExpression topOfStackLibrary = (LibraryExpression)context.libraryStack.peek();
 
-            if (RemixEditor.isEditing()) {
+            if (editing) {
                 included.setActiveLines(topOfStackLibrary.getActiveLines());
             }
 
@@ -98,11 +101,12 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 This means variables assigned in the included file are not visible in the
                 including program.
                  */
-                Context newLibContext = new Context(LibrariesAndCompletions.getBaseLibrary());
+                Context newLibContext = new Context(LibrariesAndCompletions.getBaseLibrary(), null);
                 newLibContext.addLibraryToStack(included);
                 result = included.block.evaluate(newLibContext);
                 if (!(result instanceof LibraryExpression) || !(((LibraryExpression) result).trueLibrary)) {
                     System.err.format("Included file \"%s\" does not evaluate to a library.%n", filename);
+                    Runtime.showErrorMessage("");
                     result = null;
                 } else
                     ((LibraryExpression) result).setRemixFileName(filename);
@@ -126,7 +130,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws VarNotFoundException {
+        public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Object original = context.retrieve("original", false);
             return copy(original);
         }
@@ -167,7 +171,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             );
         }
 
-        public Object execute(Context context) throws VarNotFoundException {
+        public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Object value = context.retrieve("value", false);
 //            if (value instanceof RemixExtendedObject)
             if (value instanceof RemixObject object) {
@@ -194,7 +198,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws VarNotFoundException {
+        public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Object value = context.retrieve("value", false);
             String typeString = (String)context.retrieve("type-string", false);
             if ((value instanceof Long || value instanceof Double) && typeString.equals("number"))
@@ -228,15 +232,21 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             super(
                     List.of("do ⫾"),
                     List.of("block"),
-                    List.of(true),
+                    List.of(false),
                     true,
-                    "Execute the 'block'."
+                    "Execute the 'block'.\n" +
+                            "'block' is either a block or a statement."
             );
         }
 
-        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
-            Block block = (Block)context.retrieve("block", false);
-            return block.evaluate(context);
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
+            Object blockStatement = context.retrieve("block", false);
+            if (blockStatement instanceof Block block) {
+                return block.evaluate(context);
+            } else { // a statement, it needs the context before this call
+                Expression exp = (Expression)blockStatement;
+                return exp.evaluate(context.parentContext);
+            }
         }
     }
 
@@ -283,7 +293,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 Context callContext = new Context(context, false);
                 callContext.variables = map;
                 return body.evaluate(callContext);
-            } catch (VarNotFoundException e) {
+            } catch (VarNotFoundException | FunctionNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -302,7 +312,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             );
         }
 
-        public Object execute(Context context) throws VarNotFoundException {
+        public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Object value = context.retrieve("value", false);
             publish(value);
             return RemixNull.value();
@@ -326,7 +336,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         /* The condition can be either a boolean expression or a block which returns one. */
-        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
             Object condition = context.retrieve("condition", false);
             if (condition instanceof Block) {
                 condition = ((Block)condition).evaluate(context);
@@ -353,7 +363,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         /* The condition can be either a boolean expression or a block which returns one. */
-        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
             Object condition = context.retrieve("condition", false);
             if (condition instanceof Block) {
                 condition = ((Block)condition).evaluate(context);
@@ -383,7 +393,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Iterator<?> execute(Context context) throws VarNotFoundException {
+        public Iterator<?> execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Iterator<?> iterator = null;
             Object listMapOrString = context.retrieve("list", false);
             if (listMapOrString instanceof List list)
@@ -430,7 +440,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws VarNotFoundException {
+        public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Iterator<?> iterator = (Iterator<?>)context.retrieve("position", false);
             return iterator.next();
         }
@@ -450,7 +460,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Boolean execute(Context context) throws VarNotFoundException {
+        public Boolean execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Iterator<?> iterator = (Iterator<?>)context.retrieve("position", false);
             return !iterator.hasNext();
         }
@@ -471,7 +481,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public RangeExpression execute(Context context) throws VarNotFoundException {
+        public RangeExpression execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             long start = ((Number)context.retrieve("start", false)).longValue();
             long finish = ((Number)context.retrieve("finish", false)).longValue();
             return new RangeExpression(start, finish);
@@ -492,7 +502,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public String execute(Context context) throws VarNotFoundException {
+        public String execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Object first = context.retrieve("first", false);
             Object second = context.retrieve("second", false);
             return first.toString() + second.toString();
@@ -515,7 +525,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws VarNotFoundException {
+        public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Object object = context.retrieve("sequence", false);
             int index = ((Long) context.retrieve("index", false)).intValue();
             //noinspection rawtypes
@@ -566,12 +576,12 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     false,
                     "Append 'value' to the end of 'list'.\n" +
                             "'list' is a list or block.\n" +
-                            "If a block then 'value' must be a statement."
+                            "If a block then 'value' must be a statement or block."
             );
         }
 
         @Override
-        public Object execute(Context context) throws VarNotFoundException {
+        public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Object value = context.retrieve("value", false);
             @SuppressWarnings ("unchecked")
             Object listOrBlock = context.retrieve("list", false);
@@ -601,7 +611,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws VarNotFoundException {
+        public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Object value = context.retrieve("function block", false);
             if (value instanceof Block block) {
                 if (block.statements.size() > 0) {
@@ -633,7 +643,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Long execute(Context context) throws VarNotFoundException {
+        public Long execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             long length = 0;
             Object object = context.retrieve("list", false);
             if (object instanceof List<?> list) { // includes RangeExpressions
@@ -666,7 +676,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Long execute(Context context) throws VarNotFoundException {
+        public Long execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             long max = (Long)context.retrieve("max", false);
             return Math.round(Math.random() * (max - 1)) + 1;
         }
@@ -684,7 +694,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Double execute(Context context) throws VarNotFoundException {
+        public Double execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             double d = 0;
             Object value = context.retrieve("number", false);
             if (value instanceof Double)
@@ -708,7 +718,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Double execute(Context context) throws VarNotFoundException {
+        public Double execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             double d = 0;
             double p = 0;
             Object value = context.retrieve("number", false);
@@ -738,7 +748,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Double execute(Context context) throws VarNotFoundException {
+        public Double execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             double d = 0;
             Object value = context.retrieve("number", false);
             if (value instanceof Double)
@@ -761,7 +771,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Double execute(Context context) throws VarNotFoundException {
+        public Double execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             double d = 0;
             Object value = context.retrieve("number", false);
             if (value instanceof Double)
@@ -784,7 +794,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Double execute(Context context) throws VarNotFoundException {
+        public Double execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             double y = 0;
             double x = 0;
             Object value = context.retrieve("change-y", false);
@@ -814,7 +824,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
             double seconds = ((Number) context.retrieve("time", false)).doubleValue();
             Thread.sleep((int)(seconds * 1000));
             return null;
@@ -835,7 +845,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            RemixEditor.remixOutput.setText(null);
+            RemixApp.remixOutput.setText(null);
             return "";
         }
     }
@@ -885,7 +895,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         // TODO: add some of the keywords too
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
             Object what = context.retrieve("what", false);
             StringBuilder helpSB = new StringBuilder();
             if (what instanceof String whatString) {

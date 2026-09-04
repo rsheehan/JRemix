@@ -49,7 +49,7 @@ public class Block implements Expression {
     }
 
     @Override
-    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
         Object result = RemixNull.value();
         if (blockContext != null) { // anonymous block, use its blockContext
             context = blockContext;

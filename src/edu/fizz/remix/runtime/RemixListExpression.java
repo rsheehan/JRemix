@@ -9,7 +9,7 @@ public class RemixListExpression implements Expression {
     }
 
     @Override
-    public RemixList<Expression> evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+    public RemixList<Expression> evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
         RemixList<Expression> listValues = new RemixList<>();
         if (listExpressions != null) {
             for (Object item : listExpressions) {

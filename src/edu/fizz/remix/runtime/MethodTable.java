@@ -19,13 +19,14 @@ public class MethodTable extends HashMap<String, Method> {
     }
 
     /** Add a getter method for a field. */
-    public String createGetter(String varName) {
+    public String createGetter(String varName, String fileName) {
         // add a getter to the method table
         MethodName methodSig = new MethodName();
         methodSig.setSelfRefNow();
         methodSig.addToName(varName);
         Block block = new Block();
-        block.addStatement(new VarValueExpression(varName));
+        // the 0, 0 at the end is only because there is no file location for the function
+        block.addStatement(new VarValueExpression(varName, fileName, 0, 0));
         String comment = "Get " + varName + " of the 'OBJECT'." ;
         addMethod(new Method(methodSig.getAllNames(), block, methodSig.getParameters(), methodSig.getBlockParams(), 1, comment));
         return methodSig.singleName();

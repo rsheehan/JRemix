@@ -17,7 +17,7 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
     Constants can not be reassigned. An error message is presented to let the programmer know.
      */
     @Override
-    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
         Object existingValue;
         Object value;
 

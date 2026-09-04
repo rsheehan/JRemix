@@ -138,6 +138,7 @@ public class LibraryExpression implements Expression {
 
     /** Add functions from the compile phase. */
     public void addFunction(Function function) {
+        if (function == null) return;
         for (String name : function.getAllNames()) {
             functionTable.put(name, function);
         }
@@ -201,7 +202,7 @@ public class LibraryExpression implements Expression {
     }
 
     @Override
-    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
         // The result of the expression is just itself if this is a true library.
         // Otherwise it is the result of the last statement in the block.
         // Now that libraries can include statements they must be executed here

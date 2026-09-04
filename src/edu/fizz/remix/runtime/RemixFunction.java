@@ -24,7 +24,7 @@ public class RemixFunction extends Function {
         definitionLine = line;
     }
 
-    public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+    public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
         return codeBlock.evaluate(context);
     }
 

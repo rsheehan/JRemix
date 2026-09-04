@@ -5,18 +5,19 @@ import java.util.List;
 
 public class RemixSwingWorker extends SwingWorker<Boolean, String> {
 
-    private final RemixEditor editor;
+    private final RemixEditorWindow editor;
 
-    public RemixSwingWorker(RemixEditor editor) { //, String programText) {
+    public RemixSwingWorker(RemixEditorWindow editor) { //, String programText) {
         this.editor = editor;
     }
 
-    protected RemixEditor getEditor() {
+    protected RemixEditorWindow getEditor() {
         return editor;
     }
 
     @Override
     protected Boolean doInBackground() {
+//        BuiltInFunctionsLibrary.editorWindow = editor;
         RemixPrepareRun.runEditorText(this);
         return true; // can make it false on an error in the program
     }
@@ -26,10 +27,11 @@ public class RemixSwingWorker extends SwingWorker<Boolean, String> {
         // called when the doInBackground method finishes
         // careful : this is on the event dispatch thread
         Thread thread = new Thread(() -> {
-            RemixEditor.waitForProgramFinish();
+            RemixEditorWindow.waitForProgramFinish();
             editor.stopAction.setEnabled(false);
             editor.runAction.setEnabled(true);
-            RemixEditor.setEditing(true);
+//            BuiltInFunctionsLibrary.editorWindow = null;
+//            editor.setEditing(true);
         });
         thread.start();
     }
@@ -41,7 +43,7 @@ public class RemixSwingWorker extends SwingWorker<Boolean, String> {
     @Override
     protected void process(List<String> chunks) {
         for (String value : chunks) {
-            RemixEditor.remixOutput.append(value);
+            RemixApp.remixOutput.append(value);
         }
     }
 

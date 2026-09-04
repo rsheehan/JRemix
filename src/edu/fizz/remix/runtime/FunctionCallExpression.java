@@ -1,7 +1,6 @@
 package edu.fizz.remix.runtime;
 
-import edu.fizz.remix.editor.RemixEditor;
-import edu.fizz.remix.editor.RemixPrepareRun;
+//import edu.fizz.remix.editor.RemixEditor;
 
 import java.util.Collections;
 import java.util.ListIterator;
@@ -16,6 +15,16 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
     private final String fileName;
     private final int lineNumber;
     private final int lineOffset;
+
+    public boolean isInEditor() {
+        return inEditor;
+    }
+
+    public void setInEditor(boolean inEditor) {
+        this.inEditor = inEditor;
+    }
+
+    private boolean inEditor = false;
 
     public FunctionCallExpression(String fileName, int lineNumber, int lineOffset) {
         super();
@@ -38,7 +47,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
     }
 
     @Override
-    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
 
         /*
          Need to check the methodTable for a corresponding method.
@@ -101,15 +110,11 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         // SHOULD EVALUATE THE PARAMETERS BEFORE RESTRICTING THE LIBSTACK
 
         if (function == null) {
-            String readable = routineName; //.replace("_", " ");
+            String readable = routineName;
             readable = readable.replace("⫾", "()");
-            if (RemixEditor.isEditing())
-                return null;
-            if (!fileName.equals(RemixPrepareRun.EDITORTEXT))
-                System.err.format("file: %s, ", fileName);
-            System.err.format("line: %d, offset: %d%n\t\"%s\" does not exist or is a method with a null receiver.%n",
-                    lineNumber, lineOffset, readable);
-            return null;
+            Runtime.showErrorPosition(fileName, lineNumber, lineOffset);
+            Runtime.showErrorMessage("Function \"" + readable + "\" does not exist or is a method with a null receiver");
+            throw new FunctionNotFoundException();
         }
         Context functionContext = new Context(context, function.isTransparent());
         while (!library.equals(inCallLibStack.peek())) { // to enforce lexical scoping of functions in libraries
@@ -127,7 +132,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
     we add the parameters to this.
     Any local variables also go into the functionContext not the callingContext
      */
-    private Object executeFunctionOrMethod(Function routine, Context functionContext) throws ReturnException, InterruptedException, VarNotFoundException {
+    private Object executeFunctionOrMethod(Function routine, Context functionContext) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
         Context callingContext = functionContext.parentContext;
         for (int i = 0; i < routine.numArgs(); i++) {
             String formal = routine.getArgument(i);
@@ -172,8 +177,9 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
                             }
                         }
                     } catch (ClassCastException ex) {
-                        System.err.printf("parameter: \"%s\" is not a variable in function call \"%s\".%n", parameter, this);
-                        System.err.printf("line:%d, offset:%d.", lineNumber, lineOffset);
+                        Runtime.showErrorPosition(fileName, lineNumber, lineOffset);
+                        Runtime.showErrorMessage("Reference Parameter \"" + parameter +
+                                            "\" is not a variable in function call \"" + this + "\".");
                         return null;
                     }
                 }
@@ -182,19 +188,24 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             } else { // a normal value parameter which isn't a block
                 value = parameter.evaluate(callingContext);
                 if (value == null) {
-                    System.err.printf("parameter: \"%s\" has no value in function call \"%s\"%n", parameter, this);
-                    System.err.printf("line:%d, offset:%d.", lineNumber, lineOffset);
+                    Runtime.showErrorPosition(fileName, lineNumber, lineOffset);
+                    Runtime.showErrorMessage("Parameter \"" + parameter + "\" has no value in function call \"" +
+                            this + "\".");
                     return null;
                 }
             }
             functionContext.assignParam(formal, value); // needs to really be in this context
         }
         Object result;
+        if (inEditor)
+            functionContext.setFileWindowREPL(Runtime.REPL);
         try {
             result = routine.execute(functionContext);
         } catch (ClassCastException e) {
-            System.err.printf("Parameter error calling \"%s\" line:%d, offset:%d.%n", this, lineNumber, lineOffset);
-            return null;
+            Runtime.showErrorPosition(fileName, lineNumber, lineOffset);
+            Runtime.showErrorMessage("Parameter error calling \"" + this + "\"");
+            throw (e);
+//            return null;
         }
         if (result == null)
             result = RemixNull.value();

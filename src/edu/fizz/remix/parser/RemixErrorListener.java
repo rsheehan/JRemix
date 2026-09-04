@@ -1,23 +1,23 @@
 package edu.fizz.remix.parser;
 
+import edu.fizz.remix.editor.RemixPrepareRun;
+import edu.fizz.remix.runtime.Runtime;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
 public class RemixErrorListener extends BaseErrorListener {
 
-    private boolean firstError = true;
-
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer,
                             Object offendingSymbol,
                             int line, int charPositionInLine,
                             String msg, RecognitionException e) {
-        if (firstError) {
-            System.err.println(msg);
-            System.err.printf("at line %d character %d%n", line - 1, charPositionInLine);
-            firstError = false;
-        }
+        System.err.println("Interpreter Error");
+        System.err.println("⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺ ⎺⎺⎺⎺⎺");
+        Runtime.showErrorPosition(RemixPrepareRun.getFileName(), line - 1,
+                                  charPositionInLine);
+        System.err.println("\t" + msg);
     }
 
 }

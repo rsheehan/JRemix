@@ -1,6 +1,7 @@
 package edu.fizz.remix.runtime;
 
-import edu.fizz.remix.editor.RemixEditor;
+//import edu.fizz.remix.editor.RemixEditor;
+
 import edu.fizz.remix.editor.RemixPrepareRun;
 
 import java.util.*;
@@ -70,7 +71,7 @@ public class LibrariesAndCompletions {
      */
     public static void resetREPLEnvironment() {
         LibraryExpression.methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
-        RemixPrepareRun.REPLContext = new Context(baseLibrary);
+        RemixPrepareRun.REPLContext = new Context(baseLibrary, Runtime.REPL);
     }
 
     //    /** Print the names of all the functions. */
@@ -225,18 +226,18 @@ public class LibrariesAndCompletions {
         baseLibrary = new BuiltInFunctionsLibrary();
         baseLibrary.setJavaFileName(builtInFunctions);
         addedLibraries.add(baseLibrary);
-        RemixEditor.setEditing(false);
-        LibraryExpression standardLibrary = RemixPrepareRun.loadPackage(standardLib);
-        RemixEditor.setEditing(true);
+//        RemixApp.setEditing(false);
+        LibraryExpression standardLibrary = RemixPrepareRun.loadPackage(standardLib, false);
+//        RemixApp.setEditing(true);
         // this unnecessarily repeats the work so that the methodTableForCompletions gets
         // the one method from the standard-lib
-        RemixPrepareRun.loadPackage(standardLib);
+        RemixPrepareRun.loadPackage(standardLib, true);
         LibraryExpression.methodTableStandardLib = new HashMap<>(LibraryExpression.methodTableForCompletions);
         try {
             // currently libraries no longer maintain state in contexts (variables)
             // this means this is only useful for loading other libraries, printing etc.
             // But they may contain CONSTANTS.
-            Context context = new Context(baseLibrary);
+            Context context = new Context(baseLibrary, null);
             context.pushLibrary(standardLibrary);
             standardLibrary.block.evaluate(context);
         } catch (ReturnException exception) {

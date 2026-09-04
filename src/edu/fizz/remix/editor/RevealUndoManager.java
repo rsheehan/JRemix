@@ -5,10 +5,12 @@ import javax.swing.undo.UndoableEdit;
 
 public class RevealUndoManager extends UndoManager {
     public UndoableEdit peekUndo() {
-        return editToBeUndone();
+        UndoableEdit edit = editToBeUndone();
+        return edit;
     }
 
     public UndoableEdit peekRedo() {
-        return editToBeRedone();
+        UndoableEdit edit = editToBeRedone();
+        return edit;
     }
 }

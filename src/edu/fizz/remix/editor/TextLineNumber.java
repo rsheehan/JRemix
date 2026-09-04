@@ -85,9 +85,9 @@ public class TextLineNumber extends JPanel
         setDigitAlignment( RIGHT );
         setMinimumDisplayDigits( minimumDisplayDigits );
 
-        component.getDocument().addDocumentListener(this);
-        component.addCaretListener( this );
-        component.addPropertyChangeListener("font", this);
+//        component.getDocument().addDocumentListener(this);
+//        component.addCaretListener( this );
+//        component.addPropertyChangeListener("font", this);
     }
 
     /**

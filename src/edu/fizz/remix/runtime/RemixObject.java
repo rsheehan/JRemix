@@ -34,7 +34,7 @@ public class RemixObject implements RemixComplexType {
         return objectContext;
     }
 
-    public void instanceAssign(String name, Object value) throws VarNotFoundException {
+    public void instanceAssign(String name, Object value) throws VarNotFoundException, FunctionNotFoundException {
         objectContext.assign(name, value);
     }
 
@@ -58,7 +58,7 @@ public class RemixObject implements RemixComplexType {
         if (method != null) {
             try {
                 return sb.append(method.execute(methodContext)).toString();
-            } catch (ReturnException | InterruptedException | VarNotFoundException e) {
+            } catch (ReturnException | InterruptedException | VarNotFoundException | FunctionNotFoundException e) {
                 throw new RuntimeException(e);
             }
         } else {
@@ -107,7 +107,7 @@ public class RemixObject implements RemixComplexType {
         if (method != null) {
             try {
                 return sb.append(method.execute(methodContext)).toString();
-            } catch (ReturnException | InterruptedException | VarNotFoundException e) {
+            } catch (ReturnException | InterruptedException | VarNotFoundException | FunctionNotFoundException e) {
                 throw new RuntimeException(e);
             }
         } else {

@@ -1,6 +1,6 @@
 package edu.fizz.remix.runtime;
 
-import edu.fizz.remix.editor.RemixEditor;
+//import edu.fizz.remix.editor.RemixEditor;
 
 import java.util.HashMap;
 import java.util.Stack;
@@ -10,15 +10,17 @@ public class Context {
     protected Context parentContext = null;
     protected HashMap<String, Object> variables = new HashMap<>();
     protected Stack<LibraryExpression> libraryStack = new Stack<>();
-//    protected LibraryExpression libForConstants = null;
     /* When we make a function call we need the context to know if it should return higher. */
     private boolean returnHigher = false;
+    private String fileWindowREPL;
 
     public Context() {
     }
 
-    public Context(LibraryExpression programLibrary) {
+    public Context(LibraryExpression programLibrary, String fileWindowREPL) {
         libraryStack.push(programLibrary);
+        // if fileWindowREPL is null we are doing completions? or creating baseLibrary at start
+        this.fileWindowREPL = fileWindowREPL;
     }
 
     /* A context with an indication of whether nested returns
@@ -26,9 +28,15 @@ public class Context {
      */
     public Context(Context parent, boolean returnHigher) {
         parentContext = parent;
-        if (parent != null) // hack
+        if (parent != null) {
+            fileWindowREPL = parent.fileWindowREPL;
             libraryStack = parent.libraryStack; // TODO: should this clone?
+        }
         this.returnHigher = returnHigher;
+    }
+
+    public void setFileWindowREPL(String fileWindowREPL) {
+        this.fileWindowREPL = fileWindowREPL;
     }
 
     public void addLibraryToStack(LibraryExpression newLib) {
@@ -56,7 +64,7 @@ public class Context {
     Now need to determine if the context is an anonymous block.
     If so the assignment is only in the local anonymous context.
      */
-    public void assign(String varName, Object value) throws VarNotFoundException {
+    public void assign(String varName, Object value) throws VarNotFoundException, FunctionNotFoundException {
         if (varName.startsWith("#")) {
             /*
             This is where I need to deal with a listMap element reference.
@@ -83,7 +91,7 @@ public class Context {
         }
     }
 
-    public Object retrieve(String varName, boolean formalReference) throws VarNotFoundException {
+    public Object retrieve(String varName, boolean formalReference) throws VarNotFoundException, FunctionNotFoundException {
         Object result;
         if (varName.startsWith("#")) {
             /*
@@ -108,10 +116,21 @@ public class Context {
         } else {
             result = variables.get(varName);
             if (result == null && !formalReference) {
-                // if the formal is a reference variable then it is allowed to be null.
-                if (!RemixEditor.isEditing()) // a hack to not show the error as we are not running
-                    throw new VarNotFoundException();
+                throw new VarNotFoundException();
             }
+                // if the formal is a reference variable then it is allowed to be null.
+//                if (!RemixApp.isEditing()) // a hack to not show the error as we are not running
+//                    throw new VarNotFoundException();
+//                if (RemixApp.getRunningWindow() == null) {
+//                    throw new VarNotFoundException();
+//                } else
+//                    System.err.format("Variable \"%s\" has no value ", varName);
+//                if (RemixApp.getRunningWindow().equals(Runtime.REPL)) {
+//                    System.err.println("in REPL.");
+//                } else {
+//                    System.err.printf("in \"%s\".%n", RemixApp.getRunningWindow());
+//                }
+//            }
         }
         return result;
     }
@@ -170,6 +189,14 @@ public class Context {
 
     public boolean libraryInStack(LibraryExpression library) {
         return libraryStack.contains(library);
+    }
+
+    /**
+     * Gets the name associated with this context.
+     * @return the name of the file/window/REPL associated
+     */
+    public String getFileWindowREPL() {
+        return "CONTEXT: " + fileWindowREPL;
     }
 
 }

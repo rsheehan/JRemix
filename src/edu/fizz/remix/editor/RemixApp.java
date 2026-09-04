@@ -1,19 +1,28 @@
 package edu.fizz.remix.editor;
 
+import edu.fizz.remix.runtime.LibrariesAndCompletions;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RemixApp extends JFrame {
 
+    public static REPLInputOutput remixOutput;
     public static String currentDirectory = "remixPrograms";
 
+    private final List<RemixEditorWindow> listOfWindows = new ArrayList<RemixEditorWindow>();
+
+    LightThemeAction lightThemeAction;
+    DarkThemeAction darkThemeAction;
+
     public RemixApp() {
-        super("Remix Control");
+        super("Remix");
 
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = createFileMenu();
@@ -23,12 +32,22 @@ public class RemixApp extends JFrame {
         menuBar.add(editMenu);
         JMenu viewMenu = createViewMenu();
         menuBar.add(viewMenu);
+
+        remixOutput = new REPLInputOutput();
+        remixOutput.append(REPLInputOutput.INFOSTRING);
+        JScrollPane scrollPaneForOutput = new JScrollPane(remixOutput);
+        add(scrollPaneForOutput,  BorderLayout.CENTER);
+        setMinimumSize(new Dimension(600, 600));
+        setPreferredSize(new Dimension(800, 1080));
+        pack();
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
     }
 
     /***********************************/
 
     protected JMenu createFileMenu() {
-        JMenu menu = new JMenu("File ");
+        JMenu menu = new JMenu("File");
         NewFileAction newAction = new NewFileAction();
         menu.add(newAction);
         OpenFileAction openAction = new OpenFileAction();
@@ -36,10 +55,20 @@ public class RemixApp extends JFrame {
         return menu;
     }
 
+    public void editorWindowClosed(RemixEditorWindow window) {
+        listOfWindows.remove(window);
+    }
+
     class NewFileAction extends AbstractAction {
         public NewFileAction() { super("New file in editor");}
 
         public void actionPerformed(ActionEvent event) {
+            RemixEditorWindow editorWindow = new RemixEditorWindow(RemixApp.this, remixOutput, lightThemeAction.isEnabled());
+            listOfWindows.add(editorWindow);
+            editorWindow.newFileInWindow();
+            Rectangle bounds = RemixApp.this.getBounds();
+            editorWindow.setBounds(bounds.x + bounds.width, bounds.y , 800, 1080); // for my Mac. Was 50, 50, 1700, 1050
+            editorWindow.setVisible(true);
         }
     }
 
@@ -62,10 +91,13 @@ public class RemixApp extends JFrame {
                 }
                 // create new RemixEditorWindow
                 // and read in file
-                RemixEditorWindow editorWindow = new RemixEditorWindow();
+                RemixEditorWindow editorWindow = new RemixEditorWindow(RemixApp.this, remixOutput, lightThemeAction.isEnabled());
+                Rectangle bounds = RemixApp.this.getBounds();
                 boolean successful = editorWindow.openFileInWindow(remFile);
                 if (successful) {
-                    editorWindow.setBounds(100, 100, 800, 1080); // for my Mac. Was 50, 50, 1700, 1050
+                    listOfWindows.add(editorWindow);
+//                    editorWindow.setDarkTheme(lightThemeAction.isEnabled());
+                    editorWindow.setBounds(bounds.width, bounds.y, 800, 1080); // for my Mac. Was 50, 50, 1700, 1050
                     editorWindow.setVisible(true);
                 } else {
                     editorWindow.dispose();
@@ -103,10 +135,10 @@ public class RemixApp extends JFrame {
     /***********************************/
 
     private JMenu createViewMenu() {
-        JMenu menu = new JMenu("View ");
-        DarkThemeAction darkThemeAction = new DarkThemeAction();
+        JMenu menu = new JMenu("View");
+        darkThemeAction = new DarkThemeAction();
         menu.add(darkThemeAction);
-        LightThemeAction lightThemeAction = new LightThemeAction();
+        lightThemeAction = new LightThemeAction();
         menu.add(lightThemeAction);
         return menu;
     }
@@ -115,11 +147,17 @@ public class RemixApp extends JFrame {
 
         public DarkThemeAction() {
             super("Dark theme");
-//            setEnabled(false);
+            setEnabled(false);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            for (RemixEditorWindow window : listOfWindows) {
+                window.setDarkTheme(true);
+            }
+            remixOutput.setDarkMode(true);
+            lightThemeAction.setEnabled(true);
+            setEnabled(false);
         }
     }
 
@@ -127,11 +165,17 @@ public class RemixApp extends JFrame {
 
         public LightThemeAction() {
             super("Light theme");
-//            setEnabled(true);
+            setEnabled(true);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            for(RemixEditorWindow window : listOfWindows){
+                window.setDarkTheme(false);
+            }
+            remixOutput.setDarkMode(false);
+            darkThemeAction.setEnabled(true);
+            setEnabled(false);
         }
     }
 
@@ -144,28 +188,21 @@ public class RemixApp extends JFrame {
      */
     private static void createAndShowGUI() {
         //Create and set up the window.
-        RemixApp frame = new RemixApp();
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowOpened(WindowEvent event) {
-                super.windowOpened(event);
-            }
-        });
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setMinimumSize(new Dimension(200, 50));
-        //Display the window.
-        frame.pack();
-        frame.setResizable(false);
-        frame.setVisible(true);
-
-//        RemixEditorWindow editorWindow = new RemixEditorWindow();
-//        editorWindow.setBounds(100, 100, 800, 1080); // for my Mac. Was 50, 50, 1700, 1050
-//        editorWindow.setVisible(true);
+        new RemixApp();
+        //Setup System.out and System.err to the corresponding panels
+        System.setOut(new PrintStream(new TextAreaOutputStream(remixOutput)));
+        System.setErr(new PrintStream(new TextAreaOutputStream(remixOutput)));
     }
 
     public static void main(String[] args) {
-        //Schedule a job for the event dispatch thread:
-        //creating and showing this application's GUI.
+        try {
+            LibrariesAndCompletions.prepareEnvironment();
+            LibrariesAndCompletions.resetToEditorStandard();
+            // after this the currentLibrary is the program library
+        } catch (Exception e) {
+            System.err.println("Error: initializing REPL");
+            throw new RuntimeException(e);
+        }
         SwingUtilities.invokeLater(RemixApp::createAndShowGUI);
     }
 }

@@ -16,8 +16,8 @@ public class GraphicsWindow extends JFrame {
         pack();
     }
 
-    public void setWindowBackground(Color colour) {
-        drawPanel.setBackground(colour);
-    }
+//    public void setWindowBackground(Color colour) {
+//        drawPanel.setBackground(colour);
+//    }
 
 }

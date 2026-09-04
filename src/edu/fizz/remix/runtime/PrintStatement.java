@@ -14,14 +14,18 @@ public class PrintStatement implements Expression {
 
     private final List<Expression> expressionList;
     private final boolean newline;
+    private final String fileName;
+    private final int lineNumber;
 
-    public PrintStatement(List<Expression> expressionList, boolean newline) {
+    public PrintStatement(List<Expression> expressionList, boolean newline, String fileName, int lineNumber) {
         this.expressionList = expressionList;
         this.newline = newline;
+        this.fileName = fileName;
+        this.lineNumber = lineNumber;
     }
 
     @Override
-    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
         for (Expression expression : expressionList) {
             Object value = expression.evaluate(context);
             BuiltInFunctionsLibrary.PrintFunction.publish(value); // don't put quotes around it

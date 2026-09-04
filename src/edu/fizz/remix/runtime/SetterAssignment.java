@@ -9,7 +9,7 @@ public class SetterAssignment extends AssignmentStatement {
     }
 
     @Override
-    public Object evaluate(Context context) throws ReturnException, VarNotFoundException {
+    public Object evaluate(Context context) throws ReturnException, VarNotFoundException, FunctionNotFoundException {
         Object result = context.retrieve("expression", false);
         context.assign(variableName, result);
         return result;

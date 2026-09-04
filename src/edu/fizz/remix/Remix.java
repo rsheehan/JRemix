@@ -25,7 +25,7 @@ public class Remix {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         RemixParser parser = new RemixParser(tokens);
         ParseTree tree = parser.program(); // parse
-        EvalVisitor eval = new EvalVisitor();
+        EvalVisitor eval = new EvalVisitor("Program");
         return (LibraryExpression)eval.visit(tree); // adds all the functions and prepares the program
     }
 
@@ -34,7 +34,7 @@ public class Remix {
         LibrariesAndCompletions.resetToEditorStandard();
         if (args.length > 0 && isRemFile(args[0])) {
             LibraryExpression program = loadPackage(args[0]);
-            Runtime.runProgram(program);
+            Runtime.runProgram(program, null);
         } else {
             System.out.println("Not a Remix file.");
         }

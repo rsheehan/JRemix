@@ -1,6 +1,5 @@
 package edu.fizz.remix;
 
-import edu.fizz.remix.editor.RemixPrepareRun;
 import edu.fizz.remix.parser.RemixParser;
 import edu.fizz.remix.parser.RemixParserBaseVisitor;
 import edu.fizz.remix.runtime.*;
@@ -8,7 +7,10 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
 
 public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
 
@@ -19,6 +21,10 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
      * The top-level code is a block sequence.
      * Only then should the top-level code block be executed.
      */
+
+    // the file name from runEditorText in RemixPrepareRun
+    // the name has a prefix of EDITORCOMPLETION:
+    private final String fileName;
 
     // TODO: need to remove all unnecessary code, currently mostly a copy of EvalVisitor.
 
@@ -33,6 +39,11 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     static {
         addIdentifierStack = new Stack<>();
         addIdentifierStack.push(true);
+    }
+
+    public EvalVisitorForEditor(String fileName) {
+        super();
+        this.fileName = "EDITORCOMPLETION: " + fileName;
     }
 
     LibraryExpression programLibrary = new LibraryExpression();
@@ -186,10 +197,10 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                 else if (libExp instanceof VarValueExpression varValueExpression)
                     libraryExpression = programLibIdentifiers.get(varValueExpression.getName());
                 else try { // fall back on attempting to evaluate the library expression
-                    Context contextForLib = new Context(LibrariesAndCompletions.getBaseLibrary());
+                    Context contextForLib = new Context(LibrariesAndCompletions.getBaseLibrary(), null);
                     libraryExpression = (LibraryExpression) libExp.evaluate(contextForLib);
                 } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException |
-                         VarNotFoundException _) {}
+                         VarNotFoundException | FunctionNotFoundException _) {}
                 if (libraryExpression != null)
                     libraryExpressions.add(libraryExpression);
             }
@@ -344,7 +355,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             } else if (node instanceof RemixParser.GetterSetterContext) {
                 List<String> getSetNames = (List<String>)visit(node);
                 for (String name : getSetNames) {
-                    String getMethodName = methodTable.createGetter(name);
+                    String getMethodName = methodTable.createGetter(name, fileName);
                     Method getter = methodTable.get(getMethodName);
                     LibraryExpression.addMethodNameEditing(getMethodName, 1, getter);
                     String setMethodName = methodTable.createSetter(name);
@@ -354,7 +365,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
             } else if (node instanceof RemixParser.GetterContext) {
                 List<String> getterNames = (List<String>)visit(node);
                 for (String name : getterNames) {
-                    String methodName = methodTable.createGetter(name);
+                    String methodName = methodTable.createGetter(name, fileName);
                     Method getter = methodTable.get(methodName);
                     LibraryExpression.addMethodNameEditing(methodName, 1, getter);
                 }
@@ -619,11 +630,10 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     public Expression visitExprConcat(RemixParser.ExprConcatContext ctx) {
         Expression first = (Expression) visit(ctx.expression(0));
         Expression second = (Expression) visit(ctx.expression(1));
-        String fileName = RemixPrepareRun.getFileName();
         int lineNumber = ctx.getStart().getLine() - 1;
         int lineOffset = ctx.getStart().getCharPositionInLine();
         FunctionCallExpression concatCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
-//        FunctionCallExpression concatCall = new FunctionCallExpression();
+        concatCall.setInEditor(true); // probably not necessary see visitFunctionCall
         concatCall.addParam(first);
         concatCall.addToName(ctx.CONCAT().getText().trim()); // need to trim because of spaces
         concatCall.addParam(second);
@@ -640,14 +650,14 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     @Override
     public Expression  visitExprVar(RemixParser.ExprVarContext ctx) {
         String varName = identifier(ctx.IDENTIFIER().getText());
-        return new VarValueExpression(varName);
+        return new VarValueExpression(varName, fileName, 0, 0);
     }
 
     /** CONSTANT (from expression) */
     @Override
     public Expression visitExprConstant(RemixParser.ExprConstantContext ctx) {
         String constantName = ctx.CONSTANT().getText();
-        return new ConstantValueExpression(constantName);
+        return new ConstantValueExpression(constantName, -1);
     }
 
     /** SELFREF (from expression) */
@@ -682,7 +692,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         if (numberAndWord[1].equals("π") || numberAndWord[1].equals("pi")) {
             word = produceDoubleExpression("π");
         } else {
-            word = new VarValueExpression(numberAndWord[1]);
+            word = new VarValueExpression(numberAndWord[1], fileName, 0, 0);
         }
         return new BinaryExpression(number, "*", word);
     }
@@ -745,7 +755,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     @Override
     public Expression visitCallVar(RemixParser.CallVarContext ctx) {
         String varName = identifier(ctx.IDENTIFIER().getText());
-        return new VarValueExpression(varName);
+        return new VarValueExpression(varName, fileName, 0, 0);
     }
 
     /** MINUS expression (from callPart) */
@@ -760,16 +770,18 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
     @Override
     public Expression visitCallConstant(RemixParser.CallConstantContext ctx) {
         String constantName = ctx.CONSTANT().getText();
-        return new ConstantValueExpression(constantName);
+        return new ConstantValueExpression(constantName, -1);
     }
 
     /** callPart callPart+ | singleWord */
     @Override
     public Expression visitFunctionCall(RemixParser.FunctionCallContext ctx) {
-        String fileName = RemixPrepareRun.getFileName();
+//        String fileName = RemixPrepareRun.getFileName();
         int lineNumber = ctx.getStart().getLine() - 1;
         int lineOffset = ctx.getStart().getCharPositionInLine();
         FunctionCallExpression funcCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
+        // in case this is an include we need to know if we are in the editor doing a completion search
+        funcCall.setInEditor(true);
         int n = ctx.getChildCount();
         for (int i=0; i<n; i++) {
             ParseTree node = ctx.getChild(i);
@@ -832,7 +844,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         if (numberAndWord[1].equals("π") || numberAndWord[1].equals("pi")) {
             word = produceDoubleExpression("π");
         } else {
-            word = new VarValueExpression(numberAndWord[1]);
+            word = new VarValueExpression(numberAndWord[1], fileName, 0, 0);
         }
         return new BinaryExpression(number, "*", word);
     }

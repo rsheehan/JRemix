@@ -11,7 +11,7 @@ public class RemixMapExpression implements Expression {
     }
 
     @Override
-    public RemixMap evaluate(Context context) throws InterruptedException, VarNotFoundException {
+    public RemixMap evaluate(Context context) throws InterruptedException, VarNotFoundException, FunctionNotFoundException {
         RemixMap mapValues = new RemixMap();
         for (Map.Entry<String, Expression> entry : mapExpressions.entrySet()) {
             String key = entry.getKey();

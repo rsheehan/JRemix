@@ -37,14 +37,33 @@ public class REPLInputOutput extends JTextArea {
     public REPLInputOutput() {
         doc = (AbstractDocument) getDocument();
         doc.setDocumentFilter(new FilterLineInput());
-        setBackground(Color.darkGray);
         setFont(new Font("Courier New", Font.PLAIN, 14));
-        setForeground(Color.white);
-        setCaretColor(Color.white);
+        setDarkMode(true);
         setLineWrap( true );
         setWrapStyleWord( true );
         setTabSize(4);
         configureKeyBindings();
+    }
+
+    public void clearText() {
+        FilterLineInput filter = (FilterLineInput) doc.getDocumentFilter();
+        filter.setFilterEnabled(false);
+        setText(null);
+        filter.setFilterEnabled(true);
+    }
+
+    protected void setDarkMode(boolean dark) {
+        if (dark) {
+            setBorder(BorderFactory.createLineBorder(Color.darkGray, 5));
+            setBackground(Color.darkGray);
+            setForeground(Color.white);
+            setCaretColor(Color.white);
+        } else {
+            setBorder(BorderFactory.createLineBorder(Color.white, 5));
+            setBackground(Color.white);
+            setForeground(Color.darkGray);
+            setCaretColor(Color.black);
+        }
     }
 
     private void configureKeyBindings() {
@@ -90,7 +109,7 @@ public class REPLInputOutput extends JTextArea {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // This code executes when Command + C is pressed
-                RemixEditor.remixOutput.setText(null); // clearTextArea();
+                setText(null); // clearTextArea();
             }
         });
 
@@ -341,6 +360,12 @@ public class REPLInputOutput extends JTextArea {
 
     private class FilterLineInput extends DocumentFilter {
 
+        public void setFilterEnabled(boolean filterEnabled) {
+            this.filterEnabled = filterEnabled;
+        }
+
+        private boolean filterEnabled = true;
+
         public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
             int newPos = afterPossibleCopy(fb, offset);
             fb.remove(newPos, length);
@@ -356,7 +381,6 @@ public class REPLInputOutput extends JTextArea {
             if (notEndOfText(offset)) {
                 // copy the linesToExecute to the end of the text
                 String linesToCopy = linesToExecute(offset);
-//                linesToCopy = linesToCopy.stripTrailing();
                 if (linesToCopy.endsWith("\n")) {
                     linesToCopy = linesToCopy.substring(0, linesToCopy.length() - 1);
                 }
@@ -399,22 +423,25 @@ public class REPLInputOutput extends JTextArea {
         @Override
         public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet a)
                 throws BadLocationException {
-            if (offset == 0 && length == doc.getLength() && str == null) {
-                fb.replace(offset, length, null, a);
-                return;
-            }
-            RemixEditor.systemOutput.setText(null);
-            // check to see if the offset is at the end of the REPL text
-            int newPos = afterPossibleCopy(fb, offset);
-            setCaretPosition(newPos);
-
-            for (String target : RemixStyledDocument.operators.keySet()) {
-                if (replaceOperator(fb, target, str, offset)) {
+            if (filterEnabled) {
+                if (offset == 0 && length == doc.getLength() && str == null) {
+                    fb.replace(offset, length, null, a);
                     return;
                 }
-            }
-            fb.replace(newPos, length, str, a);
-        }
+//            RemixEditor.systemOutput.setText(null);
+                // check to see if the offset is at the end of the REPL text
+                int newPos = afterPossibleCopy(fb, offset);
+                setCaretPosition(newPos);
 
+                for (String target : RemixStyledDocument.operators.keySet()) {
+                    if (replaceOperator(fb, target, str, offset)) {
+                        return;
+                    }
+                }
+                fb.replace(newPos, length, str, a);
+            }else {
+                super.replace(fb, offset, length, str, a);
+            }
+        }
     }
 }

@@ -29,7 +29,7 @@ public class GetElementExpression implements Expression {
     }
 
     @Override
-    public Object evaluate(Context context) throws InterruptedException, ReturnException, VarNotFoundException {
+    public Object evaluate(Context context) throws InterruptedException, ReturnException, VarNotFoundException, FunctionNotFoundException {
         if (originalContext != null)
             context = originalContext; // must be passed as a reference parameter
         Object id;

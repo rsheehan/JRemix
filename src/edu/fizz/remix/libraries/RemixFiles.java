@@ -59,7 +59,7 @@ public class RemixFiles extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
             String fileName = (String)context.retrieve("name", false);
             String result = "";
             try {
@@ -86,7 +86,7 @@ public class RemixFiles extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
             String data = (String)context.retrieve("contents", false);
             String fileName = (String)context.retrieve("name", false);
             try {
@@ -112,7 +112,7 @@ public class RemixFiles extends LibraryExpression {
         }
 
         @Override
-        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException {
+        public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
             String fileName = (String)context.retrieve("name", false);
             byte[] result;
             try {

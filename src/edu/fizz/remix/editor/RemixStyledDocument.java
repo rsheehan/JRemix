@@ -22,7 +22,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             Map.entry("...", "… "),
             Map.entry(" (+", " ⊕ ")
     );
-    private final Map<String, String> matchingPairs = Map.of(
+    public static final Map<String, String> matchingPairs = Map.of(
             "(", ")",
             "[", "]",
             "{", "}",
@@ -30,21 +30,22 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             "'", "'"
     );
 
-    protected final RemixEditor editor;
+    protected final RemixEditorWindow editor;
     private final Style defaultStyle = getStyle("default");
-    private RemixEdLexer edLexer;
+//    private RemixEdLexer edLexer;
 
     private CompletionInfo completionsHere = null;
     private Style completionStyle = defaultStyle;
 
-    public RemixStyledDocument(RemixEditor editor, JTextPane textPane) {
+    public RemixStyledDocument(RemixEditorWindow editor, JTextPane textPane) {
         this.editor = editor;
         this.textPane = textPane;
     }
 
-    public void setEdLexer(RemixEdLexer edLexer) {
-        this.edLexer = edLexer;
-    }
+//    public void setEdLexer(RemixEdLexer edLexer) {
+//        this.edLexer = edLexer;
+//        ((RemixEdFilter)getDocumentFilter()).setEdLexer(edLexer);
+//    }
 
     /* Insert a line.
        Does not do a lex.
@@ -62,62 +63,40 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     @Override
     public void insertString(int offset, String text, AttributeSet style) throws BadLocationException {
         insertStringNoLex(offset, text, style);
-        int length = text.length();
-        int pos = edLexer.lexFromHere(offset);
-        int posWas = pos;
-        while (pos < offset + length) {
-            pos = edLexer.lexUntilEndOfLine(pos);
-            if (pos == posWas) // didn't move
-                break;
-            posWas = pos;
-        }
+//        int length = text.length();
+//        int pos = edLexer.lexFromHere(offset);
+//        int posWas = pos;
+//        while (pos < offset + length) {
+//            pos = edLexer.lexUntilEndOfLine(pos);
+//            if (pos == posWas) // didn't move
+//                break;
+//            posWas = pos;
+//        }
     }
 
+    /*
+    There is currently a problem with undos.
+    Each call to super.insertString causes an UndoableEditEvent.
+    I only want one of these for each insertion.
+    So I should just produce the string with all changes
+    for a single call to super.insertString.
+     */
     public void insertStringNoLex(int offset, String text, AttributeSet style) throws BadLocationException {
         completionsHere = null; // now always done, repeated completions come from "shift TAB" handler
         completionStyle = defaultStyle;
-        if (text.equals("\t") && !inStringOrComment(offset)) { // don't if in a string or a comment
-            handleTab(offset);
-        } else {
-            if (text.equals("\n") && !inString(offset)) {
-                autoIndent(offset);
-            } else if (inIdentifier(offset)) {
-                super.insertString(offset, text, style);
-            } else if (offset > 0 && inStringOrComment(offset - 1)) { // current pos not styled yet
-                super.insertString(offset, text, defaultStyle);
-            } else if (text.equals("/") && setterBefore(offset)) {
-                super.insertString(offset, text, defaultStyle);
-            } else if (notTransformed(offset, text)) {
-                    super.insertString(offset, text, defaultStyle);
-            }
-        }
+        super.insertString(offset, text, defaultStyle);
     }
 
     @Override
     public void remove(int offset, int length) throws BadLocationException {
-        if (length == 1) {
-            for (Map.Entry<String, String> entry : matchingPairs.entrySet()) {
-                String before = entry.getKey();
-                String after = entry.getValue();
-                if (getText(offset, 1).equals(before) && getText(offset + 1, 1).equals(after)) {
-                    length++;
-                    break;
-                }
-            }
-        }
         super.remove(offset, length);
         completionsHere = null; // otherwise deleting a character doesn't regenerate completions
         completionStyle = defaultStyle;
-        edLexer.lexFromHere(offset);
     }
 
     @Override
     public void replace(int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-        if (text.equals("\t")) { // assume replacing using tab means moving on to param not
-            insertString(offset, text, defaultStyle);
-        } else {
-            super.replace(offset, length, text, defaultStyle);
-        }
+        super.replace(offset, length, text, attrs); // this will indirectly invoke the RemixEdFilter
     }
 
     private boolean setterBefore(int pos) throws BadLocationException {
@@ -131,44 +110,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         return result;
     }
 
-    private boolean notTransformed(int offset, String input) throws BadLocationException {
-        if (input.length() > 1) {
-            return true;
-        }
-        // magic replace some operators
-        for (String target : operators.keySet()) {
-            if (replaceOperator(target, input, offset)) {
-                return false;
-            }
-        }
-        // magic add matching close character
-        for (String opening : matchingPairs.keySet()) {
-            if (input.equals(opening)) { // only insert match if end of line or followed by space
-                // could also be if followed by a closing bracket
-                if (endOfLine(offset) || nextClosing(offset)) {
-                    // if inserting "{}", "[]" or double quotes and inside "()" then remove "()"
-                    if (removeParens(offset, opening)) {
-                        offset--;
-                        super.remove(offset, 2);
-                    }
-                    super.insertString(offset, input + matchingPairs.get(input), defaultStyle);
-                    textPane.setCaretPosition(offset + 1);
-                    return false;
-                }
-            }
-        }
-        // also remove parens if input is a digit or CAPITAL letter between "( )"
-        boolean digitOrCapital = Character.isDigit(input.toCharArray()[0]) || Character.isUpperCase(input.toCharArray()[0]);
-        if (digitOrCapital && surroundedByParens(offset)) {
-            offset--;
-            super.remove(offset, 2);
-            super.insertString(offset, input, defaultStyle);
-            textPane.setCaretPosition(offset + 1);
-            return false;
-        }
-        return true;
-    }
-
     /* Is the offset position surrounded by parentheses? */
     private boolean surroundedByParens(int offset) throws BadLocationException {
         if (offset > 0 && offset < getLength()) {
@@ -179,176 +120,10 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         return false;
     }
 
-    /* Should we remove surrounding parentheses? */
-    private boolean removeParens(int offset, String opening) throws BadLocationException {
-        if ("{[\"'".contains(opening))
-            return surroundedByParens(offset);
-        return false;
-    }
-
-    /* Is the current location a closing bracket or space? */
-    private boolean nextClosing(int pos) throws BadLocationException {
-        if (pos < getLength()) {
-            String next = getText(pos,1);
-            return " )}]".contains(next);
-        }
-        return false;
-    }
-
-    /* Return true iff at the end of a line, ignoring spaces. */
-    private boolean endOfLine(int pos) throws BadLocationException {
-        boolean result = false;
-        if (pos == getLength())
-            result = true;
-        else {
-            while (pos < getLength()) {
-                String next = getText(pos, 1);
-                pos++;
-                if (next.equals(" "))
-                    continue;
-                result = next.equals("\n");
-                break;
-            }
-        }
-        return result;
-    }
-
-    private boolean inIdentifier(int pos) {
-        String styleName = edLexer.getStyleName(pos);
-        return styleName.equals("singleQuote") || styleName.equals("variable");
-    }
-
-    private boolean inString(int pos) {
-        String styleName = edLexer.getStyleName(pos);
-        return styleName.equals("string");
-    }
-
-    private boolean inStringOrComment(int pos) {
-        String styleName = edLexer.getStyleName(pos);
-        return styleName.equals("string") || styleName.equals("comment");
-    }
-
-    /*
-     If the characters before plus the input match a replacement character, then replace it.
-     Very similar to version in REPLInputOutput.FilterLineInput
-     */
-    private boolean replaceOperator(String target, String input, int offset) throws BadLocationException {
-        int targetLen = target.length() - 1; // not counting last character
-        if (offset >= targetLen) {
-            String match = getText(offset - targetLen, targetLen) + input; // existing plus new char
-            if (match.equals(target)) {
-                String replacement = operators.get(target);
-                if ("π√²".contains(replacement)) {
-                    // if the previous character is a word character don't do the replacement
-                    int pos = offset - targetLen - 1;
-                    if (pos >= 0) {
-                        String ch = getText(pos, 1);
-                        if (!" .()[\\]{,}:—|§@…'’⊕+-*×÷%=≠<≤>≥0123456789\"\t\n".contains(ch))
-                            return false; // don't replace as pi is part of word
-                    }
-                }
-                if (replacement.equals(" ⊕ ") && getText(offset, 1).equals(")")) {
-                    super.replace(offset - targetLen, targetLen + 1, replacement, defaultStyle);
-                } else {
-                    super.replace(offset - targetLen, targetLen, replacement, defaultStyle);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean booleanOperator(String first) {
-        return "⊕+-*×/÷<≤≥>=≠%:".contains(first); // I added ":"
-    }
-
-    /* The start of line position before the given position. */
-    int lineStartPos(int pos) throws BadLocationException {
-        do
-            pos--;
-        while (!lineStart(pos));
-        return pos;
-    }
-
-    int lineFinishPos(int pos) throws BadLocationException {
-        do
-            pos++;
-        while (pos < getLength() && !lineStart(pos));
-        return pos;
-    }
-
-    private boolean lineStart(int offset) throws BadLocationException {
-        if (offset == 0)
-            return true;
-        String prev = getText(offset - 1, 1);
-        return prev.equals("\n") || prev.equals("\t");
-    }
-
-    private void handleTab(int offset) throws BadLocationException {
-        // if at the start of the line need to just insert the tab but
-        // only allow one extra level of indentation
-        if (lineStart(offset) && validIndentation(offset)) {
-            super.insertString(offset, "\t", defaultStyle); // default
-        } else {
-            moveCursorToNextParam(offset);
-        }
-    }
-
-    private boolean validIndentation(int pos) throws BadLocationException {
-        if (pos == 0)
-            return false;
-        // called at the start of a line
-        // work out the previous level of indentation
-        int indentationHere = indentationOnThisLine(pos);
-        int indentationBefore = 0;
-        pos = pos - indentationHere;
-        while (pos > 0) {
-            pos--;
-            if (!inStringOrComment(pos)) {
-                String ch = getText(pos, 1);
-                if (ch.equals("\n")) {
-                    indentationBefore = indentationOnThisLine(pos);
-                    break;
-                }
-            }
-        }
-        return indentationHere <= indentationBefore; // no more than one extra level
-    }
-
-    /**
-     * How many tabs deep is the start of the line?
-     * @param pos The position in the document.
-     * @return The number of starting tabs on this line.
-     */
-    private int indentationOnThisLine(int pos) throws BadLocationException {
-        String before;
-        String after;
-        int count = 0;
-        // work out current indentation
-        // first check to see if there are any more tabs following this position
-        int here = pos;
-        if (here < getLength()) {
-            after = getText(here, 1);
-            while (after.equals("\t")) {
-                count++;
-                here++;
-                if (here >= getLength())
-                    break;
-                after = getText(here, 1);
-            }
-        }
-        // then find tabs before this position
-        while (pos > 0) {
-            pos--;
-            before = getText(pos, 1);
-            if (before.equals("\n"))
-                break;
-            if (before.equals("\t")) { // tabs only appear at the start of the line
-                count++;
-            }
-        }
-        return count;
-    }
+//    private boolean inStringOrComment(int pos) {
+//        String styleName = edLexer.getStyleName(pos);
+//        return styleName.equals("string") || styleName.equals("comment");
+//    }
 
     public void clearCompletions() {
         completionsHere = null;
@@ -361,8 +136,9 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             int completionLength = completionsHere.currentLength();
             completion = completionsHere.originalCompletion();
             try {
-                super.remove(completionsHere.offset, completionLength);
-                super.insertString(completionsHere.offset, completion.substring(0, completion.length() - 1), defaultStyle);
+                super.replace(completionsHere.offset, completionLength, completion.substring(0, completion.length() - 1), defaultStyle);
+//                super.remove(completionsHere.offset, completionLength);
+//                super.insertString(completionsHere.offset, completion.substring(0, completion.length() - 1), defaultStyle);
             } catch (BadLocationException e) {
                 System.err.println("Bad location when cancelling completions.");
             }
@@ -406,10 +182,11 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 completionText = completionAndDoc.substring(0, splitPos);
                 completionComment = completionAndDoc.substring(splitPos + 1);
                 // couldn't call super.replace as that calls back into this class
-                super.remove(completionsHere.offset, seedLength);
-                super.insertString(completionsHere.offset, completionText, completionStyle);
-                if (completionText.contains("(") || completionText.contains("[")) // don't move on otherwise
-                    moveCursorToNextParam(completionsHere.offset);
+                super.replace(completionsHere.offset, seedLength, completionText, completionStyle);
+//                super.remove(completionsHere.offset, seedLength);
+//                super.insertString(completionsHere.offset, completionText, completionStyle);
+//                if (completionText.contains("(") || completionText.contains("[")) // don't move on otherwise
+//                    ; // moveCursorToNextParam(completionsHere.offset);
             }
         } else {
             int completionLength = completionsHere.currentLength();
@@ -418,82 +195,12 @@ public class RemixStyledDocument extends DefaultStyledDocument {
             completionText = completionAndDoc.substring(0, splitPos);
             completionComment = completionAndDoc.substring(splitPos + 1);
             // see comment above
-            super.remove(completionsHere.offset, completionLength);
-            super.insertString(completionsHere.offset, completionText, completionStyle);
-            // show the popup of documentation here
-
-            if (completionText.contains("(") || completionText.contains("["))
-                moveCursorToNextParam(completionsHere.offset);
+            super.replace(completionsHere.offset, completionLength, completionText, completionStyle);
+//            super.remove(completionsHere.offset, completionLength);
+//            super.insertString(completionsHere.offset, completionText, completionStyle);
         }
         return completionComment.isEmpty() ? null : completionComment;
     }
-
-    private void moveCursorToNextParam(int pos) throws BadLocationException {
-        // TODO: doesn't deal nicely with nested parameters e.g. (do (block))
-        String ch;
-        if (pos < getLength()) { // not at the end of text
-            ch = getText(pos, 1);
-            // if newline move back to start of the line
-            if (ch.equals("\n")) { // end of line
-                // move past following ellipsis (if there is one)
-                int ellipsisPos = movePastEllipsis(pos);
-                if (pos < ellipsisPos) {
-                    pos = ellipsisPos;
-                } else {
-                    pos = lineStartPos(pos); // back to start of text on this line
-                }
-            }
-        } else if (pos > 0 && pos == getLength()) { // if at end of the text move back too
-            pos = lineStartPos(pos); // back to start of text on this line
-        }
-        while (pos < getLength()) {
-            ch = getText(pos, 1);
-            if (ch.equals("\n")) {
-                break;
-            }
-            if ("[(".contains(ch)) { // find opening bracket
-                pos++;
-                break;
-            }
-            pos++;
-        }
-        while (pos < getLength()) { // in case multiple "((" we start at the last on
-            ch = getText(pos, 1);
-            if (!"[(".contains(ch))
-                break;
-            pos++;
-        }
-        textPane.setSelectionStart(pos);
-        while (pos < getLength()) {
-            ch = getText(pos, 1);
-            if (ch.equals("\n")) {
-                break;
-            }
-            if ("])".contains(ch)) { // find closing bracket
-                break;
-            }
-            pos++;
-        }
-        textPane.setSelectionEnd(pos);
-    }
-
-    private int movePastEllipsis(int pos) throws BadLocationException {
-        int ellipsisPos = pos + 1;
-        if (ellipsisPos < getLength()) {
-            String ch = getText(ellipsisPos, 1);
-            while (ch.equals("\t") && ellipsisPos + 1 < getLength()) {
-                ellipsisPos++;
-                ch = getText(ellipsisPos, 1);
-            }
-            if (ch.equals("…")) {
-                return ellipsisPos + 1;
-            } else {
-                return pos;
-            }
-        }
-        return pos;
-    }
-
 
     /* From the current position move back to gather a word. */
     private String wordSoFar(int pos) throws BadLocationException {
@@ -531,89 +238,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
         }
         word.reverse();
         return word.toString();
-    }
-
-    /*
-        Autoindent to the same depth as on the previous line.
-        Takes strings into account.
-        If the new line is after ":" we indent one extra tab.
-        If the newline is after "[" or "{" we indent one extra tab and add
-        a newline before the closing "]" or "}" which is indented to the original depth.
-        now
-        Trying to remove "[" and "]" when we indent inside the braces.
-        Could possibly add "..." at the start of a following line if there is more
-        text following the original "]" on the line.
-    */
-    private void autoIndent(int offset) throws BadLocationException {
-        // find previous indentation
-        StringBuilder tabbedReturn = new StringBuilder("\n" );
-        // could be defining a function (or method)
-        String before = "";
-        String after = "";
-        int pos = offset;
-        // go back until we find the first non-space character
-        while (pos > 0) {
-            before = getText(--pos, 1);
-            if (!before.equals(" ")) {
-                pos++;
-                break;
-            }
-        }
-
-        boolean followsOpenBlock = false;
-        boolean followsListStart = false;
-        if (before.equals(":")
-                || lineContains(pos, "library")
-                || lineContains(pos, "using")
-                || lineContains(pos, "uses")
-                || lineContains(pos, "create")
-                || lineContains(pos, "extend")
-                || lineContains(pos, "getter")
-                || lineContains(pos, "setter")) // also need to check for a "using" line
-            // and create, extend, getter, setter
-            tabbedReturn.append("\t");
-        else if (before.equals("[")) {
-            followsOpenBlock = true;
-        } else if (before.equals("{")) {
-            followsListStart = true;
-        }
-        pos = offset;
-        if (pos < getLength()) {
-            after = getText(pos, 1);
-        }
-        boolean precedesCloseBlock = after.equals("]");
-        boolean precedesListEnd = after.equals("}");
-        int tabs = indentationOnThisLine(pos);
-        String tabsOnLine = "\t".repeat(tabs);
-        tabbedReturn.append(tabsOnLine);
-        // remove "[]" to make block implicit
-        if (followsOpenBlock && precedesCloseBlock) {
-            offset--; // removed opening [ as well
-            super.remove(offset, 2);
-            tabbedReturn.append("\t");
-            if (moreTextOnLine(offset)) {
-                tabbedReturn.append("\n");
-                tabbedReturn.append(tabsOnLine);
-                tabbedReturn.append("…");
-            }
-        } else if (followsOpenBlock) {
-            tabbedReturn.append("\t");
-            tabbedReturn.append(tabsOnLine);
-        // between "{" and "}" so we are indenting a list
-        } else if (followsListStart && precedesListEnd) {
-            tabbedReturn.append("\t\n");
-            tabbedReturn.append(tabsOnLine);
-        } else if (followsListStart) { // next line indented one more tab
-            tabbedReturn.append("\t");
-        // just before
-        } else if (precedesListEnd) {
-            // subtract a tab on the new line
-            tabbedReturn.deleteCharAt(tabbedReturn.length() - 1);
-        }
-        super.insertString(offset, tabbedReturn.toString(), defaultStyle);
-        if (followsOpenBlock || followsListStart) {
-            textPane.setCaretPosition(offset + tabs + 2);
-        }
     }
 
     /**
@@ -690,48 +314,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 return pos;
         }
         return getLength();
-    }
-
-    /**
-     * Does the line we are currently on contain the word before the current pos.
-     * The word must be at the start of the line, or following a ":".
-     * @param pos the position of the current line
-     * @param word the word we are searching for
-     * @return True iff the currently line contains the word.
-     * @throws BadLocationException if out of document
-     */
-    private boolean lineContains(int pos, String word) throws BadLocationException {
-        int wordLength = word.length();
-        pos -= wordLength;
-        while (pos >= 0) {
-            String run = getText(pos , wordLength);
-            if (run.contains("\n"))
-                return false;
-            if (run.equals(word) && (pos == 0 || ": \n\t".contains(getText(pos - 1, 1))))
-                return true;
-            pos--;
-        }
-        return false;
-    }
-
-    /**
-     * Is there text on the line after this point? Spaces do not count.
-     * @param pos The position in the document.
-     * @return True iff there is a non-space character on the remainder of the line.
-     */
-    private boolean moreTextOnLine(int pos) throws BadLocationException {
-        boolean more = false;
-        while (pos < getLength()) {
-            String ch = getText(pos, 1);
-            if (ch.equals("\n"))
-                break;
-            if (!ch.equals(" ")) {
-                more = true;
-                break;
-            }
-            pos++;
-        }
-        return more;
     }
 
     private static class CompletionInfo {

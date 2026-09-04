@@ -13,14 +13,14 @@ public class RefParameter {
      * The assumption is that the originalContext is the
      * defining context.
      */
-    public Object getRefValue() throws VarNotFoundException {
+    public Object getRefValue() throws VarNotFoundException, FunctionNotFoundException {
         return originalContext.retrieve(nameInContext, false);
     }
 
     /*
      * Always assign to the original context.
      */
-    public void assignRefValue(Object value) throws VarNotFoundException {
+    public void assignRefValue(Object value) throws VarNotFoundException, FunctionNotFoundException {
         originalContext.assign(nameInContext, value);
     }
 

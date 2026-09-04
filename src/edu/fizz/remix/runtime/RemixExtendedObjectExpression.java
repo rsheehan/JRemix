@@ -16,7 +16,7 @@ public class RemixExtendedObjectExpression extends  RemixObjectExpression {
       merges the methodTables (with extended overwriting original)
      */
     @Override
-    public RemixObject evaluate(Context definingContext) throws ReturnException, InterruptedException, VarNotFoundException {
+    public RemixObject evaluate(Context definingContext) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
         RemixObject remixObject = (RemixObject) originalObject.evaluate(definingContext);
         String existingType = remixObject.typeName();
         // change libstack of original object to be the current context libstack

@@ -8,11 +8,21 @@ public class BinaryExpression implements Expression {
     private final Expression first;
     private final Expression second;
     private final String operator;
+    private String fileName;
+    private int lineNumber;
 
+    /* This is for the EvalVisitorForEditor */
     public BinaryExpression(Expression first, String operator, Expression second) {
         this.first = first;
         this.operator = operator;
         this.second = second;
+    }
+    public BinaryExpression(Expression first, String operator, Expression second, String fileName, int lineNumber) {
+        this.first = first;
+        this.operator = operator;
+        this.second = second;
+        this.fileName = fileName;
+        this.lineNumber = lineNumber;
     }
 
     /*
@@ -20,13 +30,14 @@ public class BinaryExpression implements Expression {
      * The "=" and "!=" can also deal other types.
      */
     @Override
-    public Object evaluate(Context context) throws InterruptedException, VarNotFoundException {
+    public Object evaluate(Context context) throws InterruptedException, VarNotFoundException, FunctionNotFoundException {
         Object val1;
         Object val2;
         try {
             val1 = first.evaluate(context);
             val2 = second.evaluate(context);
         } catch (ReturnException exception) {
+            // doesn't get here because of exiting when first or second fails
             System.err.println("ReturnException caught in binary expression.");
             return null;
         }
@@ -48,7 +59,7 @@ public class BinaryExpression implements Expression {
             } else if (val1 instanceof LibraryExpression lib1 && val2 instanceof LibraryExpression lib2) {
                 return lib1.equals(lib2);
             } else if (val1 instanceof RemixObject object1 && val2 instanceof RemixObject object2) {
-//          To compare objects you need a (other) equals (me) method.
+            // To compare objects you need a (other) equals (me) method.
                 Method method = object2.findMethod("⫾ equals ⫾");
                 if (method != null) {
                     MethodContext methodContext = new MethodContext(null, object2);
@@ -68,6 +79,8 @@ public class BinaryExpression implements Expression {
                 s2 = String.valueOf(val2);
                 boolean result = false;
                 switch (operator) {
+                    case "+", "-", "*", "×", "/", "÷", "%" ->
+                        throw new RuntimeException();
                     case "=" -> result = s1.equals(s2);
                     case "!=" -> result = !s1.equals(s2);
                     case "<" -> {
@@ -152,7 +165,8 @@ public class BinaryExpression implements Expression {
                 };
             } else throw new RuntimeException();
         } catch (RuntimeException e) {
-            System.err.printf("Error in binary expression: %s : %s %s %s.%n", this, val1, operator, val2);
+            Runtime.showErrorPosition(fileName, lineNumber, -1);
+            System.err.printf("\tError in binary expression: %s : %s %s %s.%n", this, val1, operator, val2);
             return false;
         }
     }

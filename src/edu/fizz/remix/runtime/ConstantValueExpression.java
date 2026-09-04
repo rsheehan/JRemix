@@ -1,14 +1,15 @@
 package edu.fizz.remix.runtime;
 
-import edu.fizz.remix.editor.RemixEditor;
+//import edu.fizz.remix.editor.RemixEditor;
 
 public class ConstantValueExpression implements Expression, NamedExpression {
 
     String constantName;
     private int lineNumber;
 
-    public ConstantValueExpression(String name) {
+    public ConstantValueExpression(String name, int lineNumber) {
         constantName = name;
+        this.lineNumber = lineNumber;
     }
 
     public String getName() { // necessary if this variable is being passed as ref param
@@ -24,7 +25,7 @@ public class ConstantValueExpression implements Expression, NamedExpression {
     }
 
     @Override
-    public Object evaluate(Context context) {
+    public Object evaluate(Context context) throws VarNotFoundException {
         LibraryExpression library;
         LibraryExpression previousMatchingLibrary = null;
         Object result = null;
@@ -50,14 +51,10 @@ public class ConstantValueExpression implements Expression, NamedExpression {
                 }
             }
         }
-
-        if (result == null && !RemixEditor.isEditing()) {
-            System.err.format("Constant \"%s\" has no value ", constantName);
-            if (Runtime.REPLRunning)
-                System.err.println("in REPL.");
-            else  {
-                System.err.printf("on line %d.%n", lineNumber);
-            }
+        if (result == null) {
+            Runtime.showErrorPosition(context.getFileWindowREPL(), lineNumber, -1);
+            Runtime.showErrorMessage("Constant " + constantName + " has no value");
+            throw new VarNotFoundException(); // sort of
         }
         return result;
     }
