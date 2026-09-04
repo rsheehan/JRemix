@@ -2,12 +2,12 @@
 	repeat 10 times
 		"." ~
 
-'statement' : first statement in 'statement block'
+'statement' : first in 'statement block'
 'statement' ↲
 
 append (statement [" finished" ↲]) to 'statement block'
 
-'statement' : last statement in 'statement block'
+'statement' : last in 'statement block'
 'statement' ↲
 
 do 'statement block'

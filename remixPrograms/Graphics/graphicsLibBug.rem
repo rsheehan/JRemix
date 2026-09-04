@@ -7,7 +7,7 @@ passed to it. 'count' has to be a reference variable.
 
 using graphics
 
-	'the window' : the graphics panel
+	'the window' : a graphics window
 
 	'current' : random point
 	'count' : 0

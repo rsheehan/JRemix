@@ -1,0 +1,37 @@
+- lots of errors
+bad function call ; non-existent function call
+=
+lotsOfErrors.rem - line: 2, offset: 0
+	Function "bad function call" does not exist or is a method with a null receiver.
+	while running program.
+=
+↲
+repeat 2 times 'unknown' ; non-initialised parameter
+=
+lotsOfErrors.rem - line: 8
+	Variable 'unknown' has no value.
+remixLibraries/standard-lib.rem - line: 200, offset: 11
+	Parameter error calling "do ('block')".
+remixLibraries/standard-lib.rem - line: 200, offset: 11
+	Parameter error calling "do ('block')".
+remixLibraries/standard-lib.rem - line: 199
+	Variable 'last' has no value.
+-=
+↲
+repeat NUM times [] ; constant with no value
+↲
+-=
+lotsOfErrors.rem - line: 18
+	Constant NUM has no value.
+lotsOfErrors.rem - line: 18, offset: 0
+	Parameter "NUM" has no value in function call "repeat (NUM) times ([  ])".
+-=
+add four to #x :
+	#x : #x + 4
+
+add four to 12
+↲
+-=
+lotsOfErrors.rem - line: 31, offset: 0.
+	1. Parameter: "12" is not a variable in function call "add four to (12)".
+=

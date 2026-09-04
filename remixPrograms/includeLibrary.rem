@@ -20,5 +20,5 @@ library
 				'OV1', 'OV2'
 
 			print ME :
-				"OV1 + OV2 = ", 'OV1' plus 'OV2' \n
+				"OV1 + OV2 = ", 'OV1' plus 'OV2' ↲
 

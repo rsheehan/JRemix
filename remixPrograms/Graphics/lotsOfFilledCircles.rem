@@ -1,7 +1,7 @@
 - Lots of filled circles -
 
 using graphics
-	'the window' : the graphics panel
+	'the window' : a graphics window
 	repeat
 		place (a random circle) in 'the window'
 	… 100 times

@@ -523,22 +523,25 @@ The 'list' as a string.
 ==============================
 
 =-
-Append 'value' to the end of 'list'.
+Append 'value' to the end of 'sequence'.
+A sequence is a list or block.
 =-
-to 'list' append 'value' :
-	append 'value' to 'list'
+to 'sequence' append 'value' :
+	append 'value' to 'sequence'
 
 =-
-The first value in the 'list'.
+The first value in the 'sequence'.
+A sequence is a list, range, string or block.
 =-
-first in 'list' :
-	'list'{FIRST}
+first in 'sequence' :
+	FIRST in 'sequence'
 
 =-
 The last value in the 'list'.
+A sequence is a list, range, string or block.
 =-
-last in 'list' :
-	'list'{'list' length}
+last in 'sequence' :
+	('sequence' length) in 'sequence'
 
 =-
 Is the 'sequence' empty?
@@ -548,25 +551,28 @@ no/empty 'sequence' :
 	'sequence' length = 0
 
 =-
-Choose a random item from the 'list'.
+Choose a random item from the 'sequence'.
+A sequence is a list, range, string or block.
 =-
-choose from 'list' :
-	'list'{random ('list' length)}
+choose from 'sequence' :
+	(random ('sequence' length)) in 'sequence'
 
 =-
-Is the 'element' in the 'list'?
+Is the 'element' in the 'sequence'?
+A sequence is a list, range, map or string.
 =-
-'element' is in 'list' :
-	for each 'item' in 'list'
+'element' is in 'sequence' :
+	for each 'item' in 'sequence'
 		if ('element' = 'item')
 			return true
 		false
 
 =-
-The 'list' does not contain the 'element'.
+The 'sequence' does not contain the 'element'.
+A sequence is a list, range, map or string.
 =-
-'element' is not in 'list' :
-	not ('element' is in 'list')
+'element' is not in 'sequence' :
+	not ('element' is in 'sequence')
 
 ==============================
  Map functions
@@ -585,25 +591,13 @@ merge 'extra' into 'map' :
 ==============================
 
 =-
-The first  statement in the 'block'.
-=-
-first statement in 'block' :
-	FIRST in 'block'
-
-=-
-The last statement in the 'block'.
-=-
-last statement in 'block' :
-	('block' length) in 'block'
-
-=-
 Extract the statement within 'block'.
 'block' should be a block containing one statement.
-Because statements are usually executed putting one inside
+Because statements are usually executed, putting one inside
 a block means it can be accessed without execution.
 =-
 statement 'block' :
-	first statement in 'block'
+	first in 'block'
 
 =-
 Enclose the 'statement' in a block.
@@ -625,8 +619,8 @@ when ['block'] :
 	do 'block'
 
 =-
-If 'option' 'block' is true, return executed 'result'.
-Used in a "when" 'block'.
+If 'option' block is true, return executed 'result'.
+Used in a "when" block.
 The transparent return breaks out of the "when".
 =-
 ['option'] do ['result'] ::

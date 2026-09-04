@@ -15,3 +15,10 @@ LIB : library
 using LIB
 	fun
 	a function
+
+= Output
+Graphics library loaded.
+{255, 0, 0}
+What?
+What?
+=

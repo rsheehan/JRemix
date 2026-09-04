@@ -1,5 +1,5 @@
 using graphics
-	'the window' : the graphics panel
+	'the window' : a graphics window
 
 	'square' : a square
 	'square' size     200

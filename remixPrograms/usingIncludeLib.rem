@@ -2,9 +2,11 @@ using include "remixPrograms/includeLibrary.rem"
 	"inside using" ↲
 
 	4 plus 3 ↲
-
+	= the object 'O' is at the top level
+	= it's methods can be called at that level
 	'O' : making object
 
+	- this method is also at the top level
 	'a' div 'b' :
 		'a' ÷ 'b'
 		
@@ -14,8 +16,8 @@ using include "remixPrograms/includeLibrary.rem"
 	'A' - 'B'
 
 4 minus 3 ↲
-4 times 3 ↲ ; is not accessible because at top-level of included file
-4 plus 3 ↲ ; does not exist because in library
+-4 times 3 ↲ ; is not accessible because at top-level of included file
+-4 plus 3 ↲ ; does not exist because in library
 36 div 3 ↲
 
 'O' ↲

@@ -5,18 +5,43 @@
 
 for each 'b' in 'block'
 	'b' ↲
-
+↲
 2 in 'block' ↲
-
+↲
 'complete' : [ ]
 append 'b' to 'complete'
 
 'c' : join 'complete' and 'block'
 
 'c' ↲
+↲
 do 'c'
-
-'s' : first statement in 'c'
-
+↲
+'s' : first in 'c'
+"'s' : ", 's' ↲
+↲
+do 's' ; do now works with statements as well as blocks
+↲
 'bs' : block 's'
 do 'bs'
+
+= Output
+print "one"
+print "two"
+print "three"
+
+print "two"
+
+[ print "three". print "one". print "two". print "three" ]
+
+three
+one
+two
+three
+
+'s' : print "three"
+
+three
+
+three
+=

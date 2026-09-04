@@ -1,7 +1,7 @@
 - Lots of filled squares -
 
 using graphics
-	'the window' : the graphics panel
+	'the window' : a graphics window
 	repeat
 		place (random square) in 'the window'
 	… 100 times

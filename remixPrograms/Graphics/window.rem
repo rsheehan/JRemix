@@ -1,0 +1,11 @@
+using graphics
+	'window' : a graphics window
+	'window' ↲↲
+	
+	'line' : a RED line from {0, 0} to {100, 200}
+	'line' ↲↲
+	place 'line' in 'window'
+	update 'window'
+
+"The window is shown.\n" ↲
+'window' ↲

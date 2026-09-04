@@ -4,17 +4,17 @@ using graphics
 		for each 'row' from 10 to (STD-HEIGHT - 10) in steps of 10
 			'line': a BLUE line from {10, 'row'} to {STD-WIDTH - 10, 'row'}
 			'line' width 1
-			add 'line' to the 'panel'
+			place 'line' in 'panel'
 
 	down lines in 'panel':
 		for each 'col' from 10 to (STD-WIDTH - 10) in steps of 10
 			'line': a BLUE line from {'col', 10} to {'col', STD-HEIGHT - 10}
 			'line' width 1
-			add 'line' to the 'panel'
+			place 'line' in 'panel'
 
-	'panel': open graphics panel
+	'panel': a graphics window
 	
-	make 'panel' background WHITE
+	'panel' colour WHITE
 	across lines in 'panel'
 	down lines in 'panel'
-	refresh 'panel'
+	update 'panel'

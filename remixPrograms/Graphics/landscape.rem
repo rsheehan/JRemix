@@ -118,7 +118,7 @@ using graphics
 					for each 'part' in (MY parts)
 						change 'part' x-pos by -(STD-WIDTH + 'size')
 
-	'the window' : the graphics panel
+	'the window' : a graphics window
 	'the window' colour SKY-BLUE
 	
 -============================================================================-
@@ -130,7 +130,7 @@ add the sun on 'the back layer'
 add the mountains on 'the back layer'
 add the sea on 'the back layer'
 add the islands on 'the front layer'
-update 'the window'	
+update 'the window'
 
 'the clouds' : 10 clouds in 'the cloud layer'
 animate 'the clouds' in 'the window'

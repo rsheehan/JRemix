@@ -1,5 +1,5 @@
 using graphics
-	'panel' : the graphics panel
+	'panel' : a graphics window
 	
 	'triangle' : a triangle
 	'triangle' colour null

@@ -1,6 +1,6 @@
 using graphics
 
-	'window' : the graphics panel
+	'window' : a graphics window
 
 	'x' : 50
 	'y' : 50

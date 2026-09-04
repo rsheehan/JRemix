@@ -1,16 +1,15 @@
 using graphics
-	'panel': open graphics panel
-	make 'panel' background YELLOW
+	'panel': a graphics window
+	'panel' colour YELLOW
 	across lines in 'panel'
 	down lines in 'panel'
-	refresh 'panel'
 
 	across lines in 'panel':
 		'line': a BLUE line from {10, 10} to {STD-WIDTH - 10, 10}
 		'line' width 1
 
 		for each 'row' from 0 to (STD-HEIGHT ÷ 10 - 2)
-			add 'line' to the 'panel'
+			place 'line' in 'panel'
 			change 'line' y-pos by 10
 
 	down lines in 'panel':
@@ -18,5 +17,5 @@ using graphics
 		'line' width 1
 		
 		for each 'col' from 0 to (STD-WIDTH ÷ 10 - 2)
-			add 'line' to the 'panel'
+			place 'line' in 'panel'
 			change 'line' x-pos by 10

@@ -3,7 +3,7 @@ Rotating arrows
 ===============
 
 using graphics
-	'the window' : the graphics panel
+	'the window' : a graphics window
 	'the animation layer' : 'the window' next layer
 
 	'n' arrows :

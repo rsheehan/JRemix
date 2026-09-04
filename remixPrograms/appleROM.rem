@@ -6,7 +6,7 @@ using files
 	'video ROM' : open file "IIE.US#062000" in 'directory' for BINARY-READING
 	
 using graphics
-	'window' : the graphics panel
+	'window' : a graphics window
 
 	display 'character' at 'across' 'down' in 'window' :
 		'character', " across: ", 'across', " down: ", 'down' ↲

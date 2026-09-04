@@ -1,7 +1,7 @@
 
 using graphics
 
-	'the window' : the graphics panel
+	'the window' : a graphics window
 
 	'x' : 50
 	for each 'n' from 3 to 12

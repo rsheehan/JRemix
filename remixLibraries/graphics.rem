@@ -240,12 +240,12 @@ GRAPHICS-LIB : library "edu.fizz.remix.libraries.Graphics"
 	Graphics Panels
 	===============
 
-	=-
+=	-
 	Open the graphics panel with multiple layers.
 	Return the graphics panel.
-	=-
+	-
 	the graphics panel :
-		a (open graphics panel) with layers
+=		a (open graphics panel) with layers
 
 	===========================================================
 	The Remix 'panel' for drawing in.
@@ -268,6 +268,9 @@ GRAPHICS-LIB : library "edu.fizz.remix.libraries.Graphics"
 			getters
 				'layers', 'colour'
 
+			=-
+			Set 'the colour' of the 'OBJECT'.
+			=-
 			MY colour 'the colour' : ; this is a setter
 				'colour' : 'the colour'
 				make the 'JGraphics' background 'colour' ; Java
@@ -385,9 +388,17 @@ GRAPHICS-LIB : library "edu.fizz.remix.libraries.Graphics"
 			'type' : "Base Layer"
 			'JGraphics panel' : 'JGraphics panel' ; base layer can change so need this
 
+			=-
+			There are no shapes in the base layer OBJECT.
+			Returns an empty list.
+			=-
 			MY shapes : ; a getter for shapes which are not stored
 				{ }
 
+			=-
+			Place a 'shape' in the base layer 'OBJECT'.
+			The 'shape' can have multiple parts.
+			=-
 			place 'shape' in ME :
 				if ('shape' is a "list")
 					for each 'part' in 'shape'

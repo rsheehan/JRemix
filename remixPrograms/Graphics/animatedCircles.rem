@@ -1,5 +1,5 @@
 using graphics
-	'window' : the graphics panel
+	'window' : a graphics window
 
 	animate 'window' :
 		'x' : 50

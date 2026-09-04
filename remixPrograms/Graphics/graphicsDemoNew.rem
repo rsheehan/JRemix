@@ -7,7 +7,7 @@ using graphics
 		for each 'arrow' in ('layer1' shapes)
 			change 'arrow' x-pos by 5
 
-	'window' : the graphics panel
+	'window' : a graphics window
 	'layer1' : 'window' next layer
 	'layer2' : 'window' next layer
 
