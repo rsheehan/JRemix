@@ -1,0 +1,16 @@
+'block' : body of [A B times] ; can use constants or vars as parameter place fillers
+- this matches the function " 'string' 'n' times ".
+
+'block' ↲
+↲
+
+surround 'block' with 'entry' and 'exit' :
+	join (join 'entry' and 'block') and 'exit'
+
+'block' : surround 'block' with ["starting" ↲] and ['result' ↲. "finishing" ↲]
+'block' ↲
+↲
+
+'repeat with entry and exit' : function 'block'
+
+'repeat with entry and exit' {"string" : "well ", "n" : 10}
