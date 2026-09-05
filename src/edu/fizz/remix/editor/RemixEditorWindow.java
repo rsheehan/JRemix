@@ -89,15 +89,15 @@ public class RemixEditorWindow extends JFrame {
                 int caretPos = editorTextPane.getCaretPosition();
                 try {
                     System.out.println(theDocument.getText(0, theDocument.getLength()));
+
+                    if (filter.couldInsertTab(caretPos)) {
+                        // Insert a standard tab character into the document
+                        editorTextPane.replaceSelection("\t");
+                    } else {
+                        moveCursorToNextParam();
+                    }
                 } catch (BadLocationException ex) {
-                    throw new RuntimeException(ex);
-                }
-                if (filter.couldInsertTab(caretPos)) {
-                    // Insert a standard tab character into the document
-                    editorTextPane.replaceSelection("\t");
-                } else {
-                    moveCursorToNextParam();
-                }
+                throw new RuntimeException(ex);}
             }
         });
 
@@ -109,8 +109,8 @@ public class RemixEditorWindow extends JFrame {
         theDocument.setDocumentFilter(filter);
 
         JScrollPane editorScrollPane = new JScrollPane(editorTextPane);
-//        TextLineNumber lineNumbers = new TextLineNumber(editorTextPane);
-//        editorScrollPane.setRowHeaderView(lineNumbers);
+        TextLineNumber lineNumbers = new TextLineNumber(editorTextPane);
+        editorScrollPane.setRowHeaderView(lineNumbers);
 
         add(editorScrollPane, BorderLayout.CENTER);
 
@@ -173,16 +173,12 @@ public class RemixEditorWindow extends JFrame {
         public void keyTyped(KeyEvent e) {
             editorContentSaved = false;
             switch (e.getKeyChar()) {
-//                case '\t':
-//                    if (moveToParam) {
-//                        moveCursorToNextParam();
-//                        moveToParam = false;
-//                    }
-//                    break;
+                case '\t':
+                    break;
                 case 27:
                     theDocument.cancelCompletionHandling();
                 default:
-                    popupScreenLocation = null;
+//                    popupScreenLocation = null;
                     if (docPopup != null)
                         docPopup.hide();
             }
@@ -302,7 +298,6 @@ public class RemixEditorWindow extends JFrame {
                         docArea.setText(docText);
                         docPopup = popupFactory.getPopup(editorTextPane, docPanel, popupScreenLocation.x, popupScreenLocation.y);
                         docPopup.show();
-                        System.out.println("just done docPopup.show(): " + docPopup);
                     }
                 } catch (BadLocationException ex) {
                     throw new RuntimeException(ex);
@@ -358,7 +353,7 @@ public class RemixEditorWindow extends JFrame {
 
     private void moveCursorToNextParam() {
         // TODO: doesn't deal nicely with nested parameters e.g. (do (block))
-//        SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             int pos = editorTextPane.getCaretPosition();
             char ch;
             Segment allText = new Segment();
@@ -411,7 +406,7 @@ public class RemixEditorWindow extends JFrame {
                 pos++;
             }
             editorTextPane.setSelectionEnd(pos);
-//        });
+        });
     }
 
     private int movePastEllipsis(Segment allText, int pos) {
@@ -973,7 +968,7 @@ public class RemixEditorWindow extends JFrame {
 //            SwingUtilities.invokeLater(() -> {
                 if (lineNumber != lastLine) { // added this so moving to a different line clears completions
                     theDocument.clearCompletions();
-                    popupScreenLocation = null;
+//                    popupScreenLocation = null;
                     if (docPopup != null)
                         docPopup.hide();
                 }
@@ -996,7 +991,7 @@ public class RemixEditorWindow extends JFrame {
 
         private String changedText(DocumentEvent documentEvent) throws BadLocationException {
             // WARNING: returns text from the document
-            // the documentEvent may have altered the document
+            // the documentEvent may have altered the document already
             int pos = documentEvent.getOffset();
             int length = documentEvent.getLength();
             theDocument.getText(pos, length, textSegment);
@@ -1020,7 +1015,8 @@ public class RemixEditorWindow extends JFrame {
                 if (changedText.equals("\n\t\n…")) { // inserted an implicit block and ...
                     moveCursorInsideBlock(documentEvent);
                 } else if (matchStringFromArray(changedText, matchingPairs)) {
-                    moveCursorOnByOne(documentEvent);
+                    // cursor currently following last character
+                     moveCursorOnByOne(documentEvent);
                 } else if (changedText.length() == 1) { // could be a digit or constant between
                     // deleted parentheses
                     char ch = changedText.toCharArray()[0];
@@ -1047,10 +1043,10 @@ public class RemixEditorWindow extends JFrame {
         @Override
         public void removeUpdate(DocumentEvent documentEvent) {
             System.out.println("removeUpdate document length: " + documentEvent.getLength());
-            try {
-                String changedText = changedText(documentEvent);
-                System.out.println(changedText);
-            } catch (BadLocationException e) {}
+//            try {
+//                String changedText = changedText(documentEvent);
+//                System.out.println(changedText);
+//            } catch (BadLocationException e) {}
             if (documentEvent.getLength() == 2)
                 removedPair = true; // a flag to say a pair of chars removed
         }
@@ -1061,15 +1057,15 @@ public class RemixEditorWindow extends JFrame {
         }
 
         private void moveCursorOnByOne(DocumentEvent documentEvent) {
-//            SwingUtilities.invokeLater(() -> {
+            SwingUtilities.invokeLater(() -> {
                 editorTextPane.setCaretPosition(documentEvent.getOffset() + 1);
-//            });
+            });
         }
 
         private void moveCursorInsideBlock(DocumentEvent documentEvent) {
-//            SwingUtilities.invokeLater(() -> {
+            SwingUtilities.invokeLater(() -> {
                 editorTextPane.setCaretPosition(documentEvent.getOffset() + 2);
-//            });
+            });
         }
     }
 }

@@ -85,9 +85,9 @@ public class TextLineNumber extends JPanel
         setDigitAlignment( RIGHT );
         setMinimumDisplayDigits( minimumDisplayDigits );
 
-//        component.getDocument().addDocumentListener(this);
-//        component.addCaretListener( this );
-//        component.addPropertyChangeListener("font", this);
+        component.getDocument().addDocumentListener(this);
+        component.addCaretListener( this );
+        component.addPropertyChangeListener("font", this);
     }
 
     /**
@@ -438,7 +438,8 @@ public class TextLineNumber extends JPanel
                         lastHeight = rect.y;
                     }
                 }
-                catch (BadLocationException ex) { /* nothing to do */ }
+                catch (BadLocationException ex) {
+                    System.err.println("Error updating line number.");/* nothing to do */ }
             }
         });
     }

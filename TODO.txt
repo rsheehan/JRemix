@@ -1,25 +1,21 @@
-Nasty bug if a non-existent ref var is accessed e.g.
-#a swap #b :
-	'temp' : #A <- this goes unnoticed but doesn't work
-	#a : #b
-	#b : 'temp'
+Problem before going away.
+The docPopUp in RemixEditorWindow no longer appears.
+Completions are produced but the popup is not showing.
+Then there are errors after restarting completions.
+Try:
+apply (then shift-tab)
 
-I could add a string following "create" and "extend" to store a type name with a Remix object.
-Currently there is no unified way to determine the type except RemixObject.
+Error when editing
+ab (insert a newline then do undo and we crash)
+Seems to be associated with an undo change which is sent to the TextLineNumber
+Can I ignore these changes too, like in undoableEditHappened
+
+event dde seems to hold edits
 
 Multiple iterators over sequences.
 
-There is an inconsistency in the naming of some standard functions.
-e.g.
-for each #Item in Sequence /do [Block] :
-apply [Block] to each #Item from List :
-the "in" and "from"
-
-Need to allow the editor to control (i.e. stop) animation or other background threads.
-
 "create", "extend", "using" and "library" should only be keywords if in the correct syntax.
 They should be usable as ordinary words in other places.
-Also the editor should automatically indent after "create", "extend" if keywords.
 
 Editor doesn't allow easy typing of '/' since this becomes divide symbol.
 
@@ -35,9 +31,124 @@ Tidy up EvalVisitor to remove duplicate code in CallParts and Expressions.
 
 Think about ranges being used in multidimensional ListMaps. See GetElementExpression.
 
-Allow operations to modify blocks. e.g. concatenation
-Thus moving blocks into more first class object status.
+Add a "reload standard-lib" to the control menu.
+This way if the standard-lib is modified in the program then the current version can be used.
+
+Making individual windows so more than one can be open at a time.
+RemixApp menubar
+================
+File :
+	New file in editor
+	Open file in editor
+
+Edit :
+	Find (across all open editors)
+	Find again
+
+View :
+	Dark theme
+	Light theme
+
+Editor menubar
+==============
+File :
+	Save
+	Save as
+	Close
+
+Edit :
+	Undo
+	Redo
+	----
+	Cut
+	Copy
+	Paste
+	----
+	Find (this editor only)
+	Find forwards
+	Find backwards
+	----
+	Indent selection
+	Dedent selection
+
+Control :
+	Run
+	Stop
+
+May want to investigate using FlatLaf as UI - https://www.formdev.com/flatlaf/macos/
 
 Error messages required
 =======================
 Dealing with null (NULL?) returned values
+
+Error messages should produce line numbers of where the problem is detected even at runtime.
+
+Currently with the RemixApp multiwindow version, error messages don't go to the remix output as
+the check for RemixApp.isEditing returns true when a window is run.
+
+Need to unify the approach to error messages.
+Differences in unknown Constants, Variables and Function calls.
+e.g.
+Constant "ABC" has no value in REPL.
+Constant "ABC" has no value in "untitled", on line 1.
+
+Variable "abc" has no value in REPL.
+Variable "abc" has no value in "untitled".
+
+file: *InteractiveText*, line: 1, offset: 0
+	"abc" does not exist or is a method with a null receiver.
+line: 2, offset: 0
+	"abc" does not exist or is a method with a null receiver.
+
+Change to:
+=========
+Constant ABC has no value.
+Constant ABC has no value in "untitled", line 1.
+
+Variable 'abc' has no value.
+Variable 'abc' has no value in "untitled", line 1.
+
+Function "abc" has no value.
+Function "abc" has no value in "untitled", line 1.
+
+The "untitled" above is the name of the RemixEditorWindow the code comes from.
+What if the code is in a library?
+
+Other error messages:
+"filename" - line: n, offset: n.
+	Parameter: "value" is not a variable in function call "functionName".
+
+QUESTION: do I really need the offset in the error messages.
+It makes sense when detecting syntax errors because they can be difficult
+to interpret.
+
+How to get the window or file name when relaying information about the error?
+How to ensure this works when "include" file when running but different
+handling when using "include" for completion handling.
+Currently when "include" is used for completion handling the code from the
+included file is executed in the REPL. e.g.
+"Graphics library loaded."
+
+Can this be solved by passing information via the Context?
+e.g. file/window name, REPL, or completion
+For completion an EvalVisitorForEditor has been constructed in
+reparseProgramText (of RemixEditorWindow).
+
+Situations
+==========
+Run the REPL
+Run a single editor window
+Produce the completions in an editor window
+	this can cause other files to be loaded via "include"
+	so errors can come from the window or from other files
+
+Multitasking
+Simultaneously run the REPL and multiple editor windows
+
+Trying to trackdown where the actual errors are thrown.
+Because I now stop further processing on an error not all of them
+may be used.
+	Function ... does not exist - filename comes from EvalVisitor
+
+For correct EvalVisitor and EvalVisitorForEditor processing when doing completions or running
+I think the best thing is to have "include" as a keyword and the eval visitor constructs a visitInclude expression

@@ -82,20 +82,23 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     for a single call to super.insertString.
      */
     public void insertStringNoLex(int offset, String text, AttributeSet style) throws BadLocationException {
-        completionsHere = null; // now always done, repeated completions come from "shift TAB" handler
-        completionStyle = defaultStyle;
+//        completionsHere = null; // now always done, repeated completions come from "shift TAB" handler
+//        completionStyle = defaultStyle;
+        clearCompletions();
         super.insertString(offset, text, defaultStyle);
     }
 
     @Override
     public void remove(int offset, int length) throws BadLocationException {
+        clearCompletions();
         super.remove(offset, length);
-        completionsHere = null; // otherwise deleting a character doesn't regenerate completions
-        completionStyle = defaultStyle;
+//        completionsHere = null; // otherwise deleting a character doesn't regenerate completions
+//        completionStyle = defaultStyle;
     }
 
     @Override
     public void replace(int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+        clearCompletions();
         super.replace(offset, length, text, attrs); // this will indirectly invoke the RemixEdFilter
     }
 
@@ -128,6 +131,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     public void clearCompletions() {
         completionsHere = null;
         completionStyle = defaultStyle;
+        editor.popupScreenLocation = null; // not nice, using editor
     }
 
     public void cancelCompletionHandling() {
@@ -143,8 +147,9 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 System.err.println("Bad location when cancelling completions.");
             }
         }
-        completionsHere = null;
-        completionStyle = defaultStyle;
+        clearCompletions();
+//        completionsHere = null;
+//        completionStyle = defaultStyle;
     }
 
     // Called from keystroke event handler set up in RemixEditor.

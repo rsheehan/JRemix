@@ -21,11 +21,9 @@ public class RemixEdFilter extends DocumentFilter {
 
     private final RemixStyledDocument document;
     private RemixEdLexer edLexer;
-    private final Segment textSegment;
 
     public RemixEdFilter(RemixStyledDocument document) {
         this.document = document;
-        textSegment = new Segment();
     }
 
     @Override
@@ -36,16 +34,10 @@ public class RemixEdFilter extends DocumentFilter {
         // we can check to see if we are closing parenthese straight
         // after the removed code
 
-//        if (text == null) return;
-//        document.getText(0, document.getLength(), textSegment);
-
-//        if (length > 0)
-//            fb.remove(offset, length);
-
-//        String textToInsert = text;
         // fill in textSegment with all of the text without copying data
+        Segment textSegment = new Segment();
         document.getText(0, document.getLength(), textSegment);
-        if (inString(offset)) {
+        if (inString(offset, textSegment)) {
             fb.replace(offset, length, text, attrs);
 //        } else if (text.equals("\t")) { // assume replacing using tab means moving on to param not
 //            // TODO also check if in comment
@@ -56,15 +48,15 @@ public class RemixEdFilter extends DocumentFilter {
 //
 //            }
             // TODO if tab is typed and inside a completion I need to move to next parameter
-        } else if (text.equals("\n") && !inString(offset)) {
-            autoIndent(fb, offset, attrs);
-            // else if matching pairs
-        } else if (matchingPair(fb, text, offset, attrs)) {
+        } else if (text.equals("\n") && !inString(offset, textSegment)) {
+            autoIndent(fb, offset, length, attrs, textSegment);
+            // else if matching pairs - offset + length because replacing
+        } else if (matchingPair(fb, text, offset, length, attrs, textSegment)) {
             // don't do anything else
-        } else if (replacedOperator(fb, length, offset, text, attrs)) {
-
-        } else if (removeParensAroundDigitOrCapital(fb, offset, length, text, attrs)) {
-
+        } else if (replacedOperator(fb, offset, text, attrs, textSegment)) {
+            // don't do anything else
+        } else if (removeParensAroundDigitOrCapital(fb, offset, length, text, attrs, textSegment)) {
+            // don't do anything else
         } else {
                 fb.replace(offset, length, text, attrs);
         }
@@ -72,15 +64,12 @@ public class RemixEdFilter extends DocumentFilter {
     }
 
     // Remove parens if input is a digit or CAPITAL letter between "( )"
-    private boolean removeParensAroundDigitOrCapital(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+    private boolean removeParensAroundDigitOrCapital(FilterBypass fb, int offset, int length, String text, AttributeSet attrs, Segment textSegment) throws BadLocationException {
         char ch = text.toCharArray()[0];
         boolean digitOrCapital = Character.isDigit(ch) || Character.isUpperCase(ch);
-        if (digitOrCapital && surroundedByParens(offset)) {
+        if (digitOrCapital && surroundedByParens(offset, length, textSegment)) {
             offset--;
-            fb.replace(offset, 2, text, attrs);
-//            fb.remove(offset, 2);
-//            fb.insertString(offset, text, attrs);
-//            textPane.setCaretPosition(offset + 1);
+            fb.replace(offset, length + 2, text, attrs);
             return true;
         }
         return false;
@@ -90,13 +79,14 @@ public class RemixEdFilter extends DocumentFilter {
     public void remove(FilterBypass fb, int offset, int length)
             throws BadLocationException {
         System.out.println("filter remove: " + length);
+        Segment textSegment = new Segment();
         document.getText(0, document.getLength(), textSegment);
 
         if (length == 1) {
             for (Map.Entry<String, String> entry : matchingPairs.entrySet()) {
                 String before = entry.getKey();
                 String after = entry.getValue();
-                if (getText(offset, 1).equals(before) && getText(offset + 1, 1).equals(after)) {
+                if (getText(offset, 1, textSegment).equals(before) && getText(offset + 1, 1, textSegment).equals(after)) {
                     length++;
                     break;
                 }
@@ -105,9 +95,9 @@ public class RemixEdFilter extends DocumentFilter {
         fb.remove(offset, length);
     }
 
-    private boolean replacedOperator(FilterBypass fb, int length, int offset, String text, AttributeSet attrs) throws BadLocationException {
+    private boolean replacedOperator(FilterBypass fb, int offset, String text, AttributeSet attrs, Segment textSegment) throws BadLocationException {
         for (String target : operators.keySet()) {
-            if (replaceOperator(fb, target, text, offset, attrs)) {
+            if (replaceOperator(fb, target, text, offset, attrs, textSegment)) {
                 return true;
             }
         }
@@ -118,22 +108,22 @@ public class RemixEdFilter extends DocumentFilter {
      If the characters before plus the input match a replacement character, then replace it.
      Very similar to version in REPLInputOutput.FilterLineInput
      */
-    private boolean replaceOperator(FilterBypass fb, String target, String input, int offset, AttributeSet attrs) throws BadLocationException {
+    private boolean replaceOperator(FilterBypass fb, String target, String input, int offset, AttributeSet attrs, Segment textSegment) throws BadLocationException {
         int targetLen = target.length() - 1; // not counting last character
         if (offset >= targetLen) {
-            String match = getText(offset - targetLen, targetLen) + input; // existing plus new char
+            String match = getText(offset - targetLen, targetLen, textSegment) + input; // existing plus new char
             if (match.equals(target)) {
                 String replacement = operators.get(target);
                 if ("π√²".contains(replacement)) {
                     // if the previous character is a word character don't do the replacement
                     int pos = offset - targetLen - 1;
                     if (pos >= 0) {
-                        String ch = getText(pos, 1);
+                        String ch = getText(pos, 1, textSegment);
                         if (!" .()[\\]{,}:—|§@…'’⊕+-*×÷%=≠<≤>≥0123456789\"\t\n".contains(ch))
                             return false; // don't replace as pi is part of word
                     }
                 }
-                if (replacement.equals(" ⊕ ") && getText(offset, 1).equals(")")) {
+                if (replacement.equals(" ⊕ ") && getText(offset, 1, textSegment).equals(")")) {
                     fb.replace(offset - targetLen, targetLen + 1, replacement, attrs);
                 } else {
                     fb.replace(offset - targetLen, targetLen, replacement, attrs);
@@ -144,15 +134,15 @@ public class RemixEdFilter extends DocumentFilter {
         return false;
     }
 
-    private boolean matchingPair(FilterBypass fb, String text, int offset, AttributeSet attrs) throws BadLocationException {
+    private boolean matchingPair(FilterBypass fb, String text, int offset, int length, AttributeSet attrs, Segment textSegment) throws BadLocationException {
         for (String opening : matchingPairs.keySet()) {
             if (text.equals(opening)) { // only insert match if end of line or followed by space
                 // could also be if followed by a closing bracket
-                if (endOfLine(offset) || nextClosing(offset)) {
+                if (endOfLine(offset + length, textSegment) || nextClosing(offset + length, textSegment)) {
                     // if inserting "{}", "[]", single or double quotes and inside "()" then remove "()"
-                    if (removeParens(offset, opening)) {
+                    if (removeParens(offset, length, opening, textSegment)) {
                         offset--;
-                        fb.remove(offset, 2);
+                        fb.remove(offset, length + 2);
                     }
                     fb.insertString(offset, text + matchingPairs.get(text), attrs);
                     return true;
@@ -163,39 +153,39 @@ public class RemixEdFilter extends DocumentFilter {
     }
 
     /* Is the offset position surrounded by parentheses? */
-    private boolean surroundedByParens(int offset) {
+    private boolean surroundedByParens(int offset, int length, Segment textSegment) {
         if (offset > 0 && offset < textSegment.count) {
-            char before = getAChar(offset - 1);
-            char after = getAChar(offset);
+            char before = getAChar(offset - 1, textSegment);
+            char after = getAChar(offset + length, textSegment);
             return before == '(' && after == ')';
         }
         return false;
     }
 
     /* Should we remove surrounding parentheses? */
-    private boolean removeParens(int offset, String opening) {
+    private boolean removeParens(int offset, int length, String opening, Segment textSegment) {
         if ("{[\"'".contains(opening))
-            return surroundedByParens(offset);
+            return surroundedByParens(offset, length, textSegment);
         return false;
     }
 
     /* Is the current location a closing bracket or space? */
-    private boolean nextClosing(int pos) {
+    private boolean nextClosing(int pos, Segment textSegment) {
         if (pos < textSegment.count) {
-            char next = getAChar(pos);
+            char next = getAChar(pos, textSegment);
             return " )}]".indexOf(next) > -1;
         }
         return false;
     }
 
     /* Return true iff at the end of a line, ignoring spaces. */
-    private boolean endOfLine(int pos) {
+    private boolean endOfLine(int pos, Segment textSegment) {
         boolean result = false;
         if (pos == textSegment.count)
             result = true;
         else {
             while (pos < textSegment.count) {
-                char next = getAChar(pos);
+                char next = getAChar(pos, textSegment);
                 pos++;
                 if (next == ' ')
                     continue;
@@ -206,56 +196,45 @@ public class RemixEdFilter extends DocumentFilter {
         return result;
     }
 
-    public boolean couldInsertTab(int offset) {
-        return lineStart(offset) && validIndentation(offset);
+    public boolean couldInsertTab(int offset) throws BadLocationException {
+        Segment textSegment = new Segment();
+        document.getText(0, document.getLength(), textSegment);
+        return lineStart(offset, textSegment) && validIndentation(offset, textSegment);
     }
 
-    private String handleTab(int offset) {
-        // if at the start of the line need to just insert the tab but
-        // only allow one extra level of indentation
-        String result = "";
-        if (lineStart(offset) && validIndentation(offset)) {
-            result = "\t";
-        }
-        return result;
-    }
-
-    private char getAChar(int offset) {
-        try {
-            document.getText(0, document.getLength(), textSegment);
-        } catch (BadLocationException e) {}
+    private char getAChar(int offset, Segment textSegment) {
+//        try {
+//            document.getText(0, document.getLength(), this.textSegment);
+//        } catch (BadLocationException e) {}
         return textSegment.array[offset];
     }
 
-    private String getText(int offset, int length) {
-        try {
-            document.getText(0, document.getLength(), textSegment);
-        } catch (BadLocationException e) {} // shouldn't happen
+    private String getText(int offset, int length, Segment textSegment) {
         return textSegment.subSequence(offset, offset + length).toString();
     }
 
-    private boolean lineStart(int offset) {
+    private boolean lineStart(int offset, Segment textSegment) {
         if (offset == 0)
             return true;
 
-        char prev = getAChar(offset - 1);
+        char prev = getAChar(offset - 1, textSegment);
         return (prev == '\n') || (prev == '\t');
     }
 
-    private boolean validIndentation(int pos) {
+    private boolean validIndentation(int pos, Segment textSegment) {
         if (pos == 0)
             return false;
         // called at the start of a line
         // work out the previous level of indentation
-        int indentationHere = indentationOnThisLine(pos);
+        int indentationHere = indentationOnThisLine(pos, textSegment);
         int indentationBefore = 0;
         pos = pos - indentationHere;
         while (pos > 0) {
             pos--;
-            if (!inString(pos)) { // TODO also need to check if in a comment
-                char ch = getAChar(pos);
+            if (!inString(pos, textSegment)) { // TODO also need to check if in a comment
+                char ch = getAChar(pos, textSegment);
                 if (ch == '\n') {
-                    indentationBefore = indentationOnThisLine(pos);
+                    indentationBefore = indentationOnThisLine(pos, textSegment);
                     break;
                 }
             }
@@ -265,10 +244,12 @@ public class RemixEdFilter extends DocumentFilter {
 
     /**
      * How many tabs deep is the start of the line?
-     * @param pos The position in the document.
+     *
+     * @param pos         The position in the document.
+     * @param textSegment The segment holding the whole document text.
      * @return The number of starting tabs on this line.
      */
-    private int indentationOnThisLine(int pos) {
+    private int indentationOnThisLine(int pos, Segment textSegment) {
         char before;
         char after;
         int count = 0;
@@ -276,19 +257,19 @@ public class RemixEdFilter extends DocumentFilter {
         // first check to see if there are any more tabs following this position
         int here = pos;
         if (here < textSegment.count) {
-            after = getAChar(here);
+            after = getAChar(here, textSegment);
             while (after == '\t') {
                 count++;
                 here++;
                 if (here >= textSegment.count)
                     break;
-                after = getAChar(here);
+                after = getAChar(here, textSegment);
             }
         }
         // then find tabs before this position
         while (pos > 0) {
             pos--;
-            before = getAChar(pos);
+            before = getAChar(pos, textSegment);
             if (before == '\n')
                 break;
             if (before == '\t') { // tabs only appear at the start of the line
@@ -309,7 +290,7 @@ public class RemixEdFilter extends DocumentFilter {
      Could possibly add "..." at the start of a following line if there is more
      text following the original "]" on the line.
  */
-    private void autoIndent(FilterBypass fb, int offset, AttributeSet attrs) throws BadLocationException {
+    private void autoIndent(FilterBypass fb, int offset, int length, AttributeSet attrs, Segment textSegment) throws BadLocationException {
         // find previous indentation
         StringBuilder tabbedReturn = new StringBuilder("\n" );
         // could be defining a function (or method)
@@ -318,7 +299,7 @@ public class RemixEdFilter extends DocumentFilter {
         int pos = offset;
         // go back until we find the first non-space character
         while (pos > 0) {
-            before = getAChar(--pos); // getText(--pos, 1);
+            before = getAChar(--pos, textSegment);
             if (before != ' ') {
                 pos++;
                 break;
@@ -328,33 +309,33 @@ public class RemixEdFilter extends DocumentFilter {
         boolean followsOpenBlock = false;
         boolean followsListStart = false;
         if (before == ':'
-                || lineContains(pos, "library")
-                || lineContains(pos, "using")
-                || lineContains(pos, "create")
-                || lineContains(pos, "extend")
-                || lineContains(pos, "getter")
-                || lineContains(pos, "setter"))
+                || lineContains(pos, "library", textSegment)
+                || lineContains(pos, "using", textSegment)
+                || lineContains(pos, "create", textSegment)
+                || lineContains(pos, "extend", textSegment)
+                || lineContains(pos, "getter", textSegment)
+                || lineContains(pos, "setter", textSegment))
             tabbedReturn.append("\t");
         else if (before == '[') {
             followsOpenBlock = true;
         } else if (before == '{') {
             followsListStart = true;
         }
-        pos = offset;
+        pos = offset + length;
         if (pos < textSegment.count) {
-            after = getAChar(pos);
+            after = getAChar(pos, textSegment);
         }
         boolean precedesCloseBlock = after == ']';
         boolean precedesListEnd = after == '}';
-        int tabs = indentationOnThisLine(pos);
+        int tabs = indentationOnThisLine(pos, textSegment);
         String tabsOnLine = "\t".repeat(tabs);
         tabbedReturn.append(tabsOnLine);
         // remove "[]" to make block implicit
         if (followsOpenBlock && precedesCloseBlock) {
             offset--; // removed opening [ as well
-            fb.remove(offset, 2);
+            fb.remove(offset, length + 2);
             tabbedReturn.append("\t");
-            if (moreTextOnLine(offset)) {
+            if (moreTextOnLine(offset, textSegment)) {
                 tabbedReturn.append("\n");
                 tabbedReturn.append(tabsOnLine);
                 tabbedReturn.append("…");
@@ -380,13 +361,15 @@ public class RemixEdFilter extends DocumentFilter {
 
     /**
      * Is there text on the line after this point? Spaces do not count.
-     * @param pos The position in the document.
+     *
+     * @param pos         The position in the document.
+     * @param textSegment The segment holding the whole document text.
      * @return True iff there is a non-space character on the remainder of the line.
      */
-    private boolean moreTextOnLine(int pos) throws BadLocationException {
+    private boolean moreTextOnLine(int pos, Segment textSegment) {
         boolean more = false;
         while (pos < textSegment.count) {
-            char ch = getAChar(pos);
+            char ch = getAChar(pos, textSegment);
             if (ch == '\n')
                 break;
             if (ch != ' ') {
@@ -401,11 +384,13 @@ public class RemixEdFilter extends DocumentFilter {
     /**
      * Does the line we are currently on contain the word before the current pos.
      * The word must be at the start of the line, or following a ":".
-     * @param pos the position of the current line
-     * @param word the word we are searching for
+     *
+     * @param pos         the position of the current line
+     * @param word        the word we are searching for
+     * @param textSegment The segment holding the whole document text.
      * @return True iff the currently line contains the word.
      */
-    private boolean lineContains(int pos, String word) {
+    private boolean lineContains(int pos, String word, Segment textSegment) {
         int wordLength = word.length();
         pos -= wordLength;
         char[] charRun = new char[wordLength];
@@ -414,7 +399,7 @@ public class RemixEdFilter extends DocumentFilter {
             String run = new String(charRun);
             if (run.contains("\n"))
                 return false;
-            if (run.equals(word) && (pos == 0 || (": \n\t".indexOf(getAChar(pos - 1)) > 0)))
+            if (run.equals(word) && (pos == 0 || (": \n\t".indexOf(getAChar(pos - 1, textSegment)) > 0)))
                 return true;
             pos--;
         }
@@ -424,13 +409,15 @@ public class RemixEdFilter extends DocumentFilter {
     /**
      * Check to see if the position is inside a string.
      * Uses the naive approach of counting the number of " before.
-     * @param pos
+     *
+     * @param pos The position.
+     * @param textSegment The segment holding the whole document text.
      * @return true if inside a string
      */
-    private boolean inString(int pos) {
+    private boolean inString(int pos, Segment textSegment) {
         int count = 0; // how many double quotes before here?
         for (int i = 0; i < pos; i++) {
-            char ch = getAChar(i);
+            char ch = getAChar(i, textSegment);
             if (ch == '"')
                 count++;
         }
