@@ -105,11 +105,11 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         return programLibrary;
     }
 
-    /** LIBRARY STRING? */
+    /** LIBRARY string? */
     @Override
     public LibraryExpression visitLibraryName(RemixParser.LibraryNameContext ctx) {
-        if (ctx.STRING() != null) {
-            String libName = ctx.STRING().getText();
+        if (ctx.string() != null) {
+            String libName = ctx.string().getText();
             libName = libName.substring(1, libName.length() - 1); // strip off quotes
             try {
                 Class libClass = Class.forName(libName);
@@ -198,6 +198,9 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
                     libraryExpression = programLibIdentifiers.get(varValueExpression.getName());
                 else try { // fall back on attempting to evaluate the library expression
                     Context contextForLib = new Context(LibrariesAndCompletions.getBaseLibrary(), null);
+                    // add any existing functions which may "include aLibrary"
+                    programLibrary.setActiveLines(LibraryExpression.ALLLINES); // so any functions in this can be used
+                    contextForLib.addLibraryToStack(programLibrary);
                     libraryExpression = (LibraryExpression) libExp.evaluate(contextForLib);
                 } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException |
                          VarNotFoundException | FunctionNotFoundException _) {}
@@ -738,10 +741,10 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         return produceBooleanExpression(ctx.BOOLEAN().getText());
     }
 
-    /** STRING (from expression) */
+    /** string (from expression) */
     @Override
     public Expression visitExprString(RemixParser.ExprStringContext ctx) {
-        return produceStringExpression(ctx.STRING().getText());
+        return produceStringExpression(ctx.string().getText());
     }
 
     /** blockOfStatements (from expression) */
@@ -861,10 +864,10 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         return produceBooleanExpression(ctx.BOOLEAN().getText());
     }
 
-    /** STRING (from callPart) */
+    /** string (from callPart) */
     @Override
     public Expression visitCallString(RemixParser.CallStringContext ctx) {
-        return produceStringExpression(ctx.STRING().getText());
+        return produceStringExpression(ctx.string().getText());
     }
 
     /** blockOfStatements (from callPart) */
@@ -1017,7 +1020,7 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.KeyValueContext keyValue) {
-                String key = keyValue.STRING().getText(); // key());
+                String key = keyValue.string().getText(); // key());
                 key = key.substring(1,key.length() - 1); // chop off "s at both ends
                 Expression value = (Expression)visit(keyValue.value());
                 map.put(key, value);

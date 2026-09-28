@@ -80,8 +80,8 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     @Override
     public LibraryExpression visitLibraryName(RemixParser.LibraryNameContext ctx) {
         LibraryExpression library;
-        if (ctx.STRING() != null) {
-            String libName = ctx.STRING().getText();
+        if (ctx.string() != null) {
+            String libName = ctx.string().getText();
             libName = libName.substring(1, libName.length() - 1); // strip off quotes
             try {
                 Class libClass = Class.forName(libName);
@@ -673,10 +673,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return produceBooleanExpression(ctx.BOOLEAN().getText());
     }
 
-    /** STRING (from expression) */
+    /** string (from expression) */
     @Override
     public Expression visitExprString(RemixParser.ExprStringContext ctx) {
-        return produceStringExpression(ctx.STRING().getText());
+        return produceStringExpression(ctx.string().getText());
     }
 
     /** blockOfStatements (from expression) */
@@ -801,10 +801,10 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return produceBooleanExpression(ctx.BOOLEAN().getText());
     }
 
-    /** STRING (from callPart) */
+    /** string (from callPart) */
     @Override
     public Expression visitCallString(RemixParser.CallStringContext ctx) {
-        return produceStringExpression(ctx.STRING().getText());
+        return produceStringExpression(ctx.string().getText());
     }
 
     /** blockOfStatements (from callPart) */
@@ -985,7 +985,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.KeyValueContext keyValue) {
-                String key = keyValue.STRING().getText(); // key());
+                String key = keyValue.string().getText(); // key());
                 key = key.substring(1,key.length() - 1); // chop off "s at both ends
                 Expression value = (Expression)visit(keyValue.value());
                 map.put(key, value);

@@ -19,7 +19,9 @@ library				: libraryName LBLOCK EOL* ( functionDefinition
 												| setConstant
 												| usingStatement )* RBLOCK ;
 
-libraryName			: LIBRARY STRING? ;
+string				: STRING_START STRING_TEXT* STRING_END ;
+
+libraryName			: LIBRARY string? ;
 
 libAssignment		: CONSTANT COLON library ;
 
@@ -111,7 +113,7 @@ expression			: MINUS expression						# exprMinus
 					| WORDPRODUCT			# exprWordProduct
 					| NULL					# exprNull
 					| BOOLEAN				# exprBoolean
-					| STRING				# exprString
+					| string				# exprString
 					| blockOfStatements		# exprBlock
 					| list					# exprList
 					| map					# exprMap
@@ -139,7 +141,7 @@ callPart			: WORD									# callWord
 					| WORDPRODUCT							# callWordProduct
 					| NULL									# callNull
 					| BOOLEAN								# callBoolean
-					| STRING								# callString
+					| string								# callString
 					| blockOfStatements						# callBlock
 					| list									# callList
 					| map									# callMap
@@ -159,7 +161,7 @@ listContents		: (expression (COMMA expression)*)?	# commaList
  					| LBLOCK EOL* keyValue (separator EOL* keyValue)* RBLOCK EOL? # blockMap
 					;
 
- keyValue			: STRING COLON value ;
+ keyValue			: string COLON value ;
 
 // key				: WORD | STRING ;
  value				: expression ;

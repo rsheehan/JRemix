@@ -162,3 +162,24 @@ may be used.
 
 For correct EvalVisitor and EvalVisitorForEditor processing when doing completions or running
 I think the best thing is to have "include" as a keyword and the eval visitor constructs a visitInclude expression
+----------
+
+Considering what functions to have as key actions and what
+to have in the RemixDocumentFilter.
+
+Key Actions
+===========
+Completion handling - this is invoked via shift-tab.
+Auto tab - invoked via tab
+Auto indentation - invoked via return
+
+RemixDocumentFilter
+===================
+Auto pair e.g. {}, [], (), "", '' could be moved here since if there
+Auto modify - when last character is typed make text change
+is selected text the characters go around it.
+Deleting () when a  {}, number, CONSTANT, "string" or 'variable' is typed within it
+
+I need to add some sort of error handling.
+In particular there should be a way of continuing after an error in tests.
+

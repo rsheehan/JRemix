@@ -1,5 +1,6 @@
 package edu.fizz.remix.libraries;
 
+import edu.fizz.remix.editor.RemixEditorWindow;
 import edu.fizz.remix.runtime.*;
 
 import javax.swing.*;
@@ -428,7 +429,7 @@ public class Graphics extends LibraryExpression {
             animationBlock.setAnimationTimer(animationTimer);
             animationTimer.start();
             // register the animationBlock so the RemixEditor knows it
-//            RemixEditor.addAnimation(animationBlock);
+            RemixEditorWindow.addAnimation(animationBlock);
             return animationBlock;
         }
 
@@ -451,7 +452,7 @@ public class Graphics extends LibraryExpression {
             public void stopAnimation() {
                 stopped = true;
                 animationTimer.stop();
-//                RemixEditor.indicateAnAnimationFinished();
+                RemixEditorWindow.indicateAnAnimationFinished();
             }
 
             public void setAnimationTimer(Timer animationTimer) {

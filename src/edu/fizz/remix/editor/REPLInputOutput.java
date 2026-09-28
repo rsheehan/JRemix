@@ -399,7 +399,7 @@ public class REPLInputOutput extends JTextArea {
             if (offset >= targetLen) {
                 String match = doc.getText(offset - targetLen, targetLen) + input; // existing plus new char
                 if (match.equals(target)) {
-                    String replacement = RemixStyledDocument.operators.get(target);
+                    String replacement = AutoModify.operators.get(target);
                     if ("π√²".contains(replacement)) {
                         // if the previous character is a word character don't do the replacement
                         int pos = offset - targetLen - 1;
@@ -433,7 +433,7 @@ public class REPLInputOutput extends JTextArea {
                 int newPos = afterPossibleCopy(fb, offset);
                 setCaretPosition(newPos);
 
-                for (String target : RemixStyledDocument.operators.keySet()) {
+                for (String target : AutoModify.operators.keySet()) {
                     if (replaceOperator(fb, target, str, offset)) {
                         return;
                     }

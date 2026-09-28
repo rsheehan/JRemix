@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -13,16 +14,18 @@ import java.util.List;
 
 public class RemixApp extends JFrame {
 
+    private static final String REMIX = "Remix";
+
     public static REPLInputOutput remixOutput;
     public static String currentDirectory = "remixPrograms";
 
-    private final List<RemixEditorWindow> listOfWindows = new ArrayList<RemixEditorWindow>();
+    private final List<RemixEditorWindow> listOfWindows = new ArrayList<>();
 
     LightThemeAction lightThemeAction;
     DarkThemeAction darkThemeAction;
 
     public RemixApp() {
-        super("Remix");
+        super(REMIX);
 
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = createFileMenu();
@@ -32,6 +35,8 @@ public class RemixApp extends JFrame {
         menuBar.add(editMenu);
         JMenu viewMenu = createViewMenu();
         menuBar.add(viewMenu);
+        JMenu windowMenu = createWindowMenu();
+        menuBar.add(windowMenu);
 
         remixOutput = new REPLInputOutput();
         remixOutput.append(REPLInputOutput.INFOSTRING);
@@ -56,6 +61,7 @@ public class RemixApp extends JFrame {
     }
 
     public void editorWindowClosed(RemixEditorWindow window) {
+        window.dispose();
         listOfWindows.remove(window);
     }
 
@@ -63,7 +69,7 @@ public class RemixApp extends JFrame {
         public NewFileAction() { super("New file in editor");}
 
         public void actionPerformed(ActionEvent event) {
-            RemixEditorWindow editorWindow = new RemixEditorWindow(RemixApp.this, remixOutput, lightThemeAction.isEnabled());
+            RemixEditorWindow editorWindow = new RemixEditorWindow(RemixApp.this, lightThemeAction.isEnabled());
             listOfWindows.add(editorWindow);
             editorWindow.newFileInWindow();
             Rectangle bounds = RemixApp.this.getBounds();
@@ -91,7 +97,7 @@ public class RemixApp extends JFrame {
                 }
                 // create new RemixEditorWindow
                 // and read in file
-                RemixEditorWindow editorWindow = new RemixEditorWindow(RemixApp.this, remixOutput, lightThemeAction.isEnabled());
+                RemixEditorWindow editorWindow = new RemixEditorWindow(RemixApp.this, lightThemeAction.isEnabled());
                 Rectangle bounds = RemixApp.this.getBounds();
                 boolean successful = editorWindow.openFileInWindow(remFile);
                 if (successful) {
@@ -118,14 +124,14 @@ public class RemixApp extends JFrame {
         return menu;
     }
 
-    class NewFindAcrossAction extends AbstractAction {
+    static class NewFindAcrossAction extends AbstractAction {
         public NewFindAcrossAction() { super("Find (across all windows)");}
 
         public void actionPerformed(ActionEvent event) {
         }
     }
 
-    class FindAgainAction extends AbstractAction {
+    static class FindAgainAction extends AbstractAction {
         public FindAgainAction() { super("Find again");}
 
         public void actionPerformed(ActionEvent event) {
@@ -153,7 +159,7 @@ public class RemixApp extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             for (RemixEditorWindow window : listOfWindows) {
-                window.setDarkTheme(true);
+                window.setDark(true);
             }
             remixOutput.setDarkMode(true);
             lightThemeAction.setEnabled(true);
@@ -171,7 +177,7 @@ public class RemixApp extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             for(RemixEditorWindow window : listOfWindows){
-                window.setDarkTheme(false);
+                window.setDark(false);
             }
             remixOutput.setDarkMode(false);
             darkThemeAction.setEnabled(true);
@@ -179,7 +185,63 @@ public class RemixApp extends JFrame {
         }
     }
 
+
     /***********************************/
+
+    private JMenu createWindowMenu() {
+        JMenu menu = new JMenu("Windows");
+        // Populate the menu dynamically when it is clicked
+        menu.addMenuListener(new javax.swing.event.MenuListener() {
+            @Override
+            public void menuSelected(javax.swing.event.MenuEvent e) {
+                populateWindowMenu(menu);
+            }
+
+            @Override
+            public void menuDeselected(javax.swing.event.MenuEvent e) {}
+
+            @Override
+            public void menuCanceled(javax.swing.event.MenuEvent e) {}
+        });
+
+        return menu;
+    }
+
+    /**
+     Helper method to clear and rebuild the window list dynamically
+     */
+    private static void populateWindowMenu(JMenu windowMenu) {
+        windowMenu.removeAll(); // Clear old items
+
+        // Get all frames managed by the application
+        Frame[] frames = Frame.getFrames();
+
+        for (Frame frame : frames) {
+            // Create a menu item using the window's title
+            String title = frame.getTitle();
+            if (frame.isDisplayable() && !title.equals(REMIX)) {
+
+                JMenuItem menuItem = new JMenuItem(title);
+
+                // Add action listener to bring the frame to focus
+                menuItem.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // Bring window to front and restore it if minimized
+                        if (frame.getState() == Frame.ICONIFIED) {
+                            frame.setState(Frame.NORMAL);
+                        }
+                        frame.toFront();
+                        frame.requestFocus();
+                    }
+                });
+
+                windowMenu.add(menuItem);
+            }
+        }
+    }
+
+    /*-----------------------------------*/
 
     /**
      * Create the GUI and show it.  For thread safety,
@@ -194,7 +256,7 @@ public class RemixApp extends JFrame {
         System.setErr(new PrintStream(new TextAreaOutputStream(remixOutput)));
     }
 
-    public static void main(String[] args) {
+    static void main() {
         try {
             LibrariesAndCompletions.prepareEnvironment();
             LibrariesAndCompletions.resetToEditorStandard();
