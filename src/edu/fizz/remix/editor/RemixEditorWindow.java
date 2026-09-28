@@ -39,8 +39,8 @@ public class RemixEditorWindow extends JFrame {
     private Popup docPopup;
     private final JPanel docPanel = new JPanel();
     protected JTextArea docArea;
+    private RemixEdAntlrLexer edLexer;
     protected Point popupScreenLocation = null;
-//    boolean moveToParam = false;
 
     private HashMap<Object, Action> actions;
     private final CaretListenerLabel caretListenerLabel;
@@ -57,9 +57,7 @@ public class RemixEditorWindow extends JFrame {
     private RedoAction redoAction;
     private final RevealUndoManager undo = new RevealUndoManager();
 
-//    private boolean editing = true;
-
-    private RemixEdLexer edLexer;
+//    private RemixEdLexer edLexer;
     private static String untitledName = "untitled";
     private String currentFileName;
     private String currentAbsoluteFileName = null;
@@ -67,6 +65,8 @@ public class RemixEditorWindow extends JFrame {
     private final REPLInputOutput programOutput;
     private final DocumentListener documentListener;
     private final RemixEdFilter filter;
+
+    private final TextLineNumber lineNumbers;
 
     public RemixEditorWindow(RemixApp remixApp, REPLInputOutput remixOutput, boolean darkTheme) {
         programOutput = remixOutput;
@@ -76,7 +76,7 @@ public class RemixEditorWindow extends JFrame {
         editorTextPane.addKeyListener(new CatchKeys());
         editorTextPane.setMargin(new Insets(5, 10, 5, 10));
         theDocument = setUpStylesAndSpacing(editorTextPane, defaultFontForScreen, 21, darkTheme);
-        edLexer = new RemixEdLexer(theDocument, darkTheme);
+//        edLexer = new RemixEdLexer(theDocument, darkTheme);
 
         // Define the keystroke for Tab
         KeyStroke tabKey = KeyStroke.getKeyStroke("TAB");
@@ -88,7 +88,7 @@ public class RemixEditorWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int caretPos = editorTextPane.getCaretPosition();
                 try {
-                    System.out.println(theDocument.getText(0, theDocument.getLength()));
+//                    System.out.println(theDocument.getText(0, theDocument.getLength()));
 
                     if (filter.couldInsertTab(caretPos)) {
                         // Insert a standard tab character into the document
@@ -109,7 +109,7 @@ public class RemixEditorWindow extends JFrame {
         theDocument.setDocumentFilter(filter);
 
         JScrollPane editorScrollPane = new JScrollPane(editorTextPane);
-        TextLineNumber lineNumbers = new TextLineNumber(editorTextPane);
+        lineNumbers = new TextLineNumber(editorTextPane);
         editorScrollPane.setRowHeaderView(lineNumbers);
 
         add(editorScrollPane, BorderLayout.CENTER);
@@ -152,14 +152,6 @@ public class RemixEditorWindow extends JFrame {
         return currentFileName;
     }
 
-//    public boolean isEditing() {
-//        return editing;
-//    }
-//
-//    public void setEditing(boolean editing) {
-//        this.editing = editing;
-//    }
-
     class CatchKeys extends KeyAdapter {
 
         @Override
@@ -192,8 +184,6 @@ public class RemixEditorWindow extends JFrame {
         textPane.setFont(baseFont); // previously "Monaco" on Mac
         document = new RemixStyledDocument(this, textPane);
         textPane.setStyledDocument(document);
-//        edLexer = new RemixEdLexer(document, darkTheme);
-//        document.setEdLexer(edLexer);
 
         // set up the tabs
         StyleContext sc = StyleContext.getDefaultStyleContext();
@@ -211,6 +201,8 @@ public class RemixEditorWindow extends JFrame {
         MutableAttributeSet lineSet = new SimpleAttributeSet();
         StyleConstants.setLineSpacing(lineSet, 0.25f);
         textPane.setParagraphAttributes(lineSet, false);
+
+        edLexer = new RemixEdAntlrLexer(document, true);
         return document;
     }
 
@@ -262,7 +254,7 @@ public class RemixEditorWindow extends JFrame {
             // turn on document updates
             theDocument.addDocumentListener(documentListener);
 //            theDocument.setEdLexer(edLexer);
-            edLexer.fullLex();
+//            edLexer.fullLex();
             myReader.close();
             editorTextPane.setCaretPosition(0);
             addKeystrokeActions();
@@ -486,20 +478,20 @@ public class RemixEditorWindow extends JFrame {
             RemixEdLexer printEdLexer;
             JTextPane printTextPane = new JTextPane();
             document = setUpStylesAndSpacing(printTextPane, defaultFontForPrinter, 15, false);
-            printEdLexer = new RemixEdLexer(document, false);
+//            printEdLexer = new RemixEdLexer(document, false);
             String textInDocument;
             try {
                 textInDocument = theDocument.getText(0, theDocument.getLength());
                 document.insertString(0, textInDocument, null);
-                printEdLexer.fullLex();
+//                printEdLexer.fullLex();
             } catch (BadLocationException e) {
                 throw new RuntimeException(e);
             }
-            try {
-                printEdLexer.fullLex();
-            } catch (BadLocationException e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+//                printEdLexer.fullLex();
+//            } catch (BadLocationException e) {
+//                throw new RuntimeException(e);
+//            }
             PrinterJob job = PrinterJob.getPrinterJob();
             job.setPrintable(printTextPane.getPrintable(
                     null, // currentFileName == null ? null : new MessageFormat(currentFileName),
@@ -855,8 +847,6 @@ public class RemixEditorWindow extends JFrame {
                 AbstractDocument.DefaultDocumentEvent event =
                         (AbstractDocument.DefaultDocumentEvent) undo.peekUndo();
                 undo.undo();
-//                System.out.println("length after undo: " + theDocument.getLength());
-//                System.out.println("length of undo: " + event.getLength());
 //                edLexer.lexAfterUndoRedo(event, true); // REINSTATE THIS
 //                edLexer.lexFromHere(event.getOffset());
             } catch (CannotUndoException ex) { // | BadLocationException ex) {
@@ -890,8 +880,10 @@ public class RemixEditorWindow extends JFrame {
             try {
                 AbstractDocument.DefaultDocumentEvent event =
                         (AbstractDocument.DefaultDocumentEvent) undo.peekRedo();
+                CaretListener[] listeners = editorTextPane.getCaretListeners();
+
                 undo.redo();
-//                edLexer.lexFromHere(event.getOffset());//lexAfterUndoRedo(event, false);
+//                edLexer.lexAfterUndoRedo(event, false);
             } catch (CannotRedoException ex) { //| BadLocationException ex) {
                 return;
             }
@@ -926,7 +918,7 @@ public class RemixEditorWindow extends JFrame {
 
     protected void setDarkTheme(boolean dark) {
         setTextPaneTheme(dark);
-        edLexer = new RemixEdLexer(theDocument, dark);
+//        edLexer = new RemixEdLexer(theDocument, dark);
 //        theDocument.setEdLexer(edLexer);
 //        try {
 //            edLexer.fullLex();
@@ -947,18 +939,25 @@ public class RemixEditorWindow extends JFrame {
         public void caretUpdate(CaretEvent event) {
             int mark = event.getMark();
             displayPositionInfo(mark);
-            Rectangle2D rect;
             int docLength = ((JTextComponent)event.getSource()).getDocument().getLength();
             if (docLength == 0) {
                 caretPoint = new Point(10, 5);
                 return;
             }
-            try {
-                rect = ((JTextComponent)event.getSource()).modelToView2D(mark);
-            } catch (BadLocationException e) {
-                throw new RuntimeException(e);
-            }
-            caretPoint = new Point((int)rect.getX(), (int)rect.getY());
+
+            // problem appears to be the call to modelToView2D
+            // state update problem - NOPE
+            SwingUtilities.invokeLater(() -> {
+                Rectangle2D rect;
+                try {
+//                    JTextComponent source = (JTextComponent)event.getSource();
+                    rect = editorTextPane.modelToView2D(mark);
+                } catch (BadLocationException e) {
+                    System.err.println("BadLocation in CaretListener.");
+                    return;
+                }
+                caretPoint = new Point((int)rect.getX(), (int)rect.getY());
+            });
         }
 
         protected void displayPositionInfo(final int mark) {
@@ -975,8 +974,8 @@ public class RemixEditorWindow extends JFrame {
                 lastLine = lineNumber;
                 setText("line: " + lineNumber +
                                 ", line offset: " + (mark - startOfLine) +
-                                ", offset from start: " + mark +
-                                ", style: " + edLexer.getStyleName(mark));
+                                ", offset from start: " + mark); // +
+//                                ", style: " + edLexer.getStyleName(mark));
 //            });
         }
     }
@@ -1000,7 +999,7 @@ public class RemixEditorWindow extends JFrame {
 
         @Override
         public void insertUpdate(DocumentEvent documentEvent) {
-            System.out.println("insertUpdate: " + documentEvent.getLength());
+//            System.out.println("insertUpdate: " + documentEvent.getLength());
             // first hacky attempt at moving cursor to the correct spot after [] has been replace with
             // a block, indentation and a '...'.
             String changedText = "";
@@ -1008,7 +1007,7 @@ public class RemixEditorWindow extends JFrame {
             if (documentEvent.getType() == DocumentEvent.EventType.INSERT) {
                 try {
                     changedText = changedText(documentEvent);
-                    System.out.println(changedText);
+//                    System.out.println(changedText);
                 } catch (BadLocationException e) {
                     return;
                 }
@@ -1030,6 +1029,7 @@ public class RemixEditorWindow extends JFrame {
                 }
             }
             removedPair = false;
+            edLexer.highlighter();
         }
 
         private boolean matchStringFromArray(String input, String[] possibles) {
@@ -1042,18 +1042,14 @@ public class RemixEditorWindow extends JFrame {
 
         @Override
         public void removeUpdate(DocumentEvent documentEvent) {
-            System.out.println("removeUpdate document length: " + documentEvent.getLength());
-//            try {
-//                String changedText = changedText(documentEvent);
-//                System.out.println(changedText);
-//            } catch (BadLocationException e) {}
+//            System.out.println("removeUpdate document length: " + documentEvent.getLength());
             if (documentEvent.getLength() == 2)
                 removedPair = true; // a flag to say a pair of chars removed
         }
 
         @Override
         public void changedUpdate(DocumentEvent documentEvent) {
-            System.out.println("changedUpdate");
+//            System.out.println("changedUpdate");
         }
 
         private void moveCursorOnByOne(DocumentEvent documentEvent) {

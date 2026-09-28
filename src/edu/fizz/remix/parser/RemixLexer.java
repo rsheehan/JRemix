@@ -465,7 +465,7 @@ public class RemixLexer extends Lexer {
 		"\u00c7\u00ce\u00d5\u00dc\u00e3\u00ea\u00f1\u00f5\u00fd\u0103\u0105\u0107"+
 		"\u010f\u0120\u0131\u013a\u0147\u0151\u0163\u0187\u0192\u019c\u01a6\u01ba"+
 		"\u01c0\u01c2\u01c9\u01d2\u01d5\u01db\u01df\u01e4\u01ea\u01ec\u01f0\u01f6"+
-		"\u01f8\u0001\u0006\u0000\u0000";
+		"\u01f8\u0001\u0000\u0001\u0000";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

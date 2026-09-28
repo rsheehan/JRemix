@@ -3,11 +3,18 @@ package edu.fizz.remix.editor;
 import edu.fizz.remix.runtime.LibrariesAndCompletions;
 
 import javax.swing.*;
+import javax.swing.event.CaretListener;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.text.*;
 import java.util.ArrayList;
 import java.util.Map;
 
 public class RemixStyledDocument extends DefaultStyledDocument {
+    public JTextPane getTextPane() {
+        return textPane;
+    }
+
     private final JTextPane textPane;
     public static final Map<String, String> operators = Map.ofEntries(
             Map.entry(" *", " ×"),
@@ -33,6 +40,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     protected final RemixEditorWindow editor;
     private final Style defaultStyle = getStyle("default");
 //    private RemixEdLexer edLexer;
+//    private RemixEdAntlrLexer edLexer;
 
     private CompletionInfo completionsHere = null;
     private Style completionStyle = defaultStyle;
@@ -40,6 +48,7 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     public RemixStyledDocument(RemixEditorWindow editor, JTextPane textPane) {
         this.editor = editor;
         this.textPane = textPane;
+//        edLexer = new RemixEdAntlrLexer(this, true);
     }
 
 //    public void setEdLexer(RemixEdLexer edLexer) {
@@ -82,8 +91,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     for a single call to super.insertString.
      */
     public void insertStringNoLex(int offset, String text, AttributeSet style) throws BadLocationException {
-//        completionsHere = null; // now always done, repeated completions come from "shift TAB" handler
-//        completionStyle = defaultStyle;
         clearCompletions();
         super.insertString(offset, text, defaultStyle);
     }
@@ -92,41 +99,64 @@ public class RemixStyledDocument extends DefaultStyledDocument {
     public void remove(int offset, int length) throws BadLocationException {
         clearCompletions();
         super.remove(offset, length);
-//        completionsHere = null; // otherwise deleting a character doesn't regenerate completions
-//        completionStyle = defaultStyle;
     }
 
     @Override
     public void replace(int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
         clearCompletions();
+        // try going to start of line
         super.replace(offset, length, text, attrs); // this will indirectly invoke the RemixEdFilter
+//        edLexer.highlighter(getText(0, getLength()));
     }
-
-    private boolean setterBefore(int pos) throws BadLocationException {
-        boolean result = false;
-        if (pos > 6) {
-            if (getText(pos - 1, 1).equals("s"))
-                pos = pos - 1;
-            if (getText(pos - 6, 6).equals("getter"))
-                result = true;
-        }
-        return result;
-    }
-
-    /* Is the offset position surrounded by parentheses? */
-    private boolean surroundedByParens(int offset) throws BadLocationException {
-        if (offset > 0 && offset < getLength()) {
-            String before = getText(offset - 1, 1);
-            String after = getText(offset, 1);
-            return before.equals("(") && after.equals(")");
-        }
-        return false;
-    }
-
 //    private boolean inStringOrComment(int pos) {
 //        String styleName = edLexer.getStyleName(pos);
 //        return styleName.equals("string") || styleName.equals("comment");
 //    }
+
+//    private void replaceWithoutListeners(int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+    public void setCharacterAttributes(int offset, int length, AttributeSet style, boolean replace) {
+        // 1. Save and remove DocumentListeners
+        DocumentListener[] docListeners = getDocumentListeners();
+        for (DocumentListener listener : docListeners) {
+            removeDocumentListener(listener);
+        }
+
+        // 2. Save and remove UndoableEditListeners
+        UndoableEditListener[] undoListeners = getUndoableEditListeners();
+        for (UndoableEditListener listener : undoListeners) {
+            removeUndoableEditListener(listener);
+        }
+
+        // Save and remove caretListeners?
+        CaretListener[] caretListeners = textPane.getCaretListeners();
+        for (CaretListener listener : caretListeners) {
+            textPane.removeCaretListener(listener);
+        }
+
+        try {
+            // 3. Apply the changes safely while locked
+            writeLock();
+            super.setCharacterAttributes(offset, length, style, replace);
+        } finally {
+            writeUnlock();
+
+            for (CaretListener caretListener : caretListeners) {
+                textPane.addCaretListener(caretListener);
+            }
+
+//            textPane.getCaret().setDot(offset + text.length());
+
+            // 4. Restore DocumentListeners
+            for (DocumentListener listener : docListeners) {
+                addDocumentListener(listener);
+            }
+
+//            // 5. Restore UndoableEditListeners
+//            for (UndoableEditListener listener : undoListeners) {
+//                addUndoableEditListener(listener);
+//            }
+        }
+    }
 
     public void clearCompletions() {
         completionsHere = null;
@@ -186,7 +216,6 @@ public class RemixStyledDocument extends DefaultStyledDocument {
                 splitPos = completionAndDoc.indexOf('\n');
                 completionText = completionAndDoc.substring(0, splitPos);
                 completionComment = completionAndDoc.substring(splitPos + 1);
-                // couldn't call super.replace as that calls back into this class
                 super.replace(completionsHere.offset, seedLength, completionText, completionStyle);
 //                super.remove(completionsHere.offset, seedLength);
 //                super.insertString(completionsHere.offset, completionText, completionStyle);

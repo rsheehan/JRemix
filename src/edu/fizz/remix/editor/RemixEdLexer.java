@@ -29,20 +29,23 @@ public class RemixEdLexer {
     private final Segment textSegment = new Segment();
 
     private static final List<String> keywords = Arrays.asList("return", "redo", "create", "extend", "ME", "MY",
-            "setter", "setters", "getter", "getters", "getter/setter", "getters/setters", "library", "using", "uses");
+                                                               "setter", "setters", "getter", "getters", "getter/setter", "getters/setters", "library", "using", "uses");
 
     private static final List<String> literalWords = Arrays.asList("true", "false", "null");
 
     private static boolean firstWordChar(char c) {
         return !".()[\\]{,}:;—…'’⊕+-*×÷%=≠<≤>≥0123456789π~↲\" \t\n".contains(Character.toString(c));
     }
+
     // no longer allow "-" in
     private static boolean wordChar(char c) {
         return !".()[\\]{,}:;—…'’⊕+*×÷%=≠<≤>≥π~↲\" \t\n".contains(Character.toString(c));
     }
+
     private static boolean isSeparator(char c) {
         return ".:,…({[)}]".contains(Character.toString(c));
     }
+
     // currently missing '/' in operator list
     private static boolean isOperator(char c) {
         return "⊕+-*×÷%<>=≤≥≠".contains(Character.toString(c));
@@ -62,16 +65,16 @@ public class RemixEdLexer {
         }
         defaultStyle.addAttributes(attr);
         if (dark) {
-            variableColour = new Color(255,255,200);
+            variableColour = new Color(255, 255, 200);
             constantColour = new Color(100, 200, 255);
-            singleQuoteColour = new Color(70,70,70);
+            singleQuoteColour = new Color(70, 70, 70);
             stringColour = new Color(255, 200, 200);
             operatorColour = Color.green;
             literalColour = Color.cyan;
         } else {
             variableColour = new Color(0, 100, 150);
             constantColour = new Color(100, 0, 255);
-            singleQuoteColour = new Color(185,185,185);
+            singleQuoteColour = new Color(185, 185, 185);
             stringColour = new Color(200, 10, 200);
             operatorColour = new Color(0, 150, 0);
             literalColour = new Color(205, 127, 50);
@@ -83,11 +86,11 @@ public class RemixEdLexer {
         // singleQuote
         singleQuote = makeStyle("singleQuote", singleQuoteColour, false, false, defaultStyle);
         // parentheses
-        parentheses = makeStyle("parentheses", new Color(150,150,250), false, false, defaultStyle);
+        parentheses = makeStyle("parentheses", new Color(150, 150, 250), false, false, defaultStyle);
         // comment from here to end of line
-        comment = makeStyle("comment",new Color(170,121,66), true, false, defaultStyle);
+        comment = makeStyle("comment", new Color(170, 121, 66), true, false, defaultStyle);
         // multiline comment from starting "=" to ending "="
-        multilineComment = makeStyle("multilineComment",new Color(170,121,66), false, false, defaultStyle);
+        multilineComment = makeStyle("multilineComment", new Color(170, 121, 66), false, false, defaultStyle);
         // operator text
         operator = makeStyle("operator", operatorColour, false, false, defaultStyle); // was italic
         // literals
@@ -99,7 +102,7 @@ public class RemixEdLexer {
         // separator
         separator = makeStyle("separator", Color.magenta, false, false, defaultStyle);
         // error
-        error = makeStyle("error", Color.red, false, false, defaultStyle );
+        error = makeStyle("error", Color.red, false, false, defaultStyle);
         StyleConstants.setBackground(error, Color.red);
     }
 
@@ -118,37 +121,37 @@ public class RemixEdLexer {
      * Goes to start of a selected line and relexes the code from
      * here until no more changes are necessary.
      * Needs to take into account multiline comments and strings.
+     *
      * @param start the location inside the line to start lexing
      * @return the location after all necessary changes have been made
      */
     public void lexFromHere(final int start) { // throws BadLocationException {
         SwingUtilities.invokeLater(() -> {
-           String styleName;
+            String styleName;
             int pos = 0;
             try {
                 pos = startOfLine(start);
                 if (pos == 0) {
-                   styleName = "default";
-               } else // the style at the end of the previous line
-                   styleName = getStyleName(pos - 1);
-               if (styleName.equals("multilineComment")) {
-                   pos = dealWithMultiLineComment(pos);
-               } else if (styleName.equals("string")) {
-                   pos = dealWithString(pos);
-               }
-               // deal with rest of line
-               pos = lexUntilEndOfLine(pos);
-               pos = lexOverFollowingMultilineCommentLines(pos);
-               pos = lexOverFollowingMultilineStrings(pos);
+                    styleName = "default";
+                } else // the style at the end of the previous line
+                    styleName = getStyleName(pos - 1);
+                if (styleName.equals("multilineComment")) {
+                    pos = dealWithMultiLineComment(pos);
+                } else if (styleName.equals("string")) {
+                    pos = dealWithString(pos);
+                }
+                pos = lexUntilEndOfLine(pos);
+                pos = lexOverFollowingMultilineCommentLines(pos);
+                pos = lexOverFollowingMultilineStrings(pos);
             } catch (BadLocationException e) {
                 System.err.println("Bad location");
             }
-       });
-//        return pos;
+        });
     }
 
     /**
      * Find the position at the start of this line.
+     *
      * @param pos the position
      * @return the position at the start of the line containing pos
      */
@@ -165,6 +168,7 @@ public class RemixEdLexer {
     /**
      * Keeps relexing over lines if they were originally inside a
      * multiline comment block.
+     *
      * @param pos must be start of a line
      * @return first position of line not a comment line
      */
@@ -174,7 +178,7 @@ public class RemixEdLexer {
             return pos;
         }
         String lineStartStyle = getStyleName(pos);
-        while (pos < docLength && (lineStartStyle.equals("multilineComment")  || lineStartStyle.equals("comment") || defaultTabsEqual(pos))) {
+        while (pos < docLength && (lineStartStyle.equals("multilineComment") || lineStartStyle.equals("comment") || defaultTabsEqual(pos))) {
             pos = lexUntilEndOfLine(pos);
             lineStartStyle = getStyleName(pos);
         }
@@ -184,6 +188,7 @@ public class RemixEdLexer {
     /**
      * Keeps relexing over lines if they were originally inside a
      * multiline string.
+     *
      * @param pos must be start of a line
      * @return first position of line not starting with a string
      */
@@ -200,6 +205,7 @@ public class RemixEdLexer {
 
     /**
      * Check to see if the starting pos is just tabs before '='
+     *
      * @param pos the position
      * @return true if this is the start of a multiline comment
      */
@@ -219,6 +225,7 @@ public class RemixEdLexer {
     /**
      * Keep lexing from pos until a newline or end of doc is reached.
      * Can go over more than one line if we encounter multiline comments or strings.
+     *
      * @param pos the position to start lexing from
      * @return the position after the end of the line
      */
@@ -237,6 +244,7 @@ public class RemixEdLexer {
      * The main lexing function.
      * Lexes from pos until a lexical type has been dealt with.
      * Must move pos on before returning.
+     *
      * @param pos the start position
      * @return the position after this run
      */
@@ -249,7 +257,7 @@ public class RemixEdLexer {
         if (isStartOfLine(pos)) {
             int tabPos = pos;
             pos = gobbleTabs(pos);
-            document.setCharacterAttributes(tabPos,pos - tabPos, defaultStyle, false);
+            document.setCharacterAttributes(tabPos, pos - tabPos, defaultStyle, false);
             ch = getChar(pos);
             switch (ch) {
                 case ' ' -> { // spaces not allowed at the start of lines (even after tabs)
@@ -314,21 +322,22 @@ public class RemixEdLexer {
         }
     }
 
-//    public void lexAfterUndoRedo(AbstractDocument.DefaultDocumentEvent event, boolean undoing) throws BadLocationException {
-//        String type = event.getType().toString();
-//        int offset = event.getOffset();
-//        int length = event.getLength();
-//        if (undoing && type.equals("REMOVE") || !undoing && type.equals("INSERT")) {
-//            // we are inserting
-//            lexFromHere(offset);
-////            int pos = lexFromHere(offset);
-////            if (pos - offset < length) {
-////                System.out.println("should do more lexing?");
-////            }
-//        } else if (undoing && type.equals("INSERT") || !undoing && type.equals("REMOVE")) {
-//            lexFromHere(offset);
-//        }
-//    }
+    public void lexAfterUndoRedo(AbstractDocument.DefaultDocumentEvent event, boolean undoing) {
+        String type = event.getType().toString();
+        int offset = event.getOffset();
+        int length = event.getLength();
+        if (undoing && type.equals("REMOVE") || !undoing && type.equals("INSERT")) {
+            // we are inserting
+            lexFromHere(offset);
+
+    //            int pos = lexFromHere(offset);
+    //            if (pos - offset < length) {
+    //                System.out.println("should do more lexing?");
+    //            }
+        } else if (undoing && type.equals("INSERT") || !undoing && type.equals("REMOVE")) {
+            lexFromHere(offset);
+        }
+    }
 
     public void fullLex() throws BadLocationException {
 //        RemixEditor.systemOutput.setText("");
@@ -355,7 +364,8 @@ public class RemixEdLexer {
 
     /**
      * Move past any tabs.
-     * @param pos   the position to start inspecting for tabs
+     *
+     * @param pos the position to start inspecting for tabs
      * @return the first position not a tab or else the document length
      */
     private int gobbleTabs(int pos) throws BadLocationException {
@@ -373,7 +383,7 @@ public class RemixEdLexer {
             if (ch != ' ')
                 break;
         }
-        document.setCharacterAttributes(spacePos, pos - spacePos, defaultStyle,false);
+        document.setCharacterAttributes(spacePos, pos - spacePos, defaultStyle, false);
         return pos;
     }
 
@@ -438,6 +448,7 @@ public class RemixEdLexer {
     /**
      * Starting at the next character after pos keep going until the string
      * finishes or end of document.
+     *
      * @param pos the position
      * @return the position after the concluding "
      */

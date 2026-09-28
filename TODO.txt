@@ -1,9 +1,19 @@
-Problem before going away.
-The docPopUp in RemixEditorWindow no longer appears.
-Completions are produced but the popup is not showing.
-Then there are errors after restarting completions.
-Try:
-apply (then shift-tab)
+If enter "abcdefg" then newline
+I can undo and redo ok but if I undo back to an empty doc then the first redo is amazingly slow.
+I have also currently removed the CaretListener.
+
+Entering a keystroke
+	replace called in RemixStyledDocument
+	then replace in RemixEdFilter
+	this calls replace in the filterBypass
+	leading to insertUpdate* in the RemixDocumentListener of RemixEditorWindow
+	(and insertUpdate in TextLineNumber)
+		*this could cause a caret update
+		which calls highlighter on the RemixEdAntlrLexer
+		which calls setCharacterAtrributes in RemixStyledDocument
+
+this causes the body of lexFromHere to be invoked on the EventQueue thread
+	trying to see what happens if not invoked later
 
 Error when editing
 ab (insert a newline then do undo and we crash)

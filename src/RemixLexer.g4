@@ -18,12 +18,12 @@ COMMA				: ',' ;
 ENDPRINT			: '~' ;
 PRINTLN				: ('\\n' | '↲') ;
 
-SPACE				: (' ' | '\t') -> skip ;
+SPACE				: (' ' | '\t') -> channel(HIDDEN) ;
 CONT				: ( // also used to help deal with PreProcess output
 					'\n' '\t'* ELLIPSIS
 					|
 					ELLIPSIS
-					) -> skip ;
+					) -> channel(HIDDEN) ;
 
 fragment ELLIPSIS	: '...' | '…' ;
 
@@ -40,7 +40,7 @@ COMMENT				: (
 					COMMENT_SECTION // lines surrounded with "="
 					|
 					REMAINING_COMMENT // everything on a line following ';'
-					) -> skip ;
+					) -> channel(HIDDEN) ;
 
 fragment COMMENT_LINE		: EOL '\t'* '-' ~'\n'* ;
 fragment COMMENT_SECTION	: EOL '\t'* '=' .*? EOL '\t'* '=' ~'\n'* ;
@@ -88,4 +88,4 @@ fragment CHARACTER	: ~[.()[\]{,};:—⫾…'" ~\t\n↲] ; // ⊕+*×÷%=≠<≤>
 
 fragment CAPITAL 	: [A-Z\u0391-\u03A9] ; // Roman and Greek capital letters
 
-EMPTYIDENTIFIER		: ('\'\'') -> skip ; // only used to prevent lex error in the editor
+EMPTYIDENTIFIER		: ('\'\'') -> channel(HIDDEN) ; // only used to prevent lex error in the editor

@@ -1,20 +1,20 @@
-=
-Should the libraryStack be associated with blocks rather than function calls?
-=
-
-A-LIB : library
-	lib func one :
-		"lib func one"
+a person called 'name' :
+	create
+		'name' : 'name'
+		'age' : 0
 		
-	lib func two ↲
+		setter
+			'age'
+			
+		ME to string :
+			'result' : "Name: " ⊕ 'name'
+			if ('age' > 0) 
+				'result' ⊕ ", Age: " ⊕ 'age'
+			… otherwise 
+				'result'
 
-A-LIB ↲
-
--using A-LIB
-
-lib func two :
-	lib func one ⊕ " lib func two"
-
-A-LIB ↲
-
-lib func two ↲
+'Robert' : a person called "Robert"
+'Robert' ↲
+↲
+'Robert' age 68
+'Robert' ↲

@@ -15,12 +15,12 @@ public class RemixEdFilter extends DocumentFilter {
     public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
             throws BadLocationException {
         if (string == null) return;
-        System.out.println("filter insert: " + string);
+//        System.out.println("filter insert: " + string);
         fb.insertString(offset, string, attr);
     }
 
     private final RemixStyledDocument document;
-    private RemixEdLexer edLexer;
+//    private RemixEdLexer edLexer;
 
     public RemixEdFilter(RemixStyledDocument document) {
         this.document = document;
@@ -78,7 +78,7 @@ public class RemixEdFilter extends DocumentFilter {
     @Override
     public void remove(FilterBypass fb, int offset, int length)
             throws BadLocationException {
-        System.out.println("filter remove: " + length);
+//        System.out.println("filter remove: " + length);
         Segment textSegment = new Segment();
         document.getText(0, document.getLength(), textSegment);
 
@@ -143,6 +143,8 @@ public class RemixEdFilter extends DocumentFilter {
                     if (removeParens(offset, length, opening, textSegment)) {
                         offset--;
                         fb.remove(offset, length + 2);
+                    } else {
+                        fb.remove(offset, length);
                     }
                     fb.insertString(offset, text + matchingPairs.get(text), attrs);
                     return true;
@@ -203,9 +205,6 @@ public class RemixEdFilter extends DocumentFilter {
     }
 
     private char getAChar(int offset, Segment textSegment) {
-//        try {
-//            document.getText(0, document.getLength(), this.textSegment);
-//        } catch (BadLocationException e) {}
         return textSegment.array[offset];
     }
 
@@ -335,7 +334,8 @@ public class RemixEdFilter extends DocumentFilter {
             offset--; // removed opening [ as well
             fb.remove(offset, length + 2);
             tabbedReturn.append("\t");
-            if (moreTextOnLine(offset, textSegment)) {
+            // textSegment not updated yet
+            if (moreTextOnLine(offset + length + 2, textSegment)) {
                 tabbedReturn.append("\n");
                 tabbedReturn.append(tabsOnLine);
                 tabbedReturn.append("…");
@@ -422,10 +422,6 @@ public class RemixEdFilter extends DocumentFilter {
                 count++;
         }
         return count % 2 != 0;
-    }
-
-    public void setEdLexer(RemixEdLexer edLexer) {
-        this.edLexer = edLexer;
     }
 
     /*

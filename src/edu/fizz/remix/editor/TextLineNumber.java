@@ -396,7 +396,7 @@ public class TextLineNumber extends JPanel
     @Override
     public void changedUpdate(DocumentEvent e)
     {
-        documentChanged();
+        //documentChanged();
     }
 
     @Override
