@@ -37,7 +37,7 @@ public class REPLInputOutput extends JTextArea {
     public REPLInputOutput() {
         doc = (AbstractDocument) getDocument();
         doc.setDocumentFilter(new FilterLineInput());
-        setFont(new Font("Courier New", Font.PLAIN, 14));
+        setFont(new Font("Courier New", Font.PLAIN, 15));
         setDarkMode(true);
         setLineWrap( true );
         setWrapStyleWord( true );
@@ -108,7 +108,7 @@ public class REPLInputOutput extends JTextArea {
         actionMap.put(commandCActionName, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // This code executes when Command + C is pressed
+                // This code executes when Command shift + C is pressed
                 setText(null); // clearTextArea();
             }
         });

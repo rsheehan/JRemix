@@ -44,9 +44,9 @@ public class RemixTextArea extends RSyntaxTextArea {
 
     boolean editorContentSaved = true;
 
-    public RemixTextArea() { // called for printing
+    public RemixTextArea(Font font) { // called for printing
         super(20, 60);
-        setFont(defaultFontForPrinting);
+        setFont(font);
         setSyntaxEditingStyle("text/Remix");
     }
 

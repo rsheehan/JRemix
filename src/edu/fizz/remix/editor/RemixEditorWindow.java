@@ -333,7 +333,7 @@ public class RemixEditorWindow extends JFrame {
     }
 
     public void printWithCustomStyle() {
-        RemixTextArea printTextArea = new RemixTextArea();
+        RemixTextArea printTextArea = new RemixTextArea(RemixTextArea.defaultFontForPrinting);
         int targetFontSize = printTextArea.getFont().getSize();
         Color targetBgColor = Color.white;
         printTextArea.setSyntaxScheme(createRemixScheme(printTextArea));
