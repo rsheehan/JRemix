@@ -1,0 +1,18 @@
+- A simple demo
+
+a person called 'name' :
+	create
+		'type' : "person"
+		'name' : 'name'
+		
+		introduce ME to 'other' :
+			"Dear ", 'other' ~
+			", I am pleased to present ", 'name', "." ↲
+		
+		ME to string :
+			'name'
+
+'r' : a person called "Robert"
+
+introduce 'r' to "James"
+'r', " is a ", type of 'r' ↲

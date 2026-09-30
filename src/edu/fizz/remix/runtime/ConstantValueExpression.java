@@ -41,14 +41,13 @@ public class ConstantValueExpression implements Expression, NamedExpression {
             if (nextResult != null) { // not in this lib
                 if (result == null) { // no previous match
                     result = nextResult;
-                    previousMatchingLibrary = library;
                 } else { // existing match
                     // TODO could do a better check for equality than the name
                     if (!previousMatchingLibrary.getLibName().equals(library.getLibName())) {
                         System.err.format("Warning: Constant \"%s\" has multiple values.%n", constantName);
                     }
-                    previousMatchingLibrary = library;
                 }
+                previousMatchingLibrary = library;
             }
         }
         if (result == null) {

@@ -1,3 +1,7 @@
+=
+	Example showing returning two values from a method
+	using var parameters.
+=
 #given_name and #family_name from 'name' :
 	#given_name : ""
 	#family_name : ""
@@ -5,7 +9,7 @@
 	for each 'character' in 'name'
 		when
 			[ 'character' = SPACE ] do [ 'first' : false ]
-			[ 'first' ] do [ #given_name : #given_name ⊕ 'character' ]
+			[ 'first' ]             do [ #given_name : #given_name ⊕ 'character' ]
 			#family_name : #family_name ⊕ 'character'
 
 'forename' and 'surname' from "James Bond"

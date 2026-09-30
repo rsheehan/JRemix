@@ -66,7 +66,7 @@ public class Runtime {
         }
 
         @Override
-        protected Object doInBackground() throws FunctionNotFoundException {
+        protected Object doInBackground() {
             Object result = null;
 //            REPLRunning = true;
             try {
@@ -81,10 +81,7 @@ public class Runtime {
                 System.err.println(" while running REPL.");
             } catch (StackOverflowError e) {
                 System.err.println();
-//            } catch (FunctionNotFoundException e) {
-//                System.err.println("\tFunction not found while running REPL.");
             }
-//            REPLRunning = false;
             return result;
         }
 

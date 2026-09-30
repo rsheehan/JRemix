@@ -21,8 +21,8 @@ public class AutoTab {
                     System.out.println("autoTabAction inStringOrComment shouldn't happen 1");
                     throw new RuntimeException(ex);
                 }
-                int lineNum = 0;
-                int startOfLine = 0;
+                int lineNum;
+                int startOfLine;
                 try {
                     lineNum = textArea.getLineOfOffset(caretPos);
                     startOfLine = textArea.getLineStartOffset(lineNum);
@@ -36,6 +36,7 @@ public class AutoTab {
                 int endOfSelection = textArea.getSelectionEnd();
                 if (startOfSelection != endOfSelection) {
                     // a selected area
+                    assert currentLine != null;
                     selectedNextParam(textArea, currentLine, lineNum, endOfSelection - startOfLine, startOfLine);
                     return;
                 } else if (atStartOfLine(currentLine, offsetInLine)) {
@@ -49,6 +50,7 @@ public class AutoTab {
                     }
 //                    selectedNextParam(textArea, currentLine, lineNum, 0, startOfLine);
                 }
+                assert currentLine != null;
                 selectedNextParam(textArea, currentLine, lineNum, offsetInLine, startOfLine);
             }
         };
@@ -70,18 +72,19 @@ public class AutoTab {
             if (line.endsWith("\n")) {
                 String nextLine = AutoUtil.extractLine(textArea, lineNum + 1);
                 // iterate through line
+                assert nextLine != null;
                 int tabCount = AutoUtil.numberOfTabs(nextLine);
                 int nextLength = nextLine.length();
-                char ch = nextLine.charAt(tabCount);
-                if ((nextLength > tabCount && ch == '…') ||
-                        (nextLength > tabCount + 2 &&
-                                nextLine.substring(tabCount, tabCount + 3).equals("..."))) {
-                    line = nextLine;
-                    lineNum++;
-                    try {
-                        startOfLine = textArea.getLineStartOffset(lineNum);
-                    } catch (BadLocationException e) {
-                        System.out.println("selectedNextParam shouldn't happen");
+                if (!nextLine.isEmpty()) {
+                    char ch = nextLine.charAt(tabCount);
+                    if (ch == '…' || nextLength > tabCount + 2 && nextLine.startsWith("...", tabCount)) {
+                        line = nextLine;
+                        lineNum++;
+                        try {
+                            startOfLine = textArea.getLineStartOffset(lineNum);
+                        } catch (BadLocationException e) {
+                            System.out.println("selectedNextParam shouldn't happen");
+                        }
                     }
                 }
             }
@@ -93,18 +96,18 @@ public class AutoTab {
         char open = 0;
         char close = 0;
         int start = line.length();
-        int openPos = -1;
+        int openPos;
         // find soonest pair of [] or ()
-            for (int i = 0; i < opening.length; i++) {
+        for (int i = 0; i < opening.length; i++) {
             char next = opening[i];
-            openPos = line.indexOf(next, posInLine + 1);
+            openPos = line.indexOf(next, posInLine);
             if (openPos >= 0 && openPos < start) {
                 open = next;
                 close = closing[i];
                 start = openPos;
             }
         }
-        int end = start;
+        int end;
         if (start < line.length()) {
             int extraLeft = 0;
             for (end = start + 2; end < line.length(); end++) {

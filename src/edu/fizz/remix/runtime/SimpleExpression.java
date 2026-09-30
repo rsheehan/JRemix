@@ -5,7 +5,7 @@ public class SimpleExpression<T> implements Expression {
      * So far T could be Number, String
      */
 
-    private T value;
+    private final T value;
 
     public SimpleExpression(T value) {
         this.value = value;

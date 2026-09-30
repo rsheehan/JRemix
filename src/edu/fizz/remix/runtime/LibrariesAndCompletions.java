@@ -74,13 +74,6 @@ public class LibrariesAndCompletions {
         RemixPrepareRun.REPLContext = new Context(baseLibrary, Runtime.REPL);
     }
 
-    //    /** Print the names of all the functions. */
-//    public static void printFunctionNames() {
-//        for (String name : programLibrary.functionTable.keySet()) {
-//            System.out.println(name + ": " + completionNames(name, baseLibrary));
-//        }
-//    }
-
     /*
     List of completions from a constant.
      */

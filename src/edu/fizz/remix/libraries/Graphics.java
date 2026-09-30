@@ -73,26 +73,6 @@ public class Graphics extends LibraryExpression {
         return 0d;
     }
 
-//    public static final class GraphicsPanelFunction extends Function {
-//
-//        public GraphicsPanelFunction() {
-//            super(
-//                    List.of("open graphics panel"),
-//                    List.of(),
-//                    List.of(),
-//                    false,
-//                    "Open a graphics panel and return it."
-//            );
-//        }
-//
-//        @Override
-//        public Object execute(Context context) throws ReturnException, InterruptedException {
-//            // need to expand the panel
-//            RemixEditor.expandGraphicsPanel();
-//            return RemixEditor.getGraphicsPanel();
-//        }
-//    }
-
     public static final class WindowFunction extends Function {
 
         public WindowFunction() {

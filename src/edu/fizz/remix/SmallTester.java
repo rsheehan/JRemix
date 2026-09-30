@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.io.IOException;
 
 public class SmallTester {
-    public static void main(String[] args) throws IOException {
+    static void main() throws IOException {
         CharStream input = CharStreams.fromFileName("minilib.prerem");
         RemixLexer lexer = new RemixLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);

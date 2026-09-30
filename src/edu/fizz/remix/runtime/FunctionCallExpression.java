@@ -16,10 +16,6 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
     private final int lineNumber;
     private final int lineOffset;
 
-    public boolean isInEditor() {
-        return inEditor;
-    }
-
     public void setInEditor(boolean inEditor) {
         this.inEditor = inEditor;
     }

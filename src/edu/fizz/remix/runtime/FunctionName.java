@@ -62,6 +62,6 @@ public class FunctionName<T> {
     public List<Boolean> getBlockParams() { return blockParams; }
 
     public String singleName() {
-        return functionNames.get(0);
+        return functionNames.getFirst();
     }
 }

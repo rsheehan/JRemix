@@ -1,0 +1,18 @@
+- Find the max and min values from a list -
+
+find #max and #min from 'list' :
+	#min : 'list'{1}
+	#max : 'list'{1}
+	for each 'item' in 'list' 
+		if ('item' > #max) 
+			#max : 'item'
+		… otherwise
+			if ('item' < #min) 
+				#min : 'item'
+
+'list' : apply [random 1000] (100) times
+
+find 'max' and 'min' from 'list'
+
+"min : ", 'min' ↲
+"max : ", 'max' ↲

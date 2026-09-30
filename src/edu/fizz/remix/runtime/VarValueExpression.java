@@ -5,8 +5,8 @@ public class VarValueExpression implements Expression {
 
     private final String fileName;
     private final String varName;
-    private int lineNumber = 0;
-    private int offSet;
+    private int lineNumber;
+    private final int offSet;
 
     public VarValueExpression(String name, String fileName, int lineNumber, int offset) {
         varName = name;
@@ -21,7 +21,7 @@ public class VarValueExpression implements Expression {
 
     @Override
     public Object evaluate(Context context) throws VarNotFoundException, FunctionNotFoundException {
-        Object value = null;
+        Object value;
         try {
             value = context.retrieve(varName, false);
         } catch (VarNotFoundException e) {
@@ -51,7 +51,4 @@ public class VarValueExpression implements Expression {
         return offSet;
     }
 
-    public void setOffSet(int offSet) {
-        this.offSet = offSet;
-    }
 }

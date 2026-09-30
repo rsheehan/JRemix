@@ -53,29 +53,4 @@ public class RemixLexerToken {
     public static final int STRING_TEXT = 50;
     public static final int STRING_END = 51;
     public static final int STRING_INCOMPLETE = 52;
-
-//    private final int tokenNumber;
-
-//    RemixLexerToken(int tokenNumber) {
-//        this.tokenNumber = tokenNumber;
-//    }
-//
-//    // 1. Create a static map to store the relationships
-//    private static final Map<Integer, RemixLexerToken> BY_CODE = new HashMap<>();
-//
-//    // 2. Populate the map in a static block when the class loads
-//    static {
-//        for (RemixLexerToken status : values()) {
-//            BY_CODE.put(status.tokenNumber, status);
-//        }
-//    }
-//
-//    public int getTokenNumber() {
-//        return tokenNumber;
-//    }
-//
-//    // 3. Expose a public static method for reverse lookup
-//    public static RemixLexerToken fromToken(int code) {
-//        return BY_CODE.get(code); // Returns null if code doesn't exist
-//    }
 }

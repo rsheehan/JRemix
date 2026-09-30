@@ -214,7 +214,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
             colonPosition++; // because the comment existed
         }
         FunctionName<String> funcSig = (FunctionName<String>)visit(ctx.functionSignature());
-        boolean transparent = false;
+        boolean transparent;
         try {
             transparent = ctx.getChild(colonPosition).getText().equals(":");
         } catch (NullPointerException e) {
@@ -466,7 +466,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         String end = ctx.getChild(n-1).getText();
         boolean newline = "\\n↲".contains(end);
         int lineNumber = ctx.getStart().getLine() - 1;
-        return new PrintStatement(expressionList, newline, fileName, lineNumber);
+        return new PrintStatement(expressionList, newline);
     }
 
     /** expression ADD expression */

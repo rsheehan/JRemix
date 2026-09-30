@@ -44,6 +44,7 @@ public class AutoIndent {
                     lengthToRemove = lengthToRemove + 2;
                     caretPos--; // before [
                     caretPosInLine--;
+                    assert currentLine != null;
                     String restOfLine = currentLine.substring(caretPosInLine + lengthToRemove);
                     // append return followed by number of tabs from current line + 1
                     StringBuilder textToInsert = new StringBuilder("\n");
@@ -57,11 +58,11 @@ public class AutoIndent {
                     }
                     textArea.replaceRange(textToInsert.toString(), caretPos, caretPos + lengthToRemove);
                     textArea.setCaretPosition(caretPos + 1 + tabsThisLine + 1);
-//                    AutoUtil.positionCaret(textArea, caretPos + 1 + tabsThisLine + 1);
                     return;
                 }
                 StringBuilder newLineTabs = new StringBuilder("\n");
                 // does the return follow an indent keyword or symbol?
+                assert currentLine != null;
                 if (currentLine.length() > 1 &&
                         (matchTabFollowing(currentLine) ||
                         currentLine.startsWith("using ") ||

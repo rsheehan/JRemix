@@ -14,14 +14,10 @@ public class PrintStatement implements Expression {
 
     private final List<Expression> expressionList;
     private final boolean newline;
-    private final String fileName;
-    private final int lineNumber;
 
-    public PrintStatement(List<Expression> expressionList, boolean newline, String fileName, int lineNumber) {
+    public PrintStatement(List<Expression> expressionList, boolean newline) {
         this.expressionList = expressionList;
         this.newline = newline;
-        this.fileName = fileName;
-        this.lineNumber = lineNumber;
     }
 
     @Override

@@ -39,7 +39,7 @@ public class GraphicsLayerImage extends BufferedImage {
         if (filled) {
             imageG.setColor(fillColour);
             imageG.fill(positionedShape);
-        };
+        }
         if (outlined) {
             imageG.setColor(outlineColour);
             imageG.draw(positionedShape);
@@ -60,7 +60,7 @@ public class GraphicsLayerImage extends BufferedImage {
         if (filled) {
             imageG.setColor(fillColour);
             imageG.fillOval(centreX, centreY, diameter, diameter);
-        };
+        }
         if (outlined) {
             imageG.setColor(outlineColour);
             imageG.drawOval(centreX, centreY, diameter, diameter);

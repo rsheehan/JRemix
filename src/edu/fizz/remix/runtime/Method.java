@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Method extends RemixFunction {
 
-    private int selfRef = 0; // no self reference by default
+    private final int selfRef; // no self reference by default
     // multipleComments - only for completions when there are two methods with the same display name
     // and different comments.
     // These are all stored in the same
@@ -43,7 +43,7 @@ public class Method extends RemixFunction {
     }
 
     public void addDifferentComment(String displayName, String comment) {
-        if (comment == null || comment.equals(""))
+        if (comment == null || comment.isEmpty())
             return;
         if (methodDisplayName.equals(displayName)) {
             boolean same = false;

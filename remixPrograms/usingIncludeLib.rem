@@ -24,3 +24,17 @@ using include "remixPrograms/includeLibrary.rem"
 print 'O' ; should print "OV1 + OV2 = 6"
 
 "Finished" ↲
+
+= output
+inside using
+7
+making object
+11
+1
+12
+object
+	'OV2' : 4
+	'OV1' : 2
+OV1 + OV2 = 6
+Finished
+=

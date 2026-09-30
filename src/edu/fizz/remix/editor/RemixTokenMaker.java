@@ -27,9 +27,6 @@ public class RemixTokenMaker extends TokenMakerBase {
         CharStream input = CharStreams.fromString(line);
         RemixLexer lexer = new RemixLexer(input);
 
-//        System.out.println("initialTokenType: " + initialTokenType);
-//        System.out.println(line);
-
         // --- Restore state from the previous line ---
         switch (initialTokenType) {
             case RemixTokenTypes.COMMENT_MULTILINE -> lexer.pushMode(RemixLexer.IN_COMMENT);

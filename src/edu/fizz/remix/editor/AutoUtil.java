@@ -52,11 +52,10 @@ public class AutoUtil {
         if (token.getType() != TokenTypes.LITERAL_STRING_DOUBLE_QUOTE)
             return false;
 
-        pos--;
         // also collect the token of the character before the preceding character
-        while (pos > 0 && atStartOfLine(textArea, pos)) {
+        do {
             pos--;
-        }
+        } while (pos > 0 && atStartOfLine(textArea, pos));
         if (pos == 0)
             return true; // so pos - 1 was string, and nothing before
         token = textArea.getTokenListFor(pos - 1, pos - 1);
@@ -85,20 +84,6 @@ public class AutoUtil {
     }
 
     /*
-    Returns true iff pos is at the end of a line in the textArea.
-     */
-    public static boolean atEndOfLine(RemixTextArea textArea, int pos) throws BadLocationException {
-        int length = textArea.getText().length();
-        if (pos == length)
-            return true;
-        int lineNum = textArea.getLineOfOffset(pos);
-        int endOfLinePos = textArea.getLineEndOffset(lineNum);
-        if (pos == endOfLinePos - 1)
-            return true;
-        return false;
-    }
-
-    /*
     Returns true iff pos at the start of a line in the textArea.
      */
     public static boolean atStartOfLine(RemixTextArea textArea, int pos) throws BadLocationException {
@@ -114,8 +99,6 @@ public class AutoUtil {
         // Ensure position stays within valid bounds
         int safePosition = Math.max(0, Math.min(targetPosition, textArea.getDocument().getLength()));
 
-        SwingUtilities.invokeLater(() -> {
-            textArea.setCaretPosition(safePosition);
-        });
+        SwingUtilities.invokeLater(() -> textArea.setCaretPosition(safePosition));
     }
 }

@@ -2,6 +2,9 @@
 
 library
 	- Only accessible via a "using" block.
+	=-
+	Multiply 'A' by 2 and then add 'B'.
+	=-
 	two 'A' plus 'B' :
 		2'A' + 'B'
 

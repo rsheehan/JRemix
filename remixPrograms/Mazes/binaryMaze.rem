@@ -13,7 +13,7 @@ using graphics
 				'num' × 'size' + 'size' ÷ 2
 
 using graphics
-	'panel' : the graphics panel
+	'panel' : a graphics window
 	
 	'square' : a cell of size SCALE
 	'square' top-left {0, 0}

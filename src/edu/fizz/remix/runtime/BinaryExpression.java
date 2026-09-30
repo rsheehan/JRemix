@@ -74,37 +74,7 @@ public class BinaryExpression implements Expression {
                     return object1.equals(object2);
                 }
             } else if (val1 instanceof String || val2 instanceof String) {
-                String s1, s2;
-                s1 = String.valueOf(val1);
-                s2 = String.valueOf(val2);
-                boolean result = false;
-                switch (operator) {
-                    case "+", "-", "*", "×", "/", "÷", "%" ->
-                        throw new RuntimeException();
-                    case "=" -> result = s1.equals(s2);
-                    case "!=" -> result = !s1.equals(s2);
-                    case "<" -> {
-                        int diff = s1.compareTo(s2);
-                        if (diff < 0)
-                            result = true;
-                    }
-                    case "<=" -> {
-                        int diff = s1.compareTo(s2);
-                        if (diff <= 0)
-                            result = true;
-                    }
-                    case ">" -> {
-                        int diff = s1.compareTo(s2);
-                        if (diff > 0)
-                            result = true;
-                    }
-                    case ">=" -> {
-                        int diff = s1.compareTo(s2);
-                        if (diff >= 0)
-                            result = true;
-                    }
-                }
-                return result;
+                return comparisonResult(val1, val2);
             } else if (val1 instanceof Boolean && val2 instanceof Boolean) {
                 return switch (operator) {
                     case "=" -> val1 == val2;
@@ -169,6 +139,40 @@ public class BinaryExpression implements Expression {
             System.err.printf("\tError in binary expression: %s : %s %s %s.%n", this, val1, operator, val2);
             return false;
         }
+    }
+
+    private boolean comparisonResult(Object val1, Object val2) {
+        String s1, s2;
+        s1 = String.valueOf(val1);
+        s2 = String.valueOf(val2);
+        boolean result = false;
+        switch (operator) {
+            case "+", "-", "*", "×", "/", "÷", "%" ->
+                throw new RuntimeException();
+            case "=" -> result = s1.equals(s2);
+            case "!=" -> result = !s1.equals(s2);
+            case "<" -> {
+                int diff = s1.compareTo(s2);
+                if (diff < 0)
+                    result = true;
+            }
+            case "<=" -> {
+                int diff = s1.compareTo(s2);
+                if (diff <= 0)
+                    result = true;
+            }
+            case ">" -> {
+                int diff = s1.compareTo(s2);
+                if (diff > 0)
+                    result = true;
+            }
+            case ">=" -> {
+                int diff = s1.compareTo(s2);
+                if (diff >= 0)
+                    result = true;
+            }
+        }
+        return result;
     }
 
     @Override

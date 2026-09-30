@@ -4,14 +4,18 @@ import edu.fizz.remix.EvalVisitorForEditor;
 import edu.fizz.remix.runtime.LibrariesAndCompletions;
 import edu.fizz.remix.runtime.LibraryExpression;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.fife.ui.rsyntaxtextarea.*;
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
+import org.fife.ui.rtextarea.SearchContext;
+import org.fife.ui.rtextarea.SearchEngine;
 
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
@@ -23,19 +27,34 @@ public class RemixTextArea extends RSyntaxTextArea {
     }
 
     public static final int SIZE = 13; // 12 is small but gives 80 col printout on A4
+    public static final int PRINTSIZE = 9;
     public static final Font defaultFontForScreen = new Font("monospaced", Font.PLAIN, SIZE);
+    public static final Font defaultFontForPrinting = new Font("monospaced", Font.PLAIN, PRINTSIZE);
 
     RemixCompletions completionControl;
     CaretListener caretListener;
+
+    public boolean isEditorContentSaved() {
+        return editorContentSaved;
+    }
+
+    public void setEditorContentSaved(boolean editorContentSaved) {
+        this.editorContentSaved = editorContentSaved;
+    }
+
+    boolean editorContentSaved = true;
+
+    public RemixTextArea() { // called for printing
+        super(20, 60);
+        setFont(defaultFontForPrinting);
+        setSyntaxEditingStyle("text/Remix");
+    }
 
     public RemixTextArea(int rows, int cols) {
         super(rows, cols);
         setFont(defaultFontForScreen);
         setSyntaxEditingStyle("text/Remix");
         setBracketMatchingEnabled(true); // requires the token maker to provide getBracketPairs
-
-//        setCodeFoldingEnabled(false);
-//        setAntiAliasingEnabled(true);
 
         AutoPairer.enableAutoPair(this);
         AutoModify.enableAutoModify(this);
@@ -47,6 +66,22 @@ public class RemixTextArea extends RSyntaxTextArea {
 
         AbstractDocument doc = (AbstractDocument) getDocument();
         doc.setDocumentFilter(new RemixDocumentFilter(this));
+        doc.addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                editorContentSaved = false;
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                editorContentSaved = false;
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+
+            }
+        });
 
         // also key listener for when code is inserted
         // so that editor contents is set to changed.
@@ -66,6 +101,30 @@ public class RemixTextArea extends RSyntaxTextArea {
         }
     }
 
+    public void searchForward(SearchContext searchContext) {
+        boolean found = SearchEngine.find(this, searchContext).wasFound();
+        if (!found) {
+            int caretPos = getCaretPosition();
+            setCaretPosition(0); // go back to the beginning and try again
+            found = SearchEngine.find(this, searchContext).wasFound();
+            if (!found) {
+                setCaretPosition(caretPos); // restore caret
+            }
+        }
+    }
+
+    public void searchBack(SearchContext searchContext) {
+        boolean found = SearchEngine.find(this, searchContext).wasFound();
+        if (!found) {
+            int caretPos = getCaretPosition();
+            setCaretPosition(getDocument().getLength()); // go back to the beginning and try again
+            found = SearchEngine.find(this, searchContext).wasFound();
+            if (!found) {
+                setCaretPosition(caretPos); // restore caret
+            }
+        }
+    }
+
     /**
      * Removes the caret listener.
      * Calls replaceRange on the text area.
@@ -81,22 +140,8 @@ public class RemixTextArea extends RSyntaxTextArea {
         addCaretListener(caretListener);
     }
 
-//    /**
-//     * Removes the caret listener.
-//     * Calls insert on the text area.
-//     * Adds the caret listener back.
-//     * @param text the text to insert
-//     * @param pos the position to place the insert
-//     */
-//    public void insertNoCaretListener(String text, int pos) {
-//        removeCaretListener(caretListener);
-//        insert(text, pos);
-//        addCaretListener(caretListener);
-//    }
-
     public RemixEditorWindow getWindow() {
-        RemixEditorWindow window = (RemixEditorWindow) SwingUtilities.getWindowAncestor(this);
-        return window;
+        return (RemixEditorWindow) SwingUtilities.getWindowAncestor(this);
     }
 
     public Point getCaretScreenLocation() {
@@ -125,8 +170,8 @@ public class RemixTextArea extends RSyntaxTextArea {
         LibrariesAndCompletions.addLibrary(programLib);
          */
         LibrariesAndCompletions.addAfterBaseLibrary(programLib);
-        // the visit above fills in addedLibraries in LibrariesAndCompletions
-        // this the result program is added as well.
+        /* the visit above fills in addedLibraries in LibrariesAndCompletions
+        this the result program is added as well. */
     }
 
     private class CaretMove implements CaretListener {
@@ -138,9 +183,7 @@ public class RemixTextArea extends RSyntaxTextArea {
         @Override
         public void caretUpdate(CaretEvent event) {
             int mark = event.getMark();
-            Element root = getDocument().getDefaultRootElement();
-
-            int lineNumber = root.getElementIndex(mark);
+            int lineNumber = getLineNumber(mark);
             String line = AutoUtil.extractLine(RemixTextArea.this, lineNumber);
             int completionNumber = completionControl.completionNumber();
 
@@ -149,6 +192,7 @@ public class RemixTextArea extends RSyntaxTextArea {
                 completionControl.clearCompletions();
             } else { // same line number
                 boolean sameCompletion = completionNumber == lastCompletionNumber;
+                assert line != null;
                 boolean sameLineContents = line.equals(lastLine);
                 if (sameCompletion && !sameLineContents) { // changed
                     completionControl.clearCompletions();
@@ -158,5 +202,10 @@ public class RemixTextArea extends RSyntaxTextArea {
             lastLine = line;
             lastCompletionNumber = completionNumber;
         }
+    }
+
+    private int getLineNumber(int mark) {
+        Element root = getDocument().getDefaultRootElement();
+        return root.getElementIndex(mark);
     }
 }

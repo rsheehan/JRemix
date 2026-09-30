@@ -1,8 +1,10 @@
 using graphics, turtle
 	
+	MAXRAY : 200
+	
 	star explosion in 'space' :
 		'40 turtles' : a group of 40 turtles
-		'point' : random turtle point
+		'point' : random point inside MAXRAY from boundary
 		'angle' : 0
 		
 		for each 'turtle' in '40 turtles'
@@ -12,10 +14,17 @@ using graphics, turtle
 			
 		place '40 turtles' group in 'space'
 		'40 turtles' speed (4 + random 6)
-		move '40 turtles' (random from 50 to 200) steps
+		move '40 turtles' (random from 50 to MAXRAY) steps
 		clear 'space'
+	
+	random point inside 'distance' from boundary :
+		'point' : {
+			'distance' + random (STD-WIDTH - 2 × 'distance')
+			'distance' + random (STD-HEIGHT - 2 × 'distance')
+		}
+		panel coordinate 'point' to turtle coordinate
 		
 	'turtle space' : a turtle space in (a graphics window)
 
-repeat 200 times
+repeat 20 times
 	star explosion in 'turtle space'

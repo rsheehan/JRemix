@@ -1,12 +1,14 @@
 package edu.fizz.remix.editor;
 
 import edu.fizz.remix.runtime.LibrariesAndCompletions;
+import org.fife.ui.rtextarea.SearchContext;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -66,7 +68,10 @@ public class RemixApp extends JFrame {
     }
 
     class NewFileAction extends AbstractAction {
-        public NewFileAction() { super("New file in editor");}
+        public NewFileAction() {
+            super("New file in editor");
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.META_DOWN_MASK));
+        }
 
         public void actionPerformed(ActionEvent event) {
             RemixEditorWindow editorWindow = new RemixEditorWindow(RemixApp.this, lightThemeAction.isEnabled());
@@ -79,7 +84,10 @@ public class RemixApp extends JFrame {
     }
 
     class OpenFileAction extends AbstractAction {
-        public OpenFileAction() { super("Open file in editor");}
+        public OpenFileAction() {
+            super("Open file in editor");
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.META_DOWN_MASK));
+        }
 
         public void actionPerformed(ActionEvent event) {
             JFileChooser chooser = new JFileChooser(currentDirectory); // "Tests"); //
@@ -119,22 +127,36 @@ public class RemixApp extends JFrame {
         JMenu menu = new JMenu("Edit ");
         NewFindAcrossAction newFindAcross = new NewFindAcrossAction();
         menu.add(newFindAcross);
-        FindAgainAction findAgain = new FindAgainAction();
-        menu.add(findAgain);
+        ClearFindAcrossAction clearFindAcrossAction = new ClearFindAcrossAction();
+        menu.add(clearFindAcrossAction);
         return menu;
     }
 
-    static class NewFindAcrossAction extends AbstractAction {
+    class NewFindAcrossAction extends AbstractAction {
         public NewFindAcrossAction() { super("Find (across all windows)");}
 
         public void actionPerformed(ActionEvent event) {
+            String findWord = JOptionPane.showInputDialog(null, "Enter search term for all windows:");
+            SearchContext context = new SearchContext();
+            context.setSearchFor(findWord); // The word you want to highlight
+
+            for (RemixEditorWindow window : listOfWindows) {
+                if (window.highlightSearch(context))
+                    window.toFront();
+            }
         }
     }
 
-    static class FindAgainAction extends AbstractAction {
-        public FindAgainAction() { super("Find again");}
+    class ClearFindAcrossAction extends AbstractAction {
+        public ClearFindAcrossAction() { super("Clear find (across all windows)");}
 
         public void actionPerformed(ActionEvent event) {
+            SearchContext context = new SearchContext();
+            context.setSearchFor(""); // unhighlight
+
+            for (RemixEditorWindow window : listOfWindows) {
+                window.highlightSearch(context);
+            }
         }
     }
 
@@ -224,16 +246,13 @@ public class RemixApp extends JFrame {
                 JMenuItem menuItem = new JMenuItem(title);
 
                 // Add action listener to bring the frame to focus
-                menuItem.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // Bring window to front and restore it if minimized
-                        if (frame.getState() == Frame.ICONIFIED) {
-                            frame.setState(Frame.NORMAL);
-                        }
-                        frame.toFront();
-                        frame.requestFocus();
+                menuItem.addActionListener(_ -> {
+                    // Bring window to front and restore it if minimized
+                    if (frame.getState() == Frame.ICONIFIED) {
+                        frame.setState(Frame.NORMAL);
                     }
+                    frame.toFront();
+                    frame.requestFocus();
                 });
 
                 windowMenu.add(menuItem);

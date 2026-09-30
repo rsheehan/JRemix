@@ -61,7 +61,7 @@ public class RemixFiles extends LibraryExpression {
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
             String fileName = (String)context.retrieve("name", false);
-            String result = "";
+            String result;
             try {
                 result = Files.readString(Path.of(fileName));
             } catch (IOException e) {

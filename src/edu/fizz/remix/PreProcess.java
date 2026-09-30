@@ -240,16 +240,12 @@ public class PreProcess {
         gobbleToEndOfLine(reader, writer); // first line
         // if a "\t" then we will miss the "="
         do {
-            ch = reader.read();
-            if (ch == -1)
-                return;
-            writer.write((char)ch);
-            while (ch == '\t') {
+            do {
                 ch = reader.read();
                 if (ch == -1)
                     return;
-                writer.write((char)ch);
-            }
+                writer.write((char) ch);
+            } while (ch == '\t');
             if (ch == '=') {
                 break;
             }

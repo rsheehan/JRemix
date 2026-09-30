@@ -8,6 +8,7 @@ LIB : library
 - and is executed in order
 
 using LIB
+
 	lib func ↲
 	LIB-CONST ↲
 	
@@ -20,8 +21,8 @@ using LIB
 		"This is a function in the using block which calls" ↲ 
 		lib func
 
-lib func ↲
-LIB-CONST ↲
+-lib func ↲
+-LIB-CONST ↲
 
 inside use func ↲
 USING-CONST ↲
@@ -32,8 +33,8 @@ This is a constant in the library.
 This is a constant in the using block.
 This is a function in the using block which calls
  a function in the library.
-null
-null
+-null
+-null
 This is a function in the using block which calls
  a function in the library.
 This is a constant in the using block.
