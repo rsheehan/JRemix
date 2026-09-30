@@ -1,5 +1,5 @@
 # Remix
-![Remix Insertion Sort](images/RemixInsertionSort.png)
+![Remix Insertion Sort](images/RemixExample.png)
 ## This is the current Remix - implemented in Java
 Remix is a flexible programming language based around the idea of mix-fix (as opposed to pre-fix or post-fix) 
 function names. With as many space-separated words and parameters as you want in a function name you can make these 
@@ -8,7 +8,8 @@ transitioning it to running Remix code.
 
 Remix also allows spaces in variable names by wrapping variable names in single 'quotes'.
 
-When you add these together you can name a function by its pseudocode making minor changes to use as the real executable function name and function call.
+When you add these together you can name a function by its pseudocode making 
+minor changes to use it as the real executable function name and function call.
 e.g. the pseudocode:
 
     make a list of people from a file of names
@@ -57,8 +58,10 @@ More information about Remix can be found in this [presentation](https://github.
 The first half shows how Remix can be used to develop a program from pseudocode, the second half briefly describes the language.
 
 [Here](images/landscape.pdf) is an animated random landscape program in Remix. N.B. This is how it 
-appears in the Remix editor. In particular note the underlining of variable names.
+appears in the Remix editor.
 
 Remix has a simple library system which provides a measure of 
 encapsulation. Libraries can contain both Java and Remix functions as in the 
 graphics library used in the landscape example.
+
+I am still working on the Remix reference manual.
