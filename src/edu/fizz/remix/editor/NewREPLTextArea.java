@@ -361,6 +361,7 @@ public class NewREPLTextArea extends RemixTextArea {
             if (bothEndsInsideCodeSection(offset, offset + length)) {
                 if (inLastCodeSection(offset)) {
                     fb.remove(offset, length);
+                    return;
                 }
                 // should really copy the modified code to the end
                 // find code section
