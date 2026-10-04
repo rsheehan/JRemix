@@ -6,6 +6,8 @@ import edu.fizz.remix.runtime.LibraryExpression;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.Style;
+import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
@@ -24,6 +26,7 @@ public class RemixTextArea extends RSyntaxTextArea {
     static {
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping("text/Remix", "edu.fizz.remix.editor.RemixTokenMaker");
+        atmf.putMapping("text/RemixREPL", "edu.fizz.remix.editor.NewREPLTokenMaker");
     }
 
     public static final int SIZE = 13; // 12 is small but gives 80 col printout on A4
@@ -44,16 +47,16 @@ public class RemixTextArea extends RSyntaxTextArea {
 
     boolean editorContentSaved = true;
 
-    public RemixTextArea(Font font) { // called for printing
-        super(20, 60);
+    public RemixTextArea(Font font, boolean dark) { // called for printing
         setFont(font);
+        setDark(dark);
         setSyntaxEditingStyle("text/Remix");
+        setSyntaxScheme(createRemixScheme());
+        modifyScheme(dark);
     }
 
-    public RemixTextArea(int rows, int cols) {
-        super(rows, cols);
-        setFont(defaultFontForScreen);
-        setSyntaxEditingStyle("text/Remix");
+    public RemixTextArea(boolean dark) {
+        this(defaultFontForScreen, dark);
         setBracketMatchingEnabled(true); // requires the token maker to provide getBracketPairs
 
         AutoPairer.enableAutoPair(this);
@@ -82,11 +85,11 @@ public class RemixTextArea extends RSyntaxTextArea {
 
             }
         });
-
-        // also key listener for when code is inserted
-        // so that editor contents is set to changed.
     }
 
+    /*
+    Sets the basic background, foreground, highlight and caret colours.
+     */
     public void setDark(boolean dark) {
         if (dark) {
             setBackground(Color.black);
@@ -172,6 +175,65 @@ public class RemixTextArea extends RSyntaxTextArea {
         LibrariesAndCompletions.addAfterBaseLibrary(programLib);
         /* the visit above fills in addedLibraries in LibrariesAndCompletions
         this the result program is added as well. */
+    }
+
+    SyntaxScheme createRemixScheme() {
+        SyntaxScheme scheme = new SyntaxScheme(true);
+        Font defaultFont = getFont();
+
+        Font smallerFont = defaultFont.deriveFont(defaultFont.getSize() - 1f);
+        Font italicFont = smallerFont.deriveFont(Font.ITALIC);
+
+        org.fife.ui.rsyntaxtextarea.Style commentStyle = new org.fife.ui.rsyntaxtextarea.Style(new Color(170, 121, 66), null, italicFont);
+        org.fife.ui.rsyntaxtextarea.Style keywordStyle = new Style(Color.red);
+
+        scheme.setStyle(RemixTokenTypes.RESERVED_WORD, keywordStyle);
+        scheme.setStyle(RemixTokenTypes.COMMENT_EOL, commentStyle);
+        scheme.setStyle(RemixTokenTypes.COMMENT_MULTILINE, commentStyle);
+        return scheme;
+    }
+
+    /*
+    Modifies the scheme to either be light or dark.
+     */
+    void modifyScheme(boolean dark) {
+        Font defaultFont = getFont();
+        Font boldFont = defaultFont.deriveFont(Font.BOLD);
+        Style darkLiteralStyle = new Style(Color.cyan);
+        Style lightLiteralStyle = new Style(new Color(205, 127, 50));
+
+        SyntaxScheme scheme = getSyntaxScheme();
+        scheme.setStyle(RemixTokenTypes.CONSTANT,
+                        new Style(new Color(100, 200, 255), null, boldFont));
+        if (dark) {
+            scheme.setStyle(RemixTokenTypes.FUNCTION,
+                            new Style(Color.white));
+            scheme.setStyle(RemixTokenTypes.VARIABLE,
+                            new Style(new Color(255, 255, 200)));
+            scheme.setStyle(RemixTokenTypes.LITERAL_STRING_DOUBLE_QUOTE,
+                            new Style(new Color(255, 200, 200)));
+            scheme.setStyle(RemixTokenTypes.LITERAL_NUMBER_DECIMAL_INT,
+                            darkLiteralStyle);
+            scheme.setStyle(RemixTokenTypes.LITERAL_BOOLEAN,
+                            darkLiteralStyle);
+            scheme.setStyle(RemixTokenTypes.OPERATOR,
+                            new Style(Color.green));
+
+        } else {
+            scheme.setStyle(RemixTokenTypes.FUNCTION,
+                            new Style(Color.black));
+            scheme.setStyle(RemixTokenTypes.VARIABLE,
+                            new Style(new Color(0, 100, 150)));
+            scheme.setStyle(RemixTokenTypes.LITERAL_STRING_DOUBLE_QUOTE,
+                            new Style(new Color(200, 10, 200)));
+            scheme.setStyle(RemixTokenTypes.LITERAL_NUMBER_DECIMAL_INT,
+                            lightLiteralStyle);
+            scheme.setStyle(RemixTokenTypes.LITERAL_BOOLEAN,
+                            lightLiteralStyle);
+            scheme.setStyle(RemixTokenTypes.OPERATOR,
+                            new Style(new Color(205, 127, 50)));
+        }
+        repaint();
     }
 
     private class CaretMove implements CaretListener {

@@ -1,10 +1,7 @@
 package edu.fizz.remix.runtime;
 
 import edu.fizz.remix.EvalVisitorForEditor;
-import edu.fizz.remix.editor.REPLInputOutput;
-import edu.fizz.remix.editor.RemixApp;
-import edu.fizz.remix.editor.RemixEditorWindow;
-import edu.fizz.remix.editor.RemixPrepareRun;
+import edu.fizz.remix.editor.*;
 //import edu.fizz.remix.editor.RemixPrepareRunOld;
 
 import java.util.*;
@@ -900,7 +897,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             StringBuilder helpSB = new StringBuilder();
             if (what instanceof String whatString) {
                 if (whatString.equals("REPL")) {
-                    return REPLInputOutput.INFOSTRING;
+                    return NewREPLTextArea.INFOSTRING;
                 } else if (whatString.equals("CONSTANTS")) {
                     dealWithConstants(context.parentContext, helpSB);
                     int length = helpSB.length();

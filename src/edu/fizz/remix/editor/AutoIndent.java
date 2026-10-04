@@ -27,10 +27,16 @@ public class AutoIndent {
         Action autoIndentAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int caretPos;
-
                 int selectionStart = textArea.getSelectionStart();
                 int selectionEnd = textArea.getSelectionEnd();
+                int caretPos = textArea.getCaretPosition();
+                if (!AutoUtil.onlyInCodeSection(selectionStart,
+                                                selectionEnd,
+                                                caretPos,
+                                                textArea)) {
+                    return;
+                }
+
                 int lengthToRemove = selectionEnd - selectionStart;
                 if (lengthToRemove > 0) {
                     caretPos = selectionStart;

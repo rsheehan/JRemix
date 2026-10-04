@@ -8,6 +8,17 @@ import javax.swing.text.BadLocationException;
 
 public class AutoUtil {
 
+    public static boolean onlyInCodeSection(int selectionStart,
+                                            int selectionEnd,
+                                            int caretPos,
+                                            RemixTextArea textArea) {
+        if (textArea instanceof NewREPLTextArea replTextArea) {
+            return (replTextArea.bothEndsInsideCodeSection(selectionStart, selectionEnd) &&
+                replTextArea.insideCodeSection(caretPos));
+        }
+        return true;
+    }
+
     public static String extractLine(RemixTextArea textArea, int lineNumber) {
         try {
             // Line numbers usually start at 0

@@ -18,7 +18,8 @@ public class RemixApp extends JFrame {
 
     private static final String REMIX = "Remix";
 
-    public static REPLInputOutput remixOutput;
+//    public static REPLInputOutput remixOutput;
+    public static NewREPLTextArea remixOutput;
     public static String currentDirectory = "remixPrograms";
 
     private final List<RemixEditorWindow> listOfWindows = new ArrayList<>();
@@ -40,8 +41,10 @@ public class RemixApp extends JFrame {
         JMenu windowMenu = createWindowMenu();
         menuBar.add(windowMenu);
 
-        remixOutput = new REPLInputOutput();
-        remixOutput.append(REPLInputOutput.INFOSTRING);
+//        remixOutput = new REPLInputOutput();
+        remixOutput = new NewREPLTextArea(new Font("Courier New", Font.PLAIN, 15), lightThemeAction.isEnabled());
+
+//        remixOutput.append(REPLInputOutput.INFOSTRING);
         JScrollPane scrollPaneForOutput = new JScrollPane(remixOutput);
         add(scrollPaneForOutput,  BorderLayout.CENTER);
         setMinimumSize(new Dimension(600, 600));
@@ -183,7 +186,9 @@ public class RemixApp extends JFrame {
             for (RemixEditorWindow window : listOfWindows) {
                 window.setDark(true);
             }
-            remixOutput.setDarkMode(true);
+//            remixOutput.setDarkMode(true);
+            remixOutput.setDark(true);
+            remixOutput.modifyScheme(true);
             lightThemeAction.setEnabled(true);
             setEnabled(false);
         }
@@ -201,7 +206,9 @@ public class RemixApp extends JFrame {
             for(RemixEditorWindow window : listOfWindows){
                 window.setDark(false);
             }
-            remixOutput.setDarkMode(false);
+//            remixOutput.setDarkMode(false);
+            remixOutput.setDark(false);
+            remixOutput.modifyScheme(false);
             darkThemeAction.setEnabled(true);
             setEnabled(false);
         }

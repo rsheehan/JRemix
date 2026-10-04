@@ -17,7 +17,6 @@ public class RemixSwingWorker extends SwingWorker<Boolean, String> {
 
     @Override
     protected Boolean doInBackground() {
-//        BuiltInFunctionsLibrary.editorWindow = editor;
         RemixPrepareRun.runEditorText(this);
         return true; // can make it false on an error in the program
     }
@@ -30,15 +29,13 @@ public class RemixSwingWorker extends SwingWorker<Boolean, String> {
             RemixEditorWindow.waitForProgramFinish();
             editor.stopAction.setEnabled(false);
             editor.runAction.setEnabled(true);
-//            BuiltInFunctionsLibrary.editorWindow = null;
-//            editor.setEditing(true);
         });
         thread.start();
     }
 
-    public void publish(String output) {
-        super.publish(output);
-    }
+//    public void publish(String output) {
+//        super.publish(output);
+//    }
 
     @Override
     protected void process(List<String> chunks) {

@@ -3,8 +3,6 @@ package edu.fizz.remix.editor;
 import edu.fizz.remix.libraries.Graphics;
 import org.fife.ui.rsyntaxtextarea.HtmlUtil;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextAreaEditorKit;
-import org.fife.ui.rsyntaxtextarea.Style;
-import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
 import org.fife.ui.rtextarea.*;
 
 import javax.swing.*;
@@ -26,7 +24,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class RemixEditorWindow extends JFrame {
 
-    private final REPLInputOutput remixOutput;
+//    private final REPLInputOutput remixOutput;
+    private final NewREPLTextArea remixOutput;
     private final RemixTextArea editorTextArea;
     private final RTextScrollPane lineNumberPane;
     private static String untitledName = "untitled";
@@ -93,13 +92,12 @@ public class RemixEditorWindow extends JFrame {
     public RemixEditorWindow(RemixApp remixApp, boolean darkTheme) {
         super("untitled");
         this.remixOutput = RemixApp.remixOutput;
-        editorTextArea = new RemixTextArea(60, 90);
+        editorTextArea = new RemixTextArea(darkTheme);
         lineNumberPane = new RTextScrollPane(editorTextArea);
 
         JPanel remixPanel = new JPanel(new BorderLayout());
         remixPanel.add(lineNumberPane, BorderLayout.CENTER);
 
-        editorTextArea.setSyntaxScheme(createRemixScheme(editorTextArea));
         setDark(darkTheme);
 
         //Set up the menu bar.
@@ -151,6 +149,7 @@ public class RemixEditorWindow extends JFrame {
 
     public void setDark(boolean dark) {
         editorTextArea.setDark(dark);
+        editorTextArea.modifyScheme(dark);
         Gutter gutter = lineNumberPane.getGutter();
         if (dark) {
             editorTextArea.setSelectionColor(new Color(100, 100, 100));
@@ -161,63 +160,6 @@ public class RemixEditorWindow extends JFrame {
             gutter.setBackground(Color.white);
             gutter.setLineNumberColor(Color.blue);
         }
-        modifyScheme(dark, editorTextArea);
-    }
-
-    private SyntaxScheme createRemixScheme(RemixTextArea textArea) {
-        SyntaxScheme scheme = new SyntaxScheme(true);
-        Font defaultFont = textArea.getFont();
-
-        Font smallerFont = defaultFont.deriveFont(defaultFont.getSize() - 1f);
-        Font italicFont = smallerFont.deriveFont(Font.ITALIC);
-
-        Style commentStyle = new Style(new Color(170, 121, 66), null, italicFont);
-        Style keywordStyle = new Style(Color.red);
-
-        scheme.setStyle(RemixTokenTypes.RESERVED_WORD, keywordStyle);
-        scheme.setStyle(RemixTokenTypes.COMMENT_EOL, commentStyle);
-        scheme.setStyle(RemixTokenTypes.COMMENT_MULTILINE, commentStyle);
-        return scheme;
-    }
-
-    private void modifyScheme(boolean dark, RemixTextArea textArea) {
-        Font defaultFont = textArea.getFont();
-        Font boldFont = defaultFont.deriveFont(Font.BOLD);
-        Style darkLiteralStyle = new Style(Color.cyan);
-        Style lightLiteralStyle = new Style(new Color(205, 127, 50));
-
-        SyntaxScheme scheme = textArea.getSyntaxScheme();
-        scheme.setStyle(RemixTokenTypes.CONSTANT,
-                        new Style(new Color(100, 200, 255), null, boldFont));
-        if (dark) {
-            scheme.setStyle(RemixTokenTypes.FUNCTION,
-                            new Style(Color.white));
-            scheme.setStyle(RemixTokenTypes.VARIABLE,
-                            new Style(new Color(255, 255, 200)));
-            scheme.setStyle(RemixTokenTypes.LITERAL_STRING_DOUBLE_QUOTE,
-                            new Style(new Color(255, 200, 200)));
-            scheme.setStyle(RemixTokenTypes.LITERAL_NUMBER_DECIMAL_INT,
-                            darkLiteralStyle);
-            scheme.setStyle(RemixTokenTypes.LITERAL_BOOLEAN,
-                            darkLiteralStyle);
-            scheme.setStyle(RemixTokenTypes.OPERATOR,
-                            new Style(Color.green));
-
-        } else {
-            scheme.setStyle(RemixTokenTypes.FUNCTION,
-                            new Style(Color.black));
-            scheme.setStyle(RemixTokenTypes.VARIABLE,
-                            new Style(new Color(0, 100, 150)));
-            scheme.setStyle(RemixTokenTypes.LITERAL_STRING_DOUBLE_QUOTE,
-                            new Style(new Color(200, 10, 200)));
-            scheme.setStyle(RemixTokenTypes.LITERAL_NUMBER_DECIMAL_INT,
-                            lightLiteralStyle);
-            scheme.setStyle(RemixTokenTypes.LITERAL_BOOLEAN,
-                            lightLiteralStyle);
-            scheme.setStyle(RemixTokenTypes.OPERATOR,
-                            new Style(new Color(205, 127, 50)));
-        }
-        textArea.repaint();
     }
 
     private Point getPopupScreenLocation() {
@@ -333,13 +275,10 @@ public class RemixEditorWindow extends JFrame {
     }
 
     public void printWithCustomStyle() {
-        RemixTextArea printTextArea = new RemixTextArea(RemixTextArea.defaultFontForPrinting);
+        RemixTextArea printTextArea = new RemixTextArea(RemixTextArea.defaultFontForPrinting, false);
         int targetFontSize = printTextArea.getFont().getSize();
         Color targetBgColor = Color.white;
-        printTextArea.setSyntaxScheme(createRemixScheme(printTextArea));
-        printTextArea.setDark(false);
         printTextArea.setText(editorTextArea.getText());
-        modifyScheme(false, printTextArea);
 
         try {
              // Extract the styled raw HTML
@@ -594,7 +533,6 @@ public class RemixEditorWindow extends JFrame {
         currentFileName = untitledName;
         setTitle(currentFileName);
         editorTextArea.setCaretPosition(0);
-        editorTextArea.setEditorContentSaved(false);
     }
 
     public boolean openFileInWindow(File remFile) {

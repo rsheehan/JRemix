@@ -3,7 +3,10 @@ package edu.fizz.remix.editor;
 import edu.fizz.remix.EvalVisitor;
 import edu.fizz.remix.EvalVisitorForEditor;
 import edu.fizz.remix.PreProcess;
-import edu.fizz.remix.parser.*;
+import edu.fizz.remix.parser.RemixErrorListener;
+import edu.fizz.remix.parser.RemixLexer;
+import edu.fizz.remix.parser.RemixParser;
+import edu.fizz.remix.parser.RemixParserBaseVisitor;
 import edu.fizz.remix.runtime.*;
 import edu.fizz.remix.runtime.Runtime;
 import org.antlr.v4.runtime.CharStream;
@@ -13,7 +16,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -57,7 +59,8 @@ public class RemixPrepareRun {
     public static SwingWorker remixRunner;
 
     public static void runEditorText(RemixSwingWorker remixSwingWorker) {
-        RemixApp.remixOutput.clearText();
+//        RemixApp.remixOutput.clearText();
+        RemixApp.remixOutput.clearForOutput();
         remixRunner = remixSwingWorker; // so it can be cancelled
         // need to preprocess the string
         // then create CharStream fromString
@@ -70,45 +73,66 @@ public class RemixPrepareRun {
         final ParseTree tree = processParse(editor.getProgramText());
         // filename added here so runtime errors can use it
         Runtime.runProgram((LibraryExpression) eval.visit(tree), fileName);
-
+        RemixApp.remixOutput.finishOutput();
         LibrariesAndCompletions.resetToEditorStandard();
     }
 
-    public static Object runInteractiveText(String interactiveLine, REPLInputOutput inputOutputArea) {
+    public static Object runTextNewREPLTextArea(String textLines, NewREPLTextArea REPLTextArea) {
         fileName = INTERACTIVETEXT;
         EvalVisitor eval = new EvalVisitor(INTERACTIVETEXT);
-        final ParseTree tree = processParse(interactiveLine);
+        final ParseTree tree = processParse(textLines);
         LibraryExpression libraryExpression = (LibraryExpression)eval.visit(tree);
-        // The libraryExpression will either contain a block of code
-        // or a function definition.
-        Function addedFunction = null;
-        Iterator<Map.Entry<String, Function>> it = libraryExpression.functionTable.entrySet().iterator();
-        if (it.hasNext()) {
-            addedFunction = it.next().getValue();
-        }
         LibraryExpression currentTOSLibrary = REPLContext.peekLibrary();
-        if (!currentTOSLibrary.getLibName().equals(Runtime.REPL)) { // if not the REPL i.e. base or editor program
-            libraryExpression.setLibName(Runtime.REPL);
-            REPLContext.addLibraryToStack(libraryExpression);
-        } else {
-            // replace currentTOS REPL library with this one after merging functions and constants
-            for (Map.Entry<String, Function> entry : currentTOSLibrary.functionTable.entrySet()) {
-                if (!libraryExpression.functionTable.containsKey(entry.getKey())) { // don't overwrite new versions
-                    libraryExpression.functionTable.put(entry.getKey(), entry.getValue());
-                }
+        for (Map.Entry<String, Function> entry : currentTOSLibrary.functionTable.entrySet()) {
+            if (!libraryExpression.functionTable.containsKey(entry.getKey())) { // don't overwrite new versions
+                libraryExpression.functionTable.put(entry.getKey(), entry.getValue());
             }
-            libraryExpression.setConstantsFromLibrary(currentTOSLibrary);
-            REPLContext.popLibrary(); // remove previous REPL
-            REPLContext.pushLibrary(libraryExpression);
-            REPLContext.setFileWindowREPL(Runtime.REPL);
         }
+        libraryExpression.setConstantsFromLibrary(currentTOSLibrary);
+        REPLContext.popLibrary(); // remove previous REPL
+        REPLContext.pushLibrary(libraryExpression);
+        REPLContext.setFileWindowREPL(Runtime.REPL);
         libraryExpression.setLibName(Runtime.REPL);
-        if (addedFunction != null) { // defined a function
-            return "Function: " + addedFunction.displayName(addedFunction.getFirstName());
-        }
-        remixRunner = Runtime.runREPL(libraryExpression, inputOutputArea);
+
+        remixRunner = Runtime.runREPL(libraryExpression, REPLTextArea);
         return remixRunner;
     }
+
+//    public static Object runInteractiveText(String interactiveLine, REPLInputOutput inputOutputArea) {
+//        fileName = INTERACTIVETEXT;
+//        EvalVisitor eval = new EvalVisitor(INTERACTIVETEXT);
+//        final ParseTree tree = processParse(interactiveLine);
+//        LibraryExpression libraryExpression = (LibraryExpression)eval.visit(tree);
+//        // The libraryExpression will either contain a block of code
+//        // or a function definition.
+//        Function addedFunction = null;
+//        Iterator<Map.Entry<String, Function>> it = libraryExpression.functionTable.entrySet().iterator();
+//        if (it.hasNext()) {
+//            addedFunction = it.next().getValue();
+//        }
+//        LibraryExpression currentTOSLibrary = REPLContext.peekLibrary();
+//        if (!currentTOSLibrary.getLibName().equals(Runtime.REPL)) { // if not the REPL i.e. base or editor program
+//            libraryExpression.setLibName(Runtime.REPL);
+//            REPLContext.addLibraryToStack(libraryExpression);
+//        } else {
+//            // replace currentTOS REPL library with this one after merging functions and constants
+//            for (Map.Entry<String, Function> entry : currentTOSLibrary.functionTable.entrySet()) {
+//                if (!libraryExpression.functionTable.containsKey(entry.getKey())) { // don't overwrite new versions
+//                    libraryExpression.functionTable.put(entry.getKey(), entry.getValue());
+//                }
+//            }
+//            libraryExpression.setConstantsFromLibrary(currentTOSLibrary);
+//            REPLContext.popLibrary(); // remove previous REPL
+//            REPLContext.pushLibrary(libraryExpression);
+//            REPLContext.setFileWindowREPL(Runtime.REPL);
+//        }
+//        libraryExpression.setLibName(Runtime.REPL);
+//        if (addedFunction != null) { // defined a function
+//            return "Function: " + addedFunction.displayName(addedFunction.getFirstName());
+//        }
+////        remixRunner = Runtime.runREPL(libraryExpression, inputOutputArea);
+//        return remixRunner;
+//    }
 
     public static ParseTree processParse(String programText) { // TODO fileName needed?
         String processedText;

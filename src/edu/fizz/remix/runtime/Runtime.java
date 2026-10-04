@@ -1,6 +1,6 @@
 package edu.fizz.remix.runtime;
 
-import edu.fizz.remix.editor.REPLInputOutput;
+import edu.fizz.remix.editor.NewREPLTextArea;
 import edu.fizz.remix.editor.RemixPrepareRun;
 
 import javax.swing.*;
@@ -38,7 +38,8 @@ public class Runtime {
         }
     }
 
-    public static REPLSwingWorker runREPL(LibraryExpression program, REPLInputOutput inputOutputArea) {
+//    public static REPLSwingWorker runREPL(LibraryExpression program, REPLInputOutput inputOutputArea) {
+    public static REPLSwingWorker runREPL(LibraryExpression program, NewREPLTextArea inputOutputArea) {
         REPLSwingWorker worker = new REPLSwingWorker(program, inputOutputArea);
         worker.execute();
         return worker;
@@ -58,11 +59,14 @@ public class Runtime {
     public static class REPLSwingWorker extends SwingWorker<Object, String> {
 
         protected final LibraryExpression program;
-        protected final REPLInputOutput inputOutputArea;
+//        protected final REPLInputOutput inputOutputArea;
+        protected final NewREPLTextArea inputOutputArea;
 
-        public REPLSwingWorker(LibraryExpression program, REPLInputOutput inputOutputArea) {
+        //         public REPLSwingWorker(LibraryExpression program, REPLInputOutput inputOutputArea) {
+        public REPLSwingWorker(LibraryExpression program, NewREPLTextArea inputOutputArea) {
             this.program = program;
             this.inputOutputArea = inputOutputArea;
+//            inputOutputArea.programFinished = false;
         }
 
         @Override
@@ -98,7 +102,7 @@ public class Runtime {
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
-
+//            inputOutputArea.programFinished = true;
         }
     }
 }

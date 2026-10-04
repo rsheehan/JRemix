@@ -20,19 +20,26 @@ public class AutoPairer {
         Action autoPairAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                int selectionStart = textArea.getSelectionStart();
+                int selectionEnd = textArea.getSelectionEnd();
                 int caretPos = textArea.getCaretPosition();
+                if (!AutoUtil.onlyInCodeSection(selectionStart,
+                                                selectionEnd,
+                                                caretPos,
+                                                textArea)) {
+                    return;
+                }
+
                 String typed = e.getActionCommand();
                 String matched = matchingPairs.get(typed);
                 String pair = typed + matched;
 
                 // If there's an active text selection, surround it
-                int startOfSelection = textArea.getSelectionStart();
-                int endOfSelection = textArea.getSelectionEnd();
-                if (startOfSelection != endOfSelection) {
+                if (selectionStart != selectionEnd) {
                     String selection = textArea.getSelectedText();
-                    textArea.replaceRange(typed + selection + matched, startOfSelection, endOfSelection);
+                    textArea.replaceRange(typed + selection + matched, selectionStart, selectionEnd);
                     // I think I can call setCaretPosition here as it in the gui thread after keypress
-                    textArea.setCaretPosition(endOfSelection + 1);
+                    textArea.setCaretPosition(selectionEnd + 1);
                     return;
                 }
                 // Insert the two characters at the current cursor placement

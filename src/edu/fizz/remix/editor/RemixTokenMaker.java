@@ -45,8 +45,6 @@ public class RemixTokenMaker extends TokenMakerBase {
             // Convert ANTLR token indices to document-relative offsets
             int start = startOffset + antlrToken.getStartIndex();
             // Map your ANTLR token type to RSyntaxTextArea RemixTokenTypes
-//            System.out.print("antlr token type:" + antlrToken.getType() + " - ");
-//            System.out.println("lexer mode: " + lexer._mode);
              rSyntaxType = mapToRSyntaxType(antlrToken.getType(), lexer._mode);
             // Add the token to RSyntaxTextArea's linked list
             addToken(text, currentLineOffset + antlrToken.getStartIndex(),
