@@ -43,6 +43,7 @@ public class RemixApp extends JFrame {
 
 //        remixOutput = new REPLInputOutput();
         remixOutput = new NewREPLTextArea(new Font("Courier New", Font.PLAIN, 15), lightThemeAction.isEnabled());
+        remixOutput.setSyntaxEditingStyle("text/RemixREPL");
 
 //        remixOutput.append(REPLInputOutput.INFOSTRING);
         JScrollPane scrollPaneForOutput = new JScrollPane(remixOutput);

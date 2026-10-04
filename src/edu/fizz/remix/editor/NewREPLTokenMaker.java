@@ -5,7 +5,6 @@ import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.TokenMaker;
 import org.fife.ui.rsyntaxtextarea.modes.PlainTextTokenMaker;
 
-import javax.swing.text.BadLocationException;
 import javax.swing.text.Segment;
 
 public class NewREPLTokenMaker implements TokenMaker {
@@ -44,11 +43,6 @@ public class NewREPLTokenMaker implements TokenMaker {
      */
     @Override
     public Token getTokenList(Segment text, int initialTokenType, int startOffset) {
-        try {
-            int lineNumber = REPLTextArea.getLineOfOffset(startOffset);
-        } catch (BadLocationException e) {
-            throw new RuntimeException(e);
-        }
         if (REPLTextArea.insideCodeSection(startOffset)) {
             return remixTokenMaker.getTokenList(text, initialTokenType, startOffset);
         } else {

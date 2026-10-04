@@ -109,7 +109,6 @@ public class AutoUtil {
     public static void positionCaret(RemixTextArea textArea, int targetPosition) {
         // Ensure position stays within valid bounds
         int safePosition = Math.max(0, Math.min(targetPosition, textArea.getDocument().getLength()));
-
-        SwingUtilities.invokeLater(() -> textArea.setCaretPosition(safePosition));
+        textArea.setCaretPosition(safePosition);
     }
 }

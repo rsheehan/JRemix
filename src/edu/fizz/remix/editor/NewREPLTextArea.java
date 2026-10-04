@@ -49,11 +49,9 @@ public class NewREPLTextArea extends RemixTextArea {
 
     private static final int MAXLINES = 100000; // the maximum number of lines in the area
     private static final String MARKER = "--------------------";
-    public volatile boolean programFinished = true;
 
     private edu.fizz.remix.runtime.Runtime.REPLSwingWorker REPLworker;
 
-    private final AbstractDocument document;
     private ArrayList<int[]> codeLines; // start and finish line numbers for code lines
 
     private ArrayList<int[]> createCodeLines() {
@@ -65,13 +63,6 @@ public class NewREPLTextArea extends RemixTextArea {
     public NewREPLTextArea(Font font, boolean dark) {
         super(font, dark);
         NewREPLTokenMaker.REPLTextArea = this; // have to pass it somehow
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                setSyntaxEditingStyle("text/RemixREPL");
-            }
-        });
-        document = (AbstractDocument)getDocument();
         AutoPairer.enableAutoPair(this);
         AutoModify.enableAutoModify(this);
         AutoIndent.enableAutoIndent(this);
@@ -80,6 +71,7 @@ public class NewREPLTextArea extends RemixTextArea {
         setLineWrap( true );
         setWrapStyleWord( true );
         setTabSize(4);
+        AbstractDocument document = (AbstractDocument) getDocument();
         document.setDocumentFilter(new FilterLineInput());
         configureKeyBindings();
         codeLines = createCodeLines();
@@ -90,7 +82,7 @@ public class NewREPLTextArea extends RemixTextArea {
      */
     public boolean insideCodeSection(int offset) {
         boolean result = false;
-        int lineNumber = 0;
+        int lineNumber;
         try {
             lineNumber = getLineOfOffset(offset);
         } catch (BadLocationException e) {
@@ -109,7 +101,7 @@ public class NewREPLTextArea extends RemixTextArea {
         int[] section = getSectionContaining(start);
         if (section[0] == MAXLINES - 1)
             return false;
-        int endLine = MAXLINES - 1;
+        int endLine;
         try {
             endLine = getLineOfOffset(end);
         } catch (BadLocationException e) {
@@ -123,7 +115,7 @@ public class NewREPLTextArea extends RemixTextArea {
     i.e. At the bottom of the text.
      */
     private boolean inLastCodeSection(int offset) {
-        int lineNumber = 0;
+        int lineNumber;
         try {
             lineNumber = getLineOfOffset(offset);
         } catch (BadLocationException e) {
@@ -137,7 +129,7 @@ public class NewREPLTextArea extends RemixTextArea {
     Find the section the offset is in.
      */
     private int[] getSectionContaining(int offset) {
-        int lineNumber = 0;
+        int lineNumber;
         try {
             lineNumber = getLineOfOffset(offset);
         } catch (BadLocationException e) {
@@ -166,8 +158,7 @@ public class NewREPLTextArea extends RemixTextArea {
         codeLines = createCodeLines();
         setText("");
         setCaretPosition(0);
-        int[] firstLineGroup = codeLines.getFirst();
-        return firstLineGroup;
+        return codeLines.getFirst();
     }
 
     /*

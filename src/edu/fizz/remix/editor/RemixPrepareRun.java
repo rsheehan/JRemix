@@ -52,10 +52,6 @@ public class RemixPrepareRun {
         return "REMIXPREPARERUN: " + fileName;
     }
 
-    public static boolean interactive() {
-        return fileName.equals(INTERACTIVETEXT);
-    }
-
     public static SwingWorker remixRunner;
 
     public static void runEditorText(RemixSwingWorker remixSwingWorker) {
@@ -150,8 +146,7 @@ public class RemixPrepareRun {
         final RemixErrorListener listener = new RemixErrorListener();
         parser.addErrorListener(listener);
         // parse
-        RemixParser.ProgramContext program = parser.program();
-        return program;
+        return parser.program();
     }
 
 }
