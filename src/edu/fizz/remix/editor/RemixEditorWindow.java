@@ -14,6 +14,7 @@ import java.awt.print.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -25,7 +26,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class RemixEditorWindow extends JFrame {
 
 //    private final REPLInputOutput remixOutput;
-    private final NewREPLTextArea remixOutput;
+//    private final JTextArea remixOutput;
+    private final REPLDynamicTextAreas dynamicTextAreas;
     private final RemixTextArea editorTextArea;
     private final RTextScrollPane lineNumberPane;
     private static String untitledName = "untitled";
@@ -91,7 +93,7 @@ public class RemixEditorWindow extends JFrame {
 
     public RemixEditorWindow(RemixApp remixApp, boolean darkTheme) {
         super("untitled");
-        this.remixOutput = RemixApp.remixOutput;
+        dynamicTextAreas = RemixApp.REPLTextAreas;
         editorTextArea = new RemixTextArea(darkTheme);
         lineNumberPane = new RTextScrollPane(editorTextArea);
 
@@ -499,7 +501,13 @@ public class RemixEditorWindow extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            remixOutput.setFocusable(true); // Make it focusable again for future use
+            // have to remove all dynamicTextAreas and then insert the new output area
+            dynamicTextAreas.removeExistingTextAreas();
+            JTextArea output = dynamicTextAreas.newOutput(currentFileName);
+            System.setOut(new PrintStream(new TextAreaOutputStream(output)));
+            System.setErr(new PrintStream(new TextAreaOutputStream(output)));
+//            output.setFocusable(true);
+//            remixOutput.setFocusable(true); // Make it focusable again for future use
             remixRunner = new RemixSwingWorker(
                     RemixEditorWindow.this
             );
@@ -507,6 +515,7 @@ public class RemixEditorWindow extends JFrame {
             setEnabled(false); // changed back when running finishes or is terminated
             animations.clear();
             remixRunner.execute(); // this causes the program to run in a background thread
+            // then add a new REPL text area
         }
     }
 

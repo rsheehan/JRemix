@@ -335,7 +335,7 @@ public class NewREPLTextArea extends RemixTextArea {
             System.out.println();
         System.out.println(MARKER);
         // call runTextNewREPLTextArea in RemixPrepareRun
-        Object result = RemixPrepareRun.runTextNewREPLTextArea(lines, this);
+        Object result = RemixPrepareRun.runTextNewTextArea(lines, this);
         if (result instanceof edu.fizz.remix.runtime.Runtime.REPLSwingWorker) {
             REPLworker = ((Runtime.REPLSwingWorker) result);
             return;

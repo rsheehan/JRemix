@@ -842,7 +842,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            RemixApp.remixOutput.setText(null);
+            RemixApp.REPLTextAreas.currentOutputArea.setText(null);
             return "";
         }
     }

@@ -3,12 +3,9 @@ package edu.fizz.remix.editor;
 import edu.fizz.remix.EvalVisitorForEditor;
 import edu.fizz.remix.runtime.LibrariesAndCompletions;
 import edu.fizz.remix.runtime.LibraryExpression;
+import edu.fizz.remix.runtime.Runtime;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.Style;
-import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
-import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
+import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 
@@ -17,16 +14,22 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Element;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
+import java.io.PrintStream;
 
 public class RemixTextArea extends RSyntaxTextArea {
 
     static {
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping("text/Remix", "edu.fizz.remix.editor.RemixTokenMaker");
-        atmf.putMapping("text/RemixREPL", "edu.fizz.remix.editor.NewREPLTokenMaker");
+//        atmf.putMapping("text/RemixREPL", "edu.fizz.remix.editor.NewREPLTokenMaker");
     }
 
     public static final int SIZE = 13; // 12 is small but gives 80 col printout on A4
@@ -85,6 +88,53 @@ public class RemixTextArea extends RSyntaxTextArea {
 
             }
         });
+    }
+
+    private REPLDynamicTextAreas REPLTextAreas;
+
+    public void configureKeyBindings(REPLDynamicTextAreas dynamicTextAreas) {
+        // only called for REPL text areas
+        this.REPLTextAreas = dynamicTextAreas;
+        InputMap inputMap = this.getInputMap(WHEN_FOCUSED);
+        ActionMap actionMap = this.getActionMap();
+
+        // Define the KeyStroke for Command + Return (Meta + Enter)
+        // KeyEvent.VK_ENTER is the key code for the Return/Enter key
+        // InputEvent.META_DOWN_MASK represents the Command key on Mac
+        KeyStroke commandReturn = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.META_DOWN_MASK);
+        KeyStroke interruptExecution = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK);
+
+        // Map the KeyStrokes to a custom Action name
+        String executeReturnActionName = "executeReturn";
+        inputMap.put(commandReturn, executeReturnActionName);
+        String interruptExecutionActionName = "handleInterruptExecution";
+        inputMap.put(interruptExecution, interruptExecutionActionName);
+
+        // Put the custom Action into the ActionMap
+        actionMap.put(executeReturnActionName, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // collect the text from the area
+                String textToExecute = getText();
+                if (!textToExecute.isEmpty()) {
+                    // create new textArea for the output
+                    JTextArea output = dynamicTextAreas.newOutput("REPL");
+                    // set the system output and error to text area
+                    System.setOut(new PrintStream(new TextAreaOutputStream(output)));
+                    System.setErr(new PrintStream(new TextAreaOutputStream(output)));
+                    executeLines(textToExecute);
+                }
+            }
+        });
+    }
+
+    private edu.fizz.remix.runtime.Runtime.REPLSwingWorker REPLworker;
+
+    private void executeLines(String lines) {
+        Object result = RemixPrepareRun.runTextNewTextArea(lines, this);
+        if (result instanceof edu.fizz.remix.runtime.Runtime.REPLSwingWorker) {
+            REPLworker = ((Runtime.REPLSwingWorker) result);
+        }
     }
 
     /*

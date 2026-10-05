@@ -1,6 +1,5 @@
 package edu.fizz.remix.runtime;
 
-import edu.fizz.remix.editor.NewREPLTextArea;
 import edu.fizz.remix.editor.RemixPrepareRun;
 
 import javax.swing.*;
@@ -39,7 +38,7 @@ public class Runtime {
     }
 
 //    public static REPLSwingWorker runREPL(LibraryExpression program, REPLInputOutput inputOutputArea) {
-    public static REPLSwingWorker runREPL(LibraryExpression program, NewREPLTextArea inputOutputArea) {
+    public static REPLSwingWorker runREPL(LibraryExpression program, JTextArea inputOutputArea) {
         REPLSwingWorker worker = new REPLSwingWorker(program, inputOutputArea);
         worker.execute();
         return worker;
@@ -60,10 +59,10 @@ public class Runtime {
 
         protected final LibraryExpression program;
 //        protected final REPLInputOutput inputOutputArea;
-        protected final NewREPLTextArea inputOutputArea;
+        protected final JTextArea inputOutputArea;
 
         //         public REPLSwingWorker(LibraryExpression program, REPLInputOutput inputOutputArea) {
-        public REPLSwingWorker(LibraryExpression program, NewREPLTextArea inputOutputArea) {
+        public REPLSwingWorker(LibraryExpression program, JTextArea inputOutputArea) {
             this.program = program;
             this.inputOutputArea = inputOutputArea;
 //            inputOutputArea.programFinished = false;
@@ -96,9 +95,11 @@ public class Runtime {
             Object result;
             try {
                 result = get();
-                inputOutputArea.displayOutput(String.valueOf(result));
+                System.out.println(result);
+//                inputOutputArea.displayOutput(String.valueOf(result));
             } catch (CancellationException _) {
-                inputOutputArea.displayOutput("Program cancelled.");
+                System.out.println("Program cancelled.");
+//                inputOutputArea.displayOutput("Program cancelled.");
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }

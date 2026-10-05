@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +18,10 @@ public class RemixApp extends JFrame {
     private static final String REMIX = "Remix";
 
 //    public static REPLInputOutput remixOutput;
-    public static NewREPLTextArea remixOutput;
+//    public static NewREPLTextArea remixOutput;
+//    public static JTextArea remixOutput;
+    public static REPLDynamicTextAreas REPLTextAreas;
+
     public static String currentDirectory = "remixPrograms";
 
     private final List<RemixEditorWindow> listOfWindows = new ArrayList<>();
@@ -41,13 +43,17 @@ public class RemixApp extends JFrame {
         JMenu windowMenu = createWindowMenu();
         menuBar.add(windowMenu);
 
-//        remixOutput = new REPLInputOutput();
-        remixOutput = new NewREPLTextArea(new Font("Courier New", Font.PLAIN, 15), lightThemeAction.isEnabled());
-        remixOutput.setSyntaxEditingStyle("text/RemixREPL");
+////        remixOutput = new REPLInputOutput();
+//        remixOutput = new NewREPLTextArea(new Font("Courier New", Font.PLAIN, 15), lightThemeAction.isEnabled());
+//        remixOutput.setSyntaxEditingStyle("text/RemixREPL");
+//
+////        remixOutput.append(REPLInputOutput.INFOSTRING);
+//        JScrollPane scrollPaneForOutput = new JScrollPane(remixOutput);
+//        add(scrollPaneForOutput,  BorderLayout.CENTER);
 
-//        remixOutput.append(REPLInputOutput.INFOSTRING);
-        JScrollPane scrollPaneForOutput = new JScrollPane(remixOutput);
-        add(scrollPaneForOutput,  BorderLayout.CENTER);
+        REPLTextAreas = new REPLDynamicTextAreas(lightThemeAction.isEnabled());
+        JScrollPane scrollPane = REPLTextAreas.getScrollPane();
+        add(scrollPane, BorderLayout.CENTER);
         setMinimumSize(new Dimension(600, 600));
         setPreferredSize(new Dimension(800, 1080));
         pack();
@@ -179,7 +185,7 @@ public class RemixApp extends JFrame {
 
         public DarkThemeAction() {
             super("Dark theme");
-            setEnabled(false);
+            setEnabled(true);
         }
 
         @Override
@@ -188,8 +194,9 @@ public class RemixApp extends JFrame {
                 window.setDark(true);
             }
 //            remixOutput.setDarkMode(true);
-            remixOutput.setDark(true);
-            remixOutput.modifyScheme(true);
+//            remixOutput.setDark(true);
+            REPLTextAreas.setDark(true);
+//            remixOutput.modifyScheme(true);
             lightThemeAction.setEnabled(true);
             setEnabled(false);
         }
@@ -199,7 +206,7 @@ public class RemixApp extends JFrame {
 
         public LightThemeAction() {
             super("Light theme");
-            setEnabled(true);
+            setEnabled(false);
         }
 
         @Override
@@ -208,8 +215,9 @@ public class RemixApp extends JFrame {
                 window.setDark(false);
             }
 //            remixOutput.setDarkMode(false);
-            remixOutput.setDark(false);
-            remixOutput.modifyScheme(false);
+//            remixOutput.setDark(false);
+            REPLTextAreas.setDark(false);
+//            remixOutput.modifyScheme(false);
             darkThemeAction.setEnabled(true);
             setEnabled(false);
         }
@@ -279,8 +287,9 @@ public class RemixApp extends JFrame {
         //Create and set up the window.
         new RemixApp();
         //Setup System.out and System.err to the corresponding panels
-        System.setOut(new PrintStream(new TextAreaOutputStream(remixOutput)));
-        System.setErr(new PrintStream(new TextAreaOutputStream(remixOutput)));
+        // TODO make a method to change the output to a particular text area
+//        System.setOut(new PrintStream(new TextAreaOutputStream(remixOutput)));
+//        System.setErr(new PrintStream(new TextAreaOutputStream(remixOutput)));
     }
 
     static void main() {

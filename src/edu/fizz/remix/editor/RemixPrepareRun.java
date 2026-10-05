@@ -56,7 +56,7 @@ public class RemixPrepareRun {
 
     public static void runEditorText(RemixSwingWorker remixSwingWorker) {
 //        RemixApp.remixOutput.clearText();
-        RemixApp.remixOutput.clearForOutput();
+//        RemixApp.remixOutput.clearForOutput();
         remixRunner = remixSwingWorker; // so it can be cancelled
         // need to preprocess the string
         // then create CharStream fromString
@@ -69,11 +69,11 @@ public class RemixPrepareRun {
         final ParseTree tree = processParse(editor.getProgramText());
         // filename added here so runtime errors can use it
         Runtime.runProgram((LibraryExpression) eval.visit(tree), fileName);
-        RemixApp.remixOutput.finishOutput();
+//        RemixApp.remixOutput.finishOutput();
         LibrariesAndCompletions.resetToEditorStandard();
     }
 
-    public static Object runTextNewREPLTextArea(String textLines, NewREPLTextArea REPLTextArea) {
+    public static Object runTextNewTextArea(String textLines, JTextArea outputTextArea) {
         fileName = INTERACTIVETEXT;
         EvalVisitor eval = new EvalVisitor(INTERACTIVETEXT);
         final ParseTree tree = processParse(textLines);
@@ -90,7 +90,7 @@ public class RemixPrepareRun {
         REPLContext.setFileWindowREPL(Runtime.REPL);
         libraryExpression.setLibName(Runtime.REPL);
 
-        remixRunner = Runtime.runREPL(libraryExpression, REPLTextArea);
+        remixRunner = Runtime.runREPL(libraryExpression, outputTextArea);
         return remixRunner;
     }
 
