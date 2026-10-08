@@ -18,7 +18,7 @@ public class RemixDocumentFilter extends DocumentFilter {
     }
 
     /*
-    Haven't got an insertString or remove.
+    Haven't got a remove.
      */
     @Override
     public void insertString(FilterBypass fb, int offset, String text, AttributeSet attrs) throws BadLocationException {

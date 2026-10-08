@@ -4,7 +4,7 @@ using graphics, turtle
 	Rotating Arrows
 	===============
 
-	'space' : a turtle space in (the graphics panel)
+	'space' : a turtle space in (a graphics window)
 	'arrows' : a group of 36 turtles
 	place 'arrows' group in 'space'
 	'angle' : 0

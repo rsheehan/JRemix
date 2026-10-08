@@ -2,7 +2,10 @@ package edu.fizz.remix.runtime;
 
 //import edu.fizz.remix.editor.RemixEditor;
 
+import edu.fizz.remix.editor.RemixPrepareRun;
+
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 public class Context {
@@ -17,6 +20,9 @@ public class Context {
     public Context() {
     }
 
+    /*
+    A context based on adding the programLibrary to the empty libraryStack.
+     */
     public Context(LibraryExpression programLibrary, String fileWindowREPL) {
         libraryStack.push(programLibrary);
         // if fileWindowREPL is null we are doing completions? or creating baseLibrary at start
@@ -40,7 +46,17 @@ public class Context {
     }
 
     public void addLibraryToStack(LibraryExpression newLib) {
-        libraryStack.push(newLib);
+        LibraryExpression topOfStack = libraryStack.peek();
+        if (topOfStack.getLibName().equals(RemixPrepareRun.INTERACTIVETEXT)) {
+            for (Map.Entry<String, Function> entry : topOfStack.functionTable.entrySet()) {
+                if (!newLib.functionTable.containsKey(entry.getKey())) { // don't overwrite new versions
+                    newLib.functionTable.put(entry.getKey(), entry.getValue());
+                }
+            }
+            newLib.setConstantsFromLibrary(topOfStack);
+        }
+        else
+            libraryStack.push(newLib);
     }
 
     /*
@@ -118,19 +134,6 @@ public class Context {
             if (result == null && !formalReference) {
                 throw new VarNotFoundException();
             }
-                // if the formal is a reference variable then it is allowed to be null.
-//                if (!RemixApp.isEditing()) // a hack to not show the error as we are not running
-//                    throw new VarNotFoundException();
-//                if (RemixApp.getRunningWindow() == null) {
-//                    throw new VarNotFoundException();
-//                } else
-//                    System.err.format("Variable \"%s\" has no value ", varName);
-//                if (RemixApp.getRunningWindow().equals(Runtime.REPL)) {
-//                    System.err.println("in REPL.");
-//                } else {
-//                    System.err.printf("in \"%s\".%n", RemixApp.getRunningWindow());
-//                }
-//            }
         }
         return result;
     }

@@ -4,7 +4,7 @@
 RADIUS : 200
 
 using graphics, turtle
-	'turtle space' : a turtle space in (the graphics panel)
+	'turtle space' : a turtle space in (a graphics window)
 	'arrows' : a group of 36 turtles
 
 	prepare 'arrows' :

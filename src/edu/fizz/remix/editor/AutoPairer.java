@@ -23,12 +23,12 @@ public class AutoPairer {
                 int selectionStart = textArea.getSelectionStart();
                 int selectionEnd = textArea.getSelectionEnd();
                 int caretPos = textArea.getCaretPosition();
-                if (!AutoUtil.onlyInCodeSection(selectionStart,
-                                                selectionEnd,
-                                                caretPos,
-                                                textArea)) {
-                    return;
-                }
+//                if (!AutoUtil.onlyInCodeSection(selectionStart,
+//                                                selectionEnd,
+//                                                caretPos,
+//                                                textArea)) {
+//                    return;
+//                }
 
                 String typed = e.getActionCommand();
                 String matched = matchingPairs.get(typed);

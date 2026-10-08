@@ -63,7 +63,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
             String filename = context.retrieve("file-name", false).toString();
             LibraryExpression included;
-            boolean editing = context.getFileWindowREPL().equals(Runtime.REPL);
+            boolean editing = context.getFileWindowREPL().equals(RemixPrepareRun.INTERACTIVETEXT);
             try {
                 // COULD HAVE EDITING INFORMATION IN THE CONTEXT
                 if (editing)
@@ -311,12 +311,15 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Object value = context.retrieve("value", false);
-            publish(value);
+            publish(value); // this needs to publish on the RemixSwingWorker in action.
             return RemixNull.value();
         }
 
         public static void publish(Object value) {
-            System.out.print(value);
+            if (RemixApp.currentSwingWorker != null)
+                RemixApp.currentSwingWorker.publish(value.toString());
+            else
+                System.out.println(value);
         }
     }
 
@@ -842,7 +845,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            RemixApp.REPLTextAreas.currentOutputArea.setText(null);
+            RemixApp.replPanel.currentOutputArea.setText(null);
             return "";
         }
     }
@@ -881,7 +884,6 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     false,
                     "Give help about 'what'. 'what' is normally a string.\n" +
                             "Also\n" +
-                            "   help REPL\n" +
                             "   help CONSTANTS\n" +
                             "   help VARIABLES\n" +
                             "   help LIBRARIES\n" +
@@ -896,9 +898,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             Object what = context.retrieve("what", false);
             StringBuilder helpSB = new StringBuilder();
             if (what instanceof String whatString) {
-                if (whatString.equals("REPL")) {
-                    return NewREPLTextArea.INFOSTRING;
-                } else if (whatString.equals("CONSTANTS")) {
+                if (whatString.equals("CONSTANTS")) {
                     dealWithConstants(context.parentContext, helpSB);
                     int length = helpSB.length();
                     if (length > 0) // remove last '\n'

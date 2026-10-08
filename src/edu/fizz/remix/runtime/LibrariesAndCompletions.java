@@ -71,7 +71,7 @@ public class LibrariesAndCompletions {
      */
     public static void resetREPLEnvironment() {
         LibraryExpression.methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
-        RemixPrepareRun.REPLContext = new Context(baseLibrary, Runtime.REPL);
+        RemixPrepareRun.REPLContext = new Context(baseLibrary, RemixPrepareRun.INTERACTIVETEXT);
     }
 
     /*
@@ -87,7 +87,7 @@ public class LibrariesAndCompletions {
                 if (constantName.startsWith(searchWord)) {
                     boolean activeHere = false;
                     for (int[] startAndFinish : lib.getActiveLines()) {
-                        if (startAndFinish[0] < lineNumber && lineNumber <= startAndFinish[1]) {
+                        if (startAndFinish[0] <= lineNumber && lineNumber <= startAndFinish[1]) {
                             activeHere = true;
                             break;
                         }
@@ -135,7 +135,7 @@ public class LibrariesAndCompletions {
             // first check lineNumber against activeLines
             boolean activeHere = false;
             for (int[] startAndFinish : library.getActiveLines()) {
-                if (startAndFinish[0] < lineNumber && lineNumber <= startAndFinish[1]) {
+                if (startAndFinish[0] <= lineNumber && lineNumber <= startAndFinish[1]) {
                     activeHere = true;
                     break;
                 }
@@ -219,9 +219,7 @@ public class LibrariesAndCompletions {
         baseLibrary = new BuiltInFunctionsLibrary();
         baseLibrary.setJavaFileName(builtInFunctions);
         addedLibraries.add(baseLibrary);
-//        RemixApp.setEditing(false);
         LibraryExpression standardLibrary = RemixPrepareRun.loadPackage(standardLib, false);
-//        RemixApp.setEditing(true);
         // this unnecessarily repeats the work so that the methodTableForCompletions gets
         // the one method from the standard-lib
         RemixPrepareRun.loadPackage(standardLib, true);

@@ -1,6 +1,5 @@
 package edu.fizz.remix.editor;
 
-import edu.fizz.remix.libraries.Graphics;
 import org.fife.ui.rsyntaxtextarea.HtmlUtil;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextAreaEditorKit;
 import org.fife.ui.rtextarea.*;
@@ -17,26 +16,13 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-public class RemixEditorWindow extends JFrame {
+public class RemixEditorWindow extends RemixBaseWindow {
 
-//    private final REPLInputOutput remixOutput;
-//    private final JTextArea remixOutput;
-    private final REPLDynamicTextAreas dynamicTextAreas;
     private final RemixTextArea editorTextArea;
     private final RTextScrollPane lineNumberPane;
     private static String untitledName = "untitled";
-
-    final PopupFactory popupFactory = new PopupFactory();
-    Popup docPopup;
-    final JPanel docPanel = new JPanel();
-    JTextArea docArea;
-    protected Point popupScreenLocation = null;
 
     public String getCurrentFileName() {
         return currentFileName;
@@ -45,55 +31,9 @@ public class RemixEditorWindow extends JFrame {
     private String currentFileName;
     private String currentAbsoluteFileName = null;
 
-    private RemixSwingWorker remixRunner;
-
-    private static final ArrayList<Graphics.AnimateFunction.AnimationBlock> animations = new ArrayList<>();
-    private static final Lock animationLock = new ReentrantLock();
-    private static final Condition animationFinished = animationLock.newCondition();
-
-    public static void addAnimation(Graphics.AnimateFunction.AnimationBlock animation) {
-        animations.add(animation);
-    }
-
-    public static boolean animationsStopped() {
-        for (Graphics.AnimateFunction.AnimationBlock animationBlock : animations) {
-            if (!animationBlock.isStopped())
-                return false;
-        }
-        return true;
-    }
-
-    private static void stopAllAnimations() {
-        for (Graphics.AnimateFunction.AnimationBlock animationBlock : animations) {
-            animationBlock.stopAnimation();
-        }
-    }
-
-    public static void indicateAnAnimationFinished() { // called from any animation in Graphics AnimationBlock
-        animationLock.lock();
-        try {
-            animationFinished.signalAll();
-        } finally {
-            animationLock.unlock();
-        }
-    }
-
-    public static void waitForProgramFinish() {
-        animationLock.lock();
-        try {
-            while (!animationsStopped()) {
-                animationFinished.await();
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } finally {
-            animationLock.unlock();
-        }
-    }
-
     public RemixEditorWindow(RemixApp remixApp, boolean darkTheme) {
         super("untitled");
-        dynamicTextAreas = RemixApp.REPLTextAreas;
+//        dynamicTextAreas = RemixApp.REPLTextAreas;
         editorTextArea = new RemixTextArea(darkTheme);
         lineNumberPane = new RTextScrollPane(editorTextArea);
 
@@ -114,10 +54,6 @@ public class RemixEditorWindow extends JFrame {
 
         setContentPane(remixPanel);
         pack();
-
-        docArea = new JTextArea("Document goes here.");
-        docArea.setForeground(Color.red);
-        docPanel.add(docArea);
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -164,7 +100,7 @@ public class RemixEditorWindow extends JFrame {
         }
     }
 
-    private Point getPopupScreenLocation() {
+    protected Point getPopupScreenLocation() {
         Point editorLocation = editorTextArea.getLocationOnScreen();
         Point caretPoint = editorTextArea.getCaretScreenLocation();
         return new Point(caretPoint.x + editorLocation.x, caretPoint.y + editorLocation.y + 16);
@@ -478,9 +414,6 @@ public class RemixEditorWindow extends JFrame {
         return item;
     }
 
-    protected RunAction runAction;
-    protected StopAction stopAction;
-    
     /***** Control menu and items *****/
     protected JMenu createControlMenu() {
         JMenu menu = new JMenu("Control");
@@ -491,7 +424,7 @@ public class RemixEditorWindow extends JFrame {
         return menu;
     }
 
-    protected class RunAction extends AbstractAction {
+    protected class RunAction extends edu.fizz.remix.editor.RunAction {
 
         protected RunAction() {
             super("Run");
@@ -502,38 +435,18 @@ public class RemixEditorWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             // have to remove all dynamicTextAreas and then insert the new output area
-            dynamicTextAreas.removeExistingTextAreas();
-            JTextArea output = dynamicTextAreas.newOutput(currentFileName);
-            System.setOut(new PrintStream(new TextAreaOutputStream(output)));
-            System.setErr(new PrintStream(new TextAreaOutputStream(output)));
-//            output.setFocusable(true);
-//            remixOutput.setFocusable(true); // Make it focusable again for future use
-            remixRunner = new RemixSwingWorker(
-                    RemixEditorWindow.this
-            );
+            RemixApp.replPanel.removeExistingTextAreas();
+            RemixApp.replPanel.newOutput(currentFileName);
+
+            String programText = editorTextArea.getText();
+            remixRunner = new RemixSwingWorker(currentFileName, RemixEditorWindow.this, programText);
+            System.setErr(new PrintStream(new TextAreaOutputStream(remixRunner)));
+
             stopAction.setEnabled(true);
             setEnabled(false); // changed back when running finishes or is terminated
             animations.clear();
             remixRunner.execute(); // this causes the program to run in a background thread
             // then add a new REPL text area
-        }
-    }
-
-    protected class StopAction extends AbstractAction {
-
-        protected StopAction() {
-            super("Stop");
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.META_DOWN_MASK));
-            setEnabled(false);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            remixRunner.cancel(true);
-            stopAllAnimations();
-            System.out.println("Program cancelled.");
-            setEnabled(false);
-            runAction.setEnabled(true);
         }
     }
 
@@ -622,10 +535,6 @@ public class RemixEditorWindow extends JFrame {
                 editorTextArea.searchBack(searchContext);
             }
         }
-    }
-
-    public String getProgramText() {
-        return editorTextArea.getText();
     }
 
     static void main() {

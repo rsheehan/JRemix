@@ -1,10 +1,11 @@
 package edu.fizz.remix.runtime;
 
-import edu.fizz.remix.editor.RemixPrepareRun;
+import edu.fizz.remix.editor.RemixApp;
+import edu.fizz.remix.editor.RemixSwingWorker;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /*
  * A Block contains a list of statements.
@@ -59,7 +60,8 @@ public class Block implements Expression {
             Expression expression = iterator.next();
             if (expression instanceof RedoStatement) {
                 // pause in case the program gets interrupted
-                if (RemixPrepareRun.remixRunner != null && RemixPrepareRun.remixRunner.isCancelled())
+                RemixSwingWorker remixRunner = RemixApp.currentSwingWorker;
+                if (remixRunner != null && remixRunner.isCancelled())
                     throw new InterruptedException();
                 iterator = statements.iterator();
                 continue;

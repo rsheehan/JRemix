@@ -5,16 +5,16 @@ import java.io.OutputStream;
 
 public class TextAreaOutputStream extends OutputStream {
 
-        private final JTextArea destination;
+        private final RemixSwingWorker destination;
 
-        public TextAreaOutputStream (JTextArea destination) {
+        public TextAreaOutputStream (RemixSwingWorker destination) {
             this.destination = destination;
         }
 
         @Override
         public void write(byte[] buffer, int offset, int length) {
             final String text = new String (buffer, offset, length);
-            destination.append (text);
+            destination.publish(text);
         }
 
         @Override

@@ -3,21 +3,30 @@ package edu.fizz.remix.editor;
 import javax.swing.*;
 import java.util.List;
 
-public class RemixSwingWorker extends SwingWorker<Boolean, String> {
+/*
+A SwingWorker that both editor and repl swingworkers can be based on
+*/
+public class RemixSwingWorker extends SwingWorker {
 
-    private final RemixEditorWindow editor;
+    private final String fileName;
+    private final RemixBaseWindow window;
+    private final String programText;
+    private Object result;
 
-    public RemixSwingWorker(RemixEditorWindow editor) { //, String programText) {
-        this.editor = editor;
-    }
-
-    protected RemixEditorWindow getEditor() {
-        return editor;
+    /*
+        This is the constructor for REPL execution.
+        It is overridden in RemixEditorSwingWorker
+         */
+    public RemixSwingWorker(String fileName, RemixBaseWindow window, String programText) {
+        this.fileName = fileName;
+        this.window = window;
+        this.programText = programText;
+        RemixApp.currentSwingWorker = this;
     }
 
     @Override
-    protected Boolean doInBackground() {
-        RemixPrepareRun.runEditorText(this);
+    protected java.lang.Boolean doInBackground() {
+        result = RemixPrepareRun.runText(fileName, programText);
         return true; // can make it false on an error in the program
     }
 
@@ -27,20 +36,23 @@ public class RemixSwingWorker extends SwingWorker<Boolean, String> {
         // careful : this is on the event dispatch thread
         Thread thread = new Thread(() -> {
             RemixEditorWindow.waitForProgramFinish();
-            editor.stopAction.setEnabled(false);
-            editor.runAction.setEnabled(true);
+            publish(result.toString());
+            window.stopAction.setEnabled(false);
+            window.runAction.setEnabled(true);
+            // and add a code area to the app window
+            RemixApp.replPanel.addREPLTextArea();
         });
         thread.start();
     }
 
-//    public void publish(String output) {
-//        super.publish(output);
-//    }
+    public void publish(java.lang.String output) {
+        super.publish(output);
+    }
 
     @Override
-    protected void process(List<String> chunks) {
-        for (String value : chunks) {
-            RemixApp.REPLTextAreas.currentOutputArea.append(value);
+    protected void process(List chunks) {
+        for (Object value : chunks) {
+            REPLPanel.currentOutputArea.append((String) value);
         }
     }
 

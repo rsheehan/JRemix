@@ -11,15 +11,7 @@ public class AutoTab {
         Action autoTabAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectionStart = textArea.getSelectionStart();
-                int selectionEnd = textArea.getSelectionEnd();
                 int caretPos = textArea.getCaretPosition();
-                if (!AutoUtil.onlyInCodeSection(selectionStart,
-                                                selectionEnd,
-                                                caretPos,
-                                                textArea)) {
-                    return;
-                }
 
                 try {
                     if (AutoUtil.inString(textArea, caretPos) || AutoUtil.inComment(textArea, caretPos)) {
@@ -57,7 +49,6 @@ public class AutoTab {
                             return;
                         }
                     }
-//                    selectedNextParam(textArea, currentLine, lineNum, 0, startOfLine);
                 }
                 assert currentLine != null;
                 selectedNextParam(textArea, currentLine, lineNum, offsetInLine, startOfLine);

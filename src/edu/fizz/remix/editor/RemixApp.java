@@ -5,26 +5,23 @@ import org.fife.ui.rtextarea.SearchContext;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RemixApp extends JFrame {
+public class RemixApp extends RemixBaseWindow {
 
     private static final String REMIX = "Remix";
-
-//    public static REPLInputOutput remixOutput;
-//    public static NewREPLTextArea remixOutput;
-//    public static JTextArea remixOutput;
-    public static REPLDynamicTextAreas REPLTextAreas;
-
+    public static REPLPanel replPanel;
     public static String currentDirectory = "remixPrograms";
-
     private final List<RemixEditorWindow> listOfWindows = new ArrayList<>();
+    public static RemixSwingWorker currentSwingWorker;
 
     LightThemeAction lightThemeAction;
     DarkThemeAction darkThemeAction;
@@ -38,21 +35,15 @@ public class RemixApp extends JFrame {
         setJMenuBar(menuBar);
         JMenu editMenu = createEditMenu();
         menuBar.add(editMenu);
+        JMenu controlMenu = createControlMenu();
+        menuBar.add(controlMenu);
         JMenu viewMenu = createViewMenu();
         menuBar.add(viewMenu);
         JMenu windowMenu = createWindowMenu();
         menuBar.add(windowMenu);
 
-////        remixOutput = new REPLInputOutput();
-//        remixOutput = new NewREPLTextArea(new Font("Courier New", Font.PLAIN, 15), lightThemeAction.isEnabled());
-//        remixOutput.setSyntaxEditingStyle("text/RemixREPL");
-//
-////        remixOutput.append(REPLInputOutput.INFOSTRING);
-//        JScrollPane scrollPaneForOutput = new JScrollPane(remixOutput);
-//        add(scrollPaneForOutput,  BorderLayout.CENTER);
-
-        REPLTextAreas = new REPLDynamicTextAreas(lightThemeAction.isEnabled());
-        JScrollPane scrollPane = REPLTextAreas.getScrollPane();
+        replPanel = new REPLPanel(lightThemeAction.isEnabled());
+        JScrollPane scrollPane = replPanel.getScrollPane();
         add(scrollPane, BorderLayout.CENTER);
         setMinimumSize(new Dimension(600, 600));
         setPreferredSize(new Dimension(800, 1080));
@@ -76,6 +67,67 @@ public class RemixApp extends JFrame {
         window.dispose();
         listOfWindows.remove(window);
     }
+
+    // TODO move to RemixBaseWindow
+    @Override
+    protected Point getPopupScreenLocation() {
+        RemixTextArea editorTextArea = replPanel.getCurrentCodeArea();
+        Point editorLocation = editorTextArea.getLocationOnScreen();
+        Point caretPoint = editorTextArea.getCaretScreenLocation();
+        return new Point(caretPoint.x + editorLocation.x, caretPoint.y + editorLocation.y + 16);
+    }
+
+    @Override
+    public void showDocText() {
+        RemixTextArea editorTextArea = replPanel.getCurrentCodeArea();
+        RemixCompletions completionControl = editorTextArea.completionControl;
+        try {
+            if (completionControl.noCompletions())
+                popupScreenLocation = getPopupScreenLocation();
+            int caretPos = editorTextArea.getCaretPosition();
+            int lineNumber = editorTextArea.getCaretLineNumber();
+
+            String docText = completionControl.completionHandling(caretPos, lineNumber);
+            // the completionHandling will move the caret hence clearing popupScreenLocation
+            if (docPopup != null)
+                docPopup.hide();
+            if (docText != null && !docText.isEmpty()) {
+                docArea.setText(docText);
+                docPopup = popupFactory.getPopup(editorTextArea,
+                                                 docPanel,
+                                                 popupScreenLocation.x,
+                                                 popupScreenLocation.y);
+                docPopup.show();
+            }
+        } catch (BadLocationException ex) {
+            System.out.println("Should not happen Window showDocText");
+        }
+    }
+
+    @Override
+    public String getCurrentFileName() {
+        return RemixPrepareRun.INTERACTIVETEXT;
+    }
+
+//    public void reparseProgramText() {
+//        RemixTextArea editorTextArea = REPLTextAreas.getCurrentCodeArea();
+//        LibrariesAndCompletions.resetToEditorStandard();
+//        ParseTree tree = RemixPrepareRun.processParse(editorTextArea.getText());
+//        EvalVisitorForEditor eval = new EvalVisitorForEditor("REPL");
+//        LibraryExpression programLib = (LibraryExpression) eval.visit(tree);
+//        programLib.setActiveLines(LibraryExpression.ALLLINES);
+//        /*
+//        Revert added libraries to baseLibrary
+//        LibrariesAndCompletions.resetAddedLibraries();
+//
+//        Add programLib
+//        LibrariesAndCompletions.addLibrary(programLib);
+//         */
+//        LibrariesAndCompletions.addAfterBaseLibrary(programLib);
+//        /* the visit above fills in addedLibraries in LibrariesAndCompletions
+//        this the result program is added as well. */
+//    }
+
 
     class NewFileAction extends AbstractAction {
         public NewFileAction() {
@@ -195,7 +247,7 @@ public class RemixApp extends JFrame {
             }
 //            remixOutput.setDarkMode(true);
 //            remixOutput.setDark(true);
-            REPLTextAreas.setDark(true);
+            replPanel.setDark(true);
 //            remixOutput.modifyScheme(true);
             lightThemeAction.setEnabled(true);
             setEnabled(false);
@@ -216,7 +268,7 @@ public class RemixApp extends JFrame {
             }
 //            remixOutput.setDarkMode(false);
 //            remixOutput.setDark(false);
-            REPLTextAreas.setDark(false);
+            replPanel.setDark(false);
 //            remixOutput.modifyScheme(false);
             darkThemeAction.setEnabled(true);
             setEnabled(false);
@@ -273,6 +325,58 @@ public class RemixApp extends JFrame {
 
                 windowMenu.add(menuItem);
             }
+        }
+    }
+
+    /***** Control menu and items *****/
+    protected JMenu createControlMenu() {
+        JMenu menu = new JMenu("Control");
+        runAction = new RunAction();
+        menu.add(runAction);
+        stopAction = new StopAction();
+        menu.add(stopAction);
+        menu.addSeparator();
+        ClearComponentsAction clearComponentsAction = new ClearComponentsAction();
+        menu.add(clearComponentsAction);
+        return menu;
+    }
+
+    protected class RunAction extends edu.fizz.remix.editor.RunAction {
+
+        protected RunAction() {
+            super("Run");
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.META_DOWN_MASK));
+            setEnabled(true);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            replPanel.newOutput(getCurrentFileName());
+
+            String programText = REPLPanel.getCurrentCodeArea().getText();
+            remixRunner = new RemixSwingWorker(RemixPrepareRun.INTERACTIVETEXT, RemixApp.this, programText);
+            System.setErr(new PrintStream(new TextAreaOutputStream(remixRunner)));
+
+            stopAction.setEnabled(true);
+            setEnabled(false); // changed back when running finishes or is terminated
+            animations.clear();
+            remixRunner.execute(); // this causes the program to run in a background thread
+            // then add a new REPL text area
+        }
+    }
+
+    protected static class ClearComponentsAction extends AbstractAction {
+
+        protected ClearComponentsAction() {
+            super("Clear window");
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+            setEnabled(true);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            replPanel.removeExistingTextAreas();
+            replPanel.addREPLTextArea();
         }
     }
 

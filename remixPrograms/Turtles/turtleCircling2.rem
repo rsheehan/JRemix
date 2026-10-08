@@ -4,7 +4,7 @@
 using graphics, turtle
 
 	prepare #arrows :
-		#arrows : a group of 36 turtles in (a turtle space in (the graphics panel))
+		#arrows : a group of 36 turtles in (a turtle space in (a graphics window))
 		'angle' : 0
 		#arrows pens up
 		for each 'arrow' in #arrows

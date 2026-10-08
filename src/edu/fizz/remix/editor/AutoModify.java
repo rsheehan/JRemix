@@ -35,12 +35,12 @@ public class AutoModify {
                 int selectionStart = textArea.getSelectionStart();
                 int selectionEnd = textArea.getSelectionEnd();
                 int caretPos = textArea.getCaretPosition();
-                if (!AutoUtil.onlyInCodeSection(selectionStart,
-                                           selectionEnd,
-                                           caretPos,
-                                           textArea)) {
-                    return;
-                }
+//                if (!AutoUtil.onlyInCodeSection(selectionStart,
+//                                           selectionEnd,
+//                                           caretPos,
+//                                           textArea)) {
+//                    return;
+//                }
 
                 if (selectionStart != selectionEnd) {
                     textArea.replaceSelection(typed);

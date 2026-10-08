@@ -21,7 +21,7 @@ public class RemixCompletions {
         textArea.getActionMap().put(actionKey, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                RemixEditorWindow window = textArea.getWindow();
+                RemixBaseWindow window = (RemixBaseWindow) textArea.getWindow();
                 window.showDocText();
             }
         });
@@ -39,7 +39,7 @@ public class RemixCompletions {
 
     public void clearCompletions() {
         completionsHere = null;
-        RemixEditorWindow window = textArea.getWindow();
+        RemixBaseWindow window = (RemixBaseWindow)textArea.getWindow();
         if (window.docPopup != null)
             window.docPopup.hide();
     }

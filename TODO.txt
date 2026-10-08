@@ -1,6 +1,7 @@
-If enter "abcdefg" then newline
-I can undo and redo ok but if I undo back to an empty doc then the first redo is amazingly slow.
-I have also currently removed the CaretListener.
+Scrollpane in RemixApp not working properly. Disappears when?
+
+When running the landscape program, if the program is Stopped the message
+"Program cancelled" goes to the console not the output text area.
 
 Entering a keystroke
 	replace called in RemixStyledDocument

@@ -1,6 +1,6 @@
 package edu.fizz.remix.runtime;
 
-//import edu.fizz.remix.editor.RemixEditor;
+import edu.fizz.remix.editor.RemixPrepareRun;
 
 import java.util.Collections;
 import java.util.ListIterator;
@@ -194,7 +194,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         }
         Object result;
         if (inEditor)
-            functionContext.setFileWindowREPL(Runtime.REPL);
+            functionContext.setFileWindowREPL(RemixPrepareRun.INTERACTIVETEXT);
         try {
             result = routine.execute(functionContext);
         } catch (ClassCastException e) {
