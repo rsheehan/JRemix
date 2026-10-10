@@ -192,10 +192,7 @@ public class RemixApp extends RemixBaseWindow {
             for (RemixEditorWindow window : listOfWindows) {
                 window.setDark(true);
             }
-//            remixOutput.setDarkMode(true);
-//            remixOutput.setDark(true);
             replPanel.setDark(true);
-//            remixOutput.modifyScheme(true);
             lightThemeAction.setEnabled(true);
             setEnabled(false);
         }

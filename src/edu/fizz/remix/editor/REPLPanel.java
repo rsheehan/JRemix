@@ -1,7 +1,12 @@
 package edu.fizz.remix.editor;
 
+import org.fife.ui.rtextarea.Gutter;
+import org.fife.ui.rtextarea.RTextScrollPane;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
 
@@ -22,12 +27,28 @@ public class REPLPanel extends JPanel {
     /* Keep all text from current code areas. */
     public static StringBuilder allText;
 
+    private final GridBagConstraints gbcForText;
+    private final GridBagConstraints gbcForSpace;
+    private final Component glueBox;
+
     private boolean darkAreas;
 
     public REPLPanel(boolean dark)  {
+        super(new GridBagLayout());
         darkAreas = dark;
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        addREPLTextArea();
+        setBackgroundDark(dark);
+        gbcForText = new GridBagConstraints();
+        gbcForText.gridx = 0;
+        gbcForText.gridy = GridBagConstraints.RELATIVE;
+        gbcForText.fill = GridBagConstraints.HORIZONTAL; // Stretch horizontally
+        gbcForText.weightx = 1.0;                        // Take full container width
+        gbcForText.weighty = 0.0;                        // Crucial: Do NOT stretch vertically
+        gbcForText.insets = new Insets(1, 1, 1, 1);       // Spacing between text areas
+        gbcForSpace = (GridBagConstraints) gbcForText.clone();
+        gbcForSpace.weighty = 1.0;
+        glueBox = Box.createGlue();
+        add(glueBox, gbcForSpace);
+        addREPLTextArea(); // this moves glue to the end
         scrollPane = new JScrollPane(this);
         allText = new StringBuilder();
     }
@@ -45,7 +66,9 @@ public class REPLPanel extends JPanel {
         } else {
             currentCodeArea = REPLTextArea;
         }
-        add(REPLTextArea);
+        remove(glueBox);
+        add(createAutoSizingArea(REPLTextArea), gbcForText);
+        add(glueBox, gbcForSpace);
         revalidate();
         repaint();
         // Auto-scroll to the newly added component
@@ -64,16 +87,35 @@ public class REPLPanel extends JPanel {
         return scrollPane;
     }
 
+    private void setBackgroundDark(boolean dark) {
+        if (dark) {
+            setBackground(Color.black);
+        } else {
+            setBackground(Color.white);
+        }
+    }
+
     public void setDark(boolean dark) {
         darkAreas = dark;
-        Component[] textAreas = getComponents();
-        for (Component textArea : textAreas) {
-            if (textArea instanceof RemixTextArea remixTextArea) {
+        setBackgroundDark(dark);
+        Component[] allAreas = getComponents();
+        for (Component component : allAreas) {
+            if (component instanceof RTextScrollPane textScrollPane) {
+                RemixTextArea remixTextArea = (RemixTextArea) textScrollPane.getTextArea();
                 remixTextArea.setDark(dark);
                 remixTextArea.modifyScheme(dark);
-            } else {
-                outputSetDark((JTextArea)textArea);
-            }
+                Gutter gutter = textScrollPane.getGutter();
+                if (dark) {
+//                    editorTextArea.setSelectionColor(new Color(100, 100, 100));
+                    gutter.setBackground(Color.black);
+                    gutter.setLineNumberColor(Color.yellow);
+                } else {
+//                    editorTextArea.setSelectionColor(new Color(220, 220, 220));
+                    gutter.setBackground(Color.white);
+                    gutter.setLineNumberColor(Color.blue);
+                }
+            } else if (component != glueBox)
+                outputSetDark((JTextArea)component);
         }
     }
 
@@ -97,6 +139,7 @@ public class REPLPanel extends JPanel {
     public void newOutputArea(String programName) {
         currentOutputArea = new JTextArea();
         currentOutputArea.setLineWrap(true);
+        currentOutputArea.setWrapStyleWord(true);
         currentOutputArea.setEnabled(false);
         currentOutputArea.setFont(outputFont);
 
@@ -107,12 +150,14 @@ public class REPLPanel extends JPanel {
 
         currentOutputArea.setBorder(border);
         outputSetDark(currentOutputArea);
-        add(currentOutputArea);
+        remove(glueBox);
+        add(currentOutputArea, gbcForText);
+        add(glueBox, gbcForSpace);
         // Inform the layout manager and refresh the UI
         revalidate();
         repaint();
         // Auto-scroll to the newly added component
-        currentOutputArea.scrollRectToVisible(currentOutputArea.getBounds());
+//        currentOutputArea.scrollRectToVisible(currentOutputArea.getBounds());
     }
 
     public void removeExistingTextAreas() {
@@ -124,5 +169,31 @@ public class REPLPanel extends JPanel {
         }
         allText = new StringBuilder();
     }
+
+    private Component createAutoSizingArea(RemixTextArea textArea) {
+        // Initialize with 0 rows and columns so preferred size is derived entirely from text
+
+        // Update size whenever text changes
+        textArea.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) { invalidateAndResize(); }
+            @Override
+            public void removeUpdate(DocumentEvent e) { invalidateAndResize(); }
+            @Override
+            public void changedUpdate(DocumentEvent e) { invalidateAndResize(); }
+        });
+        // Disable scrollbars inside the individual text area so it forces expansion
+        RTextScrollPane scrollPane = new RTextScrollPane(textArea);
+        scrollPane.setVerticalScrollBarPolicy(RTextScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setHorizontalScrollBarPolicy(RTextScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        return scrollPane;
+    }
+
+    private void invalidateAndResize() {
+        revalidate();
+        repaint();
+    }
+
 
 }
