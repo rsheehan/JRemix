@@ -5,7 +5,6 @@ import org.fife.ui.rtextarea.SearchContext;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -68,66 +67,14 @@ public class RemixApp extends RemixBaseWindow {
         listOfWindows.remove(window);
     }
 
-    // TODO move to RemixBaseWindow
-    @Override
-    protected Point getPopupScreenLocation() {
-        RemixTextArea editorTextArea = replPanel.getCurrentCodeArea();
-        Point editorLocation = editorTextArea.getLocationOnScreen();
-        Point caretPoint = editorTextArea.getCaretScreenLocation();
-        return new Point(caretPoint.x + editorLocation.x, caretPoint.y + editorLocation.y + 16);
-    }
-
-    @Override
-    public void showDocText() {
-        RemixTextArea editorTextArea = replPanel.getCurrentCodeArea();
-        RemixCompletions completionControl = editorTextArea.completionControl;
-        try {
-            if (completionControl.noCompletions())
-                popupScreenLocation = getPopupScreenLocation();
-            int caretPos = editorTextArea.getCaretPosition();
-            int lineNumber = editorTextArea.getCaretLineNumber();
-
-            String docText = completionControl.completionHandling(caretPos, lineNumber);
-            // the completionHandling will move the caret hence clearing popupScreenLocation
-            if (docPopup != null)
-                docPopup.hide();
-            if (docText != null && !docText.isEmpty()) {
-                docArea.setText(docText);
-                docPopup = popupFactory.getPopup(editorTextArea,
-                                                 docPanel,
-                                                 popupScreenLocation.x,
-                                                 popupScreenLocation.y);
-                docPopup.show();
-            }
-        } catch (BadLocationException ex) {
-            System.out.println("Should not happen Window showDocText");
-        }
+    public RemixTextArea getTextArea() {
+        return REPLPanel.getCurrentCodeArea();
     }
 
     @Override
     public String getCurrentFileName() {
         return RemixPrepareRun.INTERACTIVETEXT;
     }
-
-//    public void reparseProgramText() {
-//        RemixTextArea editorTextArea = REPLTextAreas.getCurrentCodeArea();
-//        LibrariesAndCompletions.resetToEditorStandard();
-//        ParseTree tree = RemixPrepareRun.processParse(editorTextArea.getText());
-//        EvalVisitorForEditor eval = new EvalVisitorForEditor("REPL");
-//        LibraryExpression programLib = (LibraryExpression) eval.visit(tree);
-//        programLib.setActiveLines(LibraryExpression.ALLLINES);
-//        /*
-//        Revert added libraries to baseLibrary
-//        LibrariesAndCompletions.resetAddedLibraries();
-//
-//        Add programLib
-//        LibrariesAndCompletions.addLibrary(programLib);
-//         */
-//        LibrariesAndCompletions.addAfterBaseLibrary(programLib);
-//        /* the visit above fills in addedLibraries in LibrariesAndCompletions
-//        this the result program is added as well. */
-//    }
-
 
     class NewFileAction extends AbstractAction {
         public NewFileAction() {
@@ -354,6 +301,7 @@ public class RemixApp extends RemixBaseWindow {
             replPanel.newOutput(getCurrentFileName());
 
             String programText = REPLPanel.getCurrentCodeArea().getText();
+
             remixRunner = new RemixSwingWorker(RemixPrepareRun.INTERACTIVETEXT, RemixApp.this, programText);
             System.setErr(new PrintStream(new TextAreaOutputStream(remixRunner)));
 

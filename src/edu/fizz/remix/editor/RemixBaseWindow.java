@@ -3,6 +3,7 @@ package edu.fizz.remix.editor;
 import edu.fizz.remix.libraries.Graphics;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -42,8 +43,42 @@ public abstract class RemixBaseWindow extends JFrame {
         docPanel.add(docArea);
     }
 
-    protected abstract Point getPopupScreenLocation();
-    public abstract void showDocText();
+    public abstract RemixTextArea getTextArea();
+
+    protected Point getPopupScreenLocation() {
+        RemixTextArea textArea = getTextArea();
+        Point editorLocation = textArea.getLocationOnScreen();
+        Point caretPoint = textArea.getCaretScreenLocation();
+        return new Point(caretPoint.x + editorLocation.x, caretPoint.y + editorLocation.y + 16);
+    }
+
+    public void showDocText() {
+        RemixTextArea textArea = getTextArea();
+        RemixCompletions completionControl = textArea.completionControl;
+        try {
+            if (completionControl.noCompletions())
+                popupScreenLocation = getPopupScreenLocation();
+            int caretPos = textArea.getCaretPosition();
+            int lineNumber = textArea.getCaretLineNumber();
+
+            String docText = completionControl.completionHandling(caretPos, lineNumber);
+            // the completionHandling will move the caret hence clearing popupScreenLocation
+            if (docPopup != null)
+                docPopup.hide();
+            if (docText != null && !docText.isEmpty()) {
+                docArea.setText(docText);
+                docPopup = popupFactory.getPopup(textArea,
+                                                 docPanel,
+                                                 popupScreenLocation.x,
+                                                 popupScreenLocation.y);
+                docPopup.show();
+            }
+        } catch (BadLocationException ex) {
+            System.out.println("Should not happen Window showDocText");
+        }
+    }
+
+//    public abstract void showDocText();
 
     public abstract String getCurrentFileName();
 
@@ -62,7 +97,7 @@ public abstract class RemixBaseWindow extends JFrame {
         public void actionPerformed(ActionEvent e) {
             remixRunner.cancel(true);
             stopAllAnimations();
-            System.out.println("Program cancelled.");
+            System.err.println("\nProgram cancelled.");
             setEnabled(false);
             runAction.setEnabled(true);
         }

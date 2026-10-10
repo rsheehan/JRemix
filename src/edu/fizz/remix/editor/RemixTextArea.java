@@ -17,6 +17,8 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.geom.Rectangle2D;
 
 public class RemixTextArea extends RSyntaxTextArea {
@@ -43,6 +45,7 @@ public class RemixTextArea extends RSyntaxTextArea {
     }
 
     boolean editorContentSaved = true;
+    boolean isREPLArea = false;
 
     public RemixTextArea(Font font, boolean dark) { // called for printing
         setFont(font);
@@ -52,8 +55,9 @@ public class RemixTextArea extends RSyntaxTextArea {
         modifyScheme(dark);
     }
 
-    public RemixTextArea(boolean dark) {
+    public RemixTextArea(boolean replArea, boolean dark) {
         this(defaultFontForScreen, dark);
+        isREPLArea = replArea;
         setBracketMatchingEnabled(true); // requires the token maker to provide getBracketPairs
 
         AutoPairer.enableAutoPair(this);
@@ -63,6 +67,18 @@ public class RemixTextArea extends RSyntaxTextArea {
         completionControl = new RemixCompletions(this);
         caretListener = new CaretMove();
         addCaretListener(caretListener);
+
+        addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                completionControl.clearCompletions();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                completionControl.clearCompletions();
+            }
+        });
 
         AbstractDocument doc = (AbstractDocument) getDocument();
         doc.setDocumentFilter(new RemixDocumentFilter(this));
@@ -156,8 +172,18 @@ public class RemixTextArea extends RSyntaxTextArea {
     }
 
     public void reparseProgramText() {
+        String text;
+
         LibrariesAndCompletions.resetToEditorStandard();
-        ParseTree tree = RemixPrepareRun.processParse(getText());
+        if (isREPLArea) {
+            text = REPLPanel.allText + getText();
+            // problem is that getText on currentCodeArea will
+            // include code which is not valid
+        } else {
+            text = getText();
+        }
+
+        ParseTree tree = RemixPrepareRun.processParse(text);
 
         EvalVisitorForEditor eval = new EvalVisitorForEditor(((RemixBaseWindow)getWindow()).getCurrentFileName());
         LibraryExpression programLib = (LibraryExpression) eval.visit(tree);

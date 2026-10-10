@@ -62,6 +62,7 @@ public class RemixCompletions {
 
     // Called from keystroke event handler set up in RemixTextArea.
     public String completionHandling(int offset, int lineNumber) throws BadLocationException {
+        // we add 1 when checking the 0 based lineNumber
         ArrayList<String> completions;
         String completionAndDoc;
         String completionText;
@@ -70,6 +71,10 @@ public class RemixCompletions {
         if (completionsHere == null) {
             textArea.reparseProgramText(); // editor can be null if printing this document
             String seedWord = wordSoFar(offset);
+            int existingLines = 0;
+            if (textArea.isREPLArea) {
+                existingLines = (int)REPLPanel.allText.toString().lines().count();
+            }
             if (seedWord.startsWith("'")) { // variable
                 completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord);
                 seedWord += "'";
@@ -77,10 +82,10 @@ public class RemixCompletions {
             } else if (seedWord.startsWith("#")) { // refvar
                 completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord);
             } else if (seedWord.equals(seedWord.toUpperCase())) { // constant
-                completions = LibrariesAndCompletions.constantCompletionsFrom(seedWord, lineNumber);
+                completions = LibrariesAndCompletions.constantCompletionsFrom(seedWord, lineNumber + 1 + existingLines);
             } else { // function call
                 seedWord = seedWord.stripLeading();
-                completions = LibrariesAndCompletions.createCompletionsFrom(seedWord, lineNumber);
+                completions = LibrariesAndCompletions.createCompletionsFrom(seedWord, lineNumber + 1 + existingLines);
             }
             if (!seedWord.isEmpty() && !completions.isEmpty()) {
                 int seedLength = seedWord.length();

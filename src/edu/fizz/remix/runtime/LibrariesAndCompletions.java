@@ -135,6 +135,7 @@ public class LibrariesAndCompletions {
             // first check lineNumber against activeLines
             boolean activeHere = false;
             for (int[] startAndFinish : library.getActiveLines()) {
+
                 if (startAndFinish[0] <= lineNumber && lineNumber <= startAndFinish[1]) {
                     activeHere = true;
                     break;

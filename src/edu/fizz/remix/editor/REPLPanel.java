@@ -19,6 +19,9 @@ public class REPLPanel extends JPanel {
     /* Whatever this is at the moment is where all output and errors should be sent. */
     public static JTextArea currentOutputArea;
 
+    /* Keep all text from current code areas. */
+    public static StringBuilder allText;
+
     private boolean darkAreas;
 
     public REPLPanel(boolean dark)  {
@@ -26,16 +29,22 @@ public class REPLPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         addREPLTextArea();
         scrollPane = new JScrollPane(this);
+        allText = new StringBuilder();
     }
 
     protected void addREPLTextArea() {
-        RemixTextArea REPLTextArea = new RemixTextArea(darkAreas);
+        RemixTextArea REPLTextArea = new RemixTextArea(true, darkAreas);
         if (currentCodeArea != null) {
             // change the document listener
             AbstractDocument document =  (AbstractDocument)currentCodeArea.getDocument();
-            document.setDocumentFilter(new REPLPanelDocumentFilter(document, REPLTextArea));
+
+            allText.append(currentCodeArea.getText()).append("\n");
+
+            currentCodeArea = REPLTextArea;
+            document.setDocumentFilter(new REPLPanelDocumentFilter(document));
+        } else {
+            currentCodeArea = REPLTextArea;
         }
-        currentCodeArea = REPLTextArea;
         add(REPLTextArea);
         revalidate();
         repaint();
@@ -112,6 +121,7 @@ public class REPLPanel extends JPanel {
         for (Component component : allTextAreas) {
             remove(component);
         }
+        allText = new StringBuilder();
     }
 
 }

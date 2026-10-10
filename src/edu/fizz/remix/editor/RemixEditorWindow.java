@@ -6,7 +6,6 @@ import org.fife.ui.rtextarea.*;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.*;
@@ -34,7 +33,7 @@ public class RemixEditorWindow extends RemixBaseWindow {
     public RemixEditorWindow(RemixApp remixApp, boolean darkTheme) {
         super("untitled");
 //        dynamicTextAreas = RemixApp.REPLTextAreas;
-        editorTextArea = new RemixTextArea(darkTheme);
+        editorTextArea = new RemixTextArea(false, darkTheme);
         lineNumberPane = new RTextScrollPane(editorTextArea);
 
         JPanel remixPanel = new JPanel(new BorderLayout());
@@ -100,12 +99,6 @@ public class RemixEditorWindow extends RemixBaseWindow {
         }
     }
 
-    protected Point getPopupScreenLocation() {
-        Point editorLocation = editorTextArea.getLocationOnScreen();
-        Point caretPoint = editorTextArea.getCaretScreenLocation();
-        return new Point(caretPoint.x + editorLocation.x, caretPoint.y + editorLocation.y + 16);
-    }
-
     public boolean highlightSearch(SearchContext searchContext) {
         SearchResult matches = SearchEngine.markAll(editorTextArea, searchContext);
         return matches.getMarkedCount() > 0;
@@ -125,29 +118,8 @@ public class RemixEditorWindow extends RemixBaseWindow {
         return menu;
     }
 
-    public void showDocText() {
-        RemixCompletions completionControl = editorTextArea.completionControl;
-        try {
-            if (completionControl.noCompletions())
-                popupScreenLocation = getPopupScreenLocation();
-            int caretPos = editorTextArea.getCaretPosition();
-            int lineNumber = editorTextArea.getCaretLineNumber();
-
-            String docText = completionControl.completionHandling(caretPos, lineNumber);
-            // the completionHandling will move the caret hence clearing popupScreenLocation
-            if (docPopup != null)
-                docPopup.hide();
-            if (docText != null && !docText.isEmpty()) {
-                docArea.setText(docText);
-                docPopup = popupFactory.getPopup(editorTextArea,
-                                                 docPanel,
-                                                 popupScreenLocation.x,
-                                                 popupScreenLocation.y);
-                docPopup.show();
-            }
-        } catch (BadLocationException ex) {
-            System.out.println("Should not happen Window showDocText");
-        }
+    public RemixTextArea getTextArea() {
+        return editorTextArea;
     }
 
     class SaveFileAction extends AbstractAction {

@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class LibraryExpression implements Expression {
 
-    public static final ArrayList<int []> ALLLINES = new ArrayList<>(Collections.singleton(new int[]{0, Integer.MAX_VALUE}));
+    public static final ArrayList<int []> ALLLINES = new ArrayList<>(Collections.singleton(new int[]{1, Integer.MAX_VALUE}));
 
     boolean trueLibrary = false; // whether this is using block library or a true "library"
     boolean loaded = false; // set to true when first evaluated
@@ -30,9 +30,9 @@ public class LibraryExpression implements Expression {
         return remixFileName;
     }
 
-    public void setLibName(String libName) {
-        this.libName = libName;
-    }
+//    public void setLibName(String libName) {
+//        this.libName = libName;
+//    }
 
     public String getLibName() {
         if (!libName.isEmpty()) { // currently only used by the REPL library expression
@@ -168,9 +168,9 @@ public class LibraryExpression implements Expression {
         constantTable.put(constantName, null);
     }
 
-    public void setConstantsFromLibrary(LibraryExpression otherLib) {
-        constantTable = otherLib.constantTable;
-    }
+//    public void setConstantsFromLibrary(LibraryExpression otherLib) {
+//        constantTable = otherLib.constantTable;
+//    }
 
     /** Add a name of method and the reference parameter position. */
     public static void addMethodNameEditing(String name, int refPos, Method method) {

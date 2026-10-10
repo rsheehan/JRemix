@@ -1,4 +1,35 @@
-Scrollpane in RemixApp not working properly. Disappears when?
+Still can't get "using graphics" in REPL to complete.
+=============
+How to fix it
+It works in a RemixTextArea inside a RemixEditorWindow
+Possibly because the text is inside just one region which is then reparsed
+
+So have one text from all of the preceeding code areas. So this is text associated
+with the REPLPanel.
+
+I need to treat differently when finding completions
+versus running
+FINDING COMPLETIONS - mostly working for REPL code areas
+but not something like:
+
+using graphics
+
+The problem is that with all the text being processed from previous code areas
+the activeLines of the library doesn't match the lines from the current code area.
+
+RUNNING
+Is actually working I think.
+The library with functions and constants is made from the total text of
+all code areas but the block of code to be executed is just from the
+current code area - but it does run with the REPL context - so it has
+all existing variables until these are cleared.
+
+Now just need to capture the constants, variables and functions from running
+RemixEditorWindow contents.
+
+When the RemixApp calls clear window should I remove the REPLContext?
+
+=============
 
 When running the landscape program, if the program is Stopped the message
 "Program cancelled" goes to the console not the output text area.

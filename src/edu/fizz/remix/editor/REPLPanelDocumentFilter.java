@@ -13,10 +13,9 @@ The panel should scroll back to the current code area.
 
 public class REPLPanelDocumentFilter extends DocumentFilter {
 
-    private final RemixTextArea currentCodeArea;
     private final StringBuilder oldDocStringBuilder;
 
-    public REPLPanelDocumentFilter(AbstractDocument oldDocument, RemixTextArea REPLTextArea) {
+    public REPLPanelDocumentFilter(AbstractDocument oldDocument) {
         Segment textSegment = new Segment();
         try {
             oldDocument.getText(0, oldDocument.getLength(), textSegment);
@@ -24,13 +23,16 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
             throw new RuntimeException(e);
         }
         oldDocStringBuilder = new StringBuilder(textSegment);
-        currentCodeArea = REPLTextArea;
+        // The currentCodeArea is currently the next one added
+        // but the user can click back further so I need to get this
+        // from the REPLPanel every time.
     }
 
     @Override
     public void insertString(FilterBypass fb, int offset, String text, AttributeSet attrs) {
         StringBuilder newText = new StringBuilder(oldDocStringBuilder);
         newText.insert(offset, text);
+        RemixTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
         int insertPos = currentCodeArea.getCaretPosition();
         currentCodeArea.append(newText.toString());
         currentCodeArea.setCaretPosition(insertPos + offset);
@@ -41,6 +43,7 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) {
         StringBuilder newText = new StringBuilder(oldDocStringBuilder);
         newText.replace(offset, offset + length, text);
+        RemixTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
         currentCodeArea.append(newText.toString());
         scrollToNew();
     }
@@ -49,6 +52,7 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
     public void remove(FilterBypass fb, int offset, int length) {
         StringBuilder newText = new StringBuilder(oldDocStringBuilder);
         newText.delete(offset, offset + length);
+        RemixTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
         int insertPos = currentCodeArea.getCaretPosition();
         currentCodeArea.append(newText.toString());
         currentCodeArea.setCaretPosition(insertPos + offset);
@@ -56,6 +60,7 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
     }
 
     private void scrollToNew() {
+        RemixTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
         SwingUtilities.invokeLater(() -> {
             currentCodeArea.scrollRectToVisible(currentCodeArea.getBounds());
             currentCodeArea.requestFocusInWindow();

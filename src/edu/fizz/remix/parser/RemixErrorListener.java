@@ -13,7 +13,7 @@ public class RemixErrorListener extends BaseErrorListener {
                             Object offendingSymbol,
                             int line, int charPositionInLine,
                             String msg, RecognitionException e) {
-        System.err.println("Interpreter Error");
+        System.err.println("\nInterpreter Error");
         System.err.println("⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺ ⎺⎺⎺⎺⎺");
         Runtime.showErrorPosition(RemixPrepareRun.getFileName(), line - 1,
                                   charPositionInLine);

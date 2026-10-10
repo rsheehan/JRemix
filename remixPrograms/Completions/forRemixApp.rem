@@ -1,0 +1,11 @@
+ABC : 1
+'name' : "Robert"
+
+add four to 'x' :
+	'x' + 4
+	
+AND : 1
+'more' : "Stephanie"
+
+add five to 'x' :
+	'x' + 5

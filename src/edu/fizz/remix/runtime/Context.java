@@ -5,7 +5,7 @@ package edu.fizz.remix.runtime;
 import edu.fizz.remix.editor.RemixPrepareRun;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 public class Context {
@@ -41,22 +41,33 @@ public class Context {
         this.returnHigher = returnHigher;
     }
 
+//    public Stack<LibraryExpression> getLibraryStack() {
+//        return libraryStack;
+//    }
+
+    // called after a repl area is run to collect the names
+    public Set<String> getVariableNames() {
+        return variables.keySet();
+    }
+
     public void setFileWindowREPL(String fileWindowREPL) {
         this.fileWindowREPL = fileWindowREPL;
     }
 
     public void addLibraryToStack(LibraryExpression newLib) {
         LibraryExpression topOfStack = libraryStack.peek();
-        if (topOfStack.getLibName().equals(RemixPrepareRun.INTERACTIVETEXT)) {
-            for (Map.Entry<String, Function> entry : topOfStack.functionTable.entrySet()) {
-                if (!newLib.functionTable.containsKey(entry.getKey())) { // don't overwrite new versions
-                    newLib.functionTable.put(entry.getKey(), entry.getValue());
-                }
-            }
-            newLib.setConstantsFromLibrary(topOfStack);
+        if (topOfStack.getLibName().equals(RemixPrepareRun.INTERACTIVETEXT) &&
+                newLib.getLibName().equals(RemixPrepareRun.INTERACTIVETEXT)) {
+            /*
+            Because constants are stored in the programLib they came from
+            I need to make the newLib the REPL.
+             */
+            newLib.mergeFunctionsConstantsNoOverwrite(topOfStack);
+            // the new REPL is active everywhere
+            newLib.setActiveLines(LibraryExpression.ALLLINES);
+            libraryStack.pop();
         }
-        else
-            libraryStack.push(newLib);
+        libraryStack.push(newLib);
     }
 
     /*
@@ -199,7 +210,7 @@ public class Context {
      * @return the name of the file/window/REPL associated
      */
     public String getFileWindowREPL() {
-        return "CONTEXT: " + fileWindowREPL;
+        return fileWindowREPL; // was "CONTEXT: " + fileWindowREPL;
     }
 
 }

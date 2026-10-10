@@ -17,6 +17,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * This contains the code to "compile" the program.
@@ -57,8 +58,24 @@ public class RemixPrepareRun {
         final ParseTree tree = processParse(programText);
         LibraryExpression programLib = (LibraryExpression)eval.visit(tree);
         Object result = Runtime.runProgram(programLib, fileName);
-        if (!fileName.equals(INTERACTIVETEXT))
+        if (fileName.equals(INTERACTIVETEXT)) {
+            // before finishing collect variables from the context to
+            // add to LibrariesAndCompletions allVariableNames
+            Context replContext = RemixPrepareRun.REPLContext;
+            Set<String> varsFromRun = replContext.getVariableNames();
+            for (String name : varsFromRun) {
+                LibrariesAndCompletions.addVariableName(name);
+            }
+            // constants and functions should be in the existing REPL lib
+            // transfer them to library in LibrariesAndCompletions addedLibraries
+//            Stack<LibraryExpression> libsFromRun = replContext.getLibraryStack();
+//            for (LibraryExpression lib : libsFromRun) {
+//                lib.setActiveLines(LibraryExpression.ALLLINES); // overkill?
+//                LibrariesAndCompletions.addLibrary(lib);
+//            }
+        } else {
             LibrariesAndCompletions.resetToEditorStandard();
+        }
         return result;
     }
 
