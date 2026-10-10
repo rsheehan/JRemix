@@ -408,7 +408,7 @@ public class RemixEditorWindow extends RemixBaseWindow {
         public void actionPerformed(ActionEvent e) {
             // have to remove all dynamicTextAreas and then insert the new output area
             RemixApp.replPanel.removeExistingTextAreas();
-            RemixApp.replPanel.newOutput(currentFileName);
+            RemixApp.replPanel.newOutputArea(currentFileName);
 
             String programText = editorTextArea.getText();
             remixRunner = new RemixSwingWorker(currentFileName, RemixEditorWindow.this, programText);

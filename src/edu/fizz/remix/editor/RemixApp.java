@@ -298,7 +298,7 @@ public class RemixApp extends RemixBaseWindow {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            replPanel.newOutput(getCurrentFileName());
+            replPanel.newOutputArea(getCurrentFileName());
 
             String programText = REPLPanel.getCurrentCodeArea().getText();
 
@@ -309,7 +309,6 @@ public class RemixApp extends RemixBaseWindow {
             setEnabled(false); // changed back when running finishes or is terminated
             animations.clear();
             remixRunner.execute(); // this causes the program to run in a background thread
-            // then add a new REPL text area
         }
     }
 

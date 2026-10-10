@@ -94,8 +94,9 @@ public class REPLPanel extends JPanel {
     /*
     Not only adds a new output text area, it also adds a new code area beneath it.
      */
-    public void newOutput(String programName) {
+    public void newOutputArea(String programName) {
         currentOutputArea = new JTextArea();
+        currentOutputArea.setLineWrap(true);
         currentOutputArea.setEnabled(false);
         currentOutputArea.setFont(outputFont);
 
