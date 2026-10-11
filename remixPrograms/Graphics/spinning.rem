@@ -14,7 +14,7 @@ using graphics
 	'vertical' : STD-HEIGHT ÷ 2 + SIZE
 	'line' : a RED line from {0, 'vertical'} to {STD-WIDTH, 'vertical'}
 
-	place 'line' in ('the window'base layer)
+	place 'line' in ('the window' base layer)
 
 	'rotation' : every 2 ticks [change 'triangle' heading by 2 degrees]
 	'movement' : every 1 tick [change 'triangle' x-pos by 2]

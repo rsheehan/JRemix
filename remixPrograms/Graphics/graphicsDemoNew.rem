@@ -1,15 +1,15 @@
 using graphics
 	'squares rotation' : every 1 tick
-		for each 'square' in ('layer2' shapes)
+		for each 'square' in ('square layer' shapes)
 			change 'square' heading by 2 degrees
 
 	'arrows movement' : every 2 ticks
-		for each 'arrow' in ('layer1' shapes)
+		for each 'arrow' in ('arrow layer' shapes)
 			change 'arrow' x-pos by 5
 
 	'window' : a graphics window
-	'layer1' : 'window' next layer
-	'layer2' : 'window' next layer
+	'arrow layer' : 'window' next layer
+	'square layer' : 'window' next layer
 
 	repeat
 		'shape' : a square
@@ -17,14 +17,14 @@ using graphics
 		'shape' position  (random point)
 		'shape' size      (random from 10 to 100)
 		'shape' heading   (random from 1 to 90)
-		place 'shape' in 'layer2'
+		place 'shape' in 'square layer'
 	… 50 times
 
 	for each 'y-pos' from 40 to (STD-HEIGHT - 20) in steps of 80
 		'arrow' : a triangle
 		'arrow' size 20
 		'arrow' position { 0, 'y-pos' }
-		place 'arrow' in 'layer1'
+		place 'arrow' in 'arrow layer'
 
 	animate at 50 ticks per second
 		animate 'squares rotation'
