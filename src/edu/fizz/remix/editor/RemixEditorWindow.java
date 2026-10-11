@@ -420,6 +420,7 @@ public class RemixEditorWindow extends RemixBaseWindow {
             RemixApp.replPanel.newOutputArea(currentFileName);
 
             String programText = editorTextArea.getText();
+            LibrariesAndCompletions.resetREPLEnvironment();
             LibrariesAndCompletions.resetAddedLibraries();
             remixRunner = new RemixSwingWorker(currentFileName, RemixEditorWindow.this, programText);
             System.setErr(new PrintStream(new TextAreaOutputStream(remixRunner)));
@@ -428,7 +429,6 @@ public class RemixEditorWindow extends RemixBaseWindow {
             setEnabled(false); // changed back when running finishes or is terminated
             animations.clear();
             remixRunner.execute(); // this causes the program to run in a background thread
-            // then add a new REPL text area
         }
     }
 
