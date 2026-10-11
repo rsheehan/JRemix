@@ -17,6 +17,21 @@ public class LibrariesAndCompletions {
        All of the variable identifiers.
      */
     private static final SortedSet<String> allVariableNames = new TreeSet<>();
+    public static HashMap<String, Function> methodTableForCompletions = new HashMap<>();
+
+    /*
+       List of libraries which have been added so far.
+       This is used by the editor for completions.
+       The standard library and the program editor library are valid
+       everywhere, all others have a start and finish line.
+     */
+    private static ArrayList<LibraryExpression> addedLibraries = new ArrayList<>();
+
+    /* The base library has the built-in and standard-lib functions. */
+    private static LibraryExpression baseLibrary;
+    /* The program library copies the base library and adds the current
+       functions and statements.
+     */
 
     public static void addVariableName(String variable) {
         if (variable.startsWith("#"))
@@ -25,28 +40,32 @@ public class LibrariesAndCompletions {
             allVariableNames.add("'" + variable + "'\n");
     }
 
-    /*
-       List of libraries which have been added so far.
-       This is used by the editor for completions.
-       The standard library and the program editor library are valid
-       everywhere, all others have a start and finish line.
-     */
-    private static final ArrayList<LibraryExpression> addedLibraries = new ArrayList<>();
-
-    /* The base library has the built-in and standard-lib functions. */
-    private static LibraryExpression baseLibrary;
-    /* The program library copies the base library and adds the current
-       functions and statements.
-     */
-
     public static void resetAddedLibraries() {
         addedLibraries.clear();
         addedLibraries.add(baseLibrary);
     }
 
+//    private static LibraryExpression REPLLib = null;
+
+    /*
+    If doing completions in the REPL this can have the same information
+    in different libraries.
+     */
     public static void addLibrary(LibraryExpression libraryExpression) {
-        if (!addedLibraries.contains(libraryExpression))
+        if (!addedLibraries.contains(libraryExpression)) { // &&
             addedLibraries.add(libraryExpression);
+        }
+    }
+
+    /*
+    Remove all unnamed libraries before we produce completions from the REPL
+     */
+    public static void removeUnnamedLibs() {
+        ArrayList<LibraryExpression> namedLibs = new ArrayList<>();
+        for (LibraryExpression lib : addedLibraries)
+            if (!lib.getLibName().isEmpty())
+                namedLibs.add(lib);
+        addedLibraries = namedLibs;
     }
 
     public static void addAfterBaseLibrary(LibraryExpression libraryExpression) {
@@ -61,7 +80,7 @@ public class LibrariesAndCompletions {
      * Sets the functions, methods, and context back to the standard version.
      */
     public static void resetToEditorStandard() {
-        LibraryExpression.methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
+        methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
         resetAddedLibraries();
         allVariableNames.clear();
     }
@@ -70,7 +89,7 @@ public class LibrariesAndCompletions {
      * Called when resetting the REPL input/output window.
      */
     public static void resetREPLEnvironment() {
-        LibraryExpression.methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
+        methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
         RemixPrepareRun.REPLContext = new Context(baseLibrary, RemixPrepareRun.INTERACTIVETEXT);
     }
 
@@ -147,7 +166,7 @@ public class LibrariesAndCompletions {
         }
         // then all methods
         //      with activeLines all lines
-        searchForCompletions(searchWord, LibraryExpression.methodTableForCompletions, completionsAtStart, completionsConsecutive, functionDisplayNames);
+        searchForCompletions(searchWord, methodTableForCompletions, completionsAtStart, completionsConsecutive, functionDisplayNames);
         ArrayList<String> allCompletions = new ArrayList<>(completionsAtStart);
         allCompletions.addAll(completionsConsecutive);
 
@@ -224,7 +243,7 @@ public class LibrariesAndCompletions {
         // this unnecessarily repeats the work so that the methodTableForCompletions gets
         // the one method from the standard-lib
         RemixPrepareRun.loadPackage(standardLib, true);
-        LibraryExpression.methodTableStandardLib = new HashMap<>(LibraryExpression.methodTableForCompletions);
+        LibraryExpression.methodTableStandardLib = new HashMap<>(methodTableForCompletions);
         try {
             // currently libraries no longer maintain state in contexts (variables)
             // this means this is only useful for loading other libraries, printing etc.

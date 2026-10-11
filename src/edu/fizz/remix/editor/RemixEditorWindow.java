@@ -1,5 +1,6 @@
 package edu.fizz.remix.editor;
 
+import edu.fizz.remix.runtime.LibrariesAndCompletions;
 import org.fife.ui.rsyntaxtextarea.HtmlUtil;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextAreaEditorKit;
 import org.fife.ui.rtextarea.*;
@@ -42,14 +43,22 @@ public class RemixEditorWindow extends RemixBaseWindow {
         setDark(darkTheme);
 
         //Set up the menu bar.
-        JMenuBar mb = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(Color.black);
+        menuBar.setForeground(Color.white);
         JMenu fileMenu = createFileMenu();
-        mb.add(fileMenu);
+        fileMenu.setBackground(Color.black);
+        fileMenu.setForeground(Color.white);
+        menuBar.add(fileMenu);
         JMenu editMenu = createEditMenu();
-        mb.add(editMenu);
+        editMenu.setBackground(Color.black);
+        editMenu.setForeground(Color.white);
+        menuBar.add(editMenu);
         JMenu controlMenu = createControlMenu();
-        mb.add(controlMenu);
-        setJMenuBar(mb);
+        controlMenu.setBackground(Color.black);
+        controlMenu.setForeground(Color.white);
+        menuBar.add(controlMenu);
+        setJMenuBar(menuBar);
 
         setContentPane(remixPanel);
         pack();
@@ -411,6 +420,7 @@ public class RemixEditorWindow extends RemixBaseWindow {
             RemixApp.replPanel.newOutputArea(currentFileName);
 
             String programText = editorTextArea.getText();
+            LibrariesAndCompletions.resetAddedLibraries();
             remixRunner = new RemixSwingWorker(currentFileName, RemixEditorWindow.this, programText);
             System.setErr(new PrintStream(new TextAreaOutputStream(remixRunner)));
 

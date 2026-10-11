@@ -1,14 +1,14 @@
 package edu.fizz.remix.editor;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
 import edu.fizz.remix.runtime.LibrariesAndCompletions;
 import org.fife.ui.rtextarea.SearchContext;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -24,6 +24,8 @@ public class RemixApp extends RemixBaseWindow {
 
     LightThemeAction lightThemeAction;
     DarkThemeAction darkThemeAction;
+
+    private static final int WIDTH = 800;
 
     public RemixApp() {
         super(REMIX);
@@ -43,13 +45,61 @@ public class RemixApp extends RemixBaseWindow {
 
         replPanel = new REPLPanel(lightThemeAction.isEnabled());
         JScrollPane scrollPane = replPanel.getScrollPane();
+        // Apply custom dark UI to the vertical scrollbar
+        scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+
+            @Override
+            protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
+                g.setColor(new Color(150, 150, 150)); // background track
+                g.fillRect(trackBounds.x, trackBounds.y, trackBounds.width, trackBounds.height);
+            }
+
+            @Override
+            protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
+                if (thumbBounds.isEmpty() || !scrollbar.isEnabled()) return;
+
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                g2.setColor(new Color(75, 75, 75)); // Dark thumb bar
+                g2.fillRoundRect(thumbBounds.x + 2, thumbBounds.y + 2, thumbBounds.width - 4, thumbBounds.height - 4, 8, 8);
+                g2.dispose();
+            }
+
+            // Hide the default top and bottom arrow buttons
+            @Override
+            protected JButton createDecreaseButton(int orientation) { return createZeroButton(); }
+            @Override
+            protected JButton createIncreaseButton(int orientation) { return createZeroButton(); }
+
+            private JButton createZeroButton() {
+                JButton button = new JButton();
+                button.setPreferredSize(new Dimension(0, 0));
+                return button;
+            }
+        });
         add(scrollPane, BorderLayout.CENTER);
-        setMinimumSize(new Dimension(600, 600));
-        setPreferredSize(new Dimension(800, 1080));
+        setMinimumSize(new Dimension(WIDTH, 600));
+        setPreferredSize(new Dimension(WIDTH, 1080));
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Listen for resize events and lock the height
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                Dimension size = getSize();
+                if (size.width != WIDTH) {
+                    setSize(size.height, WIDTH);
+                }
+            }
+        });
         setVisible(true);
     }
+
+//    private void setMenuItemColors(JMenuItem item) {
+//        item.setBackground(Color.black);
+//        item.setForeground(Color.white);
+//    }
 
     /***********************************/
 
@@ -242,6 +292,18 @@ public class RemixApp extends RemixBaseWindow {
     }
 
     /**
+     * Returns true if one of the windows is called "Drawing".
+     */
+    public static boolean noDrawingWindow() {
+        Frame[] frames = Frame.getFrames();
+        for (Frame frame : frames) {
+            if (frame.getTitle().equals("Drawing"))
+                return false;
+        }
+        return true;
+    }
+
+    /**
      Helper method to clear and rebuild the window list dynamically
      */
     private static void populateWindowMenu(JMenu windowMenu) {
@@ -280,6 +342,8 @@ public class RemixApp extends RemixBaseWindow {
         stopAction = new StopAction();
         menu.add(stopAction);
         menu.addSeparator();
+        ResetAction resetAction = new ResetAction();
+        menu.add(resetAction);
         ClearComponentsAction clearComponentsAction = new ClearComponentsAction();
         menu.add(clearComponentsAction);
         return menu;
@@ -324,6 +388,22 @@ public class RemixApp extends RemixBaseWindow {
         }
     }
 
+    protected static class ResetAction extends AbstractAction {
+
+        protected ResetAction() {
+            super("Reset REPL");
+            setEnabled(true);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            replPanel.removeExistingTextAreas();
+            replPanel.addREPLTextArea();
+            // also clear the repl context
+            LibrariesAndCompletions.resetREPLEnvironment();
+        }
+    }
+
     /*-----------------------------------*/
 
     /**
@@ -349,6 +429,12 @@ public class RemixApp extends RemixBaseWindow {
             System.err.println("Error: initializing REPL");
             throw new RuntimeException(e);
         }
+        // need this to turn the frame dark
+        System.setProperty("apple.awt.application.appearance", "NSAppearanceNameDarkAqua");
+        System.setProperty("flatlaf.useNativeLibrary", "false");
+        System.setProperty("flatlaf.FlatDarkulaLaf", "false"); // FlatDarkulaLaf, FlatDarkLaf, FlatMacDarkLaf
+        FlatDarculaLaf.setup();
+
         SwingUtilities.invokeLater(RemixApp::createAndShowGUI);
     }
 }

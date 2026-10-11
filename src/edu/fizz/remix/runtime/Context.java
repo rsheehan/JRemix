@@ -5,7 +5,6 @@ package edu.fizz.remix.runtime;
 import edu.fizz.remix.editor.RemixPrepareRun;
 
 import java.util.HashMap;
-import java.util.Set;
 import java.util.Stack;
 
 public class Context {
@@ -45,10 +44,14 @@ public class Context {
 //        return libraryStack;
 //    }
 
-    // called after a repl area is run to collect the names
-    public Set<String> getVariableNames() {
-        return variables.keySet();
+    // called after a repl area is run to collect the variables
+    public HashMap<String, Object> getVariables() {
+        return variables;
     }
+
+//    public Set<String> getVariableNames() {
+//        return variables.keySet();
+//    }
 
     public void setFileWindowREPL(String fileWindowREPL) {
         this.fileWindowREPL = fileWindowREPL;
@@ -213,4 +216,7 @@ public class Context {
         return fileWindowREPL; // was "CONTEXT: " + fileWindowREPL;
     }
 
+    public Stack<LibraryExpression> getLibraryStack() {
+        return libraryStack;
+    }
 }

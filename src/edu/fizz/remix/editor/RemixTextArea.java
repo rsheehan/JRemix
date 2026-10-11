@@ -171,15 +171,16 @@ public class RemixTextArea extends RSyntaxTextArea {
         }
     }
 
+    /*
+    Only called from RemixCompletions.completionHandling
+     */
     public void reparseProgramText() {
         String text;
-
-        LibrariesAndCompletions.resetToEditorStandard();
         if (isREPLArea) {
             text = REPLPanel.allText + getText();
-            // problem is that getText on currentCodeArea will
-            // include code which is not valid
+            LibrariesAndCompletions.removeUnnamedLibs();
         } else {
+            LibrariesAndCompletions.resetToEditorStandard();
             text = getText();
         }
 

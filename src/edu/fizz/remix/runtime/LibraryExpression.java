@@ -93,7 +93,6 @@ public class LibraryExpression implements Expression {
 
     static HashMap<String, Integer> methodTableRefPos = new HashMap<>(); // one table used by all
     static HashMap<String, Function> methodTableStandardLib = new HashMap<>();
-    static HashMap<String, Function> methodTableForCompletions = new HashMap<>();
 
     public LibraryExpression() {
         setUpBuiltIns();
@@ -168,18 +167,14 @@ public class LibraryExpression implements Expression {
         constantTable.put(constantName, null);
     }
 
-//    public void setConstantsFromLibrary(LibraryExpression otherLib) {
-//        constantTable = otherLib.constantTable;
-//    }
-
     /** Add a name of method and the reference parameter position. */
     public static void addMethodNameEditing(String name, int refPos, Method method) {
         if (refPos == 0) // private method, currently don't add to completion methods
             return;
         method.setMethodDisplayName(name);
-        Method existingMethod = (Method) methodTableForCompletions.get(name);
+        Method existingMethod = (Method) LibrariesAndCompletions.methodTableForCompletions.get(name);
         if (existingMethod == null) { // new method name
-            methodTableForCompletions.put(name, method);
+            LibrariesAndCompletions.methodTableForCompletions.put(name, method);
         } else { // a method of this name already exists
             existingMethod.addDifferentComment(method.getMethodDisplayName(), method.functionComment);
             if (existingMethod.getSelfRef() != refPos) {

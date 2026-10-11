@@ -7,9 +7,7 @@ import edu.fizz.remix.parser.RemixErrorListener;
 import edu.fizz.remix.parser.RemixLexer;
 import edu.fizz.remix.parser.RemixParser;
 import edu.fizz.remix.parser.RemixParserBaseVisitor;
-import edu.fizz.remix.runtime.Context;
-import edu.fizz.remix.runtime.LibrariesAndCompletions;
-import edu.fizz.remix.runtime.LibraryExpression;
+import edu.fizz.remix.runtime.*;
 import edu.fizz.remix.runtime.Runtime;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -17,7 +15,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Stack;
 
 /**
  * This contains the code to "compile" the program.
@@ -58,23 +57,29 @@ public class RemixPrepareRun {
         final ParseTree tree = processParse(programText);
         LibraryExpression programLib = (LibraryExpression)eval.visit(tree);
         Object result = Runtime.runProgram(programLib, fileName);
-        if (fileName.equals(INTERACTIVETEXT)) {
-            // before finishing collect variables from the context to
-            // add to LibrariesAndCompletions allVariableNames
-            Context replContext = RemixPrepareRun.REPLContext;
-            Set<String> varsFromRun = replContext.getVariableNames();
-            for (String name : varsFromRun) {
-                LibrariesAndCompletions.addVariableName(name);
+        // before finishing collect variables from the context to
+        // add to LibrariesAndCompletions allVariableNames
+        HashMap<String, Object> varsFromRun = REPLContext.getVariables();
+//        Set<String> varsFromRun = REPLContext.getVariableNames();
+        for (String name : varsFromRun.keySet()) {
+            LibrariesAndCompletions.addVariableName(name);
+            // also collect object and add their methods to
+            // methodTableForCompletions
+            if (varsFromRun.get(name) instanceof RemixObject object) {
+                MethodTable methodTable = object.methodTable();
+                for (String methodName : methodTable.keySet()) {
+                    Method method = methodTable.get(methodName);
+                    LibrariesAndCompletions.methodTableForCompletions.put(methodName, method);
+                }
             }
-            // constants and functions should be in the existing REPL lib
-            // transfer them to library in LibrariesAndCompletions addedLibraries
-//            Stack<LibraryExpression> libsFromRun = replContext.getLibraryStack();
-//            for (LibraryExpression lib : libsFromRun) {
-//                lib.setActiveLines(LibraryExpression.ALLLINES); // overkill?
-//                LibrariesAndCompletions.addLibrary(lib);
-//            }
-        } else {
-            LibrariesAndCompletions.resetToEditorStandard();
+        }
+
+        // constants and functions should be in the existing REPL lib
+        // transfer them to library in LibrariesAndCompletions addedLibraries
+        Stack<LibraryExpression> libsFromRun = REPLContext.getLibraryStack();
+        for (LibraryExpression lib : libsFromRun) {
+            lib.setActiveLines(LibraryExpression.ALLLINES); // overkill?
+            LibrariesAndCompletions.addLibrary(lib);
         }
         return result;
     }

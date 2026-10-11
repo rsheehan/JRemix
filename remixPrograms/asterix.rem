@@ -3,7 +3,7 @@ Asterisk Diamonds
 =================
 " ↲
 
-for each 'size' from 1 to 41 in steps of 2
+for each 'size' from 1 to 39 in steps of 2
 	'size', "." ↲
 	print a diamond of 'size'
 	↲

@@ -35,7 +35,7 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
         RemixTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
         int insertPos = currentCodeArea.getCaretPosition();
         currentCodeArea.append(newText.toString());
-        currentCodeArea.setCaretPosition(insertPos + offset);
+        currentCodeArea.setCaretPosition(insertPos + offset + text.length());
         scrollToNew();
     }
 
@@ -61,10 +61,8 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
 
     private void scrollToNew() {
         RemixTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
-        SwingUtilities.invokeLater(() -> {
-            currentCodeArea.scrollRectToVisible(currentCodeArea.getBounds());
-            currentCodeArea.requestFocusInWindow();
-        });
+        REPLPanel.scrollToBottom();
+//        SwingUtilities.invokeLater(REPLPanel::scrollToBottom);
     }
 
 }

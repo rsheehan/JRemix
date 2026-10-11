@@ -12,7 +12,7 @@ import java.awt.*;
 
 public class REPLPanel extends JPanel {
 
-    private final JScrollPane scrollPane;
+    private static JScrollPane scrollPane;
 
     public static RemixTextArea getCurrentCodeArea() {
         return currentCodeArea;
@@ -27,9 +27,11 @@ public class REPLPanel extends JPanel {
     /* Keep all text from current code areas. */
     public static StringBuilder allText;
 
-    private final GridBagConstraints gbcForText;
+    private final GridBagConstraints gbcForCode;
+    private final GridBagConstraints gbcForOutput;
     private final GridBagConstraints gbcForSpace;
     private final Component glueBox;
+    private final Component lastLineBox;
 
     private boolean darkAreas;
 
@@ -37,18 +39,22 @@ public class REPLPanel extends JPanel {
         super(new GridBagLayout());
         darkAreas = dark;
         setBackgroundDark(dark);
-        gbcForText = new GridBagConstraints();
-        gbcForText.gridx = 0;
-        gbcForText.gridy = GridBagConstraints.RELATIVE;
-        gbcForText.fill = GridBagConstraints.HORIZONTAL; // Stretch horizontally
-        gbcForText.weightx = 1.0;                        // Take full container width
-        gbcForText.weighty = 0.0;                        // Crucial: Do NOT stretch vertically
-        gbcForText.insets = new Insets(1, 1, 1, 1);       // Spacing between text areas
-        gbcForSpace = (GridBagConstraints) gbcForText.clone();
+        gbcForCode = new GridBagConstraints();
+        gbcForCode.gridx = 0;
+        gbcForCode.gridy = GridBagConstraints.RELATIVE;
+        gbcForCode.fill = GridBagConstraints.HORIZONTAL; // Stretch horizontally
+        gbcForCode.weightx = 1.0;                        // Take full container width
+        gbcForCode.weighty = 0.0;                        // Crucial: Do NOT stretch vertically
+        gbcForCode.insets = new Insets(1, 1, 1, 1); // Spacing between text areas
+        gbcForOutput = (GridBagConstraints) gbcForCode.clone();
+        gbcForOutput.fill = GridBagConstraints.NONE;
+        gbcForSpace = (GridBagConstraints) gbcForCode.clone();
         gbcForSpace.weighty = 1.0;
         glueBox = Box.createGlue();
+        lastLineBox = Box.createRigidArea(new Dimension(600, 20));
+        add(lastLineBox, gbcForCode);
         add(glueBox, gbcForSpace);
-        addREPLTextArea(); // this moves glue to the end
+        addREPLTextArea(); // this moves glue and last to the end
         scrollPane = new JScrollPane(this);
         allText = new StringBuilder();
     }
@@ -58,7 +64,7 @@ public class REPLPanel extends JPanel {
         if (currentCodeArea != null) {
             // change the document listener
             AbstractDocument document =  (AbstractDocument)currentCodeArea.getDocument();
-
+            currentCodeArea.setHighlightCurrentLine(false);
             allText.append(currentCodeArea.getText()).append("\n");
 
             currentCodeArea = REPLTextArea;
@@ -66,21 +72,31 @@ public class REPLPanel extends JPanel {
         } else {
             currentCodeArea = REPLTextArea;
         }
+        remove(lastLineBox);
         remove(glueBox);
-        add(createAutoSizingArea(REPLTextArea), gbcForText);
+        add(createAutoSizingArea(REPLTextArea), gbcForCode);
         add(glueBox, gbcForSpace);
+        add(lastLineBox, gbcForCode);
         revalidate();
         repaint();
-        // Auto-scroll to the newly added component
+
         JFrame frame = (JFrame)SwingUtilities.getWindowAncestor(this);
-        if (frame != null) {
+        if (frame != null && RemixApp.noDrawingWindow()) {
             frame.toFront();
             frame.requestFocus();
         }
-        SwingUtilities.invokeLater(() -> {
-            currentCodeArea.scrollRectToVisible(currentCodeArea.getBounds());
-            currentCodeArea.requestFocusInWindow();
+        scrollToBottom();
+    }
+
+    public static void scrollToBottom() {
+        currentCodeArea.requestFocusInWindow();
+        // this is gross but SwingUtilites.invokeLater wasn't as reliable.
+        Timer timer = new Timer(100, _ -> {
+            JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
+            verticalBar.setValue(verticalBar.getMaximum());
         });
+        timer.setRepeats(false);
+        timer.start();
     }
 
     public JScrollPane getScrollPane() {
@@ -114,7 +130,7 @@ public class REPLPanel extends JPanel {
                     gutter.setBackground(Color.white);
                     gutter.setLineNumberColor(Color.blue);
                 }
-            } else if (component != glueBox)
+            } else if (component != glueBox && component != lastLineBox)
                 outputSetDark((JTextArea)component);
         }
     }
@@ -138,6 +154,7 @@ public class REPLPanel extends JPanel {
      */
     public void newOutputArea(String programName) {
         currentOutputArea = new JTextArea();
+        currentOutputArea.setColumns(81);
         currentOutputArea.setLineWrap(true);
         currentOutputArea.setWrapStyleWord(true);
         currentOutputArea.setEnabled(false);
@@ -151,8 +168,10 @@ public class REPLPanel extends JPanel {
         currentOutputArea.setBorder(border);
         outputSetDark(currentOutputArea);
         remove(glueBox);
-        add(currentOutputArea, gbcForText);
+        remove(lastLineBox);
+        add(currentOutputArea, gbcForOutput);
         add(glueBox, gbcForSpace);
+        add(lastLineBox);
         // Inform the layout manager and refresh the UI
         revalidate();
         repaint();

@@ -1,3 +1,6 @@
+Need to work on REPLPanelDocumentFilter when removing, especially when
+there is already some text in the current code area.
+
 Still can't get "using graphics" in REPL to complete.
 =============
 How to fix it

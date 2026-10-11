@@ -77,7 +77,7 @@ public class Graphics extends LibraryExpression {
 
         public WindowFunction() {
             super(
-                    List.of("a ⫾ window of ⫾ by ⫾", "an ⫾ window of ⫾ by ⫾"),
+                    List.of("a ⫾ window of ⫾ by ⫾"),
                     List.of("title", "width", "height"),
                     List.of(false, false, false),
                     false,
