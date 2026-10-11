@@ -89,7 +89,7 @@ public class RemixApp extends RemixBaseWindow {
             public void componentResized(ComponentEvent e) {
                 Dimension size = getSize();
                 if (size.width != WIDTH) {
-                    setSize(size.height, WIDTH);
+                    setSize(WIDTH, size.height);
                 }
             }
         });

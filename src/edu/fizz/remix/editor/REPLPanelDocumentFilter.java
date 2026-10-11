@@ -36,8 +36,7 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
         int insertPos = currentCodeArea.getCaretPosition();
         currentCodeArea.append(newText.toString());
         currentCodeArea.setCaretPosition(insertPos + offset + text.length());
-        scrollToNew();
-    }
+        REPLPanel.scrollToBottom();    }
 
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) {
@@ -45,8 +44,7 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
         newText.replace(offset, offset + length, text);
         RemixTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
         currentCodeArea.append(newText.toString());
-        scrollToNew();
-    }
+        REPLPanel.scrollToBottom();    }
 
     @Override
     public void remove(FilterBypass fb, int offset, int length) {
@@ -56,13 +54,7 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
         int insertPos = currentCodeArea.getCaretPosition();
         currentCodeArea.append(newText.toString());
         currentCodeArea.setCaretPosition(insertPos + offset);
-        scrollToNew();
-    }
-
-    private void scrollToNew() {
-        RemixTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
         REPLPanel.scrollToBottom();
-//        SwingUtilities.invokeLater(REPLPanel::scrollToBottom);
     }
 
 }
