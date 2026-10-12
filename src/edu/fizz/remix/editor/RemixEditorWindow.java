@@ -44,19 +44,11 @@ public class RemixEditorWindow extends RemixBaseWindow {
 
         //Set up the menu bar.
         JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(Color.black);
-        menuBar.setForeground(Color.white);
         JMenu fileMenu = createFileMenu();
-        fileMenu.setBackground(Color.black);
-        fileMenu.setForeground(Color.white);
         menuBar.add(fileMenu);
         JMenu editMenu = createEditMenu();
-        editMenu.setBackground(Color.black);
-        editMenu.setForeground(Color.white);
         menuBar.add(editMenu);
         JMenu controlMenu = createControlMenu();
-        controlMenu.setBackground(Color.black);
-        controlMenu.setForeground(Color.white);
         menuBar.add(controlMenu);
         setJMenuBar(menuBar);
 

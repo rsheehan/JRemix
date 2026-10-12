@@ -122,11 +122,9 @@ public class REPLPanel extends JPanel {
                 remixTextArea.modifyScheme(dark);
                 Gutter gutter = textScrollPane.getGutter();
                 if (dark) {
-//                    editorTextArea.setSelectionColor(new Color(100, 100, 100));
                     gutter.setBackground(Color.black);
                     gutter.setLineNumberColor(Color.yellow);
                 } else {
-//                    editorTextArea.setSelectionColor(new Color(220, 220, 220));
                     gutter.setBackground(Color.white);
                     gutter.setLineNumberColor(Color.blue);
                 }
@@ -201,11 +199,23 @@ public class REPLPanel extends JPanel {
             @Override
             public void changedUpdate(DocumentEvent e) { invalidateAndResize(); }
         });
-        // Disable scrollbars inside the individual text area so it forces expansion
+
+        return createScrollPane(textArea);
+    }
+
+    private RTextScrollPane createScrollPane(RemixTextArea textArea) {
         RTextScrollPane scrollPane = new RTextScrollPane(textArea);
+        Gutter gutter = scrollPane.getGutter();
+        if (darkAreas) {
+            gutter.setBackground(Color.black);
+            gutter.setLineNumberColor(Color.yellow);
+        } else {
+            gutter.setBackground(Color.white);
+            gutter.setLineNumberColor(Color.blue);
+        }
+        // Disable scrollbars inside the individual text area so it forces expansion
         scrollPane.setVerticalScrollBarPolicy(RTextScrollPane.VERTICAL_SCROLLBAR_NEVER);
         scrollPane.setHorizontalScrollBarPolicy(RTextScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
         return scrollPane;
     }
 
