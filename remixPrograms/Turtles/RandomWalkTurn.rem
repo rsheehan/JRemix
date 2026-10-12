@@ -1,6 +1,6 @@
 using graphics, turtle
 
-	'the window' : the graphics panel
+	'the window' : a graphics window
 	'the window' colour SKY-BLUE
 	'turtle' : a turtle in (a turtle space in 'the window')
 

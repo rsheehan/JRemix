@@ -38,7 +38,7 @@ using graphics, turtle
 		move 'explosion' (random from 50 to 200) steps
 
 ---------------------------------------------------
-	'the window' : the graphics panel
+	'the window' : a graphics window
 	'turtle space' : a turtle space in 'the window'
 ---------------------------------------------------
 'back layer'  : 'the window' base layer
