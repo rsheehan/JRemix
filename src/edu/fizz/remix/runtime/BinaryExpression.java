@@ -136,7 +136,7 @@ public class BinaryExpression implements Expression {
             } else throw new RuntimeException();
         } catch (RuntimeException e) {
             Runtime.showErrorPosition(fileName, lineNumber, -1);
-            System.err.printf("\tError in binary expression: %s : %s %s %s.%n", this, val1, operator, val2);
+            System.err.printf("Error in binary expression: %s : %s %s %s.%n", this, val1, operator, val2);
             return false;
         }
     }

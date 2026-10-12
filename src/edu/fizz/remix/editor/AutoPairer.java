@@ -23,15 +23,13 @@ public class AutoPairer {
                 int selectionStart = textArea.getSelectionStart();
                 int selectionEnd = textArea.getSelectionEnd();
                 int caretPos = textArea.getCaretPosition();
-//                if (!AutoUtil.onlyInCodeSection(selectionStart,
-//                                                selectionEnd,
-//                                                caretPos,
-//                                                textArea)) {
-//                    return;
-//                }
 
                 String typed = e.getActionCommand();
                 String matched = matchingPairs.get(typed);
+
+                // if between existing matchingPairs of same type e.g. ""
+                // then replace the
+
                 String pair = typed + matched;
 
                 // If there's an active text selection, surround it
@@ -42,6 +40,22 @@ public class AutoPairer {
                     textArea.setCaretPosition(selectionEnd + 1);
                     return;
                 }
+                if (typed.equals(matched)) { // e.g. "" or ''
+                    // check the next character
+                    String text = textArea.getText();
+                    if (text.length() > caretPos)
+                        if (text.charAt(caretPos) == matched.charAt(0))
+                            if (text.length() > caretPos + 1) {
+                                if (text.charAt(++caretPos) != matched.charAt(0)) {
+                                    textArea.setCaretPosition(caretPos);
+                                    return;
+                                }
+                            } else {
+                                textArea.setCaretPosition(++caretPos);
+                                return;
+                            }
+                }
+
                 // Insert the two characters at the current cursor placement
                 textArea.insert(pair, caretPos);
                 // Drop the cursor position cleanly inside the newly generated quotes

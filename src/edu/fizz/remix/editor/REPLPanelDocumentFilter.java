@@ -36,15 +36,19 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
         int insertPos = currentCodeArea.getCaretPosition();
         currentCodeArea.append(newText.toString());
         currentCodeArea.setCaretPosition(insertPos + offset + text.length());
-        REPLPanel.scrollToBottom();    }
+        REPLPanel.scrollToBottom();
+    }
 
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) {
         StringBuilder newText = new StringBuilder(oldDocStringBuilder);
         newText.replace(offset, offset + length, text);
         RemixTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
+        int insertPos = currentCodeArea.getCaretPosition();
         currentCodeArea.append(newText.toString());
-        REPLPanel.scrollToBottom();    }
+        currentCodeArea.setCaretPosition(insertPos + offset + text.length());
+        REPLPanel.scrollToBottom();
+    }
 
     @Override
     public void remove(FilterBypass fb, int offset, int length) {

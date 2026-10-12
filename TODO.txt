@@ -1,5 +1,3 @@
-Need to work on REPLPanelDocumentFilter when removing, especially when
-there is already some text in the current code area.
 
 =============
 Completions
@@ -9,31 +7,9 @@ Does for objects which are variables
 I could fix this by going through libraries and pulling out constants but not yet.
 =============
 
-When running the landscape program, if the program is Stopped the message
-"Program cancelled" goes to the console not the output text area.
-
-Entering a keystroke
-	replace called in RemixStyledDocument
-	then replace in RemixEdFilter
-	this calls replace in the filterBypass
-	leading to insertUpdate* in the RemixDocumentListener of RemixEditorWindow
-	(and insertUpdate in TextLineNumber)
-		*this could cause a caret update
-		which calls highlighter on the RemixEdAntlrLexer
-		which calls setCharacterAtrributes in RemixStyledDocument
-
-this causes the body of lexFromHere to be invoked on the EventQueue thread
-	trying to see what happens if not invoked later
-
-Error when editing
-ab (insert a newline then do undo and we crash)
-Seems to be associated with an undo change which is sent to the TextLineNumber
-Can I ignore these changes too, like in undoableEditHappened
-
-event dde seems to hold edits
-
 Multiple iterators over sequences.
 
+=============
 "create", "extend", "using" and "library" should only be keywords if in the correct syntax.
 They should be usable as ordinary words in other places.
 
@@ -102,9 +78,6 @@ Error messages required
 Dealing with null (NULL?) returned values
 
 Error messages should produce line numbers of where the problem is detected even at runtime.
-
-Currently with the RemixApp multiwindow version, error messages don't go to the remix output as
-the check for RemixApp.isEditing returns true when a window is run.
 
 Need to unify the approach to error messages.
 Differences in unknown Constants, Variables and Function calls.

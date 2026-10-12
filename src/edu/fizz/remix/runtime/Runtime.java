@@ -43,7 +43,7 @@ public class Runtime {
     }
 
     public static void showErrorMessage(String message) {
-        System.err.print("\t" + message);
+        System.err.print(message);
     }
 
 }

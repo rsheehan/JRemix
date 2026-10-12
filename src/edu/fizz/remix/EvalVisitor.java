@@ -34,7 +34,7 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
 
     public EvalVisitor(String fileName) {
         super();
-        this.fileName = "EVALVISITOR: " + fileName; // should be fileName
+        this.fileName = fileName; // was "EVALVISITOR: " + fileName;
     }
 
     /** ( functionDefinition | statement | setConstant | usingStatement | library | libAssignment )* EOF */

@@ -96,8 +96,10 @@ public class AutoUtil {
     Moves the caret at a safe time.
      */
     public static void positionCaret(RemixTextArea textArea, int targetPosition) {
-        // Ensure position stays within valid bounds
-        int safePosition = Math.max(0, Math.min(targetPosition, textArea.getDocument().getLength()));
-        textArea.setCaretPosition(safePosition);
+        SwingUtilities.invokeLater(() -> {
+            // Ensure position stays within valid bounds
+            int safePosition = Math.max(0, Math.min(targetPosition, textArea.getDocument().getLength()));
+            textArea.setCaretPosition(safePosition);
+        });
     }
 }

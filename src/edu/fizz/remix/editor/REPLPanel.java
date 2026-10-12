@@ -64,11 +64,10 @@ public class REPLPanel extends JPanel {
         if (currentCodeArea != null) {
             // change the document listener
             AbstractDocument document =  (AbstractDocument)currentCodeArea.getDocument();
+            document.setDocumentFilter(new REPLPanelDocumentFilter(document));
             currentCodeArea.setHighlightCurrentLine(false);
             allText.append(currentCodeArea.getText()).append("\n");
-
             currentCodeArea = REPLTextArea;
-            document.setDocumentFilter(new REPLPanelDocumentFilter(document));
         } else {
             currentCodeArea = REPLTextArea;
         }
@@ -89,11 +88,11 @@ public class REPLPanel extends JPanel {
     }
 
     public static void scrollToBottom() {
-        currentCodeArea.requestFocusInWindow();
         // this is gross but SwingUtilites.invokeLater wasn't as reliable.
         Timer timer = new Timer(100, _ -> {
             JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
             verticalBar.setValue(verticalBar.getMaximum());
+            currentCodeArea.requestFocusInWindow();
         });
         timer.setRepeats(false);
         timer.start();
@@ -223,6 +222,5 @@ public class REPLPanel extends JPanel {
         revalidate();
         repaint();
     }
-
 
 }

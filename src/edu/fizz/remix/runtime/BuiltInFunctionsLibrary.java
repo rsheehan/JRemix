@@ -866,7 +866,6 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             return "help \"term\"\n" +
                     "\tsearches for functions which match string \"term\".\n" +
                     "\te.g. help \"for each\"\n\n" +
-                    "help REPL - shows help about the Read Evaluate Print Loop.\n\n" +
                     "help CONSTANTS or help CONS - shows all constants at this level.\n\n" +
                     "help VARIABLES or help VARS - shows all variables at this level.\n\n" +
                     "help LIBRARIES or help LIBS - shows all libraries at this level.\n\n" +
@@ -913,6 +912,9 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 }
             } else if (what instanceof RemixObject whatObject) {
                 showAllMethods(whatObject, helpSB);
+            }
+            if (helpSB.isEmpty()) {
+                helpSB.append("No help for ").append(what);
             }
             return helpSB.toString();
         }
