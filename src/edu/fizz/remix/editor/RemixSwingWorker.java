@@ -36,7 +36,8 @@ public class RemixSwingWorker extends SwingWorker {
         // careful : this is on the event dispatch thread
         Thread thread = new Thread(() -> {
             RemixEditorWindow.waitForProgramFinish();
-            publish(result.toString());
+            if (result != null)
+                publish(result.toString());
             window.stopAction.setEnabled(false);
             window.runAction.setEnabled(true);
             // and add a code area to the app window
