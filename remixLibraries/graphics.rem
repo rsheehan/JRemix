@@ -1,7 +1,7 @@
 ===============================
 Graphics Operations and Objects
 ===============================
-GRAPHICS-LIB : library "edu.fizz.remix.libraries.Graphics"
+library "edu.fizz.remix.libraries.Graphics"
 
 	=====================
 	Dimensions and points
@@ -370,7 +370,8 @@ GRAPHICS-LIB : library "edu.fizz.remix.libraries.Graphics"
 				'shapes' : { }
 
 			=-
-			Prepare and show the shapes of the shape layer 'OBJECT' on the 'JGraphics' panel.
+			Prepare and show the shapes of the shape layer 'OBJECT' on the
+			'JGraphics' panel.
 			Does nothing to a base layer.
 			=-
 			prepare MY shapes for drawing on 'JGraphics' :
@@ -459,6 +460,3 @@ GRAPHICS-LIB : library "edu.fizz.remix.libraries.Graphics"
 		… until ['number' < 1]
 
 -==================================================================================================-
-
-"Graphics library loaded." ↲
-GRAPHICS-LIB

@@ -28,8 +28,6 @@ CONSTANTS : "CONSTANTS"
 CONS : CONSTANTS
 VARIABLES : "VARIABLES"
 VARS : VARIABLES
-EDITOR : "EDITOR"
-REPL : "REPL"
 LIBRARIES : "LIBRARIES"
 LIBS : LIBRARIES
 
@@ -162,10 +160,12 @@ for each #number from 'start' to 'finish' in steps of 'step' ['block']:
 	'last'
 
 =-
-Run 'block' for each 'item' in the 'sequence' at all positions from 'start' to 'finish'.
+Run 'block' for each 'item' in the 'sequence' at all positions from
+'start' to 'finish'.
 'start' to 'finish' can go backwards.
 'block' will usually use the variable passed as 'item'.
-A sequence here is a list, range, string or sequence object with a 'pos' in 'sequence' method.
+A sequence here is a list, range, string or sequence object with a 'pos'
+in 'sequence' method.
 =-
 for each #item in 'sequence' from position 'start' to 'finish' ['block'] :
 	for each 'pos' from 'start' to 'finish'
@@ -374,7 +374,8 @@ join 'list 1' and 'list 2' :
 	… on each 'item' in 'list 2'
 
 =-
-Replace each 'value' in the 'sequence' with the result of executing the 'block'.
+Replace each 'value' in the 'sequence' with the result of executing the
+'block'.
 The 'block' will usually use the variable 'value'.
 A sequence here is a list or map.
 =-
@@ -394,7 +395,8 @@ Create a function object with 'body' as the function body.
 When the function is called with "OBJECT params" 'params' is either a
 map, list, or single value.
 If a map all necessary parameter names are keys.
-If a list each value represents a parameter named 'a', 'b', 'c' etc in sequence.
+If a list each value represents a parameter named 'a', 'b', 'c' etc
+in sequence.
 If a single value it represents the single parameter 'a'.
 =-
 function ['body'] :

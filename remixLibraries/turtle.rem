@@ -1,7 +1,7 @@
 ===============================
 'turtle' Operations and Objects
 ===============================
-TURTLE-LIB : library
+library
 	using graphics
 
 		=-
@@ -481,6 +481,3 @@ TURTLE-LIB : library
 				['angle']
 
 -==================================================================================================-
-
-"Turtle library loaded." ↲
-TURTLE-LIB
