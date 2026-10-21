@@ -281,6 +281,10 @@ public class RemixTextArea extends RSyntaxTextArea {
             lastLineNumber = lineNumber;
             lastLine = line;
             lastCompletionNumber = completionNumber;
+
+            boolean hasSelection = (getSelectionStart() != getSelectionEnd());
+            // Toggle bracket matching based on whether text is currently selected
+            setBracketMatchingEnabled(!hasSelection);
         }
     }
 

@@ -35,6 +35,20 @@ public class AutoPairer {
                 // If there's an active text selection, surround it
                 if (selectionStart != selectionEnd) {
                     String selection = textArea.getSelectedText();
+                    // if the type pair is '' or ""
+                    if (typed.equals(matched)) {
+                        // check to see if surrounded by parens
+                        String text = textArea.getText();
+                        if (selectionStart > 0 && text.length() > selectionEnd) {
+                            if (text.charAt(selectionStart - 1) == '(' &&
+                                text.charAt(selectionEnd) == ')') {
+                                // remove selection and replace with matched pair
+                                textArea.replaceRange(pair, selectionStart - 1, selectionEnd + 1);
+                                textArea.setCaretPosition(selectionStart);
+                                return;
+                            }
+                        }
+                    }
                     textArea.replaceRange(typed + selection + matched, selectionStart, selectionEnd);
                     // I think I can call setCaretPosition here as it in the gui thread after keypress
                     textArea.setCaretPosition(selectionEnd + 1);
