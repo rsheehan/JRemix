@@ -3,6 +3,9 @@
     <output-path>$PROJECT_DIR$/out/artifacts/remix_jar</output-path>
     <root id="archive" name="remix.jar">
       <element id="module-output" name="remix" />
+      <element id="extracted-dir" path="/opt/homebrew/Cellar/antlr/4.13.2/antlr-4.13.2-complete.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/flatlaf/flatlaf-3.7.2-no-natives.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/RSyntaxTextArea/RSyntaxTextArea/build/libs/rsyntaxtextarea-4.0.2-SNAPSHOT.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

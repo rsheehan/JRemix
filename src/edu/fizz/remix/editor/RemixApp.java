@@ -91,7 +91,8 @@ public class RemixApp extends RemixBaseWindow {
     class NewFileAction extends AbstractAction {
         public NewFileAction() {
             super("New file in editor");
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.META_DOWN_MASK));
+            int shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, shortcutKey));
         }
 
         public void actionPerformed(ActionEvent event) {
@@ -107,7 +108,8 @@ public class RemixApp extends RemixBaseWindow {
     class OpenFileAction extends AbstractAction {
         public OpenFileAction() {
             super("Open file in editor");
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.META_DOWN_MASK));
+            int shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, shortcutKey));
         }
 
         public void actionPerformed(ActionEvent event) {
@@ -311,7 +313,8 @@ public class RemixApp extends RemixBaseWindow {
 
         protected RunAction() {
             super("Run");
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.META_DOWN_MASK));
+            int shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, shortcutKey));
             setEnabled(true);
         }
 
@@ -335,7 +338,8 @@ public class RemixApp extends RemixBaseWindow {
 
         protected ClearComponentsAction() {
             super("Clear window");
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+            int shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, shortcutKey | InputEvent.SHIFT_DOWN_MASK));
             setEnabled(true);
         }
 

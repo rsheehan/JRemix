@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
@@ -89,7 +88,8 @@ public abstract class RemixBaseWindow extends JFrame {
 
         protected StopAction() {
             super("Stop");
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.META_DOWN_MASK));
+            int shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, shortcutKey));
             setEnabled(false);
         }
 

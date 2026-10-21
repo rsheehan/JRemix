@@ -367,12 +367,13 @@ public class RemixEditorWindow extends RemixBaseWindow {
 
         Action increaseIndent = editorTextArea.getActionMap().get(RSyntaxTextAreaEditorKit.insertTabAction);
         increaseIndent.putValue(Action.NAME, "Indent selection");
-        increaseIndent.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.META_DOWN_MASK));
+        int shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+        increaseIndent.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_I, shortcutKey));
 
         editMenu.add(increaseIndent);
         Action decreaseIndent = editorTextArea.getActionMap().get(RSyntaxTextAreaEditorKit.rstaDecreaseIndentAction);
         decreaseIndent.putValue(Action.NAME, "Dedent selection");
-        decreaseIndent.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        decreaseIndent.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_I, shortcutKey | InputEvent.SHIFT_DOWN_MASK));
         editMenu.add(decreaseIndent);
         editMenu.addSeparator();
 
@@ -400,7 +401,8 @@ public class RemixEditorWindow extends RemixBaseWindow {
 
         protected RunAction() {
             super("Run");
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.META_DOWN_MASK));
+            int shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, shortcutKey));
             setEnabled(true);
         }
 
@@ -461,7 +463,8 @@ public class RemixEditorWindow extends RemixBaseWindow {
 
         public FindAction(String name) {
             super(name);
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.META_DOWN_MASK));
+            int shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F, shortcutKey));
         }
 
         @Override
@@ -488,7 +491,8 @@ public class RemixEditorWindow extends RemixBaseWindow {
 
         public FindForwardAction(String name) {
             super(name);
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.META_DOWN_MASK));
+            int shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_G, shortcutKey));
         }
 
         @Override
@@ -502,7 +506,8 @@ public class RemixEditorWindow extends RemixBaseWindow {
 
         public FindBackwardAction(String name) {
             super(name);
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.META_DOWN_MASK));
+            int shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_B, shortcutKey));
         }
 
         @Override
