@@ -1,10 +1,9 @@
+Still problems with altering code in previous code areas
+when there are multiple lines already in the current code area.
 
 =============
 Completions
 
-Doesn't find methods for objects which are constants.
-Does for objects which are variables
-I could fix this by going through libraries and pulling out constants but not yet.
 =============
 
 Multiple iterators over sequences.

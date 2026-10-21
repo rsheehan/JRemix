@@ -22,7 +22,7 @@ public class RemixEditorWindow extends RemixBaseWindow {
 
     private final RemixTextArea editorTextArea;
     private final RTextScrollPane lineNumberPane;
-    private static String untitledName = "untitled";
+    private static int newFileNumber = -1;
 
     public String getCurrentFileName() {
         return currentFileName;
@@ -33,7 +33,6 @@ public class RemixEditorWindow extends RemixBaseWindow {
 
     public RemixEditorWindow(RemixApp remixApp, boolean darkTheme) {
         super("untitled");
-//        dynamicTextAreas = RemixApp.REPLTextAreas;
         editorTextArea = new RemixTextArea(false, darkTheme);
         lineNumberPane = new RTextScrollPane(editorTextArea);
 
@@ -425,8 +424,12 @@ public class RemixEditorWindow extends RemixBaseWindow {
     }
 
     public void newFileInWindow() {
-        untitledName = "*" + untitledName + "*";
-        currentFileName = untitledName;
+        newFileNumber++;
+        String untitledName = "untitled";
+        if (newFileNumber == 0)
+            currentFileName = untitledName;
+        else
+            currentFileName = untitledName + "-" + newFileNumber;
         setTitle(currentFileName);
         editorTextArea.setCaretPosition(0);
     }

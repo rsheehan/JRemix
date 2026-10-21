@@ -63,11 +63,6 @@ public class RemixApp extends RemixBaseWindow {
         setVisible(true);
     }
 
-//    private void setMenuItemColors(JMenuItem item) {
-//        item.setBackground(Color.black);
-//        item.setForeground(Color.white);
-//    }
-
     /***********************************/
 
     protected JMenu createFileMenu() {
@@ -136,7 +131,6 @@ public class RemixApp extends RemixBaseWindow {
                 boolean successful = editorWindow.openFileInWindow(remFile);
                 if (successful) {
                     listOfWindows.add(editorWindow);
-//                    editorWindow.setDarkTheme(lightThemeAction.isEnabled());
                     editorWindow.setBounds(bounds.width, bounds.y, 800, 1080); // for my Mac. Was 50, 50, 1700, 1050
                     editorWindow.setVisible(true);
                 } else {
@@ -201,7 +195,7 @@ public class RemixApp extends RemixBaseWindow {
 
         public DarkThemeAction() {
             super("Dark theme");
-            setEnabled(true);
+            setEnabled(false);
         }
 
         @Override
@@ -219,7 +213,7 @@ public class RemixApp extends RemixBaseWindow {
 
         public LightThemeAction() {
             super("Light theme");
-            setEnabled(false);
+            setEnabled(true);
         }
 
         @Override
@@ -227,10 +221,7 @@ public class RemixApp extends RemixBaseWindow {
             for(RemixEditorWindow window : listOfWindows){
                 window.setDark(false);
             }
-//            remixOutput.setDarkMode(false);
-//            remixOutput.setDark(false);
             replPanel.setDark(false);
-//            remixOutput.modifyScheme(false);
             darkThemeAction.setEnabled(true);
             setEnabled(false);
         }
@@ -381,10 +372,7 @@ public class RemixApp extends RemixBaseWindow {
     private static void createAndShowGUI() {
         //Create and set up the window.
         new RemixApp();
-        //Setup System.out and System.err to the corresponding panels
         // TODO make a method to change the output to a particular text area
-//        System.setOut(new PrintStream(new TextAreaOutputStream(remixOutput)));
-//        System.setErr(new PrintStream(new TextAreaOutputStream(remixOutput)));
     }
 
     static void main() {

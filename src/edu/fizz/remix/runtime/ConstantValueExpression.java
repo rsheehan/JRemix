@@ -37,7 +37,7 @@ public class ConstantValueExpression implements Expression, NamedExpression {
         for (int i = context.libraryStack.size() - 1; i >= 0; i--) {
             Object nextResult;
             library = context.libraryStack.get(i);
-            nextResult = library.constantTable.get(constantName);
+            nextResult = library.getConstantTable().get(constantName);
             if (nextResult != null) { // not in this lib
                 if (result == null) { // no previous match
                     result = nextResult;
@@ -52,7 +52,7 @@ public class ConstantValueExpression implements Expression, NamedExpression {
         }
         if (result == null) {
             Runtime.showErrorPosition(context.getFileWindowREPL(), lineNumber, -1);
-            Runtime.showErrorMessage("Constant " + constantName + " has no value");
+            Runtime.showErrorMessage("Constant " + constantName + " has no value ");
             throw new VarNotFoundException(); // sort of
         }
         return result;

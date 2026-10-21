@@ -89,7 +89,7 @@ public class LibraryExpression implements Expression {
     public LinkedHashMap<String, Function> functionTable = new LinkedHashMap<>();
 
     // Constants available in this library.
-    protected LinkedHashMap<String, Object> constantTable = new LinkedHashMap<>();
+    private final LinkedHashMap<String, Object> constantTable = new LinkedHashMap<>();
 
     static HashMap<String, Integer> methodTableRefPos = new HashMap<>(); // one table used by all
     static HashMap<String, Function> methodTableStandardLib = new HashMap<>();
@@ -232,4 +232,7 @@ public class LibraryExpression implements Expression {
         return ((!remixFileName.isEmpty() && remixFileName.equals(that.remixFileName)) || (!callName.isEmpty() && callName.equals(that.callName)));
     }
 
+    public LinkedHashMap<String, Object> getConstantTable() {
+        return constantTable;
+    }
 }

@@ -193,15 +193,16 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             functionContext.assignParam(formal, value); // needs to really be in this context
         }
         Object result;
-        if (inEditor)
+        if (inEditor) {
             functionContext.setFileWindowREPL(RemixPrepareRun.INTERACTIVETEXT);
+            functionContext.completionContext = true;
+        }
         try {
             result = routine.execute(functionContext);
         } catch (ClassCastException e) {
             Runtime.showErrorPosition(fileName, lineNumber, lineOffset);
             Runtime.showErrorMessage("Parameter error calling \"" + this + "\"");
             throw (e);
-//            return null;
         }
         if (result == null)
             result = RemixNull.value();

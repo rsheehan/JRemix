@@ -13,19 +13,19 @@ import java.awt.*;
 public class REPLPanel extends JPanel {
 
     private static JScrollPane scrollPane;
+    private static RemixTextArea currentCodeArea;
+    private static final Font outputFont = new Font("Courier New", Font.PLAIN, 15);
+    /* Whatever this is at the moment is where all output and errors should be sent.
+    At first this is just a dummy in case data gets sent here before it is non-null. */
+    private static final JTextArea dummyTextArea = new JTextArea();
+    public static JTextArea currentOutputArea = dummyTextArea;
+
+    /* Keep all text from current code areas. */
+    public static StringBuilder allText;
 
     public static RemixTextArea getCurrentCodeArea() {
         return currentCodeArea;
     }
-
-    private static RemixTextArea currentCodeArea;
-    private static final Font outputFont = new Font("Courier New", Font.PLAIN, 15);
-
-    /* Whatever this is at the moment is where all output and errors should be sent. */
-    public static JTextArea currentOutputArea;
-
-    /* Keep all text from current code areas. */
-    public static StringBuilder allText;
 
     private final GridBagConstraints gbcForCode;
     private final GridBagConstraints gbcForOutput;
@@ -67,10 +67,8 @@ public class REPLPanel extends JPanel {
             document.setDocumentFilter(new REPLPanelDocumentFilter(document));
             currentCodeArea.setHighlightCurrentLine(false);
             allText.append(currentCodeArea.getText()).append("\n");
-            currentCodeArea = REPLTextArea;
-        } else {
-            currentCodeArea = REPLTextArea;
         }
+        currentCodeArea = REPLTextArea;
         remove(lastLineBox);
         remove(glueBox);
         add(createAutoSizingArea(REPLTextArea), gbcForCode);
@@ -151,6 +149,7 @@ public class REPLPanel extends JPanel {
      */
     public void newOutputArea(String programName) {
         currentOutputArea = new JTextArea();
+        currentOutputArea.setTabSize(2);
         currentOutputArea.setColumns(81);
         currentOutputArea.setLineWrap(true);
         currentOutputArea.setWrapStyleWord(true);
@@ -172,13 +171,11 @@ public class REPLPanel extends JPanel {
         // Inform the layout manager and refresh the UI
         revalidate();
         repaint();
-        // Auto-scroll to the newly added component
-//        currentOutputArea.scrollRectToVisible(currentOutputArea.getBounds());
     }
 
     public void removeExistingTextAreas() {
         currentCodeArea = null;
-        currentOutputArea = null;
+        currentOutputArea = dummyTextArea;
         Component[] allTextAreas = getComponents();
         for (Component component : allTextAreas) {
             remove(component);

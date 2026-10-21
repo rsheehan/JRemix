@@ -16,6 +16,9 @@ public class Context {
     private boolean returnHigher = false;
     private String fileWindowREPL;
 
+    // needs to be set before a function call to include
+    public boolean completionContext = false;
+
     public Context() {
     }
 
@@ -40,18 +43,10 @@ public class Context {
         this.returnHigher = returnHigher;
     }
 
-//    public Stack<LibraryExpression> getLibraryStack() {
-//        return libraryStack;
-//    }
-
     // called after a repl area is run to collect the variables
     public HashMap<String, Object> getVariables() {
         return variables;
     }
-
-//    public Set<String> getVariableNames() {
-//        return variables.keySet();
-//    }
 
     public void setFileWindowREPL(String fileWindowREPL) {
         this.fileWindowREPL = fileWindowREPL;

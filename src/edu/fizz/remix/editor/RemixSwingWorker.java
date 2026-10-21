@@ -19,6 +19,7 @@ public class RemixSwingWorker extends SwingWorker {
          */
     public RemixSwingWorker(String fileName, RemixBaseWindow window, String programText) {
         this.fileName = fileName;
+        RemixPrepareRun.setFileName(fileName); // so the antlr error listener gets it
         this.window = window;
         this.programText = programText;
         RemixApp.currentSwingWorker = this;

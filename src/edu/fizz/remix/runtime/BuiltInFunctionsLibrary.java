@@ -63,13 +63,13 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
             String filename = context.retrieve("file-name", false).toString();
             LibraryExpression included;
-            boolean editing = context.getFileWindowREPL().equals(RemixPrepareRun.INTERACTIVETEXT);
+            boolean completing = context.completionContext; // context.getFileWindowREPL().equals(RemixPrepareRun.INTERACTIVETEXT);
             try {
                 // COULD HAVE EDITING INFORMATION IN THE CONTEXT
-                if (editing)
+                if (completing)
                     EvalVisitorForEditor.addIdentifierStack.push(false);
-                included = RemixPrepareRun.loadPackage(filename, editing);
-                if (editing)
+                included = RemixPrepareRun.loadPackage(filename, completing);
+                if (completing)
                     EvalVisitorForEditor.addIdentifierStack.pop();
                 /*
                 If the package finishes with a statement which is a "library" that
@@ -87,7 +87,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
              */
             LibraryExpression topOfStackLibrary = (LibraryExpression)context.libraryStack.peek();
 
-            if (editing) {
+            if (completing) {
                 included.setActiveLines(topOfStackLibrary.getActiveLines());
             }
 
@@ -944,7 +944,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         private static void dealWithConstants(Context context, StringBuilder helpSB) {
             for (LibraryExpression lib : context.libraryStack) {
                 helpSB.append(lib.getLibUnderlinedName()).append('\n');
-                TreeMap<String, Object> constants = new TreeMap<>(lib.constantTable);
+                TreeMap<String, Object> constants = new TreeMap<>(lib.getConstantTable());
                 // Iterate over the sorted map
                 for (Map.Entry<String, Object> entry : constants.entrySet()) {
                     Object value = entry.getValue();
@@ -992,7 +992,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             List<String> methodNames = new ArrayList<>();
             List varAndConsValues = new ArrayList(context.variables.values());
             for (LibraryExpression lib : context.libraryStack) {
-                TreeMap<String, Object> constants = new TreeMap<>(lib.constantTable);
+                TreeMap<String, Object> constants = new TreeMap<>(lib.getConstantTable());
                 varAndConsValues.addAll(constants.values());
             }
             for (Object value : varAndConsValues) {

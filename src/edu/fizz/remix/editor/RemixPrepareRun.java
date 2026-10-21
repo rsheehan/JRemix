@@ -60,12 +60,20 @@ public class RemixPrepareRun {
         // before finishing collect variables from the context to
         // add to LibrariesAndCompletions allVariableNames
         HashMap<String, Object> varsFromRun = REPLContext.getVariables();
-//        Set<String> varsFromRun = REPLContext.getVariableNames();
         for (String name : varsFromRun.keySet()) {
             LibrariesAndCompletions.addVariableName(name);
-            // also collect object and add their methods to
-            // methodTableForCompletions
             if (varsFromRun.get(name) instanceof RemixObject object) {
+                MethodTable methodTable = object.methodTable();
+                for (String methodName : methodTable.keySet()) {
+                    Method method = methodTable.get(methodName);
+                    LibrariesAndCompletions.methodTableForCompletions.put(methodName, method);
+                }
+            }
+        }
+        // also collect object and add their methods to
+        // methodTableForCompletions
+        for (String constantName : programLib.getConstantTable().keySet()) {
+            if (programLib.getConstantTable().get(constantName) instanceof RemixObject object) {
                 MethodTable methodTable = object.methodTable();
                 for (String methodName : methodTable.keySet()) {
                     Method method = methodTable.get(methodName);
@@ -103,4 +111,7 @@ public class RemixPrepareRun {
         return parser.program();
     }
 
+    public static void setFileName(String fileName) {
+        RemixPrepareRun.fileName = fileName;
+    }
 }

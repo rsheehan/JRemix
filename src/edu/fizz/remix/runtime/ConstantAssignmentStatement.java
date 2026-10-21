@@ -40,20 +40,20 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
         int i = context.libraryStack.size() - 1;
         do {
             library = context.libraryStack.get(i);
-            existingValue = library.constantTable.get(variableName);
+            existingValue = library.getConstantTable().get(variableName);
             i--;
         } while (existingValue == null && i >= 0);
 
         if (existingValue == null)
-            libraryStoredIn.constantTable.put(variableName, value);
+            libraryStoredIn.getConstantTable().put(variableName, value);
         else if (existingValue.equals(value)) // && !library.equals(libraryStoredIn))
             // already constant with this value but either not stored in this library
             // or if the same value we store it over the top - does nothing
-            libraryStoredIn.constantTable.put(variableName, value);
+            libraryStoredIn.getConstantTable().put(variableName, value);
         else if (library.equals(libraryStoredIn)) // already exists in this library
             System.err.format("Error: Attempt to reassign constant \"%s\"%n", variableName);
         else {
-            libraryStoredIn.constantTable.put(variableName, value);
+            libraryStoredIn.getConstantTable().put(variableName, value);
             System.err.format("Warning: New lib constant \"%s\" currently a constant in library \"%s\"%n", variableName, library.getLibName());
         }
         if (value instanceof LibraryExpression newLibrary) {

@@ -28,7 +28,7 @@ public class Block implements Expression {
         for (Expression statement : statements) {
             if (statement instanceof ConstantAssignmentStatement constantAssignmentStatement) {
                 constantAssignmentStatement.setLibraryStoredIn(library);
-                if (library.constantTable.put(constantAssignmentStatement.variableName, null) != null)
+                if (library.getConstantTable().put(constantAssignmentStatement.variableName, null) != null)
                     System.err.println("Aaaargh!");
             }
         }

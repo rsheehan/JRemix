@@ -90,6 +90,8 @@ public class LibrariesAndCompletions {
      */
     public static void resetREPLEnvironment() {
         methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
+        resetAddedLibraries();
+        allVariableNames.clear();
         RemixPrepareRun.REPLContext = new Context(baseLibrary, RemixPrepareRun.INTERACTIVETEXT);
     }
 
@@ -100,7 +102,7 @@ public class LibrariesAndCompletions {
         ArrayList<String> constantCompletions = new ArrayList<>();
         String original = searchWord + "\n";
         for (LibraryExpression lib : addedLibraries) {
-            for (String constantName : lib.constantTable.keySet()) {
+            for (String constantName : lib.getConstantTable().keySet()) {
                 if (constantName.equals(original))
                     continue;
                 if (constantName.startsWith(searchWord)) {
@@ -166,6 +168,7 @@ public class LibrariesAndCompletions {
         }
         // then all methods
         //      with activeLines all lines
+        // TODO: when in the REPL any object variables should have their methods added
         searchForCompletions(searchWord, methodTableForCompletions, completionsAtStart, completionsConsecutive, functionDisplayNames);
         ArrayList<String> allCompletions = new ArrayList<>(completionsAtStart);
         allCompletions.addAll(completionsConsecutive);
