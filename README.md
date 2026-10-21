@@ -64,4 +64,9 @@ Remix has a simple library system which provides a measure of
 encapsulation. Libraries can contain both Java and Remix functions as in the 
 graphics library used in the landscape example.
 
+You can run Remix by putting the remix.jar file in the same folder as the
+remixLibraries folder. You may want to add the remixPrograms folder too.
+Then as long as a recent Java runtime is installed you should be able to run
+Remix by double-clicking on the remix.jar file.
+
 I am still working on the Remix reference manual.
