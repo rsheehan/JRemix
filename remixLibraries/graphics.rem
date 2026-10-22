@@ -77,7 +77,7 @@ library "edu.fizz.remix.libraries.Graphics"
 	Create a box centred at 'position'
 	with 'colour' and 'width' x 'height'.
 	=-
-	a/an 'colour' box of 'width' x 'height' at 'position' :
+	a/an 'colour' box of 'width' x/by 'height' at 'position' :
 		'left'   : -'width' ÷ 2
 		'right'  : 'width' ÷ 2
 		'top'    : -'height' ÷ 2
