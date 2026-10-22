@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class AutoPairer {
 
-    private static final Map<String, String> matchingPairs = Map.of(
+    public static final Map<String, String> matchingPairs = Map.of(
             "(", ")",
             "[", "]",
             "{", "}",

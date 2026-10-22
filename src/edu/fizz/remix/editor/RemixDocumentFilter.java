@@ -17,9 +17,27 @@ public class RemixDocumentFilter extends DocumentFilter {
         document = (RSyntaxDocument) textArea.getDocument();
     }
 
-    /*
-    Haven't got a remove.
-     */
+    @Override
+    public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+        Segment textSegment = new Segment();
+        document.getText(0, document.getLength(), textSegment);
+        if (length == 1 && textSegment.length() >= offset + 1) {
+            String firstChar = String.valueOf(getAChar(offset, textSegment));
+            for (String first : AutoPairer.matchingPairs.keySet()) {
+                if (first.equals(firstChar)) {
+                    String secondChar = String.valueOf(getAChar(offset + 1, textSegment));
+                    String second = AutoPairer.matchingPairs.get(first);
+                    if (second.equals(secondChar)) {
+                        // delete both
+                        fb.remove(offset, 2);
+                        return;
+                    }
+                }
+            }
+        }
+        fb.remove(offset, length);
+    }
+
     @Override
     public void insertString(FilterBypass fb, int offset, String text, AttributeSet attrs) throws BadLocationException {
         Segment textSegment = new Segment();
