@@ -178,11 +178,10 @@ public class RemixTextArea extends RSyntaxTextArea {
         String text;
         if (isREPLArea) {
             text = REPLPanel.allText + getText();
-            LibrariesAndCompletions.removeUnnamedLibs();
         } else {
-            LibrariesAndCompletions.resetToEditorStandard();
             text = getText();
         }
+        LibrariesAndCompletions.resetToEditorStandard();
 
         ParseTree tree = RemixPrepareRun.processParse(text);
 

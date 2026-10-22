@@ -1,6 +1,9 @@
 Still problems with altering code in previous code areas
 when there are multiple lines already in the current code area.
 
+deleting a '(' after inserting '()' should remove both characters
+same for all pairs.
+
 =============
 Completions
 

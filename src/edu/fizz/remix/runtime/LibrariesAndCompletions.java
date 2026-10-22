@@ -25,7 +25,7 @@ public class LibrariesAndCompletions {
        The standard library and the program editor library are valid
        everywhere, all others have a start and finish line.
      */
-    private static ArrayList<LibraryExpression> addedLibraries = new ArrayList<>();
+    private static final ArrayList<LibraryExpression> addedLibraries = new ArrayList<>();
 
     /* The base library has the built-in and standard-lib functions. */
     private static LibraryExpression baseLibrary;
@@ -52,20 +52,13 @@ public class LibrariesAndCompletions {
     in different libraries.
      */
     public static void addLibrary(LibraryExpression libraryExpression) {
-        if (!addedLibraries.contains(libraryExpression)) { // &&
+        int index = addedLibraries.indexOf(libraryExpression);
+        if (index >= 0) { // already exists just add active lines
+            LibraryExpression existingLibrary = addedLibraries.get(index);
+            existingLibrary.addToValidLines (libraryExpression.getActiveLines().getFirst());
+        } else {
             addedLibraries.add(libraryExpression);
         }
-    }
-
-    /*
-    Remove all unnamed libraries before we produce completions from the REPL
-     */
-    public static void removeUnnamedLibs() {
-        ArrayList<LibraryExpression> namedLibs = new ArrayList<>();
-        for (LibraryExpression lib : addedLibraries)
-            if (!lib.getLibName().isEmpty())
-                namedLibs.add(lib);
-        addedLibraries = namedLibs;
     }
 
     public static void addAfterBaseLibrary(LibraryExpression libraryExpression) {

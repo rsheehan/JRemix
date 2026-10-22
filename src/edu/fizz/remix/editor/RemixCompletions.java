@@ -12,6 +12,7 @@ public class RemixCompletions {
 
     private final RemixTextArea textArea;
     private CompletionInfo completionsHere;
+    private boolean nextParam = false;
 
     public RemixCompletions(RemixTextArea textArea) {
         this.textArea = textArea;
@@ -76,14 +77,18 @@ public class RemixCompletions {
                 existingLines = (int)REPLPanel.allText.toString().lines().count();
             }
             if (seedWord.startsWith("'")) { // variable
+                nextParam = false;
                 completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord);
                 seedWord += "'";
                 offset += 1;
             } else if (seedWord.startsWith("#")) { // refvar
+                nextParam = false;
                 completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord);
             } else if (seedWord.equals(seedWord.toUpperCase())) { // constant
+                nextParam = false;
                 completions = LibrariesAndCompletions.constantCompletionsFrom(seedWord, lineNumber + 1 + existingLines);
             } else { // function call
+                nextParam = true; // <- the one which moves us on
                 seedWord = seedWord.stripLeading();
                 completions = LibrariesAndCompletions.createCompletionsFrom(seedWord, lineNumber + 1 + existingLines);
             }
@@ -99,12 +104,15 @@ public class RemixCompletions {
                 int endOffset = completionsHere.offset + seedLength;
 
                 textArea.replaceRangeNoCaretListener(completionText, completionsHere.offset, endOffset);
-                textArea.setCaretPosition(completionsHere.offset);
-                int lineStartOffset = textArea.getLineStartOffset(lineNumber);
-                AutoTab.selectedNextParam(textArea,
-                                          AutoUtil.extractLine(textArea, lineNumber),
-                                          lineNumber, completionsHere.offset - lineStartOffset,
-                                          lineStartOffset);
+                textArea.setCaretPosition(completionsHere.offset + completionsHere.currentLength());
+
+                if (nextParam) {
+                    int lineStartOffset = textArea.getLineStartOffset(lineNumber);
+                    AutoTab.selectedNextParam(textArea,
+                                              AutoUtil.extractLine(textArea, lineNumber),
+                                              lineNumber, completionsHere.offset - lineStartOffset,
+                                              lineStartOffset);
+                }
             }
         } else {
             int completionLength = completionsHere.currentLength();
@@ -115,13 +123,15 @@ public class RemixCompletions {
             int endOffset = completionsHere.offset + completionLength;
 
             textArea.replaceRangeNoCaretListener(completionText, completionsHere.offset, endOffset);
-            textArea.setCaretPosition(completionsHere.offset);
+            textArea.setCaretPosition(completionsHere.offset + completionsHere.currentLength());
 //            AutoTab.fromCaretParamMove(textArea);
-            int lineStartOffset = textArea.getLineStartOffset(lineNumber);
-            AutoTab.selectedNextParam(textArea,
-                                      AutoUtil.extractLine(textArea, lineNumber),
-                                      lineNumber, completionsHere.offset - lineStartOffset,
-                                      lineStartOffset);
+            if (nextParam) {
+                int lineStartOffset = textArea.getLineStartOffset(lineNumber);
+                AutoTab.selectedNextParam(textArea,
+                                          AutoUtil.extractLine(textArea, lineNumber),
+                                          lineNumber, completionsHere.offset - lineStartOffset,
+                                          lineStartOffset);
+            }
         }
         return completionComment.isEmpty() ? null : completionComment;
     }
