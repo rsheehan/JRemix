@@ -45,8 +45,6 @@ public class LibrariesAndCompletions {
         addedLibraries.add(baseLibrary);
     }
 
-//    private static LibraryExpression REPLLib = null;
-
     /*
     If doing completions in the REPL this can have the same information
     in different libraries.
@@ -159,9 +157,6 @@ public class LibrariesAndCompletions {
                 searchForCompletions(searchWord, library.functionTable, completionsAtStart, completionsConsecutive, functionDisplayNames);
             }
         }
-        // then all methods
-        //      with activeLines all lines
-        // TODO: when in the REPL any object variables should have their methods added
         searchForCompletions(searchWord, methodTableForCompletions, completionsAtStart, completionsConsecutive, functionDisplayNames);
         ArrayList<String> allCompletions = new ArrayList<>(completionsAtStart);
         allCompletions.addAll(completionsConsecutive);

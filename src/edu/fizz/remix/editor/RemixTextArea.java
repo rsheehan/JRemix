@@ -180,9 +180,8 @@ public class RemixTextArea extends RSyntaxTextArea {
             text = REPLPanel.allText + getText();
         } else {
             text = getText();
+            LibrariesAndCompletions.resetToEditorStandard();
         }
-        LibrariesAndCompletions.resetToEditorStandard();
-
         ParseTree tree = RemixPrepareRun.processParse(text);
 
         EvalVisitorForEditor eval = new EvalVisitorForEditor(((RemixBaseWindow)getWindow()).getCurrentFileName());

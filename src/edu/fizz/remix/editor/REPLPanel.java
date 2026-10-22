@@ -145,7 +145,8 @@ public class REPLPanel extends JPanel {
     }
 
     /*
-    Not only adds a new output text area, it also adds a new code area beneath it.
+    Not only adds a new output text area, a new code area is added beneath it
+    by the completing RemixSwingWorker.
      */
     public void newOutputArea(String programName) {
         currentOutputArea = new JTextArea();
