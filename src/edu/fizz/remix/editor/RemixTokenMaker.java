@@ -110,7 +110,8 @@ public class RemixTokenMaker extends TokenMakerBase {
                      RemixLexerToken.STRING_END,
                      RemixLexerToken.STRING_INCOMPLETE -> RemixTokenTypes.LITERAL_STRING_DOUBLE_QUOTE;
                 case RemixLexerToken.NUMBER -> RemixTokenTypes.LITERAL_NUMBER_DECIMAL_INT;
-                case RemixLexerToken.BOOLEAN -> RemixTokenTypes.LITERAL_BOOLEAN;
+                case RemixLexerToken.BOOLEAN,
+                     RemixLexerToken.NULL -> RemixTokenTypes.LITERAL_BOOLEAN;
                 case RemixLexerToken.COMMENT -> RemixTokenTypes.COMMENT_EOL;
                 case RemixLexerToken.COMMENT_END,
                      RemixLexerToken.COMMENT_INCOMPLETE -> RemixTokenTypes.COMMENT_MULTILINE;
