@@ -381,10 +381,11 @@ A sequence here is a list or map.
 =-
 map ['block'] on each #value in #sequence :
 	for each #value in #sequence keeping 'index'
+		'key' : 'index'
 		if (#sequence is a "map")
-			'index' : #value
-			#value : #sequence{'index'}
-		#sequence{'index'} : do 'block'
+			'key' : #value ; need to change #value from key to value
+			#value : #sequence{'key'} ; since used in the block
+		#sequence{'key'} : do 'block'
 
 ==============================
  Function functions
