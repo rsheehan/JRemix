@@ -1,0 +1,70 @@
+- Constants for link directions.
+NORTH : 1
+SOUTH : 2
+EAST : 3
+WEST : 4
+
+a grid of 2 by 3
+=-
+Create a grid object with 'rows' of 'columns' each.
+=-
+a grid of 'rows' by 'columns' :
+	
+	'grid' : create
+		'rows' : 'rows'
+		'cols' : 'columns'
+		'cells' : {}
+		
+		- construct all of the cells
+		initialise ME :
+			for each 'row' from 1 to 'rows' 
+				'this row' : {}
+				for each 'column' from 1 to 'cols'
+					append (a cell at 'row' 'column') to 'this row'
+				append 'this row' to 'cells'
+					
+		=-
+		Return the cell at position {'row', 'column'}.
+		=-
+		MY cell at 'row' by 'column' :
+			- return the cell
+			1
+		
+		start ME :
+			create
+				
+				end ME :
+					- at the last cell
+					2
+				
+				next ME :
+					- the next cell
+					3
+	initialise 'grid'
+	'grid'
+
+=-
+Create a single cell with connections to 
+surrounding ones.
+=-
+a cell at 'row' 'column':
+	create
+		'row' : 'row'
+		'col' : 'column'
+		'links' : {}
+		
+		getters
+			'row', 'col', 'links'
+		
+-		ME to string :
+-			"(" ⊕ 'row' ⊕ ", " ⊕ 'col' ⊕ ")" ⊕ 
+-			… "\n" ⊕ 'links'
+			
+		link ME to 'other cell' :
+			'links'{'other cell'} : true ; this means assignment
+
+			
+'other' : a cell at 2 4
+'this' : a cell at 1 3
+
+link 'this' to 'other'

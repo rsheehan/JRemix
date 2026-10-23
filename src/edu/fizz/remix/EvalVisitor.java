@@ -465,7 +465,6 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         }
         String end = ctx.getChild(n-1).getText();
         boolean newline = "\\n↲".contains(end);
-        int lineNumber = ctx.getStart().getLine() - 1;
         return new PrintStatement(expressionList, newline);
     }
 
@@ -980,14 +979,15 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
     }
 
     public RemixMapExpression produceMapExpression(ParseTree ctx) {
-        RemixMap<String, Expression> map = new RemixMap<>();
+        RemixMap<Expression, Expression> map = new RemixMap<>();
         int n = ctx.getChildCount();
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixParser.KeyValueContext keyValue) {
-                String key = keyValue.string().getText(); // key());
-                key = key.substring(1,key.length() - 1); // chop off "s at both ends
-                Expression value = (Expression)visit(keyValue.value());
+//                String key = keyValue.string().getText(); // key());
+                Expression key = (Expression)visit(keyValue.expression(0)); // key());
+//                key = key.substring(1,key.length() - 1); // chop off "s at both ends
+                Expression value = (Expression)visit(keyValue.expression(1));
                 map.put(key, value);
             }
         }

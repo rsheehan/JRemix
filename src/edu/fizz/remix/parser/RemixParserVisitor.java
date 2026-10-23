@@ -623,10 +623,4 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitKeyValue(RemixParser.KeyValueContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link RemixParser#value}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitValue(RemixParser.ValueContext ctx);
 }

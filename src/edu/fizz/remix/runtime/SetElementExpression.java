@@ -58,15 +58,16 @@ public class SetElementExpression implements Expression {
                     int index = numIndex.intValue();
                     context.assign(listName, makeList(context, index, indexes, value));
                 } else { // a Map
-                    String key = (String) id;
+                    String key = String.valueOf(id);
                     context.assign(listName, makeMap(context, key, indexes, value));
                 }
             } else {
                 if (listMap instanceof RemixList nextList && id instanceof Number n)
                     setListComponentValue(context, nextList, n.intValue(), indexes, value);
-                else if (listMap instanceof RemixMap nextMap && id instanceof String str)
-                    setMapComponentValue(context, nextMap, str, indexes, value);
-                else {
+                else if (listMap instanceof RemixMap nextMap) {
+                    String key = String.valueOf(id);
+                    setMapComponentValue(context, nextMap, key, indexes, value);
+                } else {
                     System.err.printf("'%s' cannot set index {%s}.%n", listName, id);
                 }
             }

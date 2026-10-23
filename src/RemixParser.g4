@@ -155,13 +155,10 @@ listContents		: (expression (COMMA expression)*)?	# commaList
 					| EOL*								# emptyList
 					;
 
- map				: LBRACE mapContents RBRACE ;
+map					: LBRACE mapContents RBRACE ;
 
- mapContents		: keyValue (COMMA keyValue)* 		# commaMap
+mapContents			: keyValue (COMMA keyValue)* 		# commaMap
  					| LBLOCK EOL* keyValue (separator EOL* keyValue)* RBLOCK EOL? # blockMap
 					;
 
- keyValue			: string COLON value ;
-
-// key				: WORD | STRING ;
- value				: expression ;
+keyValue			: expression COLON expression ;

@@ -4,17 +4,17 @@ import java.util.Map;
 
 public class RemixMapExpression implements Expression {
 
-    private final RemixMap<String, Expression> mapExpressions;
+    private final RemixMap<Expression, Expression> mapExpressions;
 
-    public RemixMapExpression(RemixMap<String, Expression> map) {
+    public RemixMapExpression(RemixMap<Expression, Expression> map) {
         mapExpressions = map;
     }
 
     @Override
-    public RemixMap evaluate(Context context) throws InterruptedException, VarNotFoundException, FunctionNotFoundException {
+    public RemixMap evaluate(Context context) throws InterruptedException, VarNotFoundException, FunctionNotFoundException, ReturnException {
         RemixMap mapValues = new RemixMap();
-        for (Map.Entry<String, Expression> entry : mapExpressions.entrySet()) {
-            String key = entry.getKey();
+        for (Map.Entry<Expression, Expression> entry : mapExpressions.entrySet()) {
+            String key = entry.getKey().evaluate(context).toString();
             Expression value = entry.getValue();
             try {
                 if (value instanceof Block)
