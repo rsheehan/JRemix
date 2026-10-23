@@ -23,6 +23,8 @@ public class RemixApp extends RemixBaseWindow {
 
     LightThemeAction lightThemeAction;
     DarkThemeAction darkThemeAction;
+    TopAction topAction;
+    BottomAction bottomAction;
 
     private static final int WIDTH = 800;
 
@@ -302,6 +304,11 @@ public class RemixApp extends RemixBaseWindow {
         stopAction = new StopAction();
         menu.add(stopAction);
         menu.addSeparator();
+        topAction = new TopAction();
+        menu.add(topAction);
+        bottomAction = new BottomAction();
+        menu.add(bottomAction);
+        menu.addSeparator();
         ResetAction resetAction = new ResetAction();
         menu.add(resetAction);
         ClearComponentsAction clearComponentsAction = new ClearComponentsAction();
@@ -331,6 +338,32 @@ public class RemixApp extends RemixBaseWindow {
             setEnabled(false); // changed back when running finishes or is terminated
             animations.clear();
             remixRunner.execute(); // this causes the program to run in a background thread
+        }
+    }
+
+    protected static class TopAction extends AbstractAction {
+        protected TopAction() {
+            super("Top of REPL");
+            int shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_T, shortcutKey));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            REPLPanel.scrollToTop();
+        }
+    }
+
+    protected static class BottomAction extends AbstractAction {
+        protected BottomAction() {
+            super("Bottom of REPL");
+            int shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_B, shortcutKey));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            REPLPanel.scrollToBottom();
         }
     }
 

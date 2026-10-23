@@ -35,8 +35,6 @@ public abstract class RemixBaseWindow extends JFrame {
 
     public RemixBaseWindow(String title) {
         super(title);
-//        dynamicTextAreas = RemixApp.REPLTextAreas;
-
         docArea = new JTextArea("Document goes here.");
         docArea.setForeground(Color.yellow);
         docPanel.add(docArea);

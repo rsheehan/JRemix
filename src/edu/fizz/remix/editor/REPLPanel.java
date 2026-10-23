@@ -9,6 +9,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 public class REPLPanel extends JPanel {
 
@@ -31,7 +33,6 @@ public class REPLPanel extends JPanel {
     private final GridBagConstraints gbcForOutput;
     private final GridBagConstraints gbcForSpace;
     private final Component glueBox;
-    private final Component lastLineBox;
 
     private boolean darkAreas;
 
@@ -51,16 +52,28 @@ public class REPLPanel extends JPanel {
         gbcForSpace = (GridBagConstraints) gbcForCode.clone();
         gbcForSpace.weighty = 1.0;
         glueBox = Box.createGlue();
-        lastLineBox = Box.createRigidArea(new Dimension(600, 20));
-        add(lastLineBox, gbcForCode);
         add(glueBox, gbcForSpace);
-        addREPLTextArea(); // this moves glue and last to the end
         scrollPane = new JScrollPane(this);
+        addREPLTextArea(); // this moves glue and last to the end
         allText = new StringBuilder();
+    }
+
+    private void makeComponentSendScrollingUp(Component component) {
+        component.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                RTextScrollPane replTextAreaScrollPane = (RTextScrollPane) SwingUtilities.getAncestorOfClass(
+                        RTextScrollPane.class,
+                        component
+                );
+                scrollPane.dispatchEvent(SwingUtilities.convertMouseEvent(replTextAreaScrollPane, e, scrollPane));
+            }
+        });
     }
 
     protected void addREPLTextArea() {
         RemixTextArea REPLTextArea = new RemixTextArea(true, darkAreas);
+        makeComponentSendScrollingUp(REPLTextArea);
         if (currentCodeArea != null) {
             // change the document listener
             AbstractDocument document =  (AbstractDocument)currentCodeArea.getDocument();
@@ -69,11 +82,10 @@ public class REPLPanel extends JPanel {
             allText.append(currentCodeArea.getText()).append("\n");
         }
         currentCodeArea = REPLTextArea;
-        remove(lastLineBox);
         remove(glueBox);
+        // createAutoSizingArea also adds scrollable panel for the textArea
         add(createAutoSizingArea(REPLTextArea), gbcForCode);
         add(glueBox, gbcForSpace);
-        add(lastLineBox, gbcForCode);
         revalidate();
         repaint();
 
@@ -94,6 +106,11 @@ public class REPLPanel extends JPanel {
         });
         timer.setRepeats(false);
         timer.start();
+    }
+
+    public static void scrollToTop() {
+        JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
+        verticalBar.setValue(verticalBar.getMinimum());
     }
 
     public JScrollPane getScrollPane() {
@@ -125,7 +142,7 @@ public class REPLPanel extends JPanel {
                     gutter.setBackground(Color.white);
                     gutter.setLineNumberColor(Color.blue);
                 }
-            } else if (component != glueBox && component != lastLineBox)
+            } else if (component != glueBox)
                 outputSetDark((JTextArea)component);
         }
     }
@@ -165,10 +182,8 @@ public class REPLPanel extends JPanel {
         currentOutputArea.setBorder(border);
         outputSetDark(currentOutputArea);
         remove(glueBox);
-        remove(lastLineBox);
         add(currentOutputArea, gbcForOutput);
         add(glueBox, gbcForSpace);
-        add(lastLineBox);
         // Inform the layout manager and refresh the UI
         revalidate();
         repaint();
