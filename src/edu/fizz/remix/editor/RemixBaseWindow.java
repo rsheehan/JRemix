@@ -49,6 +49,17 @@ public abstract class RemixBaseWindow extends JFrame {
         return new Point(caretPoint.x + editorLocation.x, caretPoint.y + editorLocation.y + 16);
     }
 
+    private Popup createFittingPopup(Component owner, Component contents, int x, int y) {
+        Dimension size = contents.getPreferredSize();
+        Rectangle windowBounds = this.getBounds();
+        int windowBottom = windowBounds.y + windowBounds.height;
+        if (y + size.height > windowBottom) {
+            // y is below the text
+            y = windowBottom - size.height - 30;
+        }
+        return popupFactory.getPopup(owner, contents, x, y);
+    }
+
     public void showDocText() {
         RemixTextArea textArea = getTextArea();
         RemixCompletions completionControl = textArea.completionControl;
@@ -64,10 +75,7 @@ public abstract class RemixBaseWindow extends JFrame {
                 docPopup.hide();
             if (docText != null && !docText.isEmpty()) {
                 docArea.setText(docText);
-                docPopup = popupFactory.getPopup(textArea,
-                                                 docPanel,
-                                                 popupScreenLocation.x,
-                                                 popupScreenLocation.y);
+                docPopup = createFittingPopup(textArea, docPanel, popupScreenLocation.x, popupScreenLocation.y);
                 docPopup.show();
             }
         } catch (BadLocationException ex) {
