@@ -327,18 +327,22 @@ public class RemixApp extends RemixBaseWindow {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            replPanel.newOutputArea(getCurrentFileName());
-
-            String programText = REPLPanel.getCurrentCodeArea().getText();
-
-            remixRunner = new RemixSwingWorker(RemixPrepareRun.INTERACTIVETEXT, RemixApp.this, programText);
-            System.setErr(new PrintStream(new TextAreaOutputStream(remixRunner)));
-
-            stopAction.setEnabled(true);
-            setEnabled(false); // changed back when running finishes or is terminated
-            animations.clear();
-            remixRunner.execute(); // this causes the program to run in a background thread
+            run();
         }
+    }
+
+    public void run() {
+        replPanel.newOutputArea(getCurrentFileName());
+
+        String programText = REPLPanel.getCurrentCodeArea().getText();
+
+        remixRunner = new RemixSwingWorker(RemixPrepareRun.INTERACTIVETEXT, RemixApp.this, programText);
+        System.setErr(new PrintStream(new TextAreaOutputStream(remixRunner)));
+
+        stopAction.setEnabled(true);
+        runAction.setEnabled(false); // changed back when running finishes or is terminated
+        animations.clear();
+        remixRunner.execute(); // this causes the program to run in a background thread
     }
 
     protected static class TopAction extends AbstractAction {

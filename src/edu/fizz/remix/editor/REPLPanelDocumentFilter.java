@@ -14,8 +14,13 @@ The panel should scroll back to the current code area.
 public class REPLPanelDocumentFilter extends DocumentFilter {
 
     private final StringBuilder oldDocStringBuilder;
+    private final RemixApp remixApp;
 
-    public REPLPanelDocumentFilter(AbstractDocument oldDocument) {
+    public REPLPanelDocumentFilter(AbstractDocument oldDocument, REPLPanel replPanel) {
+        remixApp = (RemixApp)SwingUtilities.getWindowAncestor(replPanel);
+        if (remixApp == null) {
+            System.err.println("RemixPanelDocumentFilter: remixApp is null");
+        }
         Segment textSegment = new Segment();
         try {
             oldDocument.getText(0, oldDocument.getLength(), textSegment);
@@ -30,9 +35,14 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
 
     @Override
     public void insertString(FilterBypass fb, int offset, String text, AttributeSet attrs) {
+        RemixTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
+        if (currentCodeArea.getText().isEmpty() && text.equals("\n")) { // if return is typed we copy the text and run it?
+            currentCodeArea.append(String.valueOf(oldDocStringBuilder));
+            remixApp.run();
+            return;
+        }
         StringBuilder newText = new StringBuilder(oldDocStringBuilder);
         newText.insert(offset, text);
-        RemixTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
         int insertPos = currentCodeArea.getCaretPosition();
         currentCodeArea.append(newText.toString());
         currentCodeArea.setCaretPosition(insertPos + offset + text.length());

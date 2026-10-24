@@ -7,6 +7,7 @@ import javax.swing.text.BadLocationException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class RemixCompletions {
 
@@ -109,7 +110,7 @@ public class RemixCompletions {
                 if (nextParam) {
                     int lineStartOffset = textArea.getLineStartOffset(lineNumber);
                     AutoTab.selectedNextParam(textArea,
-                                              AutoUtil.extractLine(textArea, lineNumber),
+                                              Objects.requireNonNull(AutoUtil.extractLine(textArea, lineNumber)),
                                               lineNumber, completionsHere.offset - lineStartOffset,
                                               lineStartOffset);
                 }
@@ -128,7 +129,7 @@ public class RemixCompletions {
             if (nextParam) {
                 int lineStartOffset = textArea.getLineStartOffset(lineNumber);
                 AutoTab.selectedNextParam(textArea,
-                                          AutoUtil.extractLine(textArea, lineNumber),
+                                          Objects.requireNonNull(AutoUtil.extractLine(textArea, lineNumber)),
                                           lineNumber, completionsHere.offset - lineStartOffset,
                                           lineStartOffset);
             }

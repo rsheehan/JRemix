@@ -9,8 +9,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 
 public class REPLPanel extends JPanel {
 
@@ -59,15 +57,12 @@ public class REPLPanel extends JPanel {
     }
 
     private void makeComponentSendScrollingUp(Component component) {
-        component.addMouseWheelListener(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                RTextScrollPane replTextAreaScrollPane = (RTextScrollPane) SwingUtilities.getAncestorOfClass(
-                        RTextScrollPane.class,
-                        component
-                );
-                scrollPane.dispatchEvent(SwingUtilities.convertMouseEvent(replTextAreaScrollPane, e, scrollPane));
-            }
+        component.addMouseWheelListener(e -> {
+            RTextScrollPane replTextAreaScrollPane = (RTextScrollPane) SwingUtilities.getAncestorOfClass(
+                    RTextScrollPane.class,
+                    component
+            );
+            scrollPane.dispatchEvent(SwingUtilities.convertMouseEvent(replTextAreaScrollPane, e, scrollPane));
         });
     }
 
@@ -77,7 +72,7 @@ public class REPLPanel extends JPanel {
         if (currentCodeArea != null) {
             // change the document listener
             AbstractDocument document =  (AbstractDocument)currentCodeArea.getDocument();
-            document.setDocumentFilter(new REPLPanelDocumentFilter(document));
+            document.setDocumentFilter(new REPLPanelDocumentFilter(document, this));
             currentCodeArea.setHighlightCurrentLine(false);
             allText.append(currentCodeArea.getText()).append("\n");
         }
