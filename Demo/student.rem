@@ -6,7 +6,7 @@ Student record
 	"Martin Developer" age 22 knows {
 		"Java"   : "Expert"
 		"python" : "Advanced"
-		"Remix"  : "Expert"
+		"Remix'd"  : "Expert"
 	}
 	"May Smith" age 25 knows {
 		"C++" : "Advanced"
@@ -42,7 +42,7 @@ merge {"Java" : "Expert"} into (('students'{3}) languages)
 ↲
 the "Java" experts amongst the 'students'
 the "C++" experts amongst the 'students'
-the "Remix" experts amongst the 'students'
+the "Remix'd" experts amongst the 'students'
 
 ----------------
 
