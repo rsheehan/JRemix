@@ -21,7 +21,7 @@ public class RemixDocumentFilter extends DocumentFilter {
     public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
         Segment textSegment = new Segment();
         document.getText(0, document.getLength(), textSegment);
-        if (length == 1 && textSegment.length() >= offset + 1) {
+        if (length == 1 && textSegment.length() > offset + 1) {
             String firstChar = String.valueOf(getAChar(offset, textSegment));
             for (String first : AutoPairer.matchingPairs.keySet()) {
                 if (first.equals(firstChar)) {
