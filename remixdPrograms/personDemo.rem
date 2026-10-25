@@ -1,9 +1,8 @@
 - A simple demo
 
 a person called 'name' :
-	create
+	create 'name'
 		'type' : "person"
-		'name' : 'name'
 		
 		introduce ME to 'other' :
 			"Dear ", 'other' ~
@@ -13,6 +12,7 @@ a person called 'name' :
 			'name'
 
 'r' : a person called "Robert"
+'j' : a person called "James"
 
-introduce 'r' to "James"
+introduce 'r' to 'j'
 'r', " is a ", type of 'r' ↲
