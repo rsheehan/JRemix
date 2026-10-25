@@ -328,15 +328,17 @@ public class EvalVisitorForEditor extends RemixParserBaseVisitor<Object> {
         return funcSig;
     }
 
-    /** CREATE LBLOCK EOL* object RBLOCK */
+    /** CREATE createParams? LBLOCK EOL* object RBLOCK */
     @Override
     public RemixObjectExpression visitCreateObject(RemixParser.CreateObjectContext ctx) {
+        // see change in EvalVisitor.java
         return (RemixObjectExpression)visit(ctx.object());
     }
 
-    /** EXTEND expression LBLOCK EOL* object RBLOCK */
+    /** EXTEND expression (COMMA createParams)? LBLOCK EOL* object RBLOCK */
     @Override
     public RemixObjectExpression visitExtendObject(RemixParser.ExtendObjectContext ctx) {
+        // see change in EvalVisitor.java
         Expression expression = (Expression) visit(ctx.expression());
         RemixObjectExpression extendedObject = (RemixObjectExpression)visit(ctx.object());
         return new RemixExtendedObjectExpression(expression, extendedObject);

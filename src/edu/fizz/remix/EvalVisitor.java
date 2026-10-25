@@ -258,17 +258,45 @@ public class EvalVisitor extends RemixParserBaseVisitor<Object> {
         return funcSig;
     }
 
-    /** CREATE LBLOCK EOL* object RBLOCK */
+    /** CREATE createParams? LBLOCK EOL* object RBLOCK */
     @Override
     public RemixObjectExpression visitCreateObject(RemixParser.CreateObjectContext ctx) {
-        return (RemixObjectExpression)visit(ctx.object());
+        RemixObjectExpression objectExpression = (RemixObjectExpression)visit(ctx.object());
+        // gather any create parameters
+        if (ctx.createParams() != null) {
+            List<String> fieldsToCopy = (List<String>)visit(ctx.createParams());
+            int lineNumber = ctx.getStart().getLine() - 1;
+            int lineOffset = ctx.getStart().getCharPositionInLine();
+            for (String fieldName : fieldsToCopy) {
+                VarValueExpression expression = new VarValueExpression(fieldName, fileName, lineNumber, lineOffset);
+                FieldAssignmentStatement initStmnt = new FieldAssignmentStatement(fieldName, expression);
+                objectExpression.addVarInitialization(initStmnt);
+            }
+        }
+        return objectExpression;
     }
 
-    /** EXTEND expression LBLOCK EOL* object RBLOCK */
+    /** fieldId (COMMA fieldId)* */
+    @Override
+    public List<String> visitCreateParams(RemixParser.CreateParamsContext ctx) {
+        return getFieldNames(ctx);
+    }
+
+    /** EXTEND expression (COMMA createParams)? LBLOCK EOL* object RBLOCK */
     @Override
     public RemixObjectExpression visitExtendObject(RemixParser.ExtendObjectContext ctx) {
         Expression expression = (Expression) visit(ctx.expression());
         RemixObjectExpression extendedObject = (RemixObjectExpression)visit(ctx.object());
+        if (ctx.createParams() != null) {
+            List<String> fieldsToCopy = (List<String>)visit(ctx.createParams());
+            int lineNumber = ctx.getStart().getLine() - 1;
+            int lineOffset = ctx.getStart().getCharPositionInLine();
+            for (String fieldName : fieldsToCopy) {
+                VarValueExpression varValueExpression = new VarValueExpression(fieldName, fileName, lineNumber, lineOffset);
+                FieldAssignmentStatement initStmnt = new FieldAssignmentStatement(fieldName, varValueExpression);
+                extendedObject.addVarInitialization(initStmnt);
+            }
+        }
         return new RemixExtendedObjectExpression(expression, extendedObject);
     }
 

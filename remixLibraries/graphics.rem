@@ -109,11 +109,9 @@ library "edu.fizz.remix.libraries.Graphics"
 	=-
 	a/an 'colour' shape from 'points' scaled by 'size' at 'position':
 
-		extend a shape at 'position'
-			'colour'         : 'colour'
+		extend a shape at 'position', 'colour', 'size'
 			'outline colour' : null ; no outline
 			'polygon'        : 'points'
-			'size'           : 'size'
 			'heading'        : 0.0 ; radians
 
 			getters/setters
@@ -133,9 +131,8 @@ library "edu.fizz.remix.libraries.Graphics"
 	Create a graphic object with a 'position'.
 	=-
 	a shape at 'position' :
-		create
+		create 'position'
 			'type' : "Shape"
-			'position' : 'position'
 
 			getter/setter
 				'position'
@@ -173,12 +170,9 @@ library "edu.fizz.remix.libraries.Graphics"
 	The width is 3 pixels by default.
 	=-
 	a/an 'colour' line from 'start' to 'finish' :
-		create
+		create 'start', 'finish', 'colour'
 			'type'   : "Line"
-			'start'  : 'start'
-			'finish' : 'finish'
 			'width'  : 3
-			'colour' : 'colour'
 
 			getters/setters
 				'start', 'finish', 'width', 'colour'
@@ -217,11 +211,9 @@ library "edu.fizz.remix.libraries.Graphics"
 	Create a 'colour' circle of radius 'radius' at 'position'.
 	=-
 	a/an 'colour' circle of radius 'radius' at 'position' :
-		extend a shape at 'position'
+		extend a shape at 'position', 'colour', 'radius'
 			'type'     : "Circle"
-			'colour'   : 'colour'
 			'outline colour' : null ; no outline
-			'radius'   : 'radius'
 
 			getters/setters
 				'colour', 'outline colour',
@@ -385,9 +377,8 @@ library "edu.fizz.remix.libraries.Graphics"
 	Animations should not be placed in the base layer.
 	=-
 	a base layer for 'JGraphics panel' :
-		create
+		create 'JGraphics panel'
 			'type' : "Base Layer"
-			'JGraphics panel' : 'JGraphics panel' ; base layer can change so need this
 
 			=-
 			There are no shapes in the base layer OBJECT.
@@ -429,10 +420,9 @@ library "edu.fizz.remix.libraries.Graphics"
 	Create an animation object which executes 'changes' every 'n' ticks.
 	=-
 	every 'n' tick/ticks ['changes'] :
-		create
+		create 'changes'
 			'ticks' : 'n'
 			'counter' : 'n'
-			'changes' : 'changes'
 
 			=-
 			Animate the animation 'OBJECT'.

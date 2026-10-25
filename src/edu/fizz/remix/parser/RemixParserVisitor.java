@@ -116,6 +116,12 @@ public interface RemixParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExtendObject(RemixParser.ExtendObjectContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link RemixParser#createParams}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCreateParams(RemixParser.CreateParamsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link RemixParser#object}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

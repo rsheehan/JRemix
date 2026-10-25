@@ -1,8 +1,7 @@
 add three to 'value' :
-	'caller' : create
-		'value' : 'value'
-		'caller' : create
-			'value' : 'value'
+	'caller' : create 'value'
+
+		'caller' : create 'value'
 
 			getter
 				'value'

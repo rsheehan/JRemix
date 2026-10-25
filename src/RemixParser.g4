@@ -47,8 +47,10 @@ sigPart				: WORD						# sigWord
 					| LBLOCK IDENTIFIER RBLOCK	# sigBlock
 					;
 
-createObject		: CREATE LBLOCK EOL* object RBLOCK ;
-extendObject		: EXTEND expression LBLOCK EOL* object RBLOCK ;
+createObject		: CREATE createParams? LBLOCK EOL* object RBLOCK ;
+extendObject		: EXTEND expression (COMMA createParams)? LBLOCK EOL* object RBLOCK ;
+
+createParams		: fieldId (COMMA fieldId)* ;
 
 object				: field* (getterSetter? getter? setter?) methodDefinition* ;
 

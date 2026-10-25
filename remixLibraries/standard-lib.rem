@@ -401,9 +401,8 @@ in sequence.
 If a single value it represents the single parameter 'a'.
 =-
 function ['body'] :
-	create
+	create 'body'
 		'type' : "function"
-		'body' : 'body'
 
 		=-
 		Execute the function 'OBJECT', using the parameters in map 'params'.

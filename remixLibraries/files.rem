@@ -44,10 +44,8 @@ library "edu.fizz.remix.libraries.RemixFiles"
 	'access' can be READING, WRITING, BOTH, BINARY-READING.
 	=-
 	a file with full path 'name' for 'access':
-		create
+		create 'name', 'access'
 			'type' : "File"
-			'name' : 'name'
-			'access' : 'access'
 
 			getter
 				'access'

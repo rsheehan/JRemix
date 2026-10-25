@@ -1,9 +1,7 @@
 - DELTA -
 
 'number' with delta 'Δ' :
-	create
-		'number' : 'number'
-		'Δ' : 'Δ'
+	create 'number', 'Δ'
 
 		getter
 			'number'

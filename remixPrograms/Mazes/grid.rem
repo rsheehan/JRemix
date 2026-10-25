@@ -1,47 +1,57 @@
-- Constants for link directions.
+- Constants for directions.
 NORTH : 1
 SOUTH : 2
 EAST : 3
 WEST : 4
 
-a grid of 2 by 3
 =-
 Create a grid object with 'rows' of 'columns' each.
 =-
 a grid of 'rows' by 'columns' :
-	
-	'grid' : create
-		'rows' : 'rows'
-		'cols' : 'columns'
-		'cells' : {}
-		
-		- construct all of the cells
-		initialise ME :
+	'grid' : create 'rows', 'columns'
+		'cells' : do 
 			for each 'row' from 1 to 'rows' 
-				'this row' : {}
-				for each 'column' from 1 to 'cols'
-					append (a cell at 'row' 'column') to 'this row'
-				append 'this row' to 'cells'
-					
+				for each 'column' from 1 to 'columns'
+					'cells'{'row'}{'column'} : a cell at 'row' 'column'
+			'cells'
+		
 		=-
 		Return the cell at position {'row', 'column'}.
 		=-
 		MY cell at 'row' by 'column' :
-			- return the cell
-			1
+			if (all of {
+				['row' is in (1 to 'rows')]
+				['column' is in (1 to 'columns')]
+			})
+				return 'cells'{'row'}{'column'}
+			null
 		
+		=-
+		Return a random cell.
+		=-
+		MY random cell :
+			'cells'{random 'rows'}{random 'columns'}
+			
+		=-
+		Return the number of cells in the grid.
+		=-
+		MY size :
+			'rows' × 'columns'
+		
+		=-
+		Creates and starts the iterator for the grid.
+		Produces each cell.
+		=-
 		start ME :
-			create
-				
+			create 'cells', 'rows'
+				'row' : 0
+						
 				end ME :
-					- at the last cell
-					2
-				
+					'row' = 'rows'
+					
 				next ME :
-					- the next cell
-					3
-	initialise 'grid'
-	'grid'
+					increment 'row'
+					'cells'{'row'}
 
 =-
 Create a single cell with connections to 
@@ -50,21 +60,53 @@ surrounding ones.
 a cell at 'row' 'column':
 	create
 		'row' : 'row'
-		'col' : 'column'
-		'links' : {}
+		'column' : 'column'
+		'links' : { }
+		'directions' : {
+			{'row' - 1, 'column'}
+			{'row' + 1, 'column'}
+			{'row', 'column' + 1}
+			{'row', 'column' - 1}
+		}
 		
 		getters
-			'row', 'col', 'links'
+			'row', 'column', 'links', 'directions'
 		
--		ME to string :
--			"(" ⊕ 'row' ⊕ ", " ⊕ 'col' ⊕ ")" ⊕ 
--			… "\n" ⊕ 'links'
+		ME to string :
+			"<" ⊕ 'row' ⊕ ", " ⊕ 'column' ⊕ ">"
 			
 		link ME to 'other cell' :
-			'links'{'other cell'} : true ; this means assignment
+			'links'{'other cell'} : true ; this means connected
+		
+		unlink ME from 'other cell' : ; should really have a map delete
+			'links'{'other cell'} : false
 
-			
+connect 'cell 1' with 'cell 2' :
+	link 'cell 1' to 'cell 2'
+	link 'cell 2' to 'cell 1'
+
+disconnect 'cell 1' from 'cell 2' :
+	unlink 'cell 1' from 'cell 2'
+	unlink 'cell 2' from 'cell 1'
+
 'other' : a cell at 2 4
 'this' : a cell at 1 3
 
-link 'this' to 'other'
+connect 'this' with 'other'
+
+'other' links ↲
+'this' links ↲
+↲
+disconnect 'this' from 'other'
+
+'other' links ↲
+'this' links ↲
+
+'grid' : a grid of 3 by 10
+
+for each 'row' in 'grid'
+	'row' ↲
+↲
+for each 'row' in 'grid'
+	for each 'cell' in 'row'
+		'cell' ↲

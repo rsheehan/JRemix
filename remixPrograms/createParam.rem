@@ -1,0 +1,11 @@
+'x' : 3
+
+make object with 'value':
+	create 'value'
+		
+		getter
+			'value'
+
+'obj' : make object with 'x'
+
+'obj' ↲

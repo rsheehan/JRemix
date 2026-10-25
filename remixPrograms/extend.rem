@@ -1,7 +1,6 @@
 a person called 'name' :
-	create
+	create 'name'
 		'type' : "Named person"
-		'name' : 'name'
 
 		MY introduction :
 			"My name is ", 'name', "." ↲
@@ -10,12 +9,11 @@ a person called 'name' :
 			"Hi ", 'name', ", pleased to meet you." ↲
 
 a person called 'name' age 'years' :
-	extend a person called 'name'
+	extend a person called 'name', 'years'
 		'type' : "Aged"
-		'age' : 'years'
 
 		say hello to ME :
-			"Hi ", 'name', ", you are ", 'age', " years old." ↲
+			"Hi ", 'name', ", you are ", 'years', " years old." ↲
 
 'Mary' : a person called "Mary"
 'Mary' introduction

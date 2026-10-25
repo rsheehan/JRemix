@@ -1,20 +1,17 @@
 object1 'A' :
-	create
-		'A' : 'A'
+	create 'A'
 
 		show ME :
 			'A'
 
 object2 'A' 'B' :
-	extend object1 'A'
-		'B' : 'B'
+	extend object1 'A', 'B'
 
 		show ME :
 			{ 'A', 'B' }
 
 object3 'A' 'B' 'C' :
-	extend object2 'A' 'B'
-		'C' : 'C'
+	extend object2 'A' 'B', 'C'
 
 		show ME :
 			{ 'A', 'B', 'C' }

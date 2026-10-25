@@ -25,12 +25,11 @@ using graphics
 		update 'window'
 	
 bits from 'value' :
-	create
-		'value' : 'value'
+	create 'value'
 		
 		start ME :
-			create
-				'value' : 'value'
+			create 'value'
+			
 				'bit pos' : 128
 		
 				end ME :

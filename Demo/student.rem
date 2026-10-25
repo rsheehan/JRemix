@@ -61,10 +61,7 @@ is or are 'number' :
 		"s are"
 
 'name' age 'age' knows 'languages' :
-	create
-		'name' : 'name'
-		'age' : 'age'
-		'languages' : 'languages'
+	create 'name', 'age', 'languages'
 
 		getter
 			'name', 'age'
