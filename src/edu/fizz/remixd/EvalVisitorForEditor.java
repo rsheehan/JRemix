@@ -1,0 +1,1034 @@
+package edu.fizz.remixd;
+
+import edu.fizz.remixd.runtime.*;
+import edu.fizz.remixd.parser.*;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
+
+public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
+
+    /*
+     * This really needs to visit the entire program before executing anything.
+     * It should collect all function definitions and all top-level code.
+     * The functions get added to the function table.
+     * The top-level code is a block sequence.
+     * Only then should the top-level code block be executed.
+     */
+
+    // the file name from runEditorText in RemixdPrepareRun
+    // the name has a prefix of EDITORCOMPLETION:
+    private final String fileName;
+
+    // TODO: need to remove all unnecessary code, currently mostly a copy of EvalVisitor.
+
+    // Every included file adds a false onto the stack.
+    // Popped off when the included file is finished.
+    // So the top of the stack being true means we are in the main program.
+    public static final Stack<Boolean> addIdentifierStack;
+    // The programLibIdentifiers connect a library name with its library so that
+    // we can find constants declared in the library.
+    private final HashMap<String, LibraryExpression> programLibIdentifiers = new HashMap<>();
+
+    static {
+        addIdentifierStack = new Stack<>();
+        addIdentifierStack.push(true);
+    }
+
+    public EvalVisitorForEditor(String fileName) {
+        super();
+        this.fileName = "EDITORCOMPLETION: " + fileName;
+    }
+
+    LibraryExpression programLibrary = new LibraryExpression();
+
+    /** ( functionDefinition | statement | setConstant | usingStatement | library | libAssignment )* EOF */
+    /* This is where the Remixd functions are added to the function table. */
+    @Override
+    public LibraryExpression visitProgram(RemixdParser.ProgramContext ctx) {
+        /*
+        The current library could be the baseLibrary, or the programLibrary
+         */
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n; i++) {
+            ParseTree node = ctx.getChild(i);
+
+            // statement
+            if (node instanceof RemixdParser.StatementContext) {
+                Expression statement = (Expression) visit(node);
+                if (statement != null) // can be blank statements
+                    programLibrary.block.addStatement(statement);
+
+            // setConstant e.g. ABC : 123
+            } else if (node instanceof RemixdParser.SetConstantContext) {
+                ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
+                constantAssignment.setLibraryStoredIn(programLibrary);
+                programLibrary.block.addStatement(constantAssignment);
+                programLibrary.addConstantForCompletions(constantAssignment.name());
+
+            // functionDefinition
+            } else if (node instanceof RemixdParser.FunctionDefinitionContext) {
+                RemixdFunction function = (RemixdFunction)visit(node);
+                programLibrary.addFunction(function);
+
+            // usingStatement
+            } else if (node instanceof RemixdParser.UsingStatementContext) {
+                UsingLibBlock usingLibBlock = (UsingLibBlock)visit(node);
+                if (usingLibBlock != null)
+                    programLibrary.block.addStatement(usingLibBlock);
+
+            // library
+            } else if (node instanceof RemixdParser.LibraryContext) {
+                LibraryExpression libraryExpression = (LibraryExpression) visit(node);
+                programLibrary.block.addStatement(libraryExpression);
+                // so program and its visible libraries can be used for completions
+                if (addIdentifierStack.peek())
+                    LibrariesAndCompletions.addLibrary(libraryExpression);
+
+            // libAssignment
+            } else if (node instanceof RemixdParser.LibAssignmentContext) {
+                AssignmentStatement assignmentStatement = (AssignmentStatement) visit(node);
+                if (assignmentStatement instanceof ConstantAssignmentStatement constantAssignmentStatement)
+                    constantAssignmentStatement.setLibraryStoredIn(programLibrary);
+                LibrariesAndCompletions.addLibrary((LibraryExpression) assignmentStatement.expression);
+                programLibrary.block.addStatement(assignmentStatement); // needed for embedded lib using constants e.g. TURTLE
+                programLibIdentifiers.put(assignmentStatement.name(), (LibraryExpression)assignmentStatement.expression);
+                programLibrary.addConstantForCompletions(assignmentStatement.name());
+            }
+        }
+        return programLibrary;
+    }
+
+    /** LIBRARY string? */
+    @Override
+    public LibraryExpression visitLibraryName(RemixdParser.LibraryNameContext ctx) {
+        if (ctx.string() != null) {
+            String libName = ctx.string().getText();
+            libName = libName.substring(1, libName.length() - 1); // strip off quotes
+            try {
+                Class libClass = Class.forName(libName);
+                return (LibraryExpression) libClass.getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                     InvocationTargetException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                System.err.printf("Class not found: %s%n", libName);
+                throw new RuntimeException(e);
+            }
+        } else {
+            return new LibraryExpression();
+        }
+    }
+
+    /** libraryName LBLOCK EOL* (functionDefinition | statement | setConstant | usingStatement)* RBLOCK */
+    public LibraryExpression visitLibrary(RemixdParser.LibraryContext ctx) {
+        LibraryExpression library = (LibraryExpression) visit(ctx.libraryName());
+        // so all statements and functions go to this library
+        library.setTrueLibrary();
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n; i++) {
+            ParseTree node = ctx.getChild(i);
+
+            // statement
+            if (node instanceof RemixdParser.StatementContext) {
+                Expression statement = (Expression) visit(node);
+                if (statement != null) // can be blank statements
+                    library.block.addStatement(statement);
+
+            // setConstant e.g. ABC : 123
+            }  else if (node instanceof RemixdParser.SetConstantContext) {
+                ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
+                constantAssignment.setLibraryStoredIn(library);
+                library.block.addStatement(constantAssignment);
+                library.addConstantForCompletions(constantAssignment.name());
+
+            // functionDefinition
+            } else if (node instanceof RemixdParser.FunctionDefinitionContext) {
+                RemixdFunction function = (RemixdFunction)visit(node);
+                library.addFunction(function);
+
+            // usingStatement
+            } else if (node instanceof RemixdParser.UsingStatementContext) {
+                LibraryExpression program = programLibrary;
+                // constants and functions get stored in this library not the main program
+                programLibrary = library;
+                UsingLibBlock usingLibBlock = (UsingLibBlock) visit(node);
+                if (usingLibBlock != null)
+                    library.block.addStatement(usingLibBlock);
+                programLibrary = program;
+            }
+        }
+        if (addIdentifierStack.peek()) { // if in main program, not included file
+            int blockLineStart = ctx.getStart().getLine() - 1;
+            int blockLineFinish = ctx.getStop().getLine() - 1;
+            library.addToValidLines(new int[]{blockLineStart, blockLineFinish});
+        }
+        return library;
+    }
+
+    /** CONSTANT COLON library */
+    @Override
+    public ConstantAssignmentStatement visitLibAssignment(RemixdParser.LibAssignmentContext ctx) {
+        String constName = ctx.CONSTANT().getText();
+        LibraryExpression library = (LibraryExpression) visit(ctx.library());
+        return new ConstantAssignmentStatement(constName, library);
+    }
+
+    /** USING expression (COMMA expression)* usingBlock */
+    @Override
+    public UsingLibBlock visitUsingStatement(RemixdParser.UsingStatementContext ctx) {
+        LibraryExpression libraryExpression = null;
+        ArrayList<LibraryExpression> libraryExpressions = new ArrayList<>();
+        LibraryExpression usingBlock = null;
+
+        int n = ctx.getChildCount();
+        for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixdParser.ExpressionContext) {
+                Expression libExp = (Expression) visit(node);
+                if (libExp instanceof ConstantValueExpression constantValueExpression)
+                    libraryExpression = programLibIdentifiers.get(constantValueExpression.getName());
+                else if (libExp instanceof VarValueExpression varValueExpression)
+                    libraryExpression = programLibIdentifiers.get(varValueExpression.getName());
+                else try { // fall back on attempting to evaluate the library expression
+                    Context contextForLib = new Context(LibrariesAndCompletions.getBaseLibrary(), null);
+                    // add any existing functions which may "include aLibrary"
+                    programLibrary.setActiveLines(LibraryExpression.ALLLINES); // so any functions in this can be used
+                    contextForLib.addLibraryToStack(programLibrary);
+                    libraryExpression = (LibraryExpression) libExp.evaluate(contextForLib);
+                } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException |
+                         VarNotFoundException | FunctionNotFoundException _) {}
+                if (libraryExpression != null)
+                    libraryExpressions.add(libraryExpression);
+            }
+        }
+        try {
+            usingBlock = (LibraryExpression) visit(ctx.usingBlock());
+            if (addIdentifierStack.peek()) { // we are dealing with the main program not an included file
+                for (LibraryExpression lib : libraryExpressions) {
+                    lib.addToValidLines(usingBlock.getActiveLines().getFirst());
+                    LibrariesAndCompletions.addLibrary(lib);
+                }
+            }
+            LibrariesAndCompletions.addLibrary(usingBlock);
+        } catch (NullPointerException ex) {
+            // just incomplete error while editing
+        }
+        UsingLibBlock usingLibBlock = new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
+        if (usingBlock != null) {
+            for (Function function : usingBlock.functionTable.values()) {
+                FunctionInUsing usingFunction = new FunctionInUsing((RemixdFunction) function, usingLibBlock.libraryMap());
+                programLibrary.addFunction(usingFunction);
+            }
+            usingBlock.block.setConstantAssignmentLibrary(programLibrary);
+        }
+        return usingLibBlock;
+    }
+
+    /*
+     The library produced here is only for completions. It includes the functions
+     declared in the using block of a library.
+     */
+    /** LBLOCK (functionDefinition | statement | setConstant)* RBLOCK */
+    @Override
+    public Object visitUsingBlock(RemixdParser.UsingBlockContext ctx) {
+        int blockLineStart = ctx.getStart().getLine() - 1;
+        int blockLineFinish = ctx.getStop().getLine() - 1;
+        LibraryExpression usingBlock = new LibraryExpression();
+        if (addIdentifierStack.peek())
+            usingBlock.addToValidLines(new int[]{blockLineStart, blockLineFinish});
+        for (int i = 0; i < ctx.getChildCount(); i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixdParser.StatementContext) {
+                visit(node);
+            }  else if (node instanceof RemixdParser.SetConstantContext) {
+                // in this version for completion only ConstantAssignmentStatements get
+                // added to the usingBlock.block.
+                ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
+                usingBlock.block.addStatement(constantAssignment);
+            } else if (node instanceof RemixdParser.FunctionDefinitionContext) {
+                RemixdFunction function = (RemixdFunction)visit(node);
+                usingBlock.addFunction(function);
+            }
+        }
+        return usingBlock;
+    }
+
+    /** RETURN expression? */
+    @Override
+    public ReturnStatement visitReturn(RemixdParser.ReturnContext ctx) {
+        Expression returnValue = null;
+        if (ctx.getChildCount() == 2)
+            returnValue = (Expression)visit(ctx.expression());
+        return new ReturnStatement(returnValue);
+    }
+
+    /** REDO */
+    @Override
+    public RedoStatement visitRedo(RemixdParser.RedoContext ctx) {
+        return new RedoStatement();
+    }
+
+    /** functionSignature COLON COLON? blockOfStatements */
+    @Override
+    public RemixdFunction visitFunctionDefinition(RemixdParser.FunctionDefinitionContext ctx) {
+        String funcComment = null;
+        if (ctx.getChild(0) instanceof RemixdParser.FunctionCommentContext) {
+            funcComment = (String)visit(ctx.functionComment());
+        }
+        FunctionName<String> funcSig = (FunctionName<String>)visit(ctx.functionSignature());
+        Block block = null;
+        try {
+            block = (Block) visit(ctx.blockOfStatements()); // need to visit to find create and extend expressions
+        } catch (NullPointerException _) {
+        }
+        return new RemixdFunction(
+                funcSig.getAllNames(),
+                block,
+                funcSig.getParameters(),
+                funcSig.getBlockParams(),
+                false, // transparent,
+                funcComment,
+                ctx.start.getLine() - 1
+        );
+    }
+
+    /** DOC_COMMENT EOL */
+    @Override
+    public String visitFunctionComment(RemixdParser.FunctionCommentContext ctx) {
+        String comment = ctx.DOC_COMMENT().getText();
+        comment = comment.replace("\t", "");
+        return comment.substring(4,comment.length()-3);
+    }
+
+    /** sigPart sigPart+ | singleWord */
+    @Override
+    public FunctionName<String> visitFunctionSignature(RemixdParser.FunctionSignatureContext ctx) {
+        FunctionName<String> funcSig = new FunctionName<>();
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n; i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixdParser.SingleWordContext ||  // added single word functions
+                    node instanceof RemixdParser.SigWordContext) {
+                funcSig.addToName(node.getText());
+            } else if (node instanceof RemixdParser.SigParamContext) {
+                funcSig.addParam((String)visit(node));
+            } else if (node instanceof RemixdParser.SigBlockContext)
+                try {
+                    funcSig.addBlockParam((String)visit(node));
+                } catch (NullPointerException _) {
+                }
+        }
+        return funcSig;
+    }
+
+    /** CREATE createParams? LBLOCK EOL* object RBLOCK */
+    @Override
+    public RemixdObjectExpression visitCreateObject(RemixdParser.CreateObjectContext ctx) {
+        // see change in EvalVisitor.java
+        return (RemixdObjectExpression)visit(ctx.object());
+    }
+
+    /** EXTEND expression (COMMA createParams)? LBLOCK EOL* object RBLOCK */
+    @Override
+    public RemixdObjectExpression visitExtendObject(RemixdParser.ExtendObjectContext ctx) {
+        // see change in EvalVisitor.java
+        Expression expression = (Expression) visit(ctx.expression());
+        RemixdObjectExpression extendedObject = (RemixdObjectExpression)visit(ctx.object());
+        return new RemixdExtendedObjectExpression(expression, extendedObject);
+    }
+
+    /** field* (getterSetter? getter? setter?) methodDefinition* */
+    @Override
+    public RemixdObjectExpression visitObject(RemixdParser.ObjectContext ctx) {
+        RemixdObjectExpression objectExpr = new RemixdObjectExpression();
+        MethodTable methodTable = new MethodTable();
+
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n; i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixdParser.FieldContext) {
+                FieldAssignmentStatement initStmnt = (FieldAssignmentStatement)visit(node);
+                objectExpr.addVarInitialization(initStmnt);
+
+            } else if (node instanceof RemixdParser.GetterSetterContext) {
+                List<String> getSetNames = (List<String>)visit(node);
+                for (String name : getSetNames) {
+                    String getMethodName = methodTable.createGetter(name, fileName);
+                    Method getter = methodTable.get(getMethodName);
+                    LibraryExpression.addMethodNameEditing(getMethodName, 1, getter);
+                    String setMethodName = methodTable.createSetter(name);
+                    Method setter = methodTable.get(setMethodName);
+                    LibraryExpression.addMethodNameEditing(setMethodName, 1, setter);
+                }
+            } else if (node instanceof RemixdParser.GetterContext) {
+                List<String> getterNames = (List<String>)visit(node);
+                for (String name : getterNames) {
+                    String methodName = methodTable.createGetter(name, fileName);
+                    Method getter = methodTable.get(methodName);
+                    LibraryExpression.addMethodNameEditing(methodName, 1, getter);
+                }
+            }else if (node instanceof RemixdParser.SetterContext) {
+                List<String> setterNames = (List<String>)visit(node);
+                for (String name : setterNames) {
+                    String methodName = methodTable.createSetter(name);
+                    Method setter = methodTable.get(methodName);
+                    LibraryExpression.addMethodNameEditing(methodName, 1, setter);
+                }
+
+            } else if (node instanceof RemixdParser.MethodDefinitionContext) {
+                Method method = (Method)visit(node);
+                if (method != null) { // visiting an incomplete method definition returns null
+                    // add it to the methodTable for the object
+                    // methodTable.addMethod(method);
+                    // add it to the global table
+                    for (String name : method.getAllNames())
+                        LibraryExpression.addMethodNameEditing(name, method.getSelfRef(), method);
+                }
+            }
+        }
+        objectExpr.addMethodTable(methodTable);
+        return objectExpr;
+    }
+
+    /** IDENTIFIER COLON expression EOL+ */
+    @Override
+    public Expression visitField(RemixdParser.FieldContext ctx) {
+        String varName = identifier(ctx.IDENTIFIER().getText());
+        Expression expression = (Expression) visit(ctx.expression());
+        return new FieldAssignmentStatement(varName, expression);
+    }
+
+    /** GETTERSETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* */
+    @Override
+    public List<String> visitGetterSetter(RemixdParser.GetterSetterContext ctx) {
+        return getFieldNames(ctx);
+    }
+
+    /** GETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* */
+    @Override
+    public List<String> visitGetter(RemixdParser.GetterContext ctx) {
+        return getFieldNames(ctx);
+    }
+
+    /** SETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* */
+    @Override
+    public List<String> visitSetter(RemixdParser.SetterContext ctx) {
+        return getFieldNames(ctx);
+    }
+
+    private List<String> getFieldNames(ParserRuleContext ctx) {
+        List<String> fieldList = new ArrayList<>();
+        String fieldName;
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n; i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixdParser.FieldIdContext) {
+                fieldName = (String) visit(node);
+                fieldList.add(fieldName);
+            }
+        }
+        return fieldList;
+    }
+
+    /** IDENTIFIER */
+    @Override
+    public String visitFieldId(RemixdParser.FieldIdContext ctx) {
+        return identifier(ctx.IDENTIFIER().getText());
+    }
+
+    /** functionComment? methodSignature COLON EOL? blockOfStatements EOL* */
+    @Override
+    public Method visitMethodDefinition(RemixdParser.MethodDefinitionContext ctx) {
+        // doesn't deal with pass through "::" methods yet
+        // I don't see a need for transparent methods
+        int i = 0;
+        String methodComment = null;
+        if (ctx.getChild(i) instanceof RemixdParser.FunctionCommentContext) {
+            methodComment = (String)visit(ctx.functionComment());
+            i++;
+        }
+        MethodName methSig;
+        ParseTree node = ctx.getChild(i);
+        methSig = (MethodName)visit(node);
+        if (ctx.blockOfStatements() == null)
+            return null;
+        Block block = (Block)visit(ctx.blockOfStatements());
+        return new Method(methSig.getAllNames(), block, methSig.getParameters(), methSig.getBlockParams(), methSig.getSelfRef(), methodComment);
+    }
+
+    /** methodSigPart+ */
+    @Override
+    public MethodName visitMethodSignature(RemixdParser.MethodSignatureContext ctx) {
+        MethodName methodSig = new MethodName();
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n; i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixdParser.MethSigWordContext) {
+                methodSig.addToName(node.getText());
+            } else if (node instanceof RemixdParser.MethSigParamContext) {
+                methodSig.addParam((String)visit(node));
+            } else if (node instanceof RemixdParser.MethSigSelfContext) {
+                methodSig.setSelfRefNow();
+            } else if (node instanceof RemixdParser.MethSigBlockContext) {
+                methodSig.addBlockParam((String)visit(node));
+            }
+        }
+        return methodSig;
+    }
+
+    private String identifier(String varName) {
+        if (varName.startsWith("'")) {
+            varName = varName.substring(1, varName.length() - 1);
+        }
+        if (addIdentifierStack.peek())
+            LibrariesAndCompletions.addVariableName(varName);
+        return varName;
+    }
+
+    /** LPAREN IDENTIFIER RPAREN */
+    @Override
+    public String visitMethSigParam(RemixdParser.MethSigParamContext ctx) {
+        return identifier(ctx.IDENTIFIER().getText());
+    }
+
+    /** LBLOCK IDENTIFIER RBLOCK */
+    @Override
+    public String visitMethSigBlock(RemixdParser.MethSigBlockContext ctx) {
+        return identifier(ctx.IDENTIFIER().getText());
+    }
+
+    /** IDENTIFIER | LPAREN IDENTIFIER RPAREN */
+    @Override
+    public String visitSigParam(RemixdParser.SigParamContext ctx) {
+        return identifier(ctx.IDENTIFIER().getText());
+    }
+
+    /** LBLOCK IDENTIFIER RBLOCK */
+    @Override
+    public String visitSigBlock(RemixdParser.SigBlockContext ctx) {
+        return identifier(ctx.IDENTIFIER().getText());
+    }
+
+    // in functionDefinition, methodDefinition, and indirectly from
+    // expression and callPart
+    /** LBLOCK statement* RBLOCK */
+    @Override
+    public Block visitBlockOfStatements(RemixdParser.BlockOfStatementsContext ctx) {
+        Block block = new Block();
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n; i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixdParser.StatementContext) {
+                Expression statement = (Expression) visit(node);
+                if (statement != null) { // can be blank statements
+                    block.addStatement(statement);
+                }
+            }
+        }
+        return block;
+    }
+
+    /** IDENTIFIER COLON expression */
+    @Override
+    public AssignmentStatement visitSetVariable(RemixdParser.SetVariableContext ctx) {
+        String varName = identifier(ctx.IDENTIFIER().getText());
+        Expression expression = (Expression) visit(ctx.expression());
+        return new AssignmentStatement(varName, expression);
+    }
+
+    /** CONSTANT COLON expression */
+    @Override
+    public ConstantAssignmentStatement visitSetConstant(RemixdParser.SetConstantContext ctx) {
+        String constName = ctx.CONSTANT().getText();
+        Expression expression = (Expression) visit(ctx.expression());
+        return new ConstantAssignmentStatement(constName, expression);
+    }
+
+    /** (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) */
+    public PrintStatement visitPrintStatement(RemixdParser.PrintStatementContext ctx) {
+        return null;
+    }
+
+    /** expression ADD expression */
+    @Override
+    public Expression visitExprAdd(RemixdParser.ExprAddContext ctx) {
+        Expression first = (Expression) visit(ctx.expression(0));
+        Expression second = (Expression) visit(ctx.expression(1));
+        String operator = ctx.ADD().getText().trim();
+        return new BinaryExpression(first, operator, second);
+    }
+
+    /** MINUS expression */
+    @Override
+    public Expression visitExprMinus(RemixdParser.ExprMinusContext ctx) {
+        Expression value = (Expression) visit(ctx.expression());
+        SimpleExpression<Long> minusOne = new SimpleExpression<>(-1L);
+        return new BinaryExpression(minusOne, "*", value);
+    }
+
+    /** expression MUL expression */
+    @Override
+    public Expression visitExprMul(RemixdParser.ExprMulContext ctx) {
+        Expression first = (Expression) visit(ctx.expression(0));
+        Expression second = (Expression) visit(ctx.expression(1));
+        String operator = ctx.MUL().getText().trim();
+        return new BinaryExpression(first, operator, second);
+    }
+
+    /** expression LESS expression */
+    @Override
+    public Expression visitExprLess(RemixdParser.ExprLessContext ctx) {
+        Expression first = (Expression) visit(ctx.expression(0));
+        Expression second = (Expression) visit(ctx.expression(1));
+        return new BinaryExpression(first, "<", second);
+    }
+
+    /** expression GREATER expression */
+    @Override
+    public Expression visitExprGreater(RemixdParser.ExprGreaterContext ctx) {
+        Expression first = (Expression) visit(ctx.expression(0));
+        Expression second = (Expression) visit(ctx.expression(1));
+        return new BinaryExpression(first, ">", second);
+    }
+
+    /** expression GREATEREQUAL expression */
+    @Override
+    public Expression visitExprGreatEql(RemixdParser.ExprGreatEqlContext ctx) {
+        Expression first = (Expression) visit(ctx.expression(0));
+        Expression second = (Expression) visit(ctx.expression(1));
+        return new BinaryExpression(first, ">=", second);
+    }
+
+    /** expression LESSEQUAL expression */
+    @Override
+    public Expression visitExprLessEql(RemixdParser.ExprLessEqlContext ctx) {
+        Expression first = (Expression) visit(ctx.expression(0));
+        Expression second = (Expression) visit(ctx.expression(1));
+        return new BinaryExpression(first, "<=", second);
+    }
+
+    /** expression EQUAL expression */
+    @Override
+    public Expression visitExprEqual(RemixdParser.ExprEqualContext ctx) {
+        Expression first = (Expression) visit(ctx.expression(0));
+        Expression second = (Expression) visit(ctx.expression(1));
+        return new BinaryExpression(first, "=", second);
+    }
+
+    /** expression NOTEQUAL expression */
+    @Override
+    public Expression visitExprNotEql(RemixdParser.ExprNotEqlContext ctx) {
+        Expression first = (Expression) visit(ctx.expression(0));
+        Expression second = (Expression) visit(ctx.expression(1));
+        return new BinaryExpression(first, "!=", second);
+    }
+
+    /** expression CONCAT expression */
+    @Override
+    public Expression visitExprConcat(RemixdParser.ExprConcatContext ctx) {
+        Expression first = (Expression) visit(ctx.expression(0));
+        Expression second = (Expression) visit(ctx.expression(1));
+        int lineNumber = ctx.getStart().getLine() - 1;
+        int lineOffset = ctx.getStart().getCharPositionInLine();
+        FunctionCallExpression concatCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
+        concatCall.setInEditor(true); // probably not necessary see visitFunctionCall
+        concatCall.addParam(first);
+        concatCall.addToName(ctx.CONCAT().getText().trim()); // need to trim because of spaces
+        concatCall.addParam(second);
+        return concatCall;
+    }
+
+    /** LPAREN EOL* expression EOL* RPAREN */
+    @Override
+    public Expression visitExprParen(RemixdParser.ExprParenContext ctx) {
+        return (Expression) visit(ctx.expression());
+    }
+
+    /** IDENTIFIER (from expression) */ // this should be a variable reference
+    @Override
+    public Expression  visitExprVar(RemixdParser.ExprVarContext ctx) {
+        String varName = identifier(ctx.IDENTIFIER().getText());
+        return new VarValueExpression(varName, fileName, 0, 0);
+    }
+
+    /** CONSTANT (from expression) */
+    @Override
+    public Expression visitExprConstant(RemixdParser.ExprConstantContext ctx) {
+        String constantName = ctx.CONSTANT().getText();
+        return new ConstantValueExpression(constantName, -1);
+    }
+
+    /** SELFREF (from expression) */
+    @Override
+    public Expression visitExprSelf(RemixdParser.ExprSelfContext ctx) {
+        return new SelfReference();
+    }
+
+    /** NUMBER (from expression) */
+    @Override
+    public Expression visitExprNumber(RemixdParser.ExprNumberContext ctx) {
+        Expression number;
+        try {
+            number = produceLongExpression(ctx.NUMBER().getText());
+        } catch (NumberFormatException exception) {
+            number = produceDoubleExpression(ctx.NUMBER().getText());
+        }
+        return number;
+    }
+
+    /** WORDPRODUCT (from expression) */
+    @Override
+    public Expression visitExprWordProduct(RemixdParser.ExprWordProductContext ctx) {
+        String[] numberAndWord = splitNumberAndWord(ctx.getText());
+        Expression number;
+        Expression word;
+        try {
+            number = produceLongExpression(numberAndWord[0]);
+        } catch (NumberFormatException exception) {
+            number = produceDoubleExpression(numberAndWord[0]);
+        }
+        if (numberAndWord[1].equals("π") || numberAndWord[1].equals("pi")) {
+            word = produceDoubleExpression("π");
+        } else {
+            word = new VarValueExpression(numberAndWord[1], fileName, 0, 0);
+        }
+        return new BinaryExpression(number, "*", word);
+    }
+
+    private String[] splitNumberAndWord(String productWord) {
+        StringBuilder product;
+        String word;
+        product = new StringBuilder();
+        int i = 0;
+        char c = productWord.charAt(i);
+        if (c == '-') {
+            product.append(c);
+            c = productWord.charAt(++i);
+        }
+        while (Character.isDigit(c)) {
+            product.append(c);
+            c = productWord.charAt(++i);
+        }
+        if (c == '.') {
+            product.append(c);
+            c = productWord.charAt(++i);
+        }
+        while (Character.isDigit(c)) {
+            product.append(c);
+            c = productWord.charAt(++i);
+        }
+        if (productWord.substring(i).equals("π"))
+            word = "π";
+        else
+            word = productWord.substring(i);
+        return new String[] {product.toString(), word};
+    }
+
+    /** NULL (from expression) */
+    @Override
+    public Expression visitExprNull(RemixdParser.ExprNullContext ctx) {
+        return RemixdNull.value();
+    }
+
+    /** BOOLEAN (from expression) */
+    @Override
+    public Expression visitExprBoolean(RemixdParser.ExprBooleanContext ctx) {
+        return produceBooleanExpression(ctx.BOOLEAN().getText());
+    }
+
+    /** string (from expression) */
+    @Override
+    public Expression visitExprString(RemixdParser.ExprStringContext ctx) {
+        return produceStringExpression(ctx.string().getText());
+    }
+
+    /** blockOfStatements (from expression) */
+    @Override
+    public Block visitExprBlock(RemixdParser.ExprBlockContext ctx) {
+        // this is just the super version, need to go down a level to remove []
+        return (Block)visitChildren(ctx);
+    }
+
+    /** IDENTIFIER (from callPart) */
+    @Override
+    public Expression visitCallVar(RemixdParser.CallVarContext ctx) {
+        String varName = identifier(ctx.IDENTIFIER().getText());
+        return new VarValueExpression(varName, fileName, 0, 0);
+    }
+
+    /** MINUS expression (from callPart) */
+    @Override
+    public Expression visitCallMinusExpr(RemixdParser.CallMinusExprContext ctx) {
+        Expression value = (Expression) visit(ctx.expression());
+        SimpleExpression<Long> minusOne = new SimpleExpression<>(-1L);
+        return new BinaryExpression(minusOne, "*", value);
+    }
+
+    /** CONSTANT (from callPart) */
+    @Override
+    public Expression visitCallConstant(RemixdParser.CallConstantContext ctx) {
+        String constantName = ctx.CONSTANT().getText();
+        return new ConstantValueExpression(constantName, -1);
+    }
+
+    /** callPart callPart+ | singleWord */
+    @Override
+    public Expression visitFunctionCall(RemixdParser.FunctionCallContext ctx) {
+//        String fileName = RemixdPrepareRun.getFileName();
+        int lineNumber = ctx.getStart().getLine() - 1;
+        int lineOffset = ctx.getStart().getCharPositionInLine();
+        FunctionCallExpression funcCall = new FunctionCallExpression(fileName, lineNumber, lineOffset);
+        // in case this is an include we need to know if we are in the editor doing a completion search
+        funcCall.setInEditor(true);
+        int n = ctx.getChildCount();
+        for (int i=0; i<n; i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixdParser.SingleWordContext || // added single word functions
+                    node instanceof RemixdParser.CallWordContext) {
+                funcCall.addToName(node.getText());
+            } else if (node instanceof RemixdParser.CallSelfContext) {
+                funcCall.addParam(new SelfReference());
+            } else if (node instanceof RemixdParser.CallBlockContext) {
+                Expression expression = (Expression)visit(node);
+                funcCall.addBlockParam(expression);
+            } else if (node instanceof RemixdParser.CallConstantContext ||
+                    node instanceof RemixdParser.CallVarContext ||
+                    node instanceof RemixdParser.CallMinusExprContext ||
+                    node instanceof RemixdParser.CallParamContext ||
+                    node instanceof RemixdParser.CallNumberContext ||
+                    node instanceof RemixdParser.CallWordProductContext ||
+                    node instanceof RemixdParser.CallNullContext ||
+                    node instanceof RemixdParser.CallBooleanContext ||
+                    node instanceof RemixdParser.CallStringContext ||
+                    node instanceof RemixdParser.CallListContext ||
+                    node instanceof RemixdParser.CallMapContext) {
+                Expression expression = (Expression)visit(node);
+                funcCall.addParam(expression);
+            }
+        }
+//        System.err.printf("Function - %s - call on line: %d%n", funcCall.toString(), lineNumber);
+        return funcCall;
+    }
+
+    /** LPAREN EOL* expression EOL* RPAREN */
+    @Override
+    public Expression visitCallParam(RemixdParser.CallParamContext ctx) {
+        return (Expression) visit(ctx.expression());
+    }
+
+    /** NUMBER (from callPart) */
+    @Override
+    public Expression visitCallNumber(RemixdParser.CallNumberContext ctx) {
+        Expression number;
+        try {
+            number = produceLongExpression(ctx.NUMBER().getText());
+        } catch (NumberFormatException exception) {
+            number = produceDoubleExpression(ctx.NUMBER().getText());
+        }
+        return number;
+    }
+
+    /** WORDPRODUCT (from callPart) */
+    @Override
+    public Expression visitCallWordProduct(RemixdParser.CallWordProductContext ctx) {
+        String[] numberAndWord = splitNumberAndWord(ctx.getText());
+        Expression number;
+        Expression word;
+        try {
+            number = produceLongExpression(numberAndWord[0]);
+        } catch (NumberFormatException exception) {
+            number = produceDoubleExpression(numberAndWord[0]);
+        }
+        if (numberAndWord[1].equals("π") || numberAndWord[1].equals("pi")) {
+            word = produceDoubleExpression("π");
+        } else {
+            word = new VarValueExpression(numberAndWord[1], fileName, 0, 0);
+        }
+        return new BinaryExpression(number, "*", word);
+    }
+
+    /** NULL (from callPart) */
+    @Override
+    public Expression visitCallNull(RemixdParser.CallNullContext ctx) {
+        return RemixdNull.value();
+    }
+
+    /** BOOLEAN (from callPart) */
+    @Override
+    public Expression visitCallBoolean(RemixdParser.CallBooleanContext ctx) {
+        return produceBooleanExpression(ctx.BOOLEAN().getText());
+    }
+
+    /** string (from callPart) */
+    @Override
+    public Expression visitCallString(RemixdParser.CallStringContext ctx) {
+        return produceStringExpression(ctx.string().getText());
+    }
+
+    /** blockOfStatements (from callPart) */
+    @Override
+    public Block visitCallBlock(RemixdParser.CallBlockContext ctx) {
+        // this is just the super version, need to go down a level to remove []
+        return (Block)visitChildren(ctx);
+    }
+
+    /** list (from callPart) */
+    @Override
+    public Object visitCallList(RemixdParser.CallListContext ctx) {
+        return visit(ctx.list());
+    }
+
+    /** map (from callPart) */
+    @Override
+    public Object visitCallMap(RemixdParser.CallMapContext ctx) {
+        return visit(ctx.map());
+    }
+
+    /** LBRACE listContents RBRACE */
+    @Override
+    public Object visitList(RemixdParser.ListContext ctx) {
+        return visit(ctx.listContents());
+    }
+
+    /** (expression (COMMA expression)*)? */
+    @Override
+    public RemixdListExpression visitCommaList(RemixdParser.CommaListContext ctx) {
+        return produceListExpression(ctx);
+    }
+
+    /** LBLOCK EOL* (expression (separator EOL* expression)*)* RBLOCK EOL? */
+    @Override
+    public RemixdListExpression visitBlockList(RemixdParser.BlockListContext ctx) {
+        return produceListExpression(ctx);
+    }
+
+    /** EOL* */
+    @Override
+    public RemixdListExpression visitEmptyList(RemixdParser.EmptyListContext ctx) {
+        return new RemixdListExpression(null);
+    }
+
+    /** LBRACE mapContents RBRACE */
+    @Override
+    public Object visitMap(RemixdParser.MapContext ctx) {
+        return visit(ctx.mapContents());
+    }
+
+    /** keyValue (COMMA keyValue)* */
+    @Override
+    public RemixdMapExpression visitCommaMap(RemixdParser.CommaMapContext ctx) {
+        return produceMapExpression(ctx);
+    }
+
+    /** LBLOCK EOL* keyValue (separator EOL* keyValue)* RBLOCK EOL? */
+    @Override
+    public RemixdMapExpression visitBlockMap(RemixdParser.BlockMapContext ctx) {
+        return produceMapExpression(ctx);
+    }
+
+    /** IDENTIFIER listPart+
+     * Access to both list elements and map elements.
+     * If there is only one listPart it could be a function call instead.
+     * This is taken care of at runtime; see GetElementExpression.evaluate.
+     * TODO: Remove runtime check as should not be necessary anymore.
+     */
+    @Override
+    public GetElementExpression visitListElement(RemixdParser.ListElementContext ctx) {
+        String listName = identifier(ctx.IDENTIFIER().getText());
+        // need to loop through possibly multiple listParts
+        int n = ctx.getChildCount();
+        List listParts = new ArrayList<>();
+        for (int i=0; i<n; i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixdParser.ListPartContext) {
+                Object listPartID = visit(node);
+                listParts.add(listPartID);
+            }
+        }
+        return new GetElementExpression(listName, listParts);
+    }
+
+    /** IDENTIFIER listPart+ COLON expression
+     * Set both list elements and map elements.
+     */
+    @Override
+    public SetElementExpression visitSetListElement(RemixdParser.SetListElementContext ctx) {
+        String listName = identifier(ctx.IDENTIFIER().getText());
+        // need to loop through possibly multiple listParts
+        List listParts = new ArrayList<>();
+        int i = 1;
+        ParseTree node = ctx.getChild(i);
+        while (node instanceof RemixdParser.ListPartContext) {
+            Object listPartID = visit(node);
+            listParts.add(listPartID);
+            node = ctx.getChild(++i);
+        }
+        Expression expression = (Expression) visit(ctx.expression());
+        return new SetElementExpression(listName, listParts, expression);
+    }
+
+    /** LBRACE expression RBRACE */
+    @Override
+    public Object visitListPartExpr(RemixdParser.ListPartExprContext ctx) {
+        return visit(ctx.expression());
+    }
+
+    /* Helper methods */
+
+    private SimpleExpression<String> produceStringExpression(String string) {
+        string = string.substring(1, string.length() - 1); // remove surrounding ""
+        string = string.replace("\\\"", "\""); // deal with escape chars
+        string = string.replace("\\n", "\n");
+        return new SimpleExpression<>(string);
+    }
+
+    private SimpleExpression<Long> produceLongExpression(String longString) {
+        return new SimpleExpression<>(Long.parseLong(longString));
+    }
+
+    private SimpleExpression<Double> produceDoubleExpression(String doubleString) {
+        if (doubleString.equals("π") || doubleString.equals("pi"))
+            return new SimpleExpression<>(Math.PI);
+        return new SimpleExpression<>(Double.parseDouble(doubleString));
+    }
+
+    private SimpleExpression<Boolean> produceBooleanExpression(String boolString) {
+        return new SimpleExpression<>(Boolean.parseBoolean(boolString));
+    }
+
+
+    public RemixdListExpression produceListExpression(ParseTree ctx) {
+        RemixdList<Expression> list = new RemixdList<>();
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n; i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixdParser.ExpressionContext) {
+                list.add(visit(node));
+            }
+        }
+        return new RemixdListExpression(list);
+    }
+
+    public RemixdMapExpression produceMapExpression(ParseTree ctx) {
+        RemixdMap<Expression, Expression> map = new RemixdMap<>();
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n; i++) {
+            ParseTree node = ctx.getChild(i);
+            if (node instanceof RemixdParser.KeyValueContext keyValue) {
+//                String key = keyValue.string().getText(); // key());
+                Expression key = (Expression)visit(keyValue.expression(0));
+//                key = key.substring(1,key.length() - 1); // chop off "s at both ends
+                Expression value = (Expression)visit(keyValue.expression(1));
+                map.put(key, value);
+            }
+        }
+        return new RemixdMapExpression(map);
+    }
+
+}

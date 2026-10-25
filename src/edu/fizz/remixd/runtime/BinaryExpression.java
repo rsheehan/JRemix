@@ -1,0 +1,182 @@
+package edu.fizz.remixd.runtime;
+
+import java.util.ArrayList;
+import java.util.Map;
+
+public class BinaryExpression implements Expression {
+
+    private final Expression first;
+    private final Expression second;
+    private final String operator;
+    private String fileName;
+    private int lineNumber;
+
+    /* This is for the EvalVisitorForEditor */
+    public BinaryExpression(Expression first, String operator, Expression second) {
+        this.first = first;
+        this.operator = operator;
+        this.second = second;
+    }
+    public BinaryExpression(Expression first, String operator, Expression second, String fileName, int lineNumber) {
+        this.first = first;
+        this.operator = operator;
+        this.second = second;
+        this.fileName = fileName;
+        this.lineNumber = lineNumber;
+    }
+
+    /*
+     * Most binary expressions deal with numbers
+     * The "=" and "!=" can also deal other types.
+     */
+    @Override
+    public Object evaluate(Context context) throws InterruptedException, VarNotFoundException, FunctionNotFoundException {
+        Object val1;
+        Object val2;
+        try {
+            val1 = first.evaluate(context);
+            val2 = second.evaluate(context);
+        } catch (ReturnException exception) {
+            // doesn't get here because of exiting when first or second fails
+            System.err.println("ReturnException caught in binary expression.");
+            return null;
+        }
+        try {
+            if (val1 instanceof ArrayList list1 && val2 instanceof ArrayList list2) {
+                boolean result = false;
+                switch (operator) {
+                    case "=" -> result = list1.equals(list2);
+                    case "!=" -> result = !list1.equals(list2);
+                }
+                return result;
+            } else if (val1 instanceof Map map1 && val2 instanceof Map map2) {
+                boolean result = false;
+                switch (operator) {
+                    case "=" -> result = map1.equals(map2);
+                    case "!=" -> result = !map1.equals(map2);
+                }
+                return result;
+            } else if (val1 instanceof LibraryExpression lib1 && val2 instanceof LibraryExpression lib2) {
+                return lib1.equals(lib2);
+            } else if (val1 instanceof RemixdObject object1 && val2 instanceof RemixdObject object2) {
+            // To compare objects you need a (other) equals (me) method.
+                Method method = object2.findMethod("⫾ equals ⫾");
+                if (method != null) {
+                    MethodContext methodContext = new MethodContext(null, object2);
+                    String formal = method.getArgument(0);
+                    try {
+                        methodContext.assignParam(formal, object1);
+                        return method.execute(methodContext);
+                    } catch (ReturnException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    return object1.equals(object2);
+                }
+            } else if (val1 instanceof String || val2 instanceof String) {
+                return comparisonResult(val1, val2);
+            } else if (val1 instanceof Boolean && val2 instanceof Boolean) {
+                return switch (operator) {
+                    case "=" -> val1 == val2;
+                    case "!=" -> val1 != val2;
+                    default -> null;
+                };
+            } else if ((val1 == null && val2 == null) ||
+                    (val1 == null && val2 instanceof RemixdNull) ||
+                    (val1 instanceof RemixdNull && val2 == null) ||
+                    (val1 instanceof RemixdNull && val2 instanceof RemixdNull)) {
+                return switch (operator) {
+                    case "=" -> true;
+                    case "!=" -> false;
+                    default -> null;
+                };
+            } else if ((val1 == null || val2 == null) ||
+                    (val1 instanceof RemixdNull || val2 instanceof RemixdNull)) {
+                return switch (operator) {
+                    case "=" -> false;
+                    case "!=" -> true;
+                    default -> throw new RuntimeException();
+                };
+            } else if (val1 instanceof Long && val2 instanceof Long) {
+                long l1, l2;
+                l1 = ((Number) val1).longValue();
+                l2 = ((Number) val2).longValue();
+                return switch (operator) {
+                    case "+" -> l1 + l2;
+                    case "-" -> l1 - l2;
+                    case "*", "×" -> l1 * l2;
+                    case "/", "÷" -> l1 / l2;
+                    case "%" -> l1 % l2;
+                    case "<" -> l1 < l2;
+                    case ">" -> l1 > l2;
+                    case "<=", "≤" -> l1 <= l2;
+                    case ">=", "≥" -> l1 >= l2;
+                    case "=" -> l1 == l2;
+                    case "!=", "≠" -> l1 != l2;
+                    default -> null;
+                };
+            } else if (val1 instanceof Number && val2 instanceof Number) {
+                double d1, d2;
+                d1 = ((Number) val1).doubleValue();
+                d2 = ((Number) val2).doubleValue();
+                return switch (operator) {
+                    case "+" -> d1 + d2;
+                    case "-" -> d1 - d2;
+                    case "*", "×" -> d1 * d2;
+                    case "/", "÷" -> d1 / d2;
+                    case "%" -> d1 % d2;
+                    case "<" -> d1 < d2;
+                    case ">" -> d1 > d2;
+                    case "<=", "≤" -> d1 <= d2;
+                    case ">=", "≥" -> d1 >= d2;
+                    case "=" -> d1 == d2;
+                    case "!=", "≠" -> d1 != d2;
+                    default -> false;
+                };
+            } else throw new RuntimeException();
+        } catch (RuntimeException e) {
+            Runtime.showErrorPosition(fileName, lineNumber, -1);
+            System.err.printf("Error in binary expression: %s : %s %s %s.%n", this, val1, operator, val2);
+            return false;
+        }
+    }
+
+    private boolean comparisonResult(Object val1, Object val2) {
+        String s1, s2;
+        s1 = String.valueOf(val1);
+        s2 = String.valueOf(val2);
+        boolean result = false;
+        switch (operator) {
+            case "+", "-", "*", "×", "/", "÷", "%" ->
+                throw new RuntimeException();
+            case "=" -> result = s1.equals(s2);
+            case "!=" -> result = !s1.equals(s2);
+            case "<" -> {
+                int diff = s1.compareTo(s2);
+                if (diff < 0)
+                    result = true;
+            }
+            case "<=" -> {
+                int diff = s1.compareTo(s2);
+                if (diff <= 0)
+                    result = true;
+            }
+            case ">" -> {
+                int diff = s1.compareTo(s2);
+                if (diff > 0)
+                    result = true;
+            }
+            case ">=" -> {
+                int diff = s1.compareTo(s2);
+                if (diff >= 0)
+                    result = true;
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return first.toString() + " " + operator + " " + second.toString();
+    }
+}

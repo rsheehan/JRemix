@@ -1,0 +1,166 @@
+// remixd.g4
+parser grammar RemixdParser;
+
+options { tokenVocab=RemixdLexer; } // use tokens from RemixdLexer.g4
+
+/*
+	Parser rules
+*/
+
+program				: ( functionDefinition
+						| statement
+						| setConstant
+						| usingStatement
+						| library
+						| libAssignment )* EOF ;
+
+library				: libraryName LBLOCK EOL* ( functionDefinition
+												| statement
+												| setConstant
+												| usingStatement )* RBLOCK ;
+
+string				: STRING_START STRING_TEXT* STRING_END ;
+
+libraryName			: LIBRARY string? ;
+
+libAssignment		: CONSTANT COLON library ;
+
+usingStatement		: USING expression (COMMA expression)* usingBlock ;
+
+usingBlock 			: LBLOCK (functionDefinition | statement | setConstant)* RBLOCK ;
+// Want to be able to use a library function to define a constant value in another library.
+
+setConstant			: CONSTANT COLON expression ;
+
+functionDefinition	: functionComment? functionSignature COLON COLON? EOL? blockOfStatements ;
+
+functionComment		: DOC_COMMENT EOL ;
+
+functionSignature	: sigPart sigPart+
+					| singleWord
+					;
+
+singleWord			: WORD ;
+
+sigPart				: WORD						# sigWord
+ 					| (IDENTIFIER | LPAREN IDENTIFIER RPAREN )	# sigParam
+					| LBLOCK IDENTIFIER RBLOCK	# sigBlock
+					;
+
+createObject		: CREATE createParams? LBLOCK EOL* object RBLOCK ;
+extendObject		: EXTEND expression (COMMA createParams)? LBLOCK EOL* object RBLOCK ;
+
+createParams		: fieldId (COMMA fieldId)* ;
+
+object				: field* (getterSetter? getter? setter?) methodDefinition* ;
+
+field				: IDENTIFIER COLON expression EOL*;
+
+getterSetter		: GETTERSETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* ;
+
+getter				: GETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* ;
+
+setter              : SETTER LBLOCK (EOL* fieldId separator*)+ RBLOCK EOL* ;
+
+fieldId				: IDENTIFIER ;
+
+methodDefinition	: functionComment? methodSignature COLON EOL? blockOfStatements EOL* ;
+
+// add getterSignature and setterSignature
+// to deal with user defined getters and setters
+methodSignature		: methodSigPart+ ;
+
+methodSigPart		: WORD						# methSigWord
+					| IDENTIFIER				# methSigParam
+					| LPAREN IDENTIFIER RPAREN	# methSigParam
+					| SELFREF					# methSigSelf
+					| LPAREN SELFREF RPAREN		# methSigSelf
+					| LBLOCK IDENTIFIER RBLOCK	# methSigBlock
+					;
+
+blockOfStatements	: LBLOCK statement* RBLOCK ;
+
+statement			: assignmentStatement	# assStatement	// label not used
+					| printStatement		# prStatement	// label not used
+					| expression 			# expr			// label only used for error checking
+					| REDO					# redo
+					| RETURN expression?	# return
+					| endOfStatement		# blank // need to reconsider this
+					;
+
+endOfStatement		: EOL | EOS ;
+
+assignmentStatement	: IDENTIFIER COLON expression 			# setVariable
+					| IDENTIFIER listPart+ COLON expression	# setListElement
+					;
+
+printStatement		: (expression (COMMA expression)*)? (ENDPRINT | PRINTLN) ;
+
+expression			: MINUS expression						# exprMinus
+					| expression MUL expression				# exprMul
+					| expression ADD expression				# exprAdd
+					| expression LESS expression			# exprLess
+					| expression GREATER expression			# exprGreater
+					| expression GREATEREQUAL expression	# exprGreatEql
+					| expression LESSEQUAL expression		# exprLessEql
+					| expression EQUAL expression			# exprEqual
+					| expression NOTEQUAL expression		# exprNotEql
+					| expression CONCAT expression			# exprConcat
+					| listElement			# exprListElement // before functionCall
+					| functionCall			# exprFncCall
+					| CONSTANT				# exprConstant
+					| IDENTIFIER			# exprVar
+					| SELFREF				# exprSelf
+					| NUMBER				# exprNumber
+					| WORDPRODUCT			# exprWordProduct
+					| NULL					# exprNull
+					| BOOLEAN				# exprBoolean
+					| string				# exprString
+					| blockOfStatements		# exprBlock
+					| list					# exprList
+					| map					# exprMap
+					| createObject			# exprObject
+					| extendObject			# exprExtend
+					| LPAREN EOL* expression EOL* RPAREN	# exprParen // after functionCall
+					;
+
+listElement			: IDENTIFIER listPart+ ; // access a list element
+
+listPart			: LBRACE expression RBRACE	# listPartExpr ; // { number or string } to access part of a list or map
+
+functionCall		: callPart callPart+
+					| singleWord
+					;
+
+callPart			: WORD									# callWord
+					| MINUS expression						# callMinusExpr
+					| CONSTANT								# callConstant
+					| IDENTIFIER							# callVar
+					| LPAREN EOL* expression EOL* RPAREN	# callParam
+					| SELFREF								# callSelf
+					| LPAREN SELFREF RPAREN					# callSelf
+					| NUMBER								# callNumber // leave out ()
+					| WORDPRODUCT							# callWordProduct
+					| NULL									# callNull
+					| BOOLEAN								# callBoolean
+					| string								# callString
+					| blockOfStatements						# callBlock
+					| list									# callList
+					| map									# callMap
+					;
+
+list				: LBRACE listContents RBRACE ;
+separator			: EOL | COMMA ;
+
+listContents		: (expression (COMMA expression)*)?	# commaList
+					| LBLOCK EOL* (expression (separator EOL* expression)*)* RBLOCK EOL* # blockList
+					| EOL*								# emptyList
+					;
+
+map					: LBRACE mapContents RBRACE ;
+
+mapContents			: keyValue (COMMA keyValue)* 		# commaMap
+ 					| LBLOCK EOL* keyValue (separator EOL* keyValue)* RBLOCK EOL? # blockMap
+					;
+
+keyValue			: expression COLON expression ;

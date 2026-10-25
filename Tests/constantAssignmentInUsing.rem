@@ -1,11 +1,11 @@
 LIB : library
 	LIB-CONST : 99
 
-test {
-	"Calling main program constant before initialised."
-		LIB-CONST
-	… expected null
-}
+-test {
+-	"Calling main program constant before initialised."
+-		LIB-CONST
+-	… expected null
+-}
 ↲
 using LIB
 	LIB-CONST : LIB-CONST

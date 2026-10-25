@@ -1,0 +1,217 @@
+package edu.fizz.remixd.runtime;
+
+//import edu.fizz.remixd.editor.RemixEditor;
+
+import edu.fizz.remixd.editor.RemixdPrepareRun;
+
+import java.util.HashMap;
+import java.util.Stack;
+
+public class Context {
+    /* A context may be linked back to the parent to go searching for reference variables. */
+    protected Context parentContext = null;
+    protected HashMap<String, Object> variables = new HashMap<>();
+    protected Stack<LibraryExpression> libraryStack = new Stack<>();
+    /* When we make a function call we need the context to know if it should return higher. */
+    private boolean returnHigher = false;
+    private String fileWindowREPL;
+
+    // needs to be set before a function call to include
+    public boolean completionContext = false;
+
+    public Context() {
+    }
+
+    /*
+    A context based on adding the programLibrary to the empty libraryStack.
+     */
+    public Context(LibraryExpression programLibrary, String fileWindowREPL) {
+        libraryStack.push(programLibrary);
+        // if fileWindowREPL is null we are doing completions? or creating baseLibrary at start
+        this.fileWindowREPL = fileWindowREPL;
+    }
+
+    /* A context with an indication of whether nested returns
+     * from blocks or functions end up here.
+     */
+    public Context(Context parent, boolean returnHigher) {
+        parentContext = parent;
+        if (parent != null) {
+            fileWindowREPL = parent.fileWindowREPL;
+            libraryStack = parent.libraryStack; // TODO: should this clone?
+        }
+        this.returnHigher = returnHigher;
+    }
+
+    // called after a repl area is run to collect the variables
+    public HashMap<String, Object> getVariables() {
+        return variables;
+    }
+
+    public void setFileWindowREPL(String fileWindowREPL) {
+        this.fileWindowREPL = fileWindowREPL;
+    }
+
+    public void addLibraryToStack(LibraryExpression newLib) {
+        LibraryExpression topOfStack = libraryStack.peek();
+        if (topOfStack.getLibName().equals(RemixdPrepareRun.INTERACTIVETEXT) &&
+                newLib.getLibName().equals(RemixdPrepareRun.INTERACTIVETEXT)) {
+            /*
+            Because constants are stored in the programLib they came from
+            I need to make the newLib the REPL.
+             */
+            newLib.mergeFunctionsConstantsNoOverwrite(topOfStack);
+            // the new REPL is active everywhere
+            newLib.setActiveLines(LibraryExpression.ALLLINES);
+            libraryStack.pop();
+        }
+        libraryStack.push(newLib);
+    }
+
+    /*
+     * Called from FunctionCallExpression when assigning parameters
+     * Don't want to use the name to determine if a refVar.
+     */
+    public void assignParam(String varName, Object value) {
+        variables.put(varName, value);
+    }
+
+    /*
+     * Called when a refParam has the value of a refParam in
+     * FunctionCallExpression.
+     */
+    public Object getRefParameter(String varName) {
+        return variables.get(varName);
+    }
+
+    /* No longer resolves the context except for refvars. */
+    /*
+    Now need to determine if the context is an anonymous block.
+    If so the assignment is only in the local anonymous context.
+     */
+    public void assign(String varName, Object value) throws VarNotFoundException, FunctionNotFoundException {
+        if (varName.startsWith("#")) {
+            /*
+            This is where I need to deal with a listMap element reference.
+             */
+            Object refObject = variables.get(varName);
+            if (refObject instanceof GetElementExpression getElementExpression) {
+                SetElementExpression setElementExpression = new SetElementExpression(getElementExpression, new ValueExpression(value));
+                try {
+                    setElementExpression.evaluate(getElementExpression.getOriginalContext());
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                RefParameter refValue = (RefParameter) refObject;
+                try {
+                    refValue.assignRefValue(value);
+                } catch (Exception e) {
+                    System.err.printf("Reference variable %s has no associated variable.%n", varName);
+                    throw new RuntimeException(e);
+                }
+            }
+        } else {
+            variables.put(varName, value);
+        }
+    }
+
+    public Object retrieve(String varName, boolean formalReference) throws VarNotFoundException, FunctionNotFoundException {
+        Object result;
+        if (varName.startsWith("#")) {
+            /*
+            This is where I need to deal with a listMap element reference.
+             */
+            Object value = variables.get(varName);
+            if (value instanceof GetElementExpression getElementExpression) {
+                try {
+                    result = getElementExpression.evaluate(null);
+                } catch (InterruptedException | ReturnException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                RefParameter refValue = (RefParameter) value;
+                try {
+                    result = refValue.getRefValue();
+                } catch (Exception e) {
+                    System.err.printf("Reference variable %s has no associated variable.%n", varName);
+                    throw new RuntimeException(e);
+                }
+            }
+        } else {
+            result = variables.get(varName);
+            if (result == null && !formalReference) {
+                throw new VarNotFoundException();
+            }
+        }
+        return result;
+    }
+
+    // Find the original Context of a variable, necessary for reference vars.
+    public Context originalContext(String varName) {
+        if (variables.get(varName) != null)
+            return this;
+        if (parentContext != null)
+            return parentContext.originalContext(varName);
+        return null;
+    }
+
+    public boolean returnHigher() {
+        return returnHigher;
+    }
+
+    /*
+     * Called to scan back through the contexts to find the first
+     * object with a matching method and return the object.
+     */
+    public RemixdObject findObjectWithMethod(String methodName) {
+        if (parentContext != null)
+            return parentContext.findObjectWithMethod(methodName);
+        else
+            return null;
+    }
+
+    @Override
+    public String toString() {
+        return variables.toString();
+    }
+
+    public Context copy() {
+        Context copy = new Context(parentContext, returnHigher);
+        copy.variables = variables;
+        copy.libraryStack = cloneLibraryStack();
+        return copy;
+    }
+
+    public Stack<LibraryExpression> cloneLibraryStack() {
+        return (Stack<LibraryExpression>)libraryStack.clone();
+    }
+
+    public void pushLibrary(LibraryExpression library) {
+        libraryStack.push(library);
+    }
+
+    public LibraryExpression popLibrary() {
+        return libraryStack.pop();
+    }
+
+    public LibraryExpression peekLibrary() {
+        return libraryStack.peek();
+    }
+
+    public boolean libraryInStack(LibraryExpression library) {
+        return libraryStack.contains(library);
+    }
+
+    /**
+     * Gets the name associated with this context.
+     * @return the name of the file/window/REPL associated
+     */
+    public String getFileWindowREPL() {
+        return fileWindowREPL; // was "CONTEXT: " + fileWindowREPL;
+    }
+
+    public Stack<LibraryExpression> getLibraryStack() {
+        return libraryStack;
+    }
+}

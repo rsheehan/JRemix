@@ -1,0 +1,238 @@
+package edu.fizz.remixd.runtime;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+
+/**
+ * A library expression holds a function table.
+ * The method table is shared by all libraries including the main program.
+ * The block only makes sense when a file is being loaded with
+ * loadPackage or running the contents of the editor window.
+
+ * Internal libraries from the "library" expression don't use the block and context.
+ * The main program is a library expression which also holds the built-in
+ * functions and the standard-lib functions.
+ */
+public class LibraryExpression implements Expression {
+
+    public static final ArrayList<int []> ALLLINES = new ArrayList<>(Collections.singleton(new int[]{1, Integer.MAX_VALUE}));
+
+    boolean trueLibrary = false; // whether this is using block library or a true "library"
+    boolean loaded = false; // set to true when first evaluated
+    private ArrayList<int[]> activeLines = new ArrayList<>(); // editor lines where this library is active
+    public Block block = new Block();
+    private String javaFileName = "";
+    private String remixFileName = "";
+    private String callName = "";
+
+
+    public String getRemixFileName() {
+        return remixFileName;
+    }
+
+//    public void setLibName(String libName) {
+//        this.libName = libName;
+//    }
+
+    public String getLibName() {
+        if (!libName.isEmpty()) { // currently only used by the REPL library expression
+            return libName;
+        }
+        StringBuilder idBuilder = new StringBuilder();
+        if (!javaFileName.isEmpty()) {
+            idBuilder.append(javaFileName);
+        }
+        if (!remixFileName.isEmpty()) {
+            if (!idBuilder.isEmpty()) {
+                idBuilder.append(" - ");
+            }
+            idBuilder.append(remixFileName);
+        }
+        if (!callName.isEmpty() && idBuilder.isEmpty()) {
+            idBuilder.append(callName);
+        }
+        libName = idBuilder.toString();
+        return libName;
+    }
+
+    /*
+    Set the Java component name of a library.
+     */
+    public void setJavaFileName(String javaFile) {
+        javaFileName = javaFile;
+    }
+
+    /*
+    Set the Remixd component name of a library.
+     */
+    public void setRemixFileName(String remixFile) {
+        remixFileName = remixFile;
+    }
+
+    /*
+   Set the call component name of a library.
+    */
+    public void setCallName(String callName) {
+        this.callName = callName;
+    }
+
+    public String getLibUnderlinedName() {
+        return "\n" +
+                getLibName() +
+                '\n' +
+                String.valueOf('⎺').repeat(libName.length());
+    }
+
+    private String libName = "";
+
+    // Functions available in this library.
+    public LinkedHashMap<String, Function> functionTable = new LinkedHashMap<>();
+
+    // Constants available in this library.
+    private final LinkedHashMap<String, Object> constantTable = new LinkedHashMap<>();
+
+    static HashMap<String, Integer> methodTableRefPos = new HashMap<>(); // one table used by all
+    static HashMap<String, Function> methodTableStandardLib = new HashMap<>();
+
+    public LibraryExpression() {
+        setUpBuiltIns();
+    }
+
+    public void setTrueLibrary() {
+        this.trueLibrary = true;
+    }
+
+    public ArrayList<int[]> getActiveLines() {
+        return activeLines;
+    }
+
+    public void setActiveLines(ArrayList<int[]> activeLines) {
+        this.activeLines = activeLines;
+    }
+
+    public static Integer searchMethodTableRefPos(String methodName) {
+        return methodTableRefPos.get(methodName);
+    }
+
+    public Function searchFunctionTable(String functionName) {
+        return functionTable.get(functionName);
+    }
+
+    public void addToValidLines(int[] lines) {
+        activeLines.add(lines);
+    }
+
+    /** Add all Function classes in this library as Remixd functions.
+     *  Used by subclasses. */
+    private void setUpBuiltIns() {
+        for (Class<?> declaredClass : getClass().getDeclaredClasses()) {
+            try {
+                addFunction((Function) declaredClass.getDeclaredConstructor().newInstance());
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /** Add functions from the compile phase. */
+    public void addFunction(Function function) {
+        if (function == null) return;
+        for (String name : function.getAllNames()) {
+            functionTable.put(name, function);
+        }
+    }
+
+    /** Add a name of method and the reference parameter position. */
+    public static void addMethodName(String name, int refPos, Method method) {
+        Integer pos;
+        pos = methodTableRefPos.get(name);
+        if (pos == null) { // new method name
+            if (method != null) {
+                for (String nameM : method.functionNames) {
+                    methodTableRefPos.put(nameM, refPos);
+                }
+            } else {
+                methodTableRefPos.put(name, refPos);
+            }
+        } else if (pos != refPos) {
+            System.err.format("Conflicting method definition: %s%n", name);
+        }
+    }
+
+    /*
+    Only called when producing completions. See EvalVisitorForEditor.
+     */
+    public void addConstantForCompletions(String constantName) {
+        constantTable.put(constantName, null);
+    }
+
+    /** Add a name of method and the reference parameter position. */
+    public static void addMethodNameEditing(String name, int refPos, Method method) {
+        if (refPos == 0) // private method, currently don't add to completion methods
+            return;
+        method.setMethodDisplayName(name);
+        Method existingMethod = (Method) LibrariesAndCompletions.methodTableForCompletions.get(name);
+        if (existingMethod == null) { // new method name
+            LibrariesAndCompletions.methodTableForCompletions.put(name, method);
+        } else { // a method of this name already exists
+            existingMethod.addDifferentComment(method.getMethodDisplayName(), method.functionComment);
+            if (existingMethod.getSelfRef() != refPos) {
+                System.err.format("Conflicting method definition: %s%n", name);
+            }
+        }
+    }
+
+    /*
+    This was added to enable the current program library to get the functions and constants
+    from the saved programLibrary (comes from baseLibrary) with standard functions and constants
+    without overwriting versions which are declared in the current program (these have precendence).
+     */
+    public void mergeFunctionsConstantsNoOverwrite(LibraryExpression libToMergeIn) {
+        for (Map.Entry<String, Function> functionEntry : libToMergeIn.functionTable.entrySet())
+            functionTable.putIfAbsent(functionEntry.getKey(), functionEntry.getValue());
+        for (Map.Entry<String, Object> constantEntry : libToMergeIn.constantTable.entrySet())
+            constantTable.putIfAbsent(constantEntry.getKey(), constantEntry.getValue());
+        activeLines = libToMergeIn.getActiveLines();
+    }
+
+    @Override
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
+        // The result of the expression is just itself if this is a true library.
+        // Otherwise it is the result of the last statement in the block.
+        // Now that libraries can include statements they must be executed here
+        // when first loaded.
+        Object result = this;
+        if (!loaded) {
+            if (trueLibrary) { // true libraries have a new context
+                context = new Context(context, false);
+                context.pushLibrary(this);
+            }
+            result = block.evaluate(context);
+            if (trueLibrary) {
+                context.popLibrary();
+                result = this; // the result of a "library" is itself
+            }
+            loaded = true;
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return getLibName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LibraryExpression that = (LibraryExpression) o;
+
+        return ((!remixFileName.isEmpty() && remixFileName.equals(that.remixFileName)) || (!callName.isEmpty() && callName.equals(that.callName)));
+    }
+
+    public LinkedHashMap<String, Object> getConstantTable() {
+        return constantTable;
+    }
+}

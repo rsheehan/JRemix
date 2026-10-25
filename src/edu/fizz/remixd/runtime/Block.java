@@ -1,0 +1,116 @@
+package edu.fizz.remixd.runtime;
+
+import edu.fizz.remixd.editor.RemixdApp;
+import edu.fizz.remixd.editor.RemixdSwingWorker;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+/*
+ * A Block contains a list of statements.
+ * To evaluate the block each statement in turn is evaluated.
+ * The return value from the block is either that from a return call
+ * or the value of the last statement executed.
+ */
+public class Block implements Expression {
+
+    /** The main level statements. */
+    protected List<Expression> statements = new ArrayList<>();
+
+    /** The block's context. */
+    private Context blockContext = null;
+
+    public Block() {
+    }
+
+    public void setConstantAssignmentLibrary(LibraryExpression library) {
+        for (Expression statement : statements) {
+            if (statement instanceof ConstantAssignmentStatement constantAssignmentStatement) {
+                constantAssignmentStatement.setLibraryStoredIn(library);
+                if (library.getConstantTable().put(constantAssignmentStatement.variableName, null) != null)
+                    System.err.println("Aaaargh!");
+            }
+        }
+    }
+
+    public Context getContext() {
+        return blockContext;
+    }
+
+    public void setContext(Context context) { // could this push the context
+        if (context == null)
+            blockContext = null;
+        else
+            blockContext = context.copy();
+    }
+
+    public void addStatement(Expression statement) {
+        statements.add(statement);
+    }
+
+    @Override
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
+        Object result = RemixdNull.value();
+        if (blockContext != null) { // anonymous block, use its blockContext
+            context = blockContext;
+        }
+        Iterator<Expression> iterator = statements.iterator();
+        while (iterator.hasNext()) {
+            Expression expression = iterator.next();
+            if (expression instanceof RedoStatement) {
+                // pause in case the program gets interrupted
+                RemixdSwingWorker remixRunner = RemixdApp.currentSwingWorker;
+                if (remixRunner != null && remixRunner.isCancelled())
+                    throw new InterruptedException();
+                iterator = statements.iterator();
+                continue;
+            }
+            if (expression instanceof ReturnStatement) {
+                Object returnValue = expression.evaluate(context);
+                if (context.returnHigher() || blockContext != null) {
+                    throw new ReturnException(returnValue);
+                }
+                return expression.evaluate(context);
+            }
+            try {
+                result = expression.evaluate(context); // block returns here
+            } catch (ReturnException exception) {
+                if (context.returnHigher() || blockContext != null) {
+                    throw exception;
+                } else {
+                    return exception.getReturnValue();
+                }
+            } catch (NullPointerException _) {
+                return null;
+            }
+        }
+        return result;
+    }
+
+    public String toString() {
+        StringBuilder result = new StringBuilder("[ ");
+        for (Expression expression : statements) {
+            result.append(expression.toString()).append(". ");
+        }
+        if (result.length() > 2)
+            result.delete(result.length() - 2, result.length());
+        result.append(" ]");
+        return result.toString();
+    }
+
+    public Block copy() {
+        Block copy = new Block();
+        copy.statements = new ArrayList<>(statements);
+        if (blockContext != null)
+            copy.blockContext = blockContext.copy();
+        return copy;
+    }
+
+    /**
+     * @return whether or not there are any statements in the block
+     */
+    public boolean isEmpty() {
+        return statements.isEmpty();
+    }
+}

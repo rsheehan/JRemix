@@ -1,0 +1,26 @@
+SCALE : 20
+
+
+using graphics
+	ACROSS : STD-WIDTH ÷ SCALE
+	DOWN : STD-HEIGHT ÷ SCALE
+	
+	a cell of size 'size' at grid 'position' :
+		'screen x-pos' : 'position'{1} × 'size' + 'size' ÷ 2
+		'screen y-pos' : 'position'{2} × 'size' + 'size' ÷ 2
+		extend a RED box of 'size' x 'size' at {'screen x-pos', 'screen y-pos'}
+			'grid position' : 'position'
+			'outline colour' : WHITE
+			
+
+	'panel' : a graphics window
+	
+	for each 'row' from 0 to (DOWN - 1)
+	
+		for each 'column' from 0 to (ACROSS - 1)
+			
+			'square' : a cell of size SCALE at grid {'column', 'row'}
+			place 'square' in 'panel'
+	
+	update 'panel'
+	

@@ -1,12 +1,14 @@
-# Remix
+# Remix'd (originally Remix)
 ![Remix Insertion Sort](images/RemixInsertionSort.png)
-## This is the current Remix - implemented in Java
-Remix is a flexible programming language based around the idea of mix-fix (as opposed to pre-fix or post-fix) 
+## This is the current Remix'd - implemented in Java
+Remix'd is a flexible programming language based around the idea of mix-fix 
+(as opposed to pre-fix or post-fix) 
 function names. With as many space-separated words and parameters as you want in a function name you can make these 
 very readable. There is a very straightforward path from designing a program in natural language pseudocode and 
-transitioning it to running Remix code.
+transitioning it to running Remix'd code.
 
-Remix also allows spaces in variable names by wrapping variable names in single 'quotes'.
+Remix'd also allows spaces in variable names by wrapping variable names in 
+single 'quotes'.
 
 When you add these together you can name a function by its pseudocode making 
 minor changes to use it as the real executable function name and function call.
@@ -54,19 +56,23 @@ fieldname`. Fields without getters or setters are private to the object.
         a private method with a 'parameter' but no object parameter :
             body of method
 
-More information about Remix can be found in this [presentation](https://github.com/rsheehan/JRemix/blob/main/RemixIntroduction.pdf).
-The first half shows how Remix can be used to develop a program from pseudocode, the second half briefly describes the language.
+More information about Remix'd can be found in 
+this 
+[presentation](https://github.com/rsheehan/JRemix/blob/main/Remix'dIntroduction.pdf).
+The first half shows how Remix'd can be used to develop a program from 
+pseudocode, the second half briefly describes the language.
 
-[Here](images/landscape.pdf) is an animated random landscape program in Remix. N.B. This is how it 
-appears in the Remix editor.
+[Here](images/landscape.pdf) is an animated random landscape program in 
+Remix'd. N.B. This is how it 
+appears in the Remix'd editor.
 
-Remix has a simple library system which provides a measure of 
-encapsulation. Libraries can contain both Java and Remix functions as in the 
+Remix'd has a simple library system which provides a measure of 
+encapsulation. Libraries can contain both Java and Remix'd functions as in the 
 graphics library used in the landscape example.
 
-You can run Remix by putting the remix.jar file in the same folder as the
-remixLibraries folder. You may want to add the remixPrograms folder too.
+You can run Remix'd by putting the remixd.jar file in the same folder as the
+remixdLibraries folder. You may want to add the remixdPrograms folder too.
 Then as long as a recent Java runtime is installed you should be able to run
-Remix by double-clicking on the remix.jar file.
+Remix'd by double-clicking on the remix.jar file.
 
-I am still working on the Remix reference manual.
+I am still working on the Remix'd reference manual.

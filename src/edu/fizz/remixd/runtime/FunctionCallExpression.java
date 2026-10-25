@@ -1,0 +1,233 @@
+package edu.fizz.remixd.runtime;
+
+import edu.fizz.remixd.editor.RemixdPrepareRun;
+
+import java.util.Collections;
+import java.util.ListIterator;
+import java.util.Stack;
+
+/*
+ * With multiple function names I should really change this as the function call only
+ * uses one of the names. We don't have to extend FunctionName anymore.
+ */
+public class FunctionCallExpression extends FunctionName<Expression> implements Expression, NamedExpression {
+
+    private final String fileName;
+    private final int lineNumber;
+    private final int lineOffset;
+
+    public void setInEditor(boolean inEditor) {
+        this.inEditor = inEditor;
+    }
+
+    private boolean inEditor = false;
+
+    public FunctionCallExpression(String fileName, int lineNumber, int lineOffset) {
+        super();
+        this.fileName = fileName;
+        this.lineNumber = lineNumber;
+        this.lineOffset = lineOffset;
+    }
+
+    public Function getFunction(Context context) {
+        Stack<LibraryExpression> libraryStack = (Stack) context.libraryStack.clone();
+        Collections.reverse(libraryStack);
+        Function function = null;
+        String routineName = singleName();
+        for (LibraryExpression library : libraryStack) {
+            function = library.searchFunctionTable(routineName);
+            if (function != null)
+                break;
+        }
+        return function;
+    }
+
+    @Override
+    public Object evaluate(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
+
+        /*
+         Need to check the methodTable for a corresponding method.
+         If not a method then call the function.
+         Method calls take priority over the same named function calls
+         If it is a method then find the parameter which corresponds to the "me/my".
+         If the parameter is "me/my" itself it must be being called from within the
+         object context just like if it was a private method.
+         In the case of a private method (no "me/my") use the object from the context.
+
+         There is a difference between Library functions and methods.
+         Since an object can be created in a using block it needs access to the library's functions
+         but the object can be used outside the using block. Thus its methods need to be in the
+         global (single) method table.
+        */
+
+        String routineName = singleName();
+        Integer refPos = LibraryExpression.searchMethodTableRefPos(routineName);
+        if (refPos != null) {
+            RemixdObject remixdObject = null;
+            Method method = null;
+            if (refPos == 0) {
+                // a private method
+                // need to find the corresponding object using the context
+                // the context here must be from another method, in the same object
+                // or further back in the context stack see both MethodContext and Context.
+                remixdObject = context.findObjectWithMethod(routineName);
+            } else {
+                // a public method
+                // pull out the object variable and use its object table
+                // to find the method
+                Expression parameter = parameters.get(refPos - 1);
+                Object object = parameter.evaluate(context);
+                if (object instanceof SelfReference) { // a "me/my" reference
+                    // need to find the corresponding object using the context
+                    remixdObject = context.findObjectWithMethod(routineName);
+                } else if (object instanceof RemixdObject) {
+                    remixdObject = (RemixdObject) object;
+                }
+            }
+            if (remixdObject != null)
+                method = remixdObject.findMethod(routineName);
+            if (method != null) {
+                Context methodContext = new MethodContext(context, remixdObject);
+                return executeFunctionOrMethod(method, methodContext);
+            }
+        }
+
+        // fall through into a possible function call
+        Stack<LibraryExpression> inCallLibStack = (Stack) context.libraryStack.clone();
+        Function function = null;
+        int libNumber;
+        LibraryExpression library = null; // the library of the function
+        for (libNumber = inCallLibStack.size() - 1; libNumber >= 0; libNumber--) {
+            library = inCallLibStack.get(libNumber);
+            function = library.searchFunctionTable(routineName);
+            if (function != null)
+                break;
+        }
+        // SHOULD EVALUATE THE PARAMETERS BEFORE RESTRICTING THE LIBSTACK
+
+        if (function == null) {
+            String readable = routineName;
+            readable = readable.replace("⫾", "()");
+            Runtime.showErrorPosition(fileName, lineNumber, lineOffset);
+            Runtime.showErrorMessage("Function \"" + readable + "\" does not exist or is a method with a null receiver\n");
+            throw new FunctionNotFoundException();
+        }
+        Context functionContext = new Context(context, function.isTransparent());
+        while (!library.equals(inCallLibStack.peek())) { // to enforce lexical scoping of functions in libraries
+            inCallLibStack.pop();
+        }
+        functionContext.libraryStack = inCallLibStack;
+        return executeFunctionOrMethod(function, functionContext);
+    }
+
+    /*
+    callingContext is the context as this call is started. This is necessary for blocks
+    being passed as parameters because they will refer to variables in that context.
+    routine is the function to call
+    functionContext is the context the function executes in - it is a child of the calling context
+    we add the parameters to this.
+    Any local variables also go into the functionContext not the callingContext
+     */
+    private Object executeFunctionOrMethod(Function routine, Context functionContext) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
+        Context callingContext = functionContext.parentContext;
+        for (int i = 0; i < routine.numArgs(); i++) {
+            String formal = routine.getArgument(i);
+
+            // skip over the object reference
+            if (formal.equals("ME"))
+                continue;
+
+            Expression parameter = parameters.get(i); // actual parameter expression
+            Object value;
+            // if the actual parameter is a block we don't evaluate it
+            // that only happens after "do"
+            if (parameter instanceof Block block) {
+                if (block.getContext() == null) {
+                    block = block.copy(); // the block could be called recursively we need a copy
+                    block.setContext(callingContext);
+                }
+                value = block;
+            } else if (formal.startsWith("#")) {
+                if (parameter instanceof GetElementExpression getElementExpression) {
+                    getElementExpression.setOriginalContext(callingContext);
+                    value = getElementExpression;
+                } else {
+                /*
+                    Careful here: the actual parameter could be a reference
+                    parameter from a previous function.
+                 */
+                    try {
+                        String actualName = ((VarValueExpression) parameter).getName();
+                        if (actualName.startsWith("#")) {
+                            value = callingContext.getRefParameter(actualName);
+                            // the value here is now a RefParameter or GetElementExpression
+                        } else {
+                            // We are accessing an ordinary variable in the callingContext.
+                            Object variable = callingContext.retrieve(actualName, true);
+                            if (variable == null) { // hasn't been given a value yet, give it Null
+                                callingContext.assign(actualName, RemixdNull.value());
+                                value = new RefParameter(actualName, callingContext);
+                            } else {
+                                Context originalContext = callingContext.originalContext(actualName);
+                                value = new RefParameter(actualName, originalContext);
+                            }
+                        }
+                    } catch (ClassCastException ex) {
+                        Runtime.showErrorPosition(fileName, lineNumber, lineOffset);
+                        Runtime.showErrorMessage("Reference Parameter \"" + parameter +
+                                            "\" is not a variable in function call \"" + this + "\".");
+                        return null;
+                    }
+                }
+            } else if (parameter instanceof SelfReference) { // passing a self reference of an object to a function
+                value = ((MethodContext) callingContext).object;
+            } else { // a normal value parameter which isn't a block
+                value = parameter.evaluate(callingContext);
+                if (value == null) {
+                    Runtime.showErrorPosition(fileName, lineNumber, lineOffset);
+                    Runtime.showErrorMessage("Parameter \"" + parameter + "\" has no value in function call \"" +
+                            this + "\".");
+                    return null;
+                }
+            }
+            functionContext.assignParam(formal, value); // needs to really be in this context
+        }
+        Object result;
+        if (inEditor) {
+            functionContext.setFileWindowREPL(RemixdPrepareRun.INTERACTIVETEXT);
+            functionContext.completionContext = true;
+        }
+        try {
+            result = routine.execute(functionContext);
+        } catch (ClassCastException e) {
+            Runtime.showErrorPosition(fileName, lineNumber, lineOffset);
+            Runtime.showErrorMessage("Parameter error calling \"" + this + "\"");
+            throw (e);
+        }
+        if (result == null)
+            result = RemixdNull.value();
+        return result;
+    }
+
+    public String toString() {
+        String call = functionNames.getFirst();
+        String[] callArr = call.split("");
+        ListIterator<Expression> paramIter = parameters.listIterator();
+        StringBuilder callName = new StringBuilder();
+        for (String ch: callArr) {
+            if (ch.equals("⫾")) {
+                callName.append("(");
+                callName.append(paramIter.next());
+                callName.append(")");
+            } else {
+                callName.append(ch);
+            }
+        }
+        return callName.toString();
+    }
+
+    @Override
+    public String getLibIDName() {
+        return toString();
+    }
+}

@@ -1,8 +1,13 @@
+When an error occurs e.g. binary expression in the std-lib
+the error message only mentions std-lib location, need to know previous calls.
+
 Still problems with altering code in previous code areas
 when there are multiple lines already in the current code area.
 
-deleting a '(' after inserting '()' should remove both characters
-same for all pairs.
+Errors when trying to delete a single ". In fact the first of any matching pair.
+
+NEED TO BE ABLE TO REMOVE REPL CODE AREAS SO ERRORS DON'T KEEP PROPAGATING
+THIS ONLY APPLIES DURING COMPLETION HANDLING
 
 =============
 Completions
