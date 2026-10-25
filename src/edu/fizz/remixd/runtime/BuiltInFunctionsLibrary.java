@@ -170,15 +170,13 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Object value = context.retrieve("value", false);
-//            if (value instanceof RemixExtendedObject)
             if (value instanceof RemixdObject object) {
                 String type = (String) object.getContext().variables.get("type");
-                if (type != null)
-                    return type;
-                else
-                    return "Object";
+                return Objects.requireNonNullElse(type, "Object");
             }
-            return value.getClass().toString();
+            String javaClassName = value.getClass().toString();
+            int lastDotIndex = javaClassName.lastIndexOf('.');
+            return javaClassName.substring(lastDotIndex + 1);
         }
     }
 
@@ -384,7 +382,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public StartFunction() {
             super(
-                    Arrays.asList("start ⫾", "start of ⫾"),
+                    List.of("iterator from ⫾"),
                     List.of("list"),
                     List.of(false),
                     false,

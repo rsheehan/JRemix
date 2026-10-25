@@ -369,7 +369,7 @@ library
 				====================================================
 				Enable the turtle group to iterate over the turtles.
 				====================================================
-				start ME :
+				iterator from ME :
 					create 'turtles'
 						'index' : 0
 

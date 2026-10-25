@@ -5,7 +5,7 @@ make 'count' stars :
 	- must include "start ME" method
 	create 'count'
 
-		start ME :
+		iterator from ME :
 			- the iterator object
 			- must include an "end ME" and a "next ME" method
 			- can refer to sequence instance variables e.g. 'count'

@@ -1,0 +1,22 @@
+'object' : create
+	'count' : 10
+	
+	iterator from ME :
+		create 'count'
+			'i' : 0
+			
+			end ME :
+				'i' = 'count'
+			
+			next ME :
+				inc 'i'
+
+for each 'x' in 'object'
+	for each 'y' in 'object'
+		'x' ↲
+
+↲
+'map' : {"a" : 2, "b" : 4, "c" : 6}
+for each 'key1' in 'map'
+	for each 'key2' in 'map'
+		'map'{'key2'} ↲

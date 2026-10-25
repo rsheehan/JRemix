@@ -94,7 +94,7 @@ library "edu.fizz.remixd.libraries.RemixdFiles"
 				create
 					'file' : ME
 
-					start ME :
+					iterator from ME :
 						line iterator from 'file'
 
 					ME to string :
@@ -108,7 +108,7 @@ library "edu.fizz.remixd.libraries.RemixdFiles"
 				create
 					'file' : ME
 
-					start ME :
+					iterator from ME :
 						word iterator from 'file'
 
 					ME to string :
@@ -122,7 +122,7 @@ library "edu.fizz.remixd.libraries.RemixdFiles"
 				create
 					'file' : ME
 
-					start ME :
+					iterator from ME :
 						character iterator from 'file'
 
 					ME to string :
@@ -136,7 +136,7 @@ library "edu.fizz.remixd.libraries.RemixdFiles"
 				create
 					'file' : ME
 
-					start ME :
+					iterator from ME :
 						byte iterator from 'file'
 
 					ME to string :

@@ -125,7 +125,7 @@ Return either the last statement value or whatever is returned from 'block'.
 A sequence here is a list, range, map, string, block or sequence object.
 =-
 for each #item in 'sequence' ['block'] :
-	'pos' : start 'sequence'
+	'pos' : iterator from 'sequence'
 	'last' : null
 	do
 		if (end 'pos')

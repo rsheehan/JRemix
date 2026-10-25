@@ -6,13 +6,12 @@
 'map'      : { "x" : 2, "y" : 6, "z": 10, "a" : 15 }
 'sequence' : make 4 star sequence
 
-make 'N' star sequence :
+make 'count' star sequence :
 	- the sequence object
 	- must include "start ME" and "MY length" methods
-	create
-		'count' : 'N'
+	create 'count'
 
-		start ME :
+		iterator from ME :
 			'count' star iterator
 
 		MY length :
@@ -29,13 +28,12 @@ make 'N' star sequence :
 	- must include an "end ME" and a "next ME" method
 	- can refer to sequence instance variables e.g. "'count'"
 	- but only in the instance variable assignment section
-	create
-		'MAX'   : 'count'
+	create 'count'
 		'index' : 0
 		'stars' : ""
 
 		end ME :
-			'index' = 'MAX'
+			'index' = 'count'
 
 		next ME :
 			increment 'index'

@@ -27,7 +27,7 @@ using graphics
 bits from 'value' :
 	create 'value'
 		
-		start ME :
+		iterator from ME :
 			create 'value'
 			
 				'bit pos' : 128

@@ -1,8 +1,8 @@
 - Constants for directions.
 NORTH : 1
 SOUTH : 2
-EAST : 3
-WEST : 4
+WEST : 3
+EAST : 4
 
 =-
 Create a grid object with 'rows' of 'columns' each.
@@ -42,7 +42,7 @@ a grid of 'rows' by 'columns' :
 		Creates the iterator for the grid.
 		Produces each row.
 		=-
-		start ME :
+		iterator from ME :
 			create 'cells', 'rows'
 				'row' : 0
 						
@@ -65,8 +65,8 @@ a cell at 'row' 'column':
 		'directions' : {
 			{'row' - 1, 'column'}
 			{'row' + 1, 'column'}
-			{'row', 'column' + 1}
 			{'row', 'column' - 1}
+			{'row', 'column' + 1}
 		}
 		
 		getters
