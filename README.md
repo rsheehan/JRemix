@@ -58,7 +58,7 @@ fieldname`. Fields without getters or setters are private to the object.
 
 More information about Remix'd can be found in 
 this 
-[presentation](https://github.com/rsheehan/JRemix/blob/main/Remix'dIntroduction.pdf).
+[presentation](https://github.com/rsheehan/JRemix/blob/main/Remix'd%20Introduction.pdf).
 The first half shows how Remix'd can be used to develop a program from 
 pseudocode, the second half briefly describes the language.
 
