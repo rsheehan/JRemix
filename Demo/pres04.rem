@@ -1,5 +1,6 @@
 an adder :
 	create
+		'type' : "adder"
 		'a' : 1
 		'b' : 2
 
@@ -8,10 +9,11 @@ an adder :
 
 'x' : an adder
 add 'x' values ↲
-subtract 'x' values ↲
+-subtract 'x' values ↲
 
 a subtractor based on 'adder' :
 	extend 'adder'
+		'type' : "subtractor"
 		subtract MY values :
 			'a' - 'b'
 
