@@ -69,6 +69,11 @@ public class REPLPanel extends JPanel {
     protected void addREPLTextArea() {
         RemixdTextArea REPLTextArea = new RemixdTextArea(true, darkAreas);
         makeComponentSendScrollingUp(REPLTextArea);
+        // to make it scroll when the text would go off the window
+        REPLTextArea.addCaretListener(_ -> SwingUtilities.invokeLater(() -> {
+            JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
+            verticalBar.setValue(verticalBar.getMaximum());
+        }));
         if (currentCodeArea != null) {
             // change the document listener
             AbstractDocument document =  (AbstractDocument)currentCodeArea.getDocument();
