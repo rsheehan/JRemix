@@ -26,7 +26,7 @@ public class VarValueExpression implements Expression {
             value = context.retrieve(varName, false);
         } catch (VarNotFoundException e) {
             Runtime.showErrorPosition(fileName, lineNumber, -1);
-            Runtime.showErrorMessage("Variable '" + varName + "' has no value ");
+            Runtime.showErrorMessage("Variable '" + varName + "' has no value");
             throw e;
         }
         if (value == null)

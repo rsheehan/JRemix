@@ -109,7 +109,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
             String readable = routineName;
             readable = readable.replace("⫾", "()");
             Runtime.showErrorPosition(fileName, lineNumber, lineOffset);
-            Runtime.showErrorMessage("Function \"" + readable + "\" does not exist or is a method with a null receiver\n");
+            Runtime.showErrorMessage("Function \"" + readable + "\" does not exist or is a method with a null receiver");
             throw new FunctionNotFoundException();
         }
         Context functionContext = new Context(context, function.isTransparent());

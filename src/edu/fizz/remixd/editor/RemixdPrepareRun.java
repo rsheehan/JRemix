@@ -55,6 +55,9 @@ public class RemixdPrepareRun {
     public static Object runText(String fileName, String programText) {
         EvalVisitor eval = new EvalVisitor(fileName);
         final ParseTree tree = processParse(programText);
+        if (tree == null) {
+            return null;
+        }
         LibraryExpression programLib = (LibraryExpression)eval.visit(tree);
         Object result = Runtime.runProgram(programLib, fileName);
         // before finishing collect variables from the context to
@@ -108,7 +111,11 @@ public class RemixdPrepareRun {
         final RemixdErrorListener listener = new RemixdErrorListener();
         parser.addErrorListener(listener);
         // parse
-        return parser.program();
+        ParseTree tree = parser.program();
+        if (listener.errorOccurred()) {
+            return null;
+        }
+        return tree;
     }
 
     public static void setFileName(String fileName) {

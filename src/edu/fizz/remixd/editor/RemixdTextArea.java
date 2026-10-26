@@ -183,6 +183,9 @@ public class RemixdTextArea extends RSyntaxTextArea {
             LibrariesAndCompletions.resetToEditorStandard();
         }
         ParseTree tree = RemixdPrepareRun.processParse(text);
+        if (tree == null) { // an error in parsing
+            return;
+        }
 
         EvalVisitorForEditor eval = new EvalVisitorForEditor(((RemixdBaseWindow)getWindow()).getCurrentFileName());
         LibraryExpression programLib = (LibraryExpression) eval.visit(tree);
