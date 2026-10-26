@@ -1,6 +1,6 @@
 package edu.fizz.remixd.editor;
 
-public class RemixLexerToken {
+public class RemixdLexerToken {
     public static final int COLON = 1;
     public static final int LPAREN = 2;
     public static final int RPAREN = 3;

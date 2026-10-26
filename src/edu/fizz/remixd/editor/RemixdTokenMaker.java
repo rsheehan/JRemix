@@ -51,12 +51,12 @@ public class RemixdTokenMaker extends TokenMakerBase {
                      currentLineOffset + antlrToken.getStopIndex(), rSyntaxType, start);
         }
         boolean addNull = switch (lastAntlrTokenType) {
-            case RemixLexerToken.COMMENT_SECTION,
-                 RemixLexerToken.COMMENT_TEXT,
-                 RemixLexerToken.COMMENT_INCOMPLETE,
-                 RemixLexerToken.STRING_START,
-                 RemixLexerToken.STRING_TEXT,
-                 RemixLexerToken.STRING_INCOMPLETE -> false;
+            case RemixdLexerToken.COMMENT_SECTION,
+                 RemixdLexerToken.COMMENT_TEXT,
+                 RemixdLexerToken.COMMENT_INCOMPLETE,
+                 RemixdLexerToken.STRING_START,
+                 RemixdLexerToken.STRING_TEXT,
+                 RemixdLexerToken.STRING_INCOMPLETE -> false;
             default -> true;
         };
         if (addNull) {
@@ -74,50 +74,50 @@ public class RemixdTokenMaker extends TokenMakerBase {
             return RemixdTokenTypes.LITERAL_STRING_DOUBLE_QUOTE;
         } else {
             return switch (antlrTokenType) {
-//                case RemixLexerToken.WORD -> RemixdTokenTypes.FUNCTION;
-                case RemixLexerToken.RETURN,
-                     RemixLexerToken.REDO,
-                     RemixLexerToken.CREATE,
-                     RemixLexerToken.EXTEND,
-                     RemixLexerToken.GETTERSETTER,
-                     RemixLexerToken.GETTER,
-                     RemixLexerToken.SETTER,
-                     RemixLexerToken.LIBRARY,
-                     RemixLexerToken.USING,
-                     RemixLexerToken.SELFREF -> RemixdTokenTypes.RESERVED_WORD;
-                case RemixLexerToken.LBLOCK,
-                     RemixLexerToken.RBLOCK,
-                     RemixLexerToken.LBRACE,
-                     RemixLexerToken.RBRACE,
-                     RemixLexerToken.LPAREN,
-                     RemixLexerToken.RPAREN,
-                     RemixLexerToken.COLON,
-                     RemixLexerToken.COMMA -> RemixdTokenTypes.SEPARATOR;
-                case RemixLexerToken.ADD,
-                     RemixLexerToken.MINUS,
-                     RemixLexerToken.MUL,
-                     RemixLexerToken.LESS,
-                     RemixLexerToken.LESSEQUAL,
-                     RemixLexerToken.GREATER,
-                     RemixLexerToken.GREATEREQUAL,
-                     RemixLexerToken.EQUAL,
-                     RemixLexerToken.NOTEQUAL,
-                     RemixLexerToken.CONCAT,
-                     RemixLexerToken.ENDPRINT,
-                     RemixLexerToken.PRINTLN -> RemixdTokenTypes.OPERATOR;
-                case RemixLexerToken.STRING_START,
-                     RemixLexerToken.STRING_TEXT,
-                     RemixLexerToken.STRING_END,
-                     RemixLexerToken.STRING_INCOMPLETE -> RemixdTokenTypes.LITERAL_STRING_DOUBLE_QUOTE;
-                case RemixLexerToken.NUMBER -> RemixdTokenTypes.LITERAL_NUMBER_DECIMAL_INT;
-                case RemixLexerToken.BOOLEAN,
-                     RemixLexerToken.NULL -> RemixdTokenTypes.LITERAL_BOOLEAN;
-                case RemixLexerToken.COMMENT -> RemixdTokenTypes.COMMENT_EOL;
-                case RemixLexerToken.COMMENT_END,
-                     RemixLexerToken.COMMENT_INCOMPLETE -> RemixdTokenTypes.COMMENT_MULTILINE;
-                case RemixLexerToken.CONSTANT -> RemixdTokenTypes.CONSTANT;
-                case RemixLexerToken.IDENTIFIER -> RemixdTokenTypes.VARIABLE;
-                case RemixLexerToken.SPACE -> RemixdTokenTypes.WHITESPACE;
+//                case RemixdLexerToken.WORD -> RemixdTokenTypes.FUNCTION;
+                case RemixdLexerToken.RETURN,
+                     RemixdLexerToken.REDO,
+                     RemixdLexerToken.CREATE,
+                     RemixdLexerToken.EXTEND,
+                     RemixdLexerToken.GETTERSETTER,
+                     RemixdLexerToken.GETTER,
+                     RemixdLexerToken.SETTER,
+                     RemixdLexerToken.LIBRARY,
+                     RemixdLexerToken.USING,
+                     RemixdLexerToken.SELFREF -> RemixdTokenTypes.RESERVED_WORD;
+                case RemixdLexerToken.LBLOCK,
+                     RemixdLexerToken.RBLOCK,
+                     RemixdLexerToken.LBRACE,
+                     RemixdLexerToken.RBRACE,
+                     RemixdLexerToken.LPAREN,
+                     RemixdLexerToken.RPAREN,
+                     RemixdLexerToken.COLON,
+                     RemixdLexerToken.COMMA -> RemixdTokenTypes.SEPARATOR;
+                case RemixdLexerToken.ADD,
+                     RemixdLexerToken.MINUS,
+                     RemixdLexerToken.MUL,
+                     RemixdLexerToken.LESS,
+                     RemixdLexerToken.LESSEQUAL,
+                     RemixdLexerToken.GREATER,
+                     RemixdLexerToken.GREATEREQUAL,
+                     RemixdLexerToken.EQUAL,
+                     RemixdLexerToken.NOTEQUAL,
+                     RemixdLexerToken.CONCAT,
+                     RemixdLexerToken.ENDPRINT,
+                     RemixdLexerToken.PRINTLN -> RemixdTokenTypes.OPERATOR;
+                case RemixdLexerToken.STRING_START,
+                     RemixdLexerToken.STRING_TEXT,
+                     RemixdLexerToken.STRING_END,
+                     RemixdLexerToken.STRING_INCOMPLETE -> RemixdTokenTypes.LITERAL_STRING_DOUBLE_QUOTE;
+                case RemixdLexerToken.NUMBER -> RemixdTokenTypes.LITERAL_NUMBER_DECIMAL_INT;
+                case RemixdLexerToken.BOOLEAN,
+                     RemixdLexerToken.NULL -> RemixdTokenTypes.LITERAL_BOOLEAN;
+                case RemixdLexerToken.COMMENT -> RemixdTokenTypes.COMMENT_EOL;
+                case RemixdLexerToken.COMMENT_END,
+                     RemixdLexerToken.COMMENT_INCOMPLETE -> RemixdTokenTypes.COMMENT_MULTILINE;
+                case RemixdLexerToken.CONSTANT -> RemixdTokenTypes.CONSTANT;
+                case RemixdLexerToken.IDENTIFIER -> RemixdTokenTypes.VARIABLE;
+                case RemixdLexerToken.SPACE -> RemixdTokenTypes.WHITESPACE;
                 default -> RemixdTokenTypes.IDENTIFIER;
             };
         }

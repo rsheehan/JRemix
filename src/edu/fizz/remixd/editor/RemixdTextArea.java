@@ -32,6 +32,7 @@ public class RemixdTextArea extends RSyntaxTextArea {
     public static final int PRINTSIZE = 9;
     public static final Font defaultFontForScreen = new Font("monospaced", Font.PLAIN, SIZE);
     public static final Font defaultFontForPrinting = new Font("monospaced", Font.PLAIN, PRINTSIZE);
+    private static final int TABSIZE = 4;
 
     RemixdCompletions completionControl;
     CaretListener caretListener;
@@ -53,6 +54,7 @@ public class RemixdTextArea extends RSyntaxTextArea {
         setSyntaxEditingStyle("text/Remixd");
         setSyntaxScheme(createRemixScheme());
         modifyScheme(dark);
+        setTabSize(TABSIZE);
     }
 
     public RemixdTextArea(boolean replArea, boolean dark) {

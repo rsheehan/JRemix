@@ -4,7 +4,8 @@ the error message only mentions std-lib location, need to know previous calls.
 Still problems with altering code in previous code areas
 when there are multiple lines already in the current code area.
 
-Errors when trying to delete a single ". In fact the first of any matching pair.
+A word product e.g. 3pi or 3'abc' doesn't get correct syntax coloring.
+Need to move WORDPRODUCT in the lexer into wordproduct in the grammar.
 
 NEED TO BE ABLE TO REMOVE REPL CODE AREAS SO ERRORS DON'T KEEP PROPAGATING
 THIS ONLY APPLIES DURING COMPLETION HANDLING
