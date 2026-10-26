@@ -60,7 +60,7 @@ public class GetElementExpression implements Expression {
                 }
             }
         } else {
-                System.err.printf("Variable \"%s\" is neither a list or a map.%n", listName);
+                System.err.printf("Variable \"%s\" is neither a list nor a map.%n", listName);
         }
         if (listOrMapPart == null)
             listOrMapPart = RemixdNull.value();

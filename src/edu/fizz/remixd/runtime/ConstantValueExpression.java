@@ -52,7 +52,7 @@ public class ConstantValueExpression implements Expression, NamedExpression {
         }
         if (result == null) {
             Runtime.showErrorPosition(context.getFileWindowREPL(), lineNumber, -1);
-            Runtime.showErrorMessage("Constant " + constantName + " has no value");
+            Runtime.showErrorMessage("Error: Constant " + constantName + " has no value");
             throw new VarNotFoundException(); // sort of
         }
         return result;

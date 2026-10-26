@@ -185,7 +185,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
                 value = parameter.evaluate(callingContext);
                 if (value == null) {
                     Runtime.showErrorPosition(fileName, lineNumber, lineOffset);
-                    Runtime.showErrorMessage("Parameter \"" + parameter + "\" has no value in function call \"" +
+                    Runtime.showErrorMessage("Error: Parameter \"" + parameter + "\" has no value in function call \"" +
                             this + "\".");
                     return null;
                 }
