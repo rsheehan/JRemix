@@ -29,6 +29,7 @@ public class RemixdPrepareRun {
     public volatile static Context REPLContext; // context when in interactive area
 
     private static String fileName; // only one file can be parsed at a time
+    private static boolean completing = false;
 
     public static LibraryExpression loadPackage(String libName, boolean editing) throws Exception {
         String preRemFile;
@@ -45,11 +46,12 @@ public class RemixdPrepareRun {
             eval = new EvalVisitorForEditor(fileName);
         else
             eval = new EvalVisitor(fileName);
+        fileName = "LOAD PACKAGE FINISHED";
         return (LibraryExpression)eval.visit(tree);
     }
 
     public static String getFileName() {
-        return "REMIXPREPARERUN: " + fileName;
+        return fileName;
     }
 
     public static Object runText(String fileName, String programText) {
@@ -120,5 +122,13 @@ public class RemixdPrepareRun {
 
     public static void setFileName(String fileName) {
         RemixdPrepareRun.fileName = fileName;
+    }
+
+    public static boolean isCompleting() {
+        return completing;
+    }
+
+    public static void setCompleting(boolean completing) {
+        RemixdPrepareRun.completing = completing;
     }
 }

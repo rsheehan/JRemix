@@ -1,5 +1,6 @@
 package edu.fizz.remixd;
 
+import edu.fizz.remixd.editor.RemixdPrepareRun;
 import edu.fizz.remixd.runtime.*;
 import edu.fizz.remixd.parser.*;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -191,11 +192,28 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixdParser.ExpressionContext) {
                 Expression libExp = (Expression) visit(node);
-                if (libExp instanceof ConstantValueExpression constantValueExpression)
-                    libraryExpression = programLibIdentifiers.get(constantValueExpression.getName());
-                else if (libExp instanceof VarValueExpression varValueExpression)
-                    libraryExpression = programLibIdentifiers.get(varValueExpression.getName());
-                else try { // fall back on attempting to evaluate the library expression
+                if (libExp instanceof ConstantValueExpression constantValueExpression) {
+                    String constantName = constantValueExpression.getName();
+                    libraryExpression = programLibIdentifiers.get(constantName);
+                    if (libraryExpression == null) {
+                    for (LibraryExpression libsInREPL : RemixdPrepareRun.REPLContext.getLibraryStack()){
+                            LibraryExpression lib = (LibraryExpression) libsInREPL.getConstantTable().get(constantName);
+                            if (lib != null) {
+                                libraryExpression = lib;
+                                break;
+                            }
+                        }
+                    }
+                } else if (libExp instanceof VarValueExpression varValueExpression) {
+                    String varName = varValueExpression.getName();
+                    libraryExpression = programLibIdentifiers.get(varName);
+                    if (libraryExpression == null) { // I think this is always true
+                        try { // should really check if in REPL
+                            libraryExpression = (LibraryExpression) RemixdPrepareRun.REPLContext.retrieve(varName, false);
+                        } catch (VarNotFoundException | FunctionNotFoundException _) { // nothing
+                        }
+                    }
+                } else try { // fall back on attempting to evaluate the library expression
                     Context contextForLib = new Context(LibrariesAndCompletions.getBaseLibrary(), null);
                     // add any existing functions which may "include aLibrary"
                     programLibrary.setActiveLines(LibraryExpression.ALLLINES); // so any functions in this can be used

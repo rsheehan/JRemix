@@ -16,15 +16,17 @@ public class RemixdErrorListener extends BaseErrorListener {
                             int line, int charPositionInLine,
                             String msg, RecognitionException e) {
         if (errorCount++ == 0) { // on the first error
-            System.err.println("\nInterpreter Error");
-            System.err.println("⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺ ⎺⎺⎺⎺⎺");
-            Runtime.showErrorPosition(RemixdPrepareRun.getFileName(), line - 1,
-                                      charPositionInLine);
-            String EXTRANEOUS = "extraneous input";
-            if (msg.startsWith(EXTRANEOUS)) {
-                System.err.println(EXTRANEOUS);
-            } else {
-                System.err.println(msg);
+            if (!RemixdPrepareRun.isCompleting()) {
+                System.err.println("\nInterpreter Error");
+                System.err.println("⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺ ⎺⎺⎺⎺⎺");
+                Runtime.showErrorPosition(RemixdPrepareRun.getFileName(), line - 1,
+                                          charPositionInLine);
+                String EXTRANEOUS = "extraneous input";
+                if (msg.startsWith(EXTRANEOUS)) {
+                    System.err.println(EXTRANEOUS);
+                } else {
+                    System.err.println(msg);
+                }
             }
         }
     }

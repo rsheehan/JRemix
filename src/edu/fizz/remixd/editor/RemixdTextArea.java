@@ -184,7 +184,9 @@ public class RemixdTextArea extends RSyntaxTextArea {
             text = getText();
             LibrariesAndCompletions.resetToEditorStandard();
         }
+        RemixdPrepareRun.setCompleting(true);
         ParseTree tree = RemixdPrepareRun.processParse(text);
+        RemixdPrepareRun.setCompleting(false);
         if (tree == null) { // an error in parsing
             return;
         }
@@ -193,7 +195,7 @@ public class RemixdTextArea extends RSyntaxTextArea {
         LibraryExpression programLib = (LibraryExpression) eval.visit(tree);
         programLib.setActiveLines(LibraryExpression.ALLLINES);
 
-        LibrariesAndCompletions.addAfterBaseLibrary(programLib);
+        LibrariesAndCompletions.addLibrary(programLib);
         /* the visit above fills in addedLibraries in LibrariesAndCompletions
         this the result program is added as well. */
     }

@@ -119,7 +119,16 @@ public class LibraryExpression implements Expression {
     }
 
     public void addToValidLines(int[] lines) {
-        activeLines.add(lines);
+        boolean found = false;
+        for (int[] activeLine : activeLines) {
+            if (activeLine[0] == lines[0] && activeLine[1] == lines[1]) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            activeLines.add(lines);
+        }
     }
 
     /** Add all Function classes in this library as Remixd functions.

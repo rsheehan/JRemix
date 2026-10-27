@@ -105,7 +105,8 @@ public class RemixdCompletions {
                 int endOffset = completionsHere.offset + seedLength;
 
                 textArea.replaceRangeNoCaretListener(completionText, completionsHere.offset, endOffset);
-                textArea.setCaretPosition(completionsHere.offset + completionsHere.currentLength());
+                int back = seedWord.startsWith("'") ? -1 : 0;
+                textArea.setCaretPosition(completionsHere.offset + completionsHere.currentLength() + back);
 
                 if (nextParam) {
                     int lineStartOffset = textArea.getLineStartOffset(lineNumber);
@@ -124,8 +125,9 @@ public class RemixdCompletions {
             int endOffset = completionsHere.offset + completionLength;
 
             textArea.replaceRangeNoCaretListener(completionText, completionsHere.offset, endOffset);
-            textArea.setCaretPosition(completionsHere.offset + completionsHere.currentLength());
-//            AutoTab.fromCaretParamMove(textArea);
+            int back = completionText.startsWith("'") ? -1 : 0;
+            textArea.setCaretPosition(completionsHere.offset + completionsHere.currentLength() + back);
+
             if (nextParam) {
                 int lineStartOffset = textArea.getLineStartOffset(lineNumber);
                 AutoTab.selectedNextParam(textArea,
@@ -173,6 +175,11 @@ public class RemixdCompletions {
             word.append(ch);
         }
         word.reverse();
+
+        // remove "using" at the start
+        int using = word.indexOf("using ");
+        if (using == 0)
+            word.delete(0, 6);
         return word.toString();
     }
 
