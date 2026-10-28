@@ -382,11 +382,11 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
                     String getMethodName = methodTable.createGetter(name, fileName);
                     Method getter = methodTable.get(getMethodName);
                     LibraryExpression.addMethodNameEditing(getMethodName, 1, getter);
-                    LibrariesAndCompletions.methodTableForCompletions.put(getMethodName, getter);
+//                    LibrariesAndCompletions.methodTableForCompletions.put(getMethodName, getter);
                     String setMethodName = methodTable.createSetter(name);
                     Method setter = methodTable.get(setMethodName);
                     LibraryExpression.addMethodNameEditing(setMethodName, 1, setter);
-                    LibrariesAndCompletions.methodTableForCompletions.put(setMethodName, setter);
+//                    LibrariesAndCompletions.methodTableForCompletions.put(setMethodName, setter);
                 }
             } else if (node instanceof RemixdParser.GetterContext) {
                 List<String> getterNames = (List<String>)visit(node);
@@ -482,9 +482,10 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
             return null;
         Block block = (Block)visit(ctx.blockOfStatements());
         Method method = new Method(methSig.getAllNames(), block, methSig.getParameters(), methSig.getBlockParams(), methSig.getSelfRef(), methodComment);
-        for (String name : method.getAllNames()) {
-            LibrariesAndCompletions.methodTableForCompletions.put(name, method);
-        }
+//        for (String name : method.getAllNames()) {
+//
+//            LibrariesAndCompletions.methodTableForCompletions.put(name, method);
+//        }
         return method;
     }
 
