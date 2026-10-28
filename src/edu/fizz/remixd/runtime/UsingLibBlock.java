@@ -35,6 +35,14 @@ public class UsingLibBlock implements Expression { //extends Block {
         usingBlock = functionsAndStatements;
     }
 
+    public LibraryExpression getUsingBlock() {
+        return usingBlock;
+    }
+
+    public Expression[] getLibraries() {
+        return libExpressions;
+    }
+
     public Map<Expression, LibraryExpression> libraryMap() {
         return librariesToUse;
     }

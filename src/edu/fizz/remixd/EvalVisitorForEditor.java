@@ -238,6 +238,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
             // just incomplete error while editing
         }
         UsingLibBlock usingLibBlock = new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
+        LibrariesAndCompletions.addUsingLibBlock(usingLibBlock);
         if (usingBlock != null) {
             for (Function function : usingBlock.functionTable.values()) {
                 FunctionInUsing usingFunction = new FunctionInUsing((RemixdFunction) function, usingLibBlock.libraryMap());

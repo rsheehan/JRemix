@@ -27,6 +27,8 @@ public class LibrariesAndCompletions {
      */
     private static final ArrayList<LibraryExpression> addedLibraries = new ArrayList<>();
 
+    private static final ArrayList<UsingLibBlock> addedUsingLibBlocks = new ArrayList<>();
+
     /* The base library has the built-in and standard-lib functions. */
     private static LibraryExpression baseLibrary;
     /* The program library copies the base library and adds the current
@@ -41,6 +43,7 @@ public class LibrariesAndCompletions {
     }
 
     public static void resetAddedLibraries() {
+        addedUsingLibBlocks.clear();
         addedLibraries.clear();
         addedLibraries.add(baseLibrary);
     }
@@ -59,12 +62,16 @@ public class LibrariesAndCompletions {
         }
     }
 
+    public static void addUsingLibBlock(UsingLibBlock usingLibBlock) {
+        addedUsingLibBlocks.add(usingLibBlock);
+    }
+
     public static void addAfterBaseLibrary(LibraryExpression libraryExpression) {
         addedLibraries.add(1, libraryExpression);
     }
 
     public static LibraryExpression getBaseLibrary() {
-        return baseLibrary; //programLibrary;
+        return baseLibrary;
     }
 
     /*
@@ -141,20 +148,26 @@ public class LibrariesAndCompletions {
         HashMap<String, String> functionDisplayNames = new HashMap<>(); // maps display names to comments
         SortedSet<String> completionsAtStart = new TreeSet<>();
         SortedSet<String> completionsConsecutive = new TreeSet<>();
-        // check against each library
-        //      with activeLines retrieved from the library - compare with lineNumber
-        for (LibraryExpression library : addedLibraries) {
-            // first check lineNumber against activeLines
-            boolean activeHere = false;
-            for (int[] startAndFinish : library.getActiveLines()) {
-
-                if (startAndFinish[0] <= lineNumber && lineNumber <= startAndFinish[1]) {
-                    activeHere = true;
-                    break;
+        // check against each usingLibBlock
+        ArrayList<LibraryExpression> alreadyChecked = new ArrayList<>();
+        for (UsingLibBlock usingLibBlock : addedUsingLibBlocks) {
+            LibraryExpression usingBlock = usingLibBlock.getUsingBlock();
+            int[] startAndFinish = usingBlock.getActiveLines().getFirst();
+            if (startAndFinish[0] <= lineNumber && lineNumber <= startAndFinish[1]) {
+                for (Expression libExpression : usingLibBlock.getLibraries()) { // could be function call, a constant, a variagle
+                    LibraryExpression libraryExpression = (LibraryExpression) libExpression;
+                    searchForCompletions(searchWord, libraryExpression.functionTable, completionsAtStart, completionsConsecutive, functionDisplayNames);
+                    alreadyChecked.add(libraryExpression);
                 }
             }
-            if (activeHere) {
-                searchForCompletions(searchWord, library.functionTable, completionsAtStart, completionsConsecutive, functionDisplayNames);
+        }
+
+        // check against each non using library
+        for (LibraryExpression library : addedLibraries) {
+            boolean canUse = !alreadyChecked.contains(library);
+            // check the library is not in the usingLibBlocks
+            if (canUse) {
+                searchForActiveCompletions(searchWord, lineNumber, library, completionsAtStart, completionsConsecutive, functionDisplayNames);
             }
         }
         searchForCompletions(searchWord, methodTableForCompletions, completionsAtStart, completionsConsecutive, functionDisplayNames);
@@ -162,6 +175,21 @@ public class LibrariesAndCompletions {
         allCompletions.addAll(completionsConsecutive);
 
         return allCompletions;
+    }
+
+    private static void searchForActiveCompletions(String searchWord, int lineNumber, LibraryExpression library, SortedSet<String> completionsAtStart, SortedSet<String> completionsConsecutive, HashMap<String, String> functionDisplayNames) {
+        // first check lineNumber against activeLines
+        boolean activeHere = false;
+        for (int[] startAndFinish : library.getActiveLines()) {
+
+            if (startAndFinish[0] <= lineNumber && lineNumber <= startAndFinish[1]) {
+                activeHere = true;
+                break;
+            }
+        }
+        if (activeHere) {
+            searchForCompletions(searchWord, library.functionTable, completionsAtStart, completionsConsecutive, functionDisplayNames);
+        }
     }
 
     private static void searchForCompletions(String searchWord,

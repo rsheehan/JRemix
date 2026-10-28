@@ -194,8 +194,9 @@ public class RemixdTextArea extends RSyntaxTextArea {
         EvalVisitorForEditor eval = new EvalVisitorForEditor(((RemixdBaseWindow)getWindow()).getCurrentFileName());
         LibraryExpression programLib = (LibraryExpression) eval.visit(tree);
         programLib.setActiveLines(LibraryExpression.ALLLINES);
-
-        LibrariesAndCompletions.addLibrary(programLib);
+        // have to put the programLib just after the standard lib
+        // all using libs are after it (hence used first)
+        LibrariesAndCompletions.addAfterBaseLibrary(programLib);
         /* the visit above fills in addedLibraries in LibrariesAndCompletions
         this the result program is added as well. */
     }

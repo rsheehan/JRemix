@@ -1,6 +1,9 @@
 - Multiple libraries at once. -
 
 LIB1 : library
+	=-
+	with from LIB1
+	=-
 	'A' with 'B' :
 		'A' ⊕ " from LIB1 " ⊕ 'B'
 
@@ -8,6 +11,9 @@ LIB1 : library
 		"from LIB1"
 
 LIB2 : library
+	=-
+	with from LIB2
+	=-
 	'A' with 'B' :
 		'A' ⊕ " from LIB2 " ⊕ 'B'
 
@@ -39,6 +45,7 @@ using LIB1, LIB2
 	}
 ↲
 using LIB2, LIB1
+	
 	test {
 		"2 libraries from first"
 			"a" with "b"

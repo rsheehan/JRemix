@@ -11,13 +11,13 @@ LIB : library
 	'A' ↲
 	A ↲	
 ↲
-a ↲
-'A' ↲
-A ↲
+-a ↲
+-'A' ↲
+-A ↲
 ↲
 using LIB
 	a ↲
-	'A' ↲
+-	'A' ↲
 	A ↲
 
 = Produces
@@ -26,11 +26,7 @@ function
 variable
 constant
 
-null
-null
-null
 
 function
-null
 constant
 =
