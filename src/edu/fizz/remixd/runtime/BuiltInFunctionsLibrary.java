@@ -908,15 +908,15 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     case "REPL" -> helpSB.append("""
                                                          REPL Help
                                                            The REPL window is made up of multiple panels.
-                                                           the panels alternate between code panels and output panels.
+                                                           The panels alternate between code panels and output panels.
                                                          
                                                            You run code in the bottom code panel by CMD/CTRL-r
                                                            If you type into other code panels, the code is copied to the bottom panel.
                                                          
                                                          Completions
                                                            Completions can be shown for functions, 'variables' and CONSTANTS.
-                                                           to see possible completions type shift-TAB after some characters
-                                                           to see completions from a library use "using". e.g.
+                                                           To see possible completions type shift-TAB after some characters.
+                                                           To see completions from a library use "using". e.g.
                                                          
                                                            using graphics
                                                                window <- type shift-TAB
