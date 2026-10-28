@@ -52,7 +52,8 @@ public class REPLPanel extends JPanel {
         glueBox = Box.createGlue();
         add(glueBox, gbcForSpace);
         scrollPane = new JScrollPane(this);
-        addREPLTextArea(); // this moves glue and last to the end
+        RemixdTextArea initialArea = addREPLTextArea(); // this moves glue and last to the end
+        SwingUtilities.invokeLater(() -> initialArea.setText("help REPL ; type CMD-r or CTRL-r"));
         allText = new StringBuilder();
     }
 
@@ -66,7 +67,7 @@ public class REPLPanel extends JPanel {
         });
     }
 
-    protected void addREPLTextArea() {
+    protected RemixdTextArea addREPLTextArea() {
         RemixdTextArea REPLTextArea = new RemixdTextArea(true, darkAreas);
         makeComponentSendScrollingUp(REPLTextArea);
         // to make it scroll when the text would go off the window
@@ -95,6 +96,7 @@ public class REPLPanel extends JPanel {
             frame.requestFocus();
         }
         scrollToBottom();
+        return REPLTextArea;
     }
 
     public static void scrollToBottom() {

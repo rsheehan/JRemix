@@ -861,13 +861,21 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            return "help \"term\"\n" +
-                    "\tsearches for functions which match string \"term\".\n" +
-                    "\te.g. help \"for each\"\n\n" +
-                    "help CONSTANTS or help CONS - shows all constants at this level.\n\n" +
-                    "help VARIABLES or help VARS - shows all variables at this level.\n\n" +
-                    "help LIBRARIES or help LIBS - shows all libraries at this level.\n\n" +
-                    "help 'variableName' or help CONSTANT-NAME - shows all methods for the object.\n";
+            return """
+                    help "term"
+                    \tsearches for functions which match string "term".
+                    \te.g. help "for each"
+                    
+                    help REPL - some help for the Read Evaluate Print Loop.
+                    
+                    help CONSTANTS or help CONS - shows all constants at this level.
+                    
+                    help VARIABLES or help VARS - shows all variables at this level.
+                    
+                    help LIBRARIES or help LIBS - shows all libraries at this level.
+                    
+                    help 'variableName' or help CONSTANT-NAME - shows all methods for the object.
+                    """;
         }
     }
 
@@ -875,12 +883,13 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public HelpFunction() {
             super(
-                    List.of("help ⫾"),
+                    List.of("help ⫾", "? ⫾"),
                     List.of("what"),
                     List.of(false),
                     false,
                     "Give help about 'what'. 'what' is normally a string.\n" +
                             "Also\n" +
+                            "   help REPL\n" +
                             "   help CONSTANTS\n" +
                             "   help VARIABLES\n" +
                             "   help LIBRARIES\n" +
@@ -895,18 +904,39 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             Object what = context.retrieve("what", false);
             StringBuilder helpSB = new StringBuilder();
             if (what instanceof String whatString) {
-                if (whatString.equals("CONSTANTS")) {
-                    dealWithConstants(context.parentContext, helpSB);
-                    int length = helpSB.length();
-                    if (length > 0) // remove last '\n'
-                        helpSB.delete(length - 1, length);
-                } else if (whatString.equals("VARIABLES")) {
-                    dealWithVariables(context.parentContext, helpSB);
-                } else if (whatString.equals("LIBRARIES")) {
-                    dealWithLibraries(context.parentContext, helpSB);
-                } else {
-                    boolean firstLine = dealWithFunctions(context.parentContext, whatString, helpSB);
-                    dealWithMethods(context.parentContext, whatString, helpSB, firstLine);
+                switch (whatString) {
+                    case "REPL" -> helpSB.append("""
+                                                         REPL Help
+                                                           The REPL window is made up of multiple panels.
+                                                           the panels alternate between code panels and output panels.
+                                                         
+                                                           You run code in the bottom code panel by CMD/CTRL-r
+                                                           If you type into other code panels, the code is copied to the bottom panel.
+                                                         
+                                                         Completions
+                                                           Completions can be shown for functions, 'variables' and CONSTANTS.
+                                                           to see possible completions type shift-TAB after some characters
+                                                           to see completions from a library use "using". e.g.
+                                                         
+                                                           using graphics
+                                                               window <- type shift-TAB
+                                                         
+                                                         Also try the help command.
+                                                         
+                                                           help
+                                                         """);
+                    case "CONSTANTS" -> {
+                        dealWithConstants(context.parentContext, helpSB);
+                        int length = helpSB.length();
+                        if (length > 0) // remove last '\n'
+                            helpSB.delete(length - 1, length);
+                    }
+                    case "VARIABLES" -> dealWithVariables(context.parentContext, helpSB);
+                    case "LIBRARIES" -> dealWithLibraries(context.parentContext, helpSB);
+                    default -> {
+                        boolean firstLine = dealWithFunctions(context.parentContext, whatString, helpSB);
+                        dealWithMethods(context.parentContext, whatString, helpSB, firstLine);
+                    }
                 }
             } else if (what instanceof RemixdObject whatObject) {
                 showAllMethods(whatObject, helpSB);

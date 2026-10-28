@@ -24,6 +24,7 @@ THIRD : 3
 ==============
 Help constants
 ==============
+REPL : "REPL"
 CONSTANTS : "CONSTANTS"
 CONS : CONSTANTS
 VARIABLES : "VARIABLES"
