@@ -924,6 +924,11 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                                                          Also try the help command.
                                                          
                                                            help
+                                                         
+                                                         or in a library e.g.
+                                                         
+                                                           using graphics
+                                                               help "window"
                                                          """);
                     case "CONSTANTS" -> {
                         dealWithConstants(context.parentContext, helpSB);
