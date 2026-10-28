@@ -7,7 +7,9 @@ import edu.fizz.remixd.parser.RemixdErrorListener;
 import edu.fizz.remixd.parser.RemixdLexer;
 import edu.fizz.remixd.parser.RemixdParser;
 import edu.fizz.remixd.parser.RemixdParserBaseVisitor;
-import edu.fizz.remixd.runtime.*;
+import edu.fizz.remixd.runtime.Context;
+import edu.fizz.remixd.runtime.LibrariesAndCompletions;
+import edu.fizz.remixd.runtime.LibraryExpression;
 import edu.fizz.remixd.runtime.Runtime;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -15,7 +17,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Stack;
 
 /**
@@ -64,28 +65,28 @@ public class RemixdPrepareRun {
         Object result = Runtime.runProgram(programLib, fileName);
         // before finishing collect variables from the context to
         // add to LibrariesAndCompletions allVariableNames
-        HashMap<String, Object> varsFromRun = REPLContext.getVariables();
-        for (String name : varsFromRun.keySet()) {
-            LibrariesAndCompletions.addVariableName(name);
-            if (varsFromRun.get(name) instanceof RemixdObject object) {
-                MethodTable methodTable = object.methodTable();
-                for (String methodName : methodTable.keySet()) {
-                    Method method = methodTable.get(methodName);
-                    LibrariesAndCompletions.methodTableForCompletions.put(methodName, method);
-                }
-            }
-        }
-        // also collect object and add their methods to
-        // methodTableForCompletions
-        for (String constantName : programLib.getConstantTable().keySet()) {
-            if (programLib.getConstantTable().get(constantName) instanceof RemixdObject object) {
-                MethodTable methodTable = object.methodTable();
-                for (String methodName : methodTable.keySet()) {
-                    Method method = methodTable.get(methodName);
-                    LibrariesAndCompletions.methodTableForCompletions.put(methodName, method);
-                }
-            }
-        }
+//        HashMap<String, Object> varsFromRun = REPLContext.getVariables(); // probably don't need this after adding all methods
+//        for (String name : varsFromRun.keySet()) {
+//            LibrariesAndCompletions.addVariableName(name);
+//            if (varsFromRun.get(name) instanceof RemixdObject object) {
+//                MethodTable methodTable = object.methodTable();
+//                for (String methodName : methodTable.keySet()) {
+//                    Method method = methodTable.get(methodName);
+//                    LibrariesAndCompletions.methodTableForCompletions.put(methodName, method);
+//                }
+//            }
+//        }
+//        // also collect object and add their methods to
+//        // methodTableForCompletions
+//        for (String constantName : programLib.getConstantTable().keySet()) { // same here
+//            if (programLib.getConstantTable().get(constantName) instanceof RemixdObject object) {
+//                MethodTable methodTable = object.methodTable();
+//                for (String methodName : methodTable.keySet()) {
+//                    Method method = methodTable.get(methodName);
+//                    LibrariesAndCompletions.methodTableForCompletions.put(methodName, method);
+//                }
+//            }
+//        }
 
         // constants and functions should be in the existing REPL lib
         // transfer them to library in LibrariesAndCompletions addedLibraries

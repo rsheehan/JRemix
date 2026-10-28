@@ -215,6 +215,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
                     }
                 } else try { // fall back on attempting to evaluate the library expression
                     Context contextForLib = new Context(LibrariesAndCompletions.getBaseLibrary(), null);
+                    contextForLib.completionContext = true;
                     // add any existing functions which may "include aLibrary"
                     programLibrary.setActiveLines(LibraryExpression.ALLLINES); // so any functions in this can be used
                     contextForLib.addLibraryToStack(programLibrary);
@@ -381,9 +382,11 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
                     String getMethodName = methodTable.createGetter(name, fileName);
                     Method getter = methodTable.get(getMethodName);
                     LibraryExpression.addMethodNameEditing(getMethodName, 1, getter);
+                    LibrariesAndCompletions.methodTableForCompletions.put(getMethodName, getter);
                     String setMethodName = methodTable.createSetter(name);
                     Method setter = methodTable.get(setMethodName);
                     LibraryExpression.addMethodNameEditing(setMethodName, 1, setter);
+                    LibrariesAndCompletions.methodTableForCompletions.put(setMethodName, setter);
                 }
             } else if (node instanceof RemixdParser.GetterContext) {
                 List<String> getterNames = (List<String>)visit(node);
@@ -478,7 +481,11 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
         if (ctx.blockOfStatements() == null)
             return null;
         Block block = (Block)visit(ctx.blockOfStatements());
-        return new Method(methSig.getAllNames(), block, methSig.getParameters(), methSig.getBlockParams(), methSig.getSelfRef(), methodComment);
+        Method method = new Method(methSig.getAllNames(), block, methSig.getParameters(), methSig.getBlockParams(), methSig.getSelfRef(), methodComment);
+        for (String name : method.getAllNames()) {
+            LibrariesAndCompletions.methodTableForCompletions.put(name, method);
+        }
+        return method;
     }
 
     /** methodSigPart+ */

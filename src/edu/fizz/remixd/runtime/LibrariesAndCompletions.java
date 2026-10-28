@@ -152,12 +152,16 @@ public class LibrariesAndCompletions {
         ArrayList<LibraryExpression> alreadyChecked = new ArrayList<>();
         for (UsingLibBlock usingLibBlock : addedUsingLibBlocks) {
             LibraryExpression usingBlock = usingLibBlock.getUsingBlock();
-            int[] startAndFinish = usingBlock.getActiveLines().getFirst();
-            if (startAndFinish[0] <= lineNumber && lineNumber <= startAndFinish[1]) {
-                for (Expression libExpression : usingLibBlock.getLibraries()) { // could be function call, a constant, a variagle
-                    LibraryExpression libraryExpression = (LibraryExpression) libExpression;
-                    searchForCompletions(searchWord, libraryExpression.functionTable, completionsAtStart, completionsConsecutive, functionDisplayNames);
-                    alreadyChecked.add(libraryExpression);
+            ArrayList<int []> activeLines = usingBlock.getActiveLines();
+            if (!activeLines.isEmpty()) {
+                int[] startAndFinish = activeLines.getFirst();
+                if (startAndFinish[0] <= lineNumber && lineNumber <= startAndFinish[1]) {
+                    for (Expression libExpression : usingLibBlock.getLibraries()) { // could be function call, a constant, a variagle
+                        if (libExpression instanceof LibraryExpression libraryExpression) {
+                            searchForCompletions(searchWord, libraryExpression.functionTable, completionsAtStart, completionsConsecutive, functionDisplayNames);
+                            alreadyChecked.add(libraryExpression);
+                        }
+                    }
                 }
             }
         }

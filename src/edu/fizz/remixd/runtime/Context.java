@@ -39,6 +39,7 @@ public class Context {
         if (parent != null) {
             fileWindowREPL = parent.fileWindowREPL;
             libraryStack = parent.libraryStack; // TODO: should this clone?
+            completionContext = parent.completionContext;
         }
         this.returnHigher = returnHigher;
     }
