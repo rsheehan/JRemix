@@ -3,6 +3,7 @@ package edu.fizz.remixd.runtime;
 //import edu.fizz.remixd.editor.RemixEditor;
 
 import edu.fizz.remixd.editor.RemixdPrepareRun;
+import edu.fizz.remixd.editor.VarNameAndPos;
 
 import java.util.*;
 
@@ -20,6 +21,12 @@ public class LibrariesAndCompletions {
     public static HashMap<String, Function> methodTableForCompletions = new HashMap<>();
 
     /*
+    A list of function definitions which includes the lines they occupy.
+    This is used when generating completions.
+     */
+
+
+    /*
        List of libraries which have been added so far.
        This is used by the editor for completions.
        The standard library and the program editor library are valid
@@ -35,6 +42,7 @@ public class LibrariesAndCompletions {
        functions and statements.
      */
 
+    // called after runText in RemixdPrepareRun
     public static void addVariableName(String variable) {
         if (variable.startsWith("#"))
             allVariableNames.add(variable + "\n");
@@ -66,6 +74,7 @@ public class LibrariesAndCompletions {
         addedUsingLibBlocks.add(usingLibBlock);
     }
 
+    // Only called from reparseProgramText in RemixdTextArea - doing completions
     public static void addAfterBaseLibrary(LibraryExpression libraryExpression) {
         addedLibraries.add(1, libraryExpression);
     }
@@ -76,11 +85,14 @@ public class LibrariesAndCompletions {
 
     /*
      * Sets the functions, methods, and context back to the standard version.
+     * But doesn't clear variables from previous code text area runs.
      */
-    public static void resetToEditorStandard() {
+    public static void resetToEditorStandard(boolean clearVariables) {
         methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
         resetAddedLibraries();
-        allVariableNames.clear();
+        if (clearVariables) {
+            allVariableNames.clear();
+        }
     }
 
     /*
@@ -124,12 +136,31 @@ public class LibrariesAndCompletions {
     /*
     Get list of possible variable name completions.
      */
-    public static ArrayList<String> variableCompletionsFrom(String searchWord) {
+    public static ArrayList<String> variableCompletionsFrom(String searchWord, int lineNumber) {
         ArrayList<String> variableCompletions = new ArrayList<>();
         String original = searchWord;
         if (original.startsWith("'"))
             original = searchWord + "'";
         original += "\n";
+        // first check to see if inside a function definition
+        // only available variables are from that function.
+
+        // currently valid libraries
+        for (LibraryExpression lib : addedLibraries) {
+            for (VarNameAndPos varNameAndPos : lib.getVariableTable()) {
+                String variableName = varNameAndPos.name();
+                int lineAssigned = varNameAndPos.line();
+                if (!variableName.startsWith("#")) {
+                    variableName = "'" + variableName + "'";
+                }
+                variableName += "\n"; // same as a function separated from its doc string
+                if (variableName.equals(original))
+                    continue;
+                if (variableName.startsWith(searchWord) && lineNumber >= lineAssigned)
+                    variableCompletions.add(variableName);
+            }
+        }
+        // then check from variables added when code text areas are evaluated
         for (String variable : allVariableNames) {
             if (variable.equals(original))
                 continue;
@@ -158,7 +189,7 @@ public class LibrariesAndCompletions {
                 if (startAndFinish[0] <= lineNumber && lineNumber <= startAndFinish[1]) {
                     for (Expression libExpression : usingLibBlock.getLibraries()) { // could be function call, a constant, a variagle
                         if (libExpression instanceof LibraryExpression libraryExpression) {
-                            searchForCompletions(searchWord, libraryExpression.functionTable, completionsAtStart, completionsConsecutive, functionDisplayNames);
+                            searchForCompletions(searchWord, libraryExpression.getFunctionTable(), completionsAtStart, completionsConsecutive, functionDisplayNames);
                             alreadyChecked.add(libraryExpression);
                         }
                     }
@@ -192,7 +223,7 @@ public class LibrariesAndCompletions {
             }
         }
         if (activeHere) {
-            searchForCompletions(searchWord, library.functionTable, completionsAtStart, completionsConsecutive, functionDisplayNames);
+            searchForCompletions(searchWord, library.getFunctionTable(), completionsAtStart, completionsConsecutive, functionDisplayNames);
         }
     }
 

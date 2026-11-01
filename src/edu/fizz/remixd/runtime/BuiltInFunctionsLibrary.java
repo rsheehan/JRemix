@@ -63,7 +63,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
             String filename = context.retrieve("file-name", false).toString();
             LibraryExpression included;
-            boolean completing = context.completionContext; // context.getFileWindowREPL().equals(RemixdPrepareRun.INTERACTIVETEXT);
+            boolean completing = RemixdCompletions.isCompleting();
             try {
                 // COULD HAVE EDITING INFORMATION IN THE CONTEXT
                 if (completing)
@@ -1069,7 +1069,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             boolean foundInComment;
             boolean firstLine = true;
             for (LibraryExpression lib : libStack) {
-                for (Function function : lib.functionTable.values()) {
+                for (Function function : lib.getFunctionTable().values()) {
                     if (matchedFunctions.contains(function))
                         continue;
                     boolean found = false;

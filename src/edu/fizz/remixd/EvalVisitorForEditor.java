@@ -1,14 +1,15 @@
 package edu.fizz.remixd;
 
 import edu.fizz.remixd.editor.RemixdPrepareRun;
+import edu.fizz.remixd.editor.VarNameAndPos;
+import edu.fizz.remixd.parser.RemixdParser;
+import edu.fizz.remixd.parser.RemixdParserBaseVisitor;
 import edu.fizz.remixd.runtime.*;
-import edu.fizz.remixd.parser.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
@@ -32,9 +33,10 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
     // Popped off when the included file is finished.
     // So the top of the stack being true means we are in the main program.
     public static final Stack<Boolean> addIdentifierStack;
+
     // The programLibIdentifiers connect a library name with its library so that
     // we can find constants declared in the library.
-    private final HashMap<String, LibraryExpression> programLibIdentifiers = new HashMap<>();
+//    private final HashMap<String, LibraryExpression> programLibIdentifiers = new HashMap<>();
 
     static {
         addIdentifierStack = new Stack<>();
@@ -46,7 +48,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
         this.fileName = "EDITORCOMPLETION: " + fileName;
     }
 
-    LibraryExpression programLibrary = new LibraryExpression();
+    private LibraryExpression programLibrary = new LibraryExpression();
 
     /** ( functionDefinition | statement | setConstant | usingStatement | library | libAssignment )* EOF */
     /* This is where the Remixd functions are added to the function table. */
@@ -62,14 +64,21 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
             // statement
             if (node instanceof RemixdParser.StatementContext) {
                 Expression statement = (Expression) visit(node);
-                if (statement != null) // can be blank statements
-                    programLibrary.block.addStatement(statement);
+                if (statement != null) { // can be blank statements
+                    programLibrary.block.addStatement(statement); // DO I NEED THIS?
+                    if (statement instanceof AssignmentStatement assignmentStatement) {
+                        String name = assignmentStatement.name();
+                        int line = ((RemixdParser.StatementContext) node).getStart().getLine();
+                        VarNameAndPos nameAndPos = new VarNameAndPos(name, line - 1);
+                        programLibrary.addVariableForCompletions(nameAndPos);
+                    }
+                }
 
             // setConstant e.g. ABC : 123
             } else if (node instanceof RemixdParser.SetConstantContext) {
                 ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
-                constantAssignment.setLibraryStoredIn(programLibrary);
-                programLibrary.block.addStatement(constantAssignment);
+                constantAssignment.setLibraryStoredIn(programLibrary); // DO I NEED THIS?
+                programLibrary.block.addStatement(constantAssignment); // DO I NEED THIS?
                 programLibrary.addConstantForCompletions(constantAssignment.name());
 
             // functionDefinition
@@ -96,9 +105,9 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
                 AssignmentStatement assignmentStatement = (AssignmentStatement) visit(node);
                 if (assignmentStatement instanceof ConstantAssignmentStatement constantAssignmentStatement)
                     constantAssignmentStatement.setLibraryStoredIn(programLibrary);
-                LibrariesAndCompletions.addLibrary((LibraryExpression) assignmentStatement.expression);
+//                LibrariesAndCompletions.addLibrary((LibraryExpression) assignmentStatement.expression);
                 programLibrary.block.addStatement(assignmentStatement); // needed for embedded lib using constants e.g. TURTLE
-                programLibIdentifiers.put(assignmentStatement.name(), (LibraryExpression)assignmentStatement.expression);
+//                programLibIdentifiers.put(assignmentStatement.name(), (LibraryExpression)assignmentStatement.expression);
                 programLibrary.addConstantForCompletions(assignmentStatement.name());
             }
         }
@@ -138,14 +147,20 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
             // statement
             if (node instanceof RemixdParser.StatementContext) {
                 Expression statement = (Expression) visit(node);
-                if (statement != null) // can be blank statements
-                    library.block.addStatement(statement);
-
+                if (statement != null) {// can be blank statements
+                    library.block.addStatement(statement); // DO I NEED THIS?
+                    if (statement instanceof AssignmentStatement assignmentStatement) {
+                        String name = assignmentStatement.name();
+                        int line = ((RemixdParser.StatementContext) node).getStart().getLine();
+                        VarNameAndPos nameAndPos = new VarNameAndPos(name, line - 1);
+                        library.addVariableForCompletions(nameAndPos);
+                    }
+                }
             // setConstant e.g. ABC : 123
             }  else if (node instanceof RemixdParser.SetConstantContext) {
                 ConstantAssignmentStatement constantAssignment = (ConstantAssignmentStatement) visit(node);
-                constantAssignment.setLibraryStoredIn(library);
-                library.block.addStatement(constantAssignment);
+                constantAssignment.setLibraryStoredIn(library); // DO I NEED THIS?
+                library.block.addStatement(constantAssignment); // DO I NEED THIS?
                 library.addConstantForCompletions(constantAssignment.name());
 
             // functionDefinition
@@ -194,36 +209,35 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
                 Expression libExp = (Expression) visit(node);
                 if (libExp instanceof ConstantValueExpression constantValueExpression) {
                     String constantName = constantValueExpression.getName();
-                    libraryExpression = programLibIdentifiers.get(constantName);
-                    if (libraryExpression == null) {
-                    for (LibraryExpression libsInREPL : RemixdPrepareRun.REPLContext.getLibraryStack()){
+//                    libraryExpression = programLibIdentifiers.get(constantName);
+//                    if (libraryExpression == null) {
+                        for (LibraryExpression libsInREPL : RemixdPrepareRun.REPLContext.getLibraryStack()){
                             LibraryExpression lib = (LibraryExpression) libsInREPL.getConstantTable().get(constantName);
                             if (lib != null) {
                                 libraryExpression = lib;
                                 break;
                             }
                         }
-                    }
+//                    }
                 } else if (libExp instanceof VarValueExpression varValueExpression) {
                     String varName = varValueExpression.getName();
-                    libraryExpression = programLibIdentifiers.get(varName);
-                    if (libraryExpression == null) { // I think this is always true
+//                    libraryExpression = programLibIdentifiers.get(varName);
+//                    if (libraryExpression == null) { // I think this is always true
                         try { // should really check if in REPL
                             libraryExpression = (LibraryExpression) RemixdPrepareRun.REPLContext.retrieve(varName, false);
-                        } catch (VarNotFoundException | FunctionNotFoundException _) { // nothing
-                        }
-                    }
+                        } catch (VarNotFoundException | FunctionNotFoundException _) {} // nothing
+//                    }
                 } else try { // fall back on attempting to evaluate the library expression
                     Context contextForLib = new Context(LibrariesAndCompletions.getBaseLibrary(), null);
-                    contextForLib.completionContext = true;
                     // add any existing functions which may "include aLibrary"
-                    programLibrary.setActiveLines(LibraryExpression.ALLLINES); // so any functions in this can be used
+//                    programLibrary.setActiveLines(LibraryExpression.ALLLINES); // so any functions in this can be used
                     contextForLib.addLibraryToStack(programLibrary);
                     libraryExpression = (LibraryExpression) libExp.evaluate(contextForLib);
                 } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException |
                          VarNotFoundException | FunctionNotFoundException _) {}
                 if (libraryExpression != null)
                     libraryExpressions.add(libraryExpression);
+                    // this is the list of libraries we are using
             }
         }
         try {
@@ -231,17 +245,22 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
             if (addIdentifierStack.peek()) { // we are dealing with the main program not an included file
                 for (LibraryExpression lib : libraryExpressions) {
                     lib.addToValidLines(usingBlock.getActiveLines().getFirst());
-                    LibrariesAndCompletions.addLibrary(lib);
+                    LibrariesAndCompletions.addLibrary(lib); // should be the libraries we are using
                 }
             }
+            // the usingBlock may have constants, and functions
+            // add all constants to the top-level repl library (programLibrary) or
+            // if inside a library definition then to that library
+            // I recommend just adding them to programLibrary
             LibrariesAndCompletions.addLibrary(usingBlock);
         } catch (NullPointerException ex) {
             // just incomplete error while editing
         }
+        // Don't need UsingLibBlock in completions
         UsingLibBlock usingLibBlock = new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
         LibrariesAndCompletions.addUsingLibBlock(usingLibBlock);
         if (usingBlock != null) {
-            for (Function function : usingBlock.functionTable.values()) {
+            for (Function function : usingBlock.getFunctionTable().values()) {
                 FunctionInUsing usingFunction = new FunctionInUsing((RemixdFunction) function, usingLibBlock.libraryMap());
                 programLibrary.addFunction(usingFunction);
             }
@@ -265,7 +284,13 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
         for (int i = 0; i < ctx.getChildCount(); i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixdParser.StatementContext) {
-                visit(node);
+                Object statement = visit(node);
+                if (statement instanceof AssignmentStatement assignmentStatement) {
+                    String name = assignmentStatement.name();
+                    int line = ((RemixdParser.StatementContext) node).getStart().getLine();
+                    VarNameAndPos nameAndPos = new VarNameAndPos(name, line - 1);
+                    programLibrary.addVariableForCompletions(nameAndPos);
+                }
             }  else if (node instanceof RemixdParser.SetConstantContext) {
                 // in this version for completion only ConstantAssignmentStatements get
                 // added to the usingBlock.block.
@@ -273,7 +298,8 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
                 usingBlock.block.addStatement(constantAssignment);
             } else if (node instanceof RemixdParser.FunctionDefinitionContext) {
                 RemixdFunction function = (RemixdFunction)visit(node);
-                usingBlock.addFunction(function);
+                programLibrary.addFunction(function);
+//                usingBlock.addFunction(function);
             }
         }
         return usingBlock;
@@ -314,7 +340,8 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
                 funcSig.getBlockParams(),
                 false, // transparent,
                 funcComment,
-                ctx.start.getLine() - 1
+                ctx.start.getLine() - 1,
+                ctx.stop.getLine() - 1
         );
     }
 
@@ -513,8 +540,8 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
         if (varName.startsWith("'")) {
             varName = varName.substring(1, varName.length() - 1);
         }
-        if (addIdentifierStack.peek())
-            LibrariesAndCompletions.addVariableName(varName);
+//        if (addIdentifierStack.peek())
+//            LibrariesAndCompletions.addVariableName(varName);
         return varName;
     }
 
@@ -786,6 +813,9 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
     @Override
     public Expression visitCallVar(RemixdParser.CallVarContext ctx) {
         String varName = identifier(ctx.IDENTIFIER().getText());
+        int line = ctx.getStart().getLine();
+        VarNameAndPos nameAndPos = new VarNameAndPos(varName, line - 1);
+        programLibrary.addVariableForCompletions(nameAndPos);
         return new VarValueExpression(varName, fileName, 0, 0);
     }
 

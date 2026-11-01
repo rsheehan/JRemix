@@ -1,24 +1,29 @@
-using include "remixdPrograms/includeLibrary.rem"
+- Notes for completions
+
+using include "remixdPrograms/includeLibrary.rem" ; this lib must be addedLib
 	"inside using" ↲
 
-	4 plus 3 ↲
+	4 plus 3 ↲ ; completion here comes from the included lib
+	
 	= the object 'O' is at the top level
 	= it's methods can be called at that level
-	'O' : making object
+	'O' : making object ; completion come from included lib
 
 	- this method is also at the top level
-	'a' div 'b' :
+	'a' div 'b' : ; this is added to program lib functions
 		'a' ÷ 'b'
 		
-	99 div 9 ↲
+	99 div 9 ↲ ; completion comes from program lib
 
-'A' minus 'B' :
+'A' minus 'B' : ; added to program lib
 	'A' - 'B'
 
-4 minus 3 ↲
+4 minus 3 ↲ ; completion from program lib
+
 -4 times 3 ↲ ; is not accessible because at top-level of included file
 -4 plus 3 ↲ ; does not exist because in library
-36 div 3 ↲
+	
+36 div 3 ↲ ; completion from program lib
 
 'O' ↲
 print 'O' ; should print "OV1 + OV2 = 6"

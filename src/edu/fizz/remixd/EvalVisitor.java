@@ -30,7 +30,7 @@ public class EvalVisitor extends RemixdParserBaseVisitor<Object> {
     This is the libraryExpression of the program to run, or the real library
     currently being loaded.
      */
-    LibraryExpression programLibrary = new LibraryExpression();
+    private LibraryExpression programLibrary = new LibraryExpression();
 
     public EvalVisitor(String fileName) {
         super();
@@ -160,7 +160,7 @@ public class EvalVisitor extends RemixdParserBaseVisitor<Object> {
 
         UsingLibBlock usingLibBlock = new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
 
-        for (Function function : usingBlock.functionTable.values()) {
+        for (Function function : usingBlock.getFunctionTable().values()) {
             FunctionInUsing usingFunction = new FunctionInUsing((RemixdFunction) function, usingLibBlock.libraryMap());
             programLibrary.addFunction(usingFunction);
         }

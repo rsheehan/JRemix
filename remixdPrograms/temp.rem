@@ -1,20 +1,44 @@
-a person called 'name' :
-	create
-		'name' : 'name'
-		'age' : 0
-		
-		setter
-			'age'
-			
-		ME to string :
-			'result' : "Name: " ⊕ 'name'
-			if ('age' > 0) 
-				'result' ⊕ ", Age: " ⊕ 'age'
-			… otherwise 
-				'result'
+- Multiple libraries at once. -
 
-'Robert' : a person called "Robert"
-'Robert' ↲
+LIB1 : library
+	=-
+	from LIB1
+	=-
+	'A' with 'B' :
+		'A' ⊕ " from LIB1 " ⊕ 'B'
+	
+	'A' alone :
+		"from LIB1"
+
+LIB2 : library
+	=-
+	from LIB2
+	=-
+	'A' with 'B' :
+		'A' ⊕ " from LIB2 " ⊕ 'B'
+
 ↲
-'Robert' age 68
-'Robert' ↲
+using LIB2, LIB1
+	
+	(A) with (B)
+	(A) with (B)
+	test {
+		"2 libraries from first"
+			"a" with "b"
+		… expected "a from LIB1 b"
+
+		"2 libraries only second"
+			"a" alone
+		… expected "from LIB1"
+	}
+↲
+using LIB1, LIB2
+	test {
+		"2 nested libraries from first"
+			"a" with "b"
+		… expected "a from LIB2 b"
+
+		"2 nested libraries only first"
+			"a" alone
+		… expected "from LIB1"
+	}

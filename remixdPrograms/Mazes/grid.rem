@@ -17,8 +17,11 @@ library
 						'cells'{'row'}{'column'} : a cell at 'row' 'column'
 				'cells'
 			
+			getters
+				'rows', 'columns'
+				
 			=-
-			Return the cell at position {'row', 'column'} of grid 'OBJECT'.
+			Return the cell at position <'row', 'column'> of grid 'OBJECT'.
 			=-
 			MY cell at 'row' by 'column' :
 				if (all of {
@@ -54,6 +57,26 @@ library
 					next ME :
 						increment 'row'
 						'cells'{'row'}
+			
+			=-
+			Creates an iterator to go over every cell in the grid.
+			=-
+			MY cell iterator :
+				create 'cells', 'rows', 'columns'
+					'row' : 1
+					'column' : 1
+					
+					end ME :
+						'row' > 'rows'
+					
+					next ME :
+						'cell' : 'cells'{'row'}{'column'}
+						increment 'column'
+						if ('column' > 'columns') 
+							'column' = 1
+							increment 'row'
+						'cell'
+						
 	
 	=-
 	Create a single cell with connections to 

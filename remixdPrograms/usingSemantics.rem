@@ -1,0 +1,15 @@
+using include "remixdPrograms/includeLibrary.rem"
+	
+	making object
+	3 plus 4 ↲
+	=-
+	plus from inside using
+	=-
+	'a' plus 'b' :
+		"plus from using"
+		
+making object :
+	"makeing object from top-level" ↲
+
+
+making object

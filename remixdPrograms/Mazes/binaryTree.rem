@@ -1,0 +1,8 @@
+library
+	using include "remixdPrograms/Mazes/grid.rem"
+		'grid' : a grid of 4 by 4
+
+'binary tree' : a binary tree maze based on 'grid'
+
+a binary tree maze based on 'grid' :
+	for

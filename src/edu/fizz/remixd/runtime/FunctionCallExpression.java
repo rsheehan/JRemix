@@ -16,10 +16,6 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
     private final int lineNumber;
     private final int lineOffset;
 
-    public void setInEditor(boolean inEditor) {
-        this.inEditor = inEditor;
-    }
-
     private boolean inEditor = false;
 
     public FunctionCallExpression(String fileName, int lineNumber, int lineOffset) {
@@ -27,6 +23,10 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         this.fileName = fileName;
         this.lineNumber = lineNumber;
         this.lineOffset = lineOffset;
+    }
+    
+    public void setInEditor(boolean inEditor) {
+        this.inEditor = inEditor;
     }
 
     public Function getFunction(Context context) {
@@ -195,7 +195,6 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         Object result;
         if (inEditor) {
             functionContext.setFileWindowREPL(RemixdPrepareRun.INTERACTIVETEXT);
-            functionContext.completionContext = true;
         }
         try {
             result = routine.execute(functionContext);

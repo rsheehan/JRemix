@@ -16,9 +16,6 @@ public class Context {
     private boolean returnHigher = false;
     private String fileWindowREPL;
 
-    // needs to be set before a function call to include
-    public boolean completionContext = false;
-
     public Context() {
     }
 
@@ -39,7 +36,6 @@ public class Context {
         if (parent != null) {
             fileWindowREPL = parent.fileWindowREPL;
             libraryStack = parent.libraryStack; // TODO: should this clone?
-            completionContext = parent.completionContext;
         }
         this.returnHigher = returnHigher;
     }
@@ -192,13 +188,13 @@ public class Context {
         libraryStack.push(library);
     }
 
-    public LibraryExpression popLibrary() {
-        return libraryStack.pop();
+    public void popLibrary() {
+        libraryStack.pop();
     }
 
-    public LibraryExpression peekLibrary() {
-        return libraryStack.peek();
-    }
+//    public LibraryExpression peekLibrary() {
+//        return libraryStack.peek();
+//    }
 
     public boolean libraryInStack(LibraryExpression library) {
         return libraryStack.contains(library);

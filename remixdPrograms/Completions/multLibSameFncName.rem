@@ -1,0 +1,53 @@
+- Multiple libraries at once. -
+
+LIB1 : library
+	=-
+	from LIB1
+	=-
+	'A' with 'B' :
+		'A' ⊕ " from LIB1 " ⊕ 'B'
+	
+	'A' alone :
+		"from LIB1"
+	
+	- should complete with LIB1
+	with
+	
+LIB2 : library
+	=-
+	from LIB2
+	=-
+	'A' with 'B' :
+		'A' ⊕ " from LIB2 " ⊕ 'B'
+	
+	- should complete with LIB2
+	with
+
+↲
+using LIB2, LIB1
+	- should complete with LIB1
+	with
+	
+	test {
+		"2 libraries from first"
+			"a" with "b"
+		… expected "a from LIB1 b"
+
+		"2 libraries only second"
+			"a" alone
+		… expected "from LIB1"
+	}
+↲
+using LIB1, LIB2
+	- should complete with LIB2
+	with
+	
+	test {
+		"2 nested libraries from first"
+			"a" with "b"
+		… expected "a from LIB2 b"
+
+		"2 nested libraries only first"
+			"a" alone
+		… expected "from LIB1"
+	}

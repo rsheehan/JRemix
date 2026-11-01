@@ -17,6 +17,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Stack;
 
 /**
@@ -30,8 +31,16 @@ public class RemixdPrepareRun {
     public volatile static Context REPLContext; // context when in interactive area
 
     private static String fileName; // only one file can be parsed at a time
-    private static boolean completing = false;
 
+    /**
+     * Load the libName library.
+     * This is called when starting up for the standard library.
+     * Also when doing the "include" built-in function.
+     * @param libName the filename of the library
+     * @param editing whether we are currently editing, i.e. doing completions
+     * @return the loaded library
+     * @throws Exception lots of possible errors
+     */
     public static LibraryExpression loadPackage(String libName, boolean editing) throws Exception {
         String preRemFile;
         // Preprocess the .rem file
@@ -58,16 +67,14 @@ public class RemixdPrepareRun {
     public static Object runText(String fileName, String programText) {
         EvalVisitor eval = new EvalVisitor(fileName);
         final ParseTree tree = processParse(programText);
-        if (tree == null) {
-            return null;
-        }
+
         LibraryExpression programLib = (LibraryExpression)eval.visit(tree);
         Object result = Runtime.runProgram(programLib, fileName);
         // before finishing collect variables from the context to
         // add to LibrariesAndCompletions allVariableNames
-//        HashMap<String, Object> varsFromRun = REPLContext.getVariables(); // probably don't need this after adding all methods
-//        for (String name : varsFromRun.keySet()) {
-//            LibrariesAndCompletions.addVariableName(name);
+        HashMap<String, Object> varsFromRun = REPLContext.getVariables();
+        for (String name : varsFromRun.keySet()) {
+            LibrariesAndCompletions.addVariableName(name);
 //            if (varsFromRun.get(name) instanceof RemixdObject object) {
 //                MethodTable methodTable = object.methodTable();
 //                for (String methodName : methodTable.keySet()) {
@@ -75,7 +82,7 @@ public class RemixdPrepareRun {
 //                    LibrariesAndCompletions.methodTableForCompletions.put(methodName, method);
 //                }
 //            }
-//        }
+        }
 //        // also collect object and add their methods to
 //        // methodTableForCompletions
 //        for (String constantName : programLib.getConstantTable().keySet()) { // same here
@@ -98,6 +105,11 @@ public class RemixdPrepareRun {
         return result;
     }
 
+    /**
+     * Create the parse tree from the programText.
+     * @param programText the code to parse
+     * @return the parse tree starting at "program"
+     */
     public static ParseTree processParse(String programText) { // TODO fileName needed?
         String processedText;
         programText = programText.replaceAll("\\r", "");
@@ -114,22 +126,11 @@ public class RemixdPrepareRun {
         final RemixdErrorListener listener = new RemixdErrorListener();
         parser.addErrorListener(listener);
         // parse
-        ParseTree tree = parser.program();
-        if (listener.errorOccurred()) {
-            return null;
-        }
-        return tree;
+        return parser.program();
     }
 
     public static void setFileName(String fileName) {
         RemixdPrepareRun.fileName = fileName;
     }
 
-    public static boolean isCompleting() {
-        return completing;
-    }
-
-    public static void setCompleting(boolean completing) {
-        RemixdPrepareRun.completing = completing;
-    }
 }

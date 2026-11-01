@@ -419,7 +419,7 @@ public class RemixdApp extends RemixdBaseWindow {
     static void main() {
         try {
             LibrariesAndCompletions.prepareEnvironment();
-            LibrariesAndCompletions.resetToEditorStandard();
+            LibrariesAndCompletions.resetToEditorStandard(true);
             // after this the currentLibrary is the program library
         } catch (Exception e) {
             System.err.println("Error: initializing REPL");

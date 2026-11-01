@@ -1,5 +1,7 @@
 package edu.fizz.remixd.runtime;
 
+import edu.fizz.remixd.editor.VarNameAndPos;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -24,15 +26,30 @@ public class LibraryExpression implements Expression {
     private String javaFileName = "";
     private String remixFileName = "";
     private String callName = "";
+    private String libName = "";
 
+    // Functions available in this library.
+    private final LinkedHashMap<String, Function> functionTable = new LinkedHashMap<>();
+    // Constants available in this library.
+    private final LinkedHashMap<String, Object> constantTable = new LinkedHashMap<>();
+    // Variable names available in this library.
+    private final Set<VarNameAndPos> variableTable = new HashSet<>();
+
+    // these are static
+    static HashMap<String, Integer> methodTableRefPos = new HashMap<>(); // one table used by all
+    static HashMap<String, Function> methodTableStandardLib = new HashMap<>();
+
+    public LibraryExpression() {
+        setUpBuiltIns();
+    }
+
+    public void setTrueLibrary() {
+        this.trueLibrary = true;
+    }
 
     public String getRemixFileName() {
         return remixFileName;
     }
-
-//    public void setLibName(String libName) {
-//        this.libName = libName;
-//    }
 
     public String getLibName() {
         if (!libName.isEmpty()) { // currently only used by the REPL library expression
@@ -83,25 +100,6 @@ public class LibraryExpression implements Expression {
                 String.valueOf('⎺').repeat(libName.length());
     }
 
-    private String libName = "";
-
-    // Functions available in this library.
-    public LinkedHashMap<String, Function> functionTable = new LinkedHashMap<>();
-
-    // Constants available in this library.
-    private final LinkedHashMap<String, Object> constantTable = new LinkedHashMap<>();
-
-    static HashMap<String, Integer> methodTableRefPos = new HashMap<>(); // one table used by all
-    static HashMap<String, Function> methodTableStandardLib = new HashMap<>();
-
-    public LibraryExpression() {
-        setUpBuiltIns();
-    }
-
-    public void setTrueLibrary() {
-        this.trueLibrary = true;
-    }
-
     public ArrayList<int[]> getActiveLines() {
         return activeLines;
     }
@@ -144,6 +142,14 @@ public class LibraryExpression implements Expression {
         }
     }
 
+    public Set<VarNameAndPos> getVariableTable() {
+        return variableTable;
+    }
+
+    public LinkedHashMap<String, Function> getFunctionTable() {
+        return functionTable;
+    }
+
     /** Add functions from the compile phase. */
     public void addFunction(Function function) {
         if (function == null) return;
@@ -174,6 +180,18 @@ public class LibraryExpression implements Expression {
      */
     public void addConstantForCompletions(String constantName) {
         constantTable.put(constantName, null);
+    }
+
+    /*
+    Only called when producing completions. See EvalVisitorForEditor.
+     */
+    public void addVariableForCompletions(VarNameAndPos newNameAndPos) {
+        for (VarNameAndPos varNameAndPos : variableTable) {
+            if (newNameAndPos.name().equals(varNameAndPos.name())) {
+                return;
+            }
+        }
+        variableTable.add(newNameAndPos);
     }
 
     /** Add a name of method and the reference parameter position. */

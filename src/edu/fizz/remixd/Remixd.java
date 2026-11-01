@@ -31,7 +31,7 @@ public class Remixd {
 
     public static void main(String[] args) throws Exception {
         LibrariesAndCompletions.prepareEnvironment();
-        LibrariesAndCompletions.resetToEditorStandard();
+        LibrariesAndCompletions.resetToEditorStandard(true);
         if (args.length > 0 && isRemFile(args[0])) {
             LibraryExpression program = loadPackage(args[0]);
             Runtime.runProgram(program, null);

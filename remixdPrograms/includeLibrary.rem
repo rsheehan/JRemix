@@ -1,24 +1,32 @@
+- notes for completions both here and a using file
+
 =-
 Accessible at the top-level. No need for "uses".
 Currently not added to completions.
 =-
-'A' times 'B' :
-	'A' * 'B'
+'A' times 'B' : ; only added to completions if this is being edited
+	'A' * 'B'   ; not for "using" file
 
 library
 	- Only accessible via a "using" block.
-	'A' plus 'B' :
+	=-
+	plus from IncludeLibrary.rem
+	=-
+	'A' plus 'B' : ; can complete here, and in using block
 		'A' + 'B'
 
-	making object :
+	=-
+	making object from IncludeLibrary.rem
+	=-
+	making object : ; can complete here, and in using block
 		"making object" \n
 		create
 			'OV1' : 2
 			'OV2' : 4
 
-			getters/setters
+			getters/setters ; also the generated methods
 				'OV1', 'OV2'
 
-			print ME :
+			print ME : ; all methods are added to global method table
 				"OV1 + OV2 = ", 'OV1' plus 'OV2' ↲
 

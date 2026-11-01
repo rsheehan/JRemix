@@ -1,3 +1,17 @@
+Map keys are now the string version of any type.
+But doesn't work with say:
+'object' : create
+	'x' : 3
+'map'{'object'} : 234
+'object2' : create
+	'x' : 3
+'map'{'object2'}
+
+causes
+"map" cannot have index "object
+  'x' : 3".
+
+
 When an error occurs e.g. binary expression in the std-lib
 the error message only mentions std-lib location, need to know previous calls.
 
@@ -10,23 +24,67 @@ Need to move WORDPRODUCT in the lexer into wordproduct in the grammar.
 NEED TO BE ABLE TO REMOVE REPL CODE AREAS SO ERRORS DON'T KEEP PROPAGATING
 THIS ONLY APPLIES DURING COMPLETION HANDLING
 
+REPL
+In some situations the graphics and REPL libraries are added more than once.
+
+Doc comments for completions don't show in the right place if long comment
+and near the bottom (but not at the bottom) of the window.
+
 =============
 Completions
 
+using files (in appleROM.rem)
+	the variables in the using area are not added to the main program lib
+	now they are but the ordering is not preserved so a variable can be completed
+	in an area of code where it has not been assigned a value yet
+	this was fixed by adding the line number where set
+	this is also fixed but if a variable is in a function or even a line like
+	for each 'item' ...
+	The 'item' cannot be completed in the following block.
+
+Design to gather variables, constants, functions and methods
+As visitProgram is run
+Catching variable names - get them from variable assignments
+but also must get them from function and method parameters
+in this case the scope of the variable is only in the function
+
+In REPL
+	'grid lib' : include "remixdPrograms/Mazes/grid.rem"
+	grid <- this completes when it should only do so when using 'grid lib'
+The problem is that the previous code areas text is included in the parsing
+of the text. This causes lots of libraryExpressions to be added repeatedly to
+LibrariesAndCompletions.addedLibraries.
+When do I need to keep them around? Not for variables - they come from the replContext
+Top-level constants could be added to the REPL library expression
+So each time a code area is evaluated what do I need to keep for completions?
+	variables from the replContext
+	constants are associated with the program (including any using blocks)
+		and true libraries - SO KEEP TRUE LIBRARIES?
+NO EVEN MORE RADICAL - remove all but the REPL and ...
+	no - the REPL needs its own completion scheme, cannot use the text editor one.
+	keep the variables and values - values needed for libraries
+	add the constants and values to the REPL lib
+	add any functions to the REPL lib
+	So use editor completions only on the current code area
+		augment with the variables, functions and constants from previous repl executions
+
+
+So I really need to collect information from assignments to variables and constants.
+
+Should make sure that variable names are associated with active lines like libraries are.
+At the moment all variables are regarded as being in scope.
+
+LibrariesAndCompletions.addedLibraries - this is used to find function and constant? completions
+also the variable names are in LibrariesAndCompletions.allVariableNames
+
+but the value from the name is stored in RemixdPrepareRun.REPLContext
+
 =============
 
-Multiple iterators over sequences.
-
-=============
 "create", "extend", "using" and "library" should only be keywords if in the correct syntax.
-They should be usable as ordinary words in other places.
+They could be usable as ordinary words in other places.
 
 Editor doesn't allow easy typing of '/' since this becomes divide symbol.
-
-If X is not allocated a value (or is null) then
-	X + 1
-ends up giving X the value "false", this is a result of the binary expression.
-Need to think through how to deal with binary expressions which have mismatched types.
 
 When a library function shadows a previous library level function this should really be
 pointed out to the programmer.

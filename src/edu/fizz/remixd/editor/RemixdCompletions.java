@@ -11,6 +11,7 @@ import java.util.Objects;
 
 public class RemixdCompletions {
 
+    static boolean completing = false;
     private final RemixdTextArea textArea;
     private CompletionInfo completionsHere;
     private boolean nextParam = false;
@@ -37,6 +38,19 @@ public class RemixdCompletions {
                 cancelCompletionHandling();
             }
         });
+    }
+
+    /**
+     * Are we doing completions?
+     * Used in the error listener and in the built-in include function.
+     * @return whether we are completing
+     */
+    public static boolean isCompleting() {
+        return completing;
+    }
+
+    public static void setCompleting(boolean completing) {
+        RemixdCompletions.completing = completing;
     }
 
     public void clearCompletions() {
@@ -71,7 +85,9 @@ public class RemixdCompletions {
         String completionComment = "";
         int splitPos;
         if (completionsHere == null) {
-            textArea.reparseProgramText(); // editor can be null if printing this document
+
+            textArea.reparseProgramTextForCompletions(); // editor can be null if printing this document
+
             String seedWord = wordSoFar(offset);
             int existingLines = 0;
             if (textArea.isREPLArea) {
@@ -79,12 +95,12 @@ public class RemixdCompletions {
             }
             if (seedWord.startsWith("'")) { // variable
                 nextParam = false;
-                completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord);
+                completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord, lineNumber);
                 seedWord += "'";
                 offset += 1;
             } else if (seedWord.startsWith("#")) { // refvar
                 nextParam = false;
-                completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord);
+                completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord, lineNumber);
             } else if (seedWord.equals(seedWord.toUpperCase())) { // constant
                 nextParam = false;
                 completions = LibrariesAndCompletions.constantCompletionsFrom(seedWord, lineNumber + 1 + existingLines);

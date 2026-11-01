@@ -1,5 +1,6 @@
 package edu.fizz.remixd.parser;
 
+import edu.fizz.remixd.editor.RemixdCompletions;
 import edu.fizz.remixd.editor.RemixdPrepareRun;
 import edu.fizz.remixd.runtime.Runtime;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -16,7 +17,7 @@ public class RemixdErrorListener extends BaseErrorListener {
                             int line, int charPositionInLine,
                             String msg, RecognitionException e) {
         if (errorCount++ == 0) { // on the first error
-            if (!RemixdPrepareRun.isCompleting()) {
+            if (!RemixdCompletions.isCompleting()) {
                 System.err.println("\nInterpreter Error");
                 System.err.println("⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺ ⎺⎺⎺⎺⎺");
                 Runtime.showErrorPosition(RemixdPrepareRun.getFileName(), line - 1,
@@ -29,10 +30,6 @@ public class RemixdErrorListener extends BaseErrorListener {
                 }
             }
         }
-    }
-
-    public boolean errorOccurred() {
-        return errorCount > 0;
     }
 
 }

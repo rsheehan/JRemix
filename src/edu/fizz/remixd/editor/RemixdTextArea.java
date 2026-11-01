@@ -176,29 +176,27 @@ public class RemixdTextArea extends RSyntaxTextArea {
     /*
     Only called from RemixdCompletions.completionHandling
      */
-    public void reparseProgramText() {
+    public void reparseProgramTextForCompletions() {
         String text;
-        if (isREPLArea) {
-            text = REPLPanel.allText + getText();
-        } else {
-            text = getText();
-            LibrariesAndCompletions.resetToEditorStandard();
-        }
-        RemixdPrepareRun.setCompleting(true);
-        ParseTree tree = RemixdPrepareRun.processParse(text);
-        RemixdPrepareRun.setCompleting(false);
-        if (tree == null) { // an error in parsing
-            return;
-        }
+        text = getText();
+//        if (!isREPLArea) {
+            LibrariesAndCompletions.resetToEditorStandard(!isREPLArea);
+//        }
+        RemixdCompletions.setCompleting(true);
+        try {
+            ParseTree tree = RemixdPrepareRun.processParse(text);
 
-        EvalVisitorForEditor eval = new EvalVisitorForEditor(((RemixdBaseWindow)getWindow()).getCurrentFileName());
-        LibraryExpression programLib = (LibraryExpression) eval.visit(tree);
-        programLib.setActiveLines(LibraryExpression.ALLLINES);
-        // have to put the programLib just after the standard lib
-        // all using libs are after it (hence used first)
-        LibrariesAndCompletions.addAfterBaseLibrary(programLib);
-        /* the visit above fills in addedLibraries in LibrariesAndCompletions
-        this the result program is added as well. */
+            EvalVisitorForEditor eval = new EvalVisitorForEditor(((RemixdBaseWindow) getWindow()).getCurrentFileName());
+            LibraryExpression programLib = (LibraryExpression) eval.visit(tree);
+            programLib.setActiveLines(LibraryExpression.ALLLINES);
+            // have to put the programLib just after the standard lib
+            // all using libs are after it (hence used first)
+            LibrariesAndCompletions.addAfterBaseLibrary(programLib);
+            /* the visit above fills in addedLibraries in LibrariesAndCompletions
+            this the result program is added as well. */
+        } finally {
+            RemixdCompletions.setCompleting(false);
+        }
     }
 
     SyntaxScheme createRemixScheme() {
