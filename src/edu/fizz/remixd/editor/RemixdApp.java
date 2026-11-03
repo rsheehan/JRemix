@@ -21,8 +21,7 @@ public class RemixdApp extends RemixdBaseWindow {
     private final List<RemixdEditorWindow> listOfWindows = new ArrayList<>();
     public static RemixdSwingWorker currentSwingWorker;
 
-    LightThemeAction lightThemeAction;
-    DarkThemeAction darkThemeAction;
+    LightDarkThemeAction lightDarkThemeAction;
     TopAction topAction;
     BottomAction bottomAction;
 
@@ -44,7 +43,7 @@ public class RemixdApp extends RemixdBaseWindow {
         JMenu windowMenu = createWindowMenu();
         menuBar.add(windowMenu);
 
-        replPanel = new REPLPanel(lightThemeAction.isEnabled());
+        replPanel = new REPLPanel(lightDarkThemeAction.dark);
         JScrollPane scrollPane = replPanel.getScrollPane();
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
@@ -98,7 +97,7 @@ public class RemixdApp extends RemixdBaseWindow {
         }
 
         public void actionPerformed(ActionEvent event) {
-            RemixdEditorWindow editorWindow = new RemixdEditorWindow(RemixdApp.this, lightThemeAction.isEnabled());
+            RemixdEditorWindow editorWindow = new RemixdEditorWindow(RemixdApp.this, lightDarkThemeAction.dark);
             listOfWindows.add(editorWindow);
             editorWindow.newFileInWindow();
             Rectangle bounds = RemixdApp.this.getBounds();
@@ -130,7 +129,7 @@ public class RemixdApp extends RemixdBaseWindow {
                 }
                 // create new RemixdEditorWindow
                 // and read in file
-                RemixdEditorWindow editorWindow = new RemixdEditorWindow(RemixdApp.this, lightThemeAction.isEnabled());
+                RemixdEditorWindow editorWindow = new RemixdEditorWindow(RemixdApp.this, lightDarkThemeAction.dark);
                 Rectangle bounds = RemixdApp.this.getBounds();
                 boolean successful = editorWindow.openFileInWindow(remFile);
                 if (successful) {
@@ -188,49 +187,31 @@ public class RemixdApp extends RemixdBaseWindow {
 
     private JMenu createViewMenu() {
         JMenu menu = new JMenu("View");
-        darkThemeAction = new DarkThemeAction();
-        menu.add(darkThemeAction);
-        lightThemeAction = new LightThemeAction();
-        menu.add(lightThemeAction);
+        lightDarkThemeAction = new LightDarkThemeAction();
+        menu.add(lightDarkThemeAction);
         return menu;
     }
 
-    class DarkThemeAction extends AbstractAction {
+    class LightDarkThemeAction extends AbstractAction {
 
-        public DarkThemeAction() {
-            super("Dark theme");
-            setEnabled(false);
-        }
+        boolean dark = true;
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            for (RemixdEditorWindow window : listOfWindows) {
-                window.setDark(true);
-            }
-            replPanel.setDark(true);
-            lightThemeAction.setEnabled(true);
-            setEnabled(false);
-        }
-    }
-
-    class LightThemeAction extends AbstractAction {
-
-        public LightThemeAction() {
-            super("Light theme");
+        public LightDarkThemeAction() {
+            super("Light/Dark theme");
+            int shortcutKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_L, shortcutKey));
             setEnabled(true);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            for(RemixdEditorWindow window : listOfWindows){
-                window.setDark(false);
+            dark = !dark;
+            for (RemixdEditorWindow window : listOfWindows) {
+                window.setDark(dark);
             }
-            replPanel.setDark(false);
-            darkThemeAction.setEnabled(true);
-            setEnabled(false);
+            replPanel.setDark(dark);
         }
     }
-
 
     /***********************************/
 
