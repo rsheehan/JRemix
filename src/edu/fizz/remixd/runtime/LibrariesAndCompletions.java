@@ -5,6 +5,7 @@ package edu.fizz.remixd.runtime;
 import edu.fizz.remixd.editor.RemixdPrepareRun;
 import edu.fizz.remixd.editor.VarNameAndPos;
 
+import javax.swing.*;
 import java.util.*;
 
 /** Includes the standard libraries, any extra libraries
@@ -50,6 +51,12 @@ public class LibrariesAndCompletions {
             allVariableNames.add("'" + variable + "'\n");
     }
 
+    public static void resetAddedLibrariesForRepl() {
+        addedUsingLibBlocks.clear();
+        addedLibraries.clear();
+        addedLibraries.addAll(RemixdPrepareRun.REPLContext.getLibraryStack());
+    }
+
     public static void resetAddedLibraries() {
         addedUsingLibBlocks.clear();
         addedLibraries.clear();
@@ -72,11 +79,6 @@ public class LibrariesAndCompletions {
 
     public static void addUsingLibBlock(UsingLibBlock usingLibBlock) {
         addedUsingLibBlocks.add(usingLibBlock);
-    }
-
-    // Only called from reparseProgramText in RemixdTextArea - doing completions
-    public static void addAfterBaseLibrary(LibraryExpression libraryExpression) {
-        addedLibraries.add(1, libraryExpression);
     }
 
     public static LibraryExpression getBaseLibrary() {
@@ -105,26 +107,81 @@ public class LibrariesAndCompletions {
         RemixdPrepareRun.REPLContext = new Context(baseLibrary, RemixdPrepareRun.INTERACTIVETEXT);
     }
 
+    private static class YieldLibrary {
+
+        static Iterable<LibraryExpression> activeLibraries(UsingLibBlock usingLibBlock, int lineNumber) {
+            int[] startAndFinish;
+            LibraryExpression usingBlock = usingLibBlock.getUsingBlock();
+            if (usingBlock == null) {
+                startAndFinish = new int[]{0, 0};
+            } else {
+                ArrayList<int[]> activeLines = usingBlock.getActiveLines();
+                if (activeLines.isEmpty()) {
+                    startAndFinish = new int[]{0, 0};
+                } else {
+                    startAndFinish = activeLines.getFirst();
+                }
+            }
+
+            return () -> new Iterator<>() {
+                int counter = 0;
+                final int numUsingLibs = usingLibBlock.getLibraries().length;
+                LibraryExpression thisLibrary;
+
+                @Override
+                public boolean hasNext() {
+                    if (startAndFinish[0] > lineNumber || lineNumber > startAndFinish[1])
+                        return false;
+                    if (counter < numUsingLibs) {
+                        thisLibrary = (LibraryExpression) usingLibBlock.getLibraries()[counter];
+                        return true;
+                    }
+                    return false;
+                }
+
+                @Override
+                public LibraryExpression next() {
+                    counter++;
+                    return thisLibrary;
+                }
+            };
+        }
+    }
+
     /*
     List of completions from a constant.
      */
     public static ArrayList<String> constantCompletionsFrom(String searchWord, int lineNumber) {
         ArrayList<String> constantCompletions = new ArrayList<>();
+        ArrayList<LibraryExpression> alreadyChecked = new ArrayList<>();
         String original = searchWord + "\n";
-        for (LibraryExpression lib : addedLibraries) {
-            for (String constantName : lib.getConstantTable().keySet()) {
-                if (constantName.equals(original))
-                    continue;
-                if (constantName.startsWith(searchWord)) {
-                    boolean activeHere = false;
-                    for (int[] startAndFinish : lib.getActiveLines()) {
-                        if (startAndFinish[0] <= lineNumber && lineNumber <= startAndFinish[1]) {
-                            activeHere = true;
-                            break;
+        for (UsingLibBlock usingLibBlock : addedUsingLibBlocks) {
+            for (LibraryExpression lib : YieldLibrary.activeLibraries(usingLibBlock, lineNumber)) {
+                for (String constantName : lib.getConstantTable().keySet()) {
+                    if (constantName.equals(original))
+                        continue;
+                    if (constantName.startsWith(searchWord)) {
+                        String newConstant = constantName + "\n";
+                        if (!constantCompletions.contains(newConstant)) {
+                            constantCompletions.add(newConstant);
                         }
                     }
-                    if (activeHere) {
-                        constantCompletions.add(constantName + "\n");
+                }
+                alreadyChecked.add(lib);
+            }
+        }
+        for (LibraryExpression library : addedLibraries) {
+            if (!alreadyChecked.contains(library)) {
+                if (isActiveHere(lineNumber, library)) {
+                    for (String constantName : library.getConstantTable().keySet()) {
+                        if (constantName.equals(original))
+                            continue;
+                        if (constantName.startsWith(searchWord)) {
+                            String newConstant = constantName + "\n";
+                            if (!constantCompletions.contains(newConstant)) {
+                                constantCompletions.add(newConstant);
+                            }
+                        }
                     }
                 }
             }
@@ -142,12 +199,26 @@ public class LibrariesAndCompletions {
         if (original.startsWith("'"))
             original = searchWord + "'";
         original += "\n";
-        // first check to see if inside a function definition
-        // only available variables are from that function.
 
-        // currently valid libraries
-        for (LibraryExpression lib : addedLibraries) {
-            for (VarNameAndPos varNameAndPos : lib.getVariableTable()) {
+        LibraryExpression library = addedLibraries.getLast();
+        matchVarInLib(searchWord, lineNumber, library, original, variableCompletions);
+
+        // then check from variables added when code text areas are evaluated
+        for (String variable : allVariableNames) {
+            if (variable.equals(original))
+                continue;
+            if (variable.startsWith(searchWord) && !variableCompletions.contains(variable))
+                variableCompletions.add(variable);
+        }
+        variableCompletions.sort(Comparator.comparingInt(String::length));
+        variableCompletions.add(original);
+        return variableCompletions;
+    }
+
+    private static void matchVarInLib(String searchWord, int lineNumber, LibraryExpression library, String original, ArrayList<String> variableCompletions) {
+        boolean activeHere = isActiveHere(lineNumber, library);
+        if (activeHere) {
+            for (VarNameAndPos varNameAndPos : library.getVariableTable()) {
                 String variableName = varNameAndPos.name();
                 int lineAssigned = varNameAndPos.line();
                 if (!variableName.startsWith("#")) {
@@ -157,19 +228,10 @@ public class LibrariesAndCompletions {
                 if (variableName.equals(original))
                     continue;
                 if (variableName.startsWith(searchWord) && lineNumber >= lineAssigned)
-                    variableCompletions.add(variableName);
+                    if (!variableCompletions.contains(variableName))
+                        variableCompletions.add(variableName);
             }
         }
-        // then check from variables added when code text areas are evaluated
-        for (String variable : allVariableNames) {
-            if (variable.equals(original))
-                continue;
-            if (variable.startsWith(searchWord))
-                variableCompletions.add(variable);
-        }
-        variableCompletions.sort(Comparator.comparingInt(String::length));
-        variableCompletions.add(original);
-        return variableCompletions;
     }
 
     /*
@@ -182,26 +244,16 @@ public class LibrariesAndCompletions {
         // check against each usingLibBlock
         ArrayList<LibraryExpression> alreadyChecked = new ArrayList<>();
         for (UsingLibBlock usingLibBlock : addedUsingLibBlocks) {
-            LibraryExpression usingBlock = usingLibBlock.getUsingBlock();
-            ArrayList<int []> activeLines = usingBlock.getActiveLines();
-            if (!activeLines.isEmpty()) {
-                int[] startAndFinish = activeLines.getFirst();
-                if (startAndFinish[0] <= lineNumber && lineNumber <= startAndFinish[1]) {
-                    for (Expression libExpression : usingLibBlock.getLibraries()) { // could be function call, a constant, a variagle
-                        if (libExpression instanceof LibraryExpression libraryExpression) {
-                            searchForCompletions(searchWord, libraryExpression.getFunctionTable(), completionsAtStart, completionsConsecutive, functionDisplayNames);
-                            alreadyChecked.add(libraryExpression);
-                        }
-                    }
-                }
+            for (LibraryExpression lib : YieldLibrary.activeLibraries(usingLibBlock, lineNumber)) {
+                searchForCompletions(searchWord, lib.getFunctionTable(), completionsAtStart, completionsConsecutive, functionDisplayNames);
+                alreadyChecked.add(lib);
             }
         }
-
         // check against each non using library
+        // this is standard lib and the main program?
         for (LibraryExpression library : addedLibraries) {
-            boolean canUse = !alreadyChecked.contains(library);
             // check the library is not in the usingLibBlocks
-            if (canUse) {
+            if (!alreadyChecked.contains(library)) {
                 searchForActiveCompletions(searchWord, lineNumber, library, completionsAtStart, completionsConsecutive, functionDisplayNames);
             }
         }
@@ -214,6 +266,13 @@ public class LibrariesAndCompletions {
 
     private static void searchForActiveCompletions(String searchWord, int lineNumber, LibraryExpression library, SortedSet<String> completionsAtStart, SortedSet<String> completionsConsecutive, HashMap<String, String> functionDisplayNames) {
         // first check lineNumber against activeLines
+        boolean activeHere = isActiveHere(lineNumber, library);
+        if (activeHere) {
+            searchForCompletions(searchWord, library.getFunctionTable(), completionsAtStart, completionsConsecutive, functionDisplayNames);
+        }
+    }
+
+    private static boolean isActiveHere(int lineNumber, LibraryExpression library) {
         boolean activeHere = false;
         for (int[] startAndFinish : library.getActiveLines()) {
 
@@ -222,9 +281,7 @@ public class LibrariesAndCompletions {
                 break;
             }
         }
-        if (activeHere) {
-            searchForCompletions(searchWord, library.getFunctionTable(), completionsAtStart, completionsConsecutive, functionDisplayNames);
-        }
+        return activeHere;
     }
 
     private static void searchForCompletions(String searchWord,

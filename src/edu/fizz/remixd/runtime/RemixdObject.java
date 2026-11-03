@@ -18,7 +18,7 @@ public class RemixdObject implements RemixComplexType {
     }
     public RemixdObject(Context definingContext, MethodTable methodTable) {
         this.methodTable = methodTable;
-        objectContext.libraryStack = definingContext.cloneLibraryStack();
+        objectContext.setLibraryStack(definingContext.cloneLibraryStack());
     }
 
     public MethodTable methodTable() {

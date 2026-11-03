@@ -1,6 +1,7 @@
 package edu.fizz.remixd.runtime;
 
 import edu.fizz.remixd.editor.VarNameAndPos;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -154,7 +155,10 @@ public class LibraryExpression implements Expression {
     public void addFunction(Function function) {
         if (function == null) return;
         for (String name : function.getAllNames()) {
-            functionTable.put(name, function);
+            Function prevFunction = functionTable.put(name, function);
+            if (prevFunction != null) {
+                System.err.println("Warning: Duplicate function name: " + name);
+            }
         }
     }
 
@@ -184,14 +188,17 @@ public class LibraryExpression implements Expression {
 
     /*
     Only called when producing completions. See EvalVisitorForEditor.
-     */
-    public void addVariableForCompletions(VarNameAndPos newNameAndPos) {
+    */
+    public void addVariableWithPos(String name, ParserRuleContext ctx) {
+        int line = ctx.getStart().getLine();
         for (VarNameAndPos varNameAndPos : variableTable) {
-            if (newNameAndPos.name().equals(varNameAndPos.name())) {
+            if (name.equals(varNameAndPos.name())) {
+                if (line < varNameAndPos.line()) // shouldn't happen?
+                    System.err.printf("variable %s found before first occurence.%n", name);
                 return;
             }
         }
-        variableTable.add(newNameAndPos);
+        variableTable.add(new VarNameAndPos(name, line - 1));
     }
 
     /** Add a name of method and the reference parameter position. */

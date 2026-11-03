@@ -56,7 +56,7 @@ public class RemixdCompletions {
     public void clearCompletions() {
         completionsHere = null;
         RemixdBaseWindow window = (RemixdBaseWindow)textArea.getWindow();
-        if (window.docPopup != null)
+        if (window != null && window.docPopup != null)
             window.docPopup.hide();
     }
 
@@ -89,25 +89,25 @@ public class RemixdCompletions {
             textArea.reparseProgramTextForCompletions(); // editor can be null if printing this document
 
             String seedWord = wordSoFar(offset);
-            int existingLines = 0;
-            if (textArea.isREPLArea) {
-                existingLines = (int)REPLPanel.allText.toString().lines().count();
-            }
+//            int existingLines = 0;
+//            if (textArea.isREPLArea) {
+//                existingLines = (int)REPLPanel.allText.toString().lines().count();
+//            }
             if (seedWord.startsWith("'")) { // variable
                 nextParam = false;
-                completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord, lineNumber);
+                completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord, lineNumber + 1);
                 seedWord += "'";
                 offset += 1;
             } else if (seedWord.startsWith("#")) { // refvar
                 nextParam = false;
-                completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord, lineNumber);
+                completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord, lineNumber + 1);
             } else if (seedWord.equals(seedWord.toUpperCase())) { // constant
                 nextParam = false;
-                completions = LibrariesAndCompletions.constantCompletionsFrom(seedWord, lineNumber + 1 + existingLines);
+                completions = LibrariesAndCompletions.constantCompletionsFrom(seedWord, lineNumber + 1); // + existingLines);
             } else { // function call
                 nextParam = true; // <- the one which moves us on
                 seedWord = seedWord.stripLeading();
-                completions = LibrariesAndCompletions.createCompletionsFrom(seedWord, lineNumber + 1 + existingLines);
+                completions = LibrariesAndCompletions.createCompletionsFrom(seedWord, lineNumber + 1); // + existingLines);
             }
             if (!seedWord.isEmpty() && !completions.isEmpty()) {
                 int seedLength = seedWord.length();

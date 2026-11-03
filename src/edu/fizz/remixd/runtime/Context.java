@@ -11,7 +11,7 @@ public class Context {
     /* A context may be linked back to the parent to go searching for reference variables. */
     protected Context parentContext = null;
     protected HashMap<String, Object> variables = new HashMap<>();
-    protected Stack<LibraryExpression> libraryStack = new Stack<>();
+    Stack<LibraryExpression> libraryStack = new Stack<>();
     /* When we make a function call we need the context to know if it should return higher. */
     private boolean returnHigher = false;
     private String fileWindowREPL;
@@ -188,8 +188,8 @@ public class Context {
         libraryStack.push(library);
     }
 
-    public void popLibrary() {
-        libraryStack.pop();
+    public LibraryExpression popLibrary() {
+        return libraryStack.pop();
     }
 
 //    public LibraryExpression peekLibrary() {
@@ -210,5 +210,9 @@ public class Context {
 
     public Stack<LibraryExpression> getLibraryStack() {
         return libraryStack;
+    }
+
+    public void setLibraryStack(Stack<LibraryExpression> libraryStack) {
+        this.libraryStack = libraryStack;
     }
 }

@@ -34,9 +34,9 @@ public class ConstantValueExpression implements Expression, NamedExpression {
         e.g.
         using graphics, turtle ; because turtle also uses graphics
          */
-        for (int i = context.libraryStack.size() - 1; i >= 0; i--) {
+        for (int i = context.getLibraryStack().size() - 1; i >= 0; i--) {
             Object nextResult;
-            library = context.libraryStack.get(i);
+            library = context.getLibraryStack().get(i);
             nextResult = library.getConstantTable().get(constantName);
             if (nextResult != null) { // not in this lib
                 if (result == null) { // no previous match

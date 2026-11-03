@@ -85,7 +85,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             Functions and constants are associated with the library.
             Variables (assigned to in the library block) are only useful when initializing the library.
              */
-            LibraryExpression topOfStackLibrary = (LibraryExpression)context.libraryStack.peek();
+            LibraryExpression topOfStackLibrary = (LibraryExpression)context.getLibraryStack().peek();
 
             if (completing) {
                 included.setActiveLines(topOfStackLibrary.getActiveLines());
@@ -953,7 +953,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         private static void dealWithLibraries(Context context, StringBuilder helpSB) {
-            for (LibraryExpression library : context.libraryStack) {
+            for (LibraryExpression library : context.getLibraryStack()) {
                 String libName = library.getLibName();
                 helpSB.append(libName)
                         .append('\n');
@@ -975,7 +975,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
 
         private static void dealWithConstants(Context context, StringBuilder helpSB) {
-            for (LibraryExpression lib : context.libraryStack) {
+            for (LibraryExpression lib : context.getLibraryStack()) {
                 helpSB.append(lib.getLibUnderlinedName()).append('\n');
                 TreeMap<String, Object> constants = new TreeMap<>(lib.getConstantTable());
                 // Iterate over the sorted map
@@ -1024,7 +1024,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         private static void dealWithMethods(Context context, String what, StringBuilder helpSB, boolean firstLine) {
             List<String> methodNames = new ArrayList<>();
             List varAndConsValues = new ArrayList(context.variables.values());
-            for (LibraryExpression lib : context.libraryStack) {
+            for (LibraryExpression lib : context.getLibraryStack()) {
                 TreeMap<String, Object> constants = new TreeMap<>(lib.getConstantTable());
                 varAndConsValues.addAll(constants.values());
             }

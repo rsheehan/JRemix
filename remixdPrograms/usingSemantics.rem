@@ -7,9 +7,17 @@ using include "remixdPrograms/includeLibrary.rem"
 	=-
 	'a' plus 'b' :
 		"plus from using"
-		
+	
+=-
+in top-level
+=-	
 making object :
-	"makeing object from top-level" ↲
+	"making object from top-level" ↲
 
+=-
+in top-level
+=-
+third function :
+	"to make three in the main lib so I can tell the difference"
 
 making object

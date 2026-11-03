@@ -30,7 +30,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
     }
 
     public Function getFunction(Context context) {
-        Stack<LibraryExpression> libraryStack = (Stack) context.libraryStack.clone();
+        Stack<LibraryExpression> libraryStack = (Stack) context.getLibraryStack().clone();
         Collections.reverse(libraryStack);
         Function function = null;
         String routineName = singleName();
@@ -93,7 +93,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         }
 
         // fall through into a possible function call
-        Stack<LibraryExpression> inCallLibStack = (Stack) context.libraryStack.clone();
+        Stack<LibraryExpression> inCallLibStack = (Stack) context.getLibraryStack().clone();
         Function function = null;
         int libNumber;
         LibraryExpression library = null; // the library of the function
@@ -116,7 +116,7 @@ public class FunctionCallExpression extends FunctionName<Expression> implements 
         while (!library.equals(inCallLibStack.peek())) { // to enforce lexical scoping of functions in libraries
             inCallLibStack.pop();
         }
-        functionContext.libraryStack = inCallLibStack;
+        functionContext.setLibraryStack(inCallLibStack);
         return executeFunctionOrMethod(function, functionContext);
     }
 

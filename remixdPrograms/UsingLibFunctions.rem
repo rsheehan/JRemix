@@ -1,0 +1,35 @@
+LIB1 : library
+	function one :
+		"in LIB1" ↲
+
+using LIB1
+	function one
+	
+	function two :
+		"in using LIB1" ↲
+		function one
+
+function two
+
+LIB2 : library 
+	using LIB1
+		function three :
+			"in LIB2, using LIB1" ↲
+			function one
+			function two
+
+using LIB2, LIB1
+	"in using LIB2, LIB1" ↲
+	function three
+	function one
+
+= output
+in LIB1
+in using LIB1
+in LIB1
+in using LIB2, LIB1
+in LIB2, using LIB1
+in LIB1
+in using LIB1
+in LIB1
+in LIB1

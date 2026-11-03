@@ -11,7 +11,7 @@ LIB1 : library
 		"from LIB1"
 	
 	- should complete with LIB1
-	with
+	-with
 	
 LIB2 : library
 	=-
@@ -21,12 +21,12 @@ LIB2 : library
 		'A' ⊕ " from LIB2 " ⊕ 'B'
 	
 	- should complete with LIB2
-	with
+	-with
 
 ↲
 using LIB2, LIB1
 	- should complete with LIB1
-	with
+	-with
 	
 	test {
 		"2 libraries from first"
@@ -40,7 +40,7 @@ using LIB2, LIB1
 ↲
 using LIB1, LIB2
 	- should complete with LIB2
-	with
+	-with
 	
 	test {
 		"2 nested libraries from first"

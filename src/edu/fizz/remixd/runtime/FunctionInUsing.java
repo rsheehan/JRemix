@@ -20,8 +20,7 @@ public class FunctionInUsing extends RemixdFunction {
 
     // Unfortunately in order to maintain out of order execution of functions
     // we need to check if the expression has been turned into a library.
-    // I need instead to have a cache of libraries so that we don't
-    // load more than once. Now cached when evaluating UsingLibBlock.
+    // Now cached when evaluating UsingLibBlock, so don't add more than once.
     public Object execute(Context context) throws ReturnException, InterruptedException, VarNotFoundException, FunctionNotFoundException {
         for (Map.Entry<Expression, LibraryExpression> entry : librariesToUse.entrySet()) {
 
@@ -40,8 +39,7 @@ public class FunctionInUsing extends RemixdFunction {
                 }
                 librariesToUse.put(libraryExp, library);
             }
-            if (!context.libraryInStack(library))
-                context.pushLibrary(library);
+            context.pushLibrary(library);
         }
         Object result = codeBlock.evaluate(context);
         for (int libNum = 0; libNum < librariesToUse.size(); libNum++) {

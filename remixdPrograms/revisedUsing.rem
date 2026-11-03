@@ -1,0 +1,30 @@
+LIB1 : library
+	ABC : "ABC lib LIB1"
+	"1: ", func1 ↲
+	
+	func1 :
+		"func1 lib LIB1 - " ⊕ ABC
+
+ABC : "ABC top level"
+
+"2: ", func1 ↲
+using LIB1
+	"3: ", func1 ↲
+	ABC ↲
+
+	func1 : ; this overrides the top-level func1
+		"using LIB1 func1 - " ⊕ ABC
+ABC ↲
+
+func1 :
+	"func1 top level - " ⊕ ABC
+
+
+
+= output
+
+1: func1 lib LIB1 - ABC lib LIB1
+2: func1 top level - ABC top level
+3: using LIB1 func1 - ABC lib LIB1
+ABC lib LIB1
+ABC top level

@@ -34,9 +34,9 @@ inside func
 ↲
 using THE-LIB
 	"inside using ", JKL ↲
-	inside func ; currently finds 7 for JKL from THE-LIB
+	inside func
 ↲
-"outside ", STD-WIDTH ↲ ; not found
+-"outside ", STD-WIDTH ↲ ; not found
 STD-WIDTH : 999
 "outside ", STD-WIDTH ↲
 ↲
@@ -44,26 +44,18 @@ using graphics, THE-LIB
 	"using ", ABC ↲
 	"using ", DEF ↲
 	"using ", GHI ↲
-	"using ", STD-WIDTH ↲ ; gets 1000 as the version in the main lib is shadowed
-	"using ", JKL ↲ ; 7 THE-LIB value not 8
+	"using ", STD-WIDTH ↲ ; gets 1000 from graphics
+	"using ", JKL ↲ ; 7 from THE-LIB
 
 =
 inside 4
-inside null
-inside null
-inside null
 
 outside 4
-outside null
-outside null
-outside null
 
-Graphics library loaded.
 using 4
 using 5
 using 6
 using 1000
-using null
 
 library 4
 library 5
@@ -71,22 +63,18 @@ library 6
 library 7
 
 inside 4
-inside 5
-inside 6
-inside 8
 
-inside using 7
+inside using Warning: Constant "JKL" has multiple values.
+7
 inside 4
-inside 5
-inside 6
-inside 7
 
-outside null
 outside 999
 
 using 4
 using 5
 using 6
-using 1000
-using 7
+using Warning: Constant "STD-WIDTH" has multiple values.
+1000
+using Warning: Constant "JKL" has multiple values.
+7
 =

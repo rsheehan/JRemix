@@ -179,9 +179,11 @@ public class RemixdTextArea extends RSyntaxTextArea {
     public void reparseProgramTextForCompletions() {
         String text;
         text = getText();
-//        if (!isREPLArea) {
-            LibrariesAndCompletions.resetToEditorStandard(!isREPLArea);
-//        }
+        if (isREPLArea) {
+            LibrariesAndCompletions.resetAddedLibrariesForRepl();
+        } else {
+            LibrariesAndCompletions.resetToEditorStandard(true);
+        }
         RemixdCompletions.setCompleting(true);
         try {
             ParseTree tree = RemixdPrepareRun.processParse(text);
@@ -191,7 +193,9 @@ public class RemixdTextArea extends RSyntaxTextArea {
             programLib.setActiveLines(LibraryExpression.ALLLINES);
             // have to put the programLib just after the standard lib
             // all using libs are after it (hence used first)
-            LibrariesAndCompletions.addAfterBaseLibrary(programLib);
+            // no. Change the semantics to be any top-level functions at the top of the stack.
+            LibrariesAndCompletions.addLibrary(programLib);
+//            LibrariesAndCompletions.addAfterBaseLibrary(programLib);
             /* the visit above fills in addedLibraries in LibrariesAndCompletions
             this the result program is added as well. */
         } finally {

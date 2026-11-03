@@ -37,9 +37,9 @@ public class ConstantAssignmentStatement extends AssignmentStatement {
         // Check constant does not already have a different value.
         // This includes other libraries currently in scope.
         LibraryExpression library;
-        int i = context.libraryStack.size() - 1;
+        int i = context.getLibraryStack().size() - 1;
         do {
-            library = context.libraryStack.get(i);
+            library = context.getLibraryStack().get(i);
             existingValue = library.getConstantTable().get(variableName);
             i--;
         } while (existingValue == null && i >= 0);

@@ -15,7 +15,7 @@ public class MethodContext extends Context {
         variables = object.getContext().variables; // instance variables
         this.object = object;
         localContext = new Context(parent, false); // methods can't be transparent
-        libraryStack = object.getContext().libraryStack; //cloneLibraryStack(); //libraryStack; NOT THE PROBLEM
+        libraryStack = object.getContext().getLibraryStack(); //cloneLibraryStack(); //libraryStack; NOT THE PROBLEM
         parentContext = parent; //new Context(parent, null);
     }
 

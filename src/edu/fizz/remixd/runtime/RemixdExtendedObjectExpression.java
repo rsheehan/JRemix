@@ -20,7 +20,7 @@ public class RemixdExtendedObjectExpression extends RemixdObjectExpression {
         RemixdObject remixdObject = (RemixdObject) originalObject.evaluate(definingContext);
         String existingType = remixdObject.typeName();
         // change libstack of original object to be the current context libstack
-        remixdObject.getContext().libraryStack = definingContext.cloneLibraryStack();
+        remixdObject.getContext().setLibraryStack(definingContext.cloneLibraryStack());
         for (Expression statement : extendedObject.initBlock.statements) {
             FieldAssignmentStatement assStmnt = (FieldAssignmentStatement) statement;
             Object result = assStmnt.evaluate(definingContext);

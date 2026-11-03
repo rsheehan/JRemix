@@ -100,12 +100,13 @@ public class UsingLibBlock implements Expression { //extends Block {
         But the programLibrary gets any functions and constants defined in the using block.
         If inside a library definition then the libLibrary takes the place of programLibrary
          */
+        context.pushLibrary(usingBlock);
         Object result = usingBlock.evaluate(context);
-
+        context.popLibrary(); // take the using block library off again
+        // before removing all using libraries
         for (int libNum = 0; libNum < libExpressions.length; libNum++) {
             context.popLibrary();
         }
-
         return result;
     }
 }
