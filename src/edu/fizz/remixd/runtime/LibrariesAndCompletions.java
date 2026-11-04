@@ -5,7 +5,6 @@ package edu.fizz.remixd.runtime;
 import edu.fizz.remixd.editor.RemixdPrepareRun;
 import edu.fizz.remixd.editor.VarNameAndPos;
 
-import javax.swing.*;
 import java.util.*;
 
 /** Includes the standard libraries, any extra libraries
@@ -89,12 +88,10 @@ public class LibrariesAndCompletions {
      * Sets the functions, methods, and context back to the standard version.
      * But doesn't clear variables from previous code text area runs.
      */
-    public static void resetToEditorStandard(boolean clearVariables) {
+    public static void resetToEditorStandard() {
         methodTableForCompletions = new HashMap<>(LibraryExpression.methodTableStandardLib);
         resetAddedLibraries();
-        if (clearVariables) {
-            allVariableNames.clear();
-        }
+        allVariableNames.clear();
     }
 
     /*

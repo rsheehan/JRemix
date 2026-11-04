@@ -193,7 +193,7 @@ public class RemixdTextArea extends RSyntaxTextArea {
         if (isREPLArea) {
             LibrariesAndCompletions.resetAddedLibrariesForRepl();
         } else {
-            LibrariesAndCompletions.resetToEditorStandard(true);
+            LibrariesAndCompletions.resetToEditorStandard();
         }
         RemixdCompletions.setCompleting(true);
         try {
