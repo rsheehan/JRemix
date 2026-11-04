@@ -170,14 +170,18 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Object value = context.retrieve("value", false);
-            if (value instanceof RemixdObject object) {
-                String type = (String) object.getContext().variables.get("type");
-                return Objects.requireNonNullElse(type, "Object");
-            }
-            String javaClassName = value.getClass().toString();
-            int lastDotIndex = javaClassName.lastIndexOf('.');
-            return javaClassName.substring(lastDotIndex + 1);
+            return getType(value);
         }
+    }
+
+    private static String getType(Object value) {
+        if (value instanceof RemixdObject object) {
+            String type = (String) object.getContext().variables.get("type");
+            return Objects.requireNonNullElse(type, "Object");
+        }
+        String javaClassName = value.getClass().toString();
+        int lastDotIndex = javaClassName.lastIndexOf('.');
+        return javaClassName.substring(lastDotIndex + 1);
     }
 
     /** The "is a (type)" function. */
@@ -837,13 +841,14 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     Collections.emptyList(),
                     Collections.emptyList(),
                     false,
-                    "Clear the Input/Output window."
+                    "Clear the REPL window."
             );
         }
 
         @Override
         public Object execute(Context context) throws ReturnException, InterruptedException {
-            RemixdApp.replPanel.currentOutputArea.setText(null);
+            RemixdApp.replPanel.removeExistingTextAreas();
+            RemixdApp.replPanel.addREPLTextArea();
             return "";
         }
     }
@@ -947,7 +952,10 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                 showAllMethods(whatObject, helpSB);
             }
             if (helpSB.isEmpty()) {
-                helpSB.append("No help for ").append(what);
+                if (what.equals("VARIABLES"))
+                    helpSB.append("No variables in REPL.");
+                else
+                    helpSB.append("No help for ").append(what);
             }
             return helpSB.toString();
         }
@@ -963,13 +971,14 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         private static void dealWithVariables(Context context, StringBuilder helpSB) {
             for (String name : context.variables.keySet()) {
                 Object value = context.variables.get(name);
-                if (value instanceof String) {
-                    value = "\"" + value + "\"";
-                }
+                String type = getType(value);
+//                if (value instanceof String) {
+//                    value = "\"" + value + "\"";
+//                }
                 helpSB.append('\'')
                         .append(name)
-                        .append("\' : ")
-                        .append(value)
+                        .append("' : ")
+                        .append(type)
                         .append('\n');
             }
         }
