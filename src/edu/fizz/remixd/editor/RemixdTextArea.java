@@ -36,6 +36,7 @@ public class RemixdTextArea extends RSyntaxTextArea {
 
     RemixdCompletions completionControl;
     CaretListener caretListener;
+    boolean shouldScrollPanel = true;
 
     public boolean isEditorContentSaved() {
         return editorContentSaved;
@@ -74,11 +75,13 @@ public class RemixdTextArea extends RSyntaxTextArea {
             @Override
             public void focusGained(FocusEvent e) {
                 completionControl.clearCompletions();
+                shouldScrollPanel = RemixdTextArea.this == REPLPanel.getCurrentCodeArea();
             }
 
             @Override
             public void focusLost(FocusEvent e) {
                 completionControl.clearCompletions();
+                shouldScrollPanel = RemixdTextArea.this != REPLPanel.getCurrentCodeArea();
             }
         });
 
@@ -99,6 +102,14 @@ public class RemixdTextArea extends RSyntaxTextArea {
             public void changedUpdate(DocumentEvent e) {}
 
         });
+    }
+
+    /*
+    Used to determine if the REPLPanel containing this area should scroll when
+    focus changes.
+     */
+    public boolean shouldScroll() {
+        return shouldScrollPanel;
     }
 
     /*
