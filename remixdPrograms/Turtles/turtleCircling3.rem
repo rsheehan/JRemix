@@ -21,8 +21,7 @@ using graphics, turtle
 
 	remove 'arrows' :
 		'arrows' speed 10
-		for each 'arrow' in 'arrows'
-			turn 'arrow' -90 degrees
+		turn 'arrows' -90 degrees
 		move 'arrows' RADIUS steps
 		hide 'arrows'
 		

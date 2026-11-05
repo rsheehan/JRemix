@@ -73,7 +73,9 @@ public class AutoPairer {
                 // Insert the two characters at the current cursor placement
                 textArea.insert(pair, caretPos);
                 // Drop the cursor position cleanly inside the newly generated quotes
-                textArea.setCaretPosition(caretPos + 1);
+                try {
+                    textArea.setCaretPosition(caretPos + 1);
+                } catch (IllegalArgumentException _) {}
             }
         };
 
