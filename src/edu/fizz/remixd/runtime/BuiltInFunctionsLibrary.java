@@ -915,7 +915,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                                                            The REPL window is made up of multiple panels.
                                                            The panels alternate between code panels and output panels.
                                                          
-                                                           You run code in the bottom code panel by CMD/CTRL-r
+                                                           You run code in the bottom code panel by Command/Control-return.
                                                            If you type into other code panels, the code is copied to the bottom panel.
                                                          
                                                          Completions

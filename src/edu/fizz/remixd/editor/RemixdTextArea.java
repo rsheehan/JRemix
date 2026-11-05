@@ -17,8 +17,10 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 
 public class RemixdTextArea extends RSyntaxTextArea {
@@ -101,6 +103,24 @@ public class RemixdTextArea extends RSyntaxTextArea {
             @Override
             public void changedUpdate(DocumentEvent e) {}
 
+        });
+    }
+
+    /*
+    Attempt to change return and cmd-return handling in a repl text area.
+     */
+    public void setUpToUseCmdReturn(RemixdApp remixdApp) {
+        int menuShortcutMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+        KeyStroke cmdReturnKey = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, menuShortcutMask);
+        String actionComRetMapKey = "executeCmdReturnAction";
+        this.getInputMap(JComponent.WHEN_FOCUSED).put(cmdReturnKey, actionComRetMapKey);
+
+        // Bind the abstract identifier to your custom logic
+        this.getActionMap().put(actionComRetMapKey, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                remixdApp.run();
+            }
         });
     }
 

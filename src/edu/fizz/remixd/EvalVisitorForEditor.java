@@ -36,7 +36,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
 
     // The programLibIdentifiers connect a library name with its library so that
     // we can find constants declared in the library when completing.
-    private final HashMap<String, LibraryExpression> programLibIdentifiers = new HashMap<>();
+    private final HashMap<String, Expression> programLibIdentifiers = new HashMap<>();
 
     static {
         addIdentifierStack = new Stack<>();
@@ -96,7 +96,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
                 // by not having the following line when in a library defn
                 // I do not get constants inside the definition
                 programLibrary.block.addStatement(assignmentStatement); // needed for embedded lib using constants e.g. TURTLE
-                programLibIdentifiers.put(assignmentStatement.name(), (LibraryExpression)assignmentStatement.expression);
+//                programLibIdentifiers.put(assignmentStatement.name(), (LibraryExpression)assignmentStatement.expression);
                 programLibrary.addConstantForCompletions(assignmentStatement.name());
             }
         }
@@ -190,22 +190,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
                 Expression libExp = (Expression) visit(node);
                 if (libExp instanceof ConstantValueExpression constantValueExpression) {
                     String constantName = constantValueExpression.getName();
-                    libraryExpression = programLibIdentifiers.get(constantName);
-                    if (libraryExpression == null) {
-                    // this is if doing this in the REPL
-                        if (fileName.equals(RemixdPrepareRun.INTERACTIVETEXT)) {
-                            for (LibraryExpression libsInREPL : RemixdPrepareRun.REPLContext.getLibraryStack()) {
-                                LibraryExpression lib = (LibraryExpression) libsInREPL.getConstantTable().get(constantName);
-                                if (lib != null) {
-                                    libraryExpression = lib;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (libraryExpression == null) {
-                        libraryExpression = programLibIdentifiers.get(constantName);
-                    }
+                    libraryExpression = getLibraryFromConstName(constantName);
                 } else if (libExp instanceof VarValueExpression varValueExpression) {
                     String varName = varValueExpression.getName();
                         try { // should really check if in REPL
@@ -220,7 +205,6 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
                          VarNotFoundException | FunctionNotFoundException _) {}
                 if (libraryExpression != null)
                     libraryExpressions.add(libraryExpression);
-                    // this is the list of libraries we are using
             }
         }
         try {
@@ -245,6 +229,32 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
             }
             usingBlock.block.setConstantAssignmentLibrary(programLibrary);
         }
+        return null;
+    }
+
+    private LibraryExpression getLibraryFromConstName(String constantName) {
+        Expression expression;
+        // simple from CONST : library
+        expression = programLibIdentifiers.get(constantName);
+        if (expression instanceof LibraryExpression libraryExpression)
+            return libraryExpression;
+        // if doing this in the REPL
+        if (fileName.equals(RemixdPrepareRun.INTERACTIVETEXT)) {
+            for (LibraryExpression libsInREPL : RemixdPrepareRun.REPLContext.getLibraryStack()) {
+                LibraryExpression libraryExpression = (LibraryExpression) libsInREPL.getConstantTable().get(constantName);
+                if (libraryExpression != null) {
+                    return libraryExpression;
+                }
+            }
+        }
+        // if a function call try to evaluate it
+        try {
+            Context contextForLib = new Context(LibrariesAndCompletions.getBaseLibrary(), null);
+            // add any existing functions which may "include aLibrary"
+            contextForLib.addLibraryToStack(programLibrary);
+            return (LibraryExpression) expression.evaluate(contextForLib);
+        } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException |
+                 VarNotFoundException | FunctionNotFoundException _) {}
         return null;
     }
 
@@ -583,6 +593,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
     public ConstantAssignmentStatement visitSetConstant(RemixdParser.SetConstantContext ctx) {
         String constName = ctx.CONSTANT().getText();
         Expression expression = (Expression) visit(ctx.expression());
+        programLibIdentifiers.put(constName, expression);
         return new ConstantAssignmentStatement(constName, expression);
     }
 

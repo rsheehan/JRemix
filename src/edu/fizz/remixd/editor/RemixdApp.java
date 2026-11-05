@@ -43,7 +43,7 @@ public class RemixdApp extends RemixdBaseWindow {
         JMenu windowMenu = createWindowMenu();
         menuBar.add(windowMenu);
 
-        replPanel = new REPLPanel(lightDarkThemeAction.dark);
+        replPanel = new REPLPanel(lightDarkThemeAction.dark, this);
         JScrollPane scrollPane = replPanel.getScrollPane();
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);

@@ -1,8 +1,26 @@
-library
-	using include "remixdPrograms/Mazes/grid.rem"
-		'grid' : a grid of 4 by 4
+GRID-LIB : include "remixdPrograms/Mazes/grid.rem"
 
-'binary tree' : a binary tree maze based on 'grid'
+using GRID-LIB
+	'grid' : a grid of 4 by 4
+	'cell' : a cell at 1 1
+	
+	'binary tree' : binary tree maze based on 'grid'
+	
+	binary tree maze based on 'grid' :
+		on each 'cell' in 'grid'
+			'neighbours' : { }
+			
+			from 'cell' in 'grid' if NORTH add to 'neighbours'
+			from 'cell' in 'grid' if EAST add to 'neighbours'
 
-a binary tree maze based on 'grid' :
-	for
+				
+			'neighbours' ↲
+			'link' : choose from 'neighbours'
+			if ('link' ≠ null)
+				
+				'link' ↲
+
+	from 'cell' in 'grid' if 'direction' add to 'neighbours' :
+		'cell' : 'direction' at 'cell' in 'grid'
+		if ('cell' ≠ null)
+			append 'cell' to 'neighbours'

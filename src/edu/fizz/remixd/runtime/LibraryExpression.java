@@ -192,10 +192,8 @@ public class LibraryExpression implements Expression {
     public void addVariableWithPos(String name, ParserRuleContext ctx) {
         int line = ctx.getStart().getLine();
         for (VarNameAndPos varNameAndPos : variableTable) {
-            if (name.equals(varNameAndPos.name())) {
-                if (line < varNameAndPos.line()) // shouldn't happen?
-                    System.err.printf("variable %s found before first occurence.%n", name);
-                return;
+            if (name.equals(varNameAndPos.name()) && line >= varNameAndPos.line()) {
+                return; // only add it if earlier line
             }
         }
         variableTable.add(new VarNameAndPos(name, line - 1));

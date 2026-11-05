@@ -89,10 +89,7 @@ public class RemixdCompletions {
             textArea.reparseProgramTextForCompletions(); // editor can be null if printing this document
 
             String seedWord = wordSoFar(offset);
-//            int existingLines = 0;
-//            if (textArea.isREPLArea) {
-//                existingLines = (int)REPLPanel.allText.toString().lines().count();
-//            }
+
             if (seedWord.startsWith("'")) { // variable
                 nextParam = false;
                 completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord, lineNumber + 1);
@@ -126,6 +123,7 @@ public class RemixdCompletions {
 
                 if (nextParam) {
                     int lineStartOffset = textArea.getLineStartOffset(lineNumber);
+                    // got a crash on completionsHere.offset
                     AutoTab.selectedNextParam(textArea,
                                               Objects.requireNonNull(AutoUtil.extractLine(textArea, lineNumber)),
                                               lineNumber, completionsHere.offset - lineStartOffset,

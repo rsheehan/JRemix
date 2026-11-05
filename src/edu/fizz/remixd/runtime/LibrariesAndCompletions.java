@@ -131,7 +131,7 @@ public class LibrariesAndCompletions {
                         return false;
                     if (counter < numUsingLibs) {
                         thisLibrary = (LibraryExpression) usingLibBlock.getLibraries()[counter];
-                        return true;
+                        return thisLibrary != null;
                     }
                     return false;
                 }

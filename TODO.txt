@@ -33,6 +33,36 @@ and near the bottom (but not at the bottom) of the window.
 =============
 Completions
 
+Completing variables
+
+There are 11 uses of ctx.IDENTIFIER() in EvalVisitorForEditor
+	field assignment in visitField - scope the create/extend block
+	fieldID e.g. create 'field' in visitFieldId - scope the create/extend block
+	method param in visitMethSigParam - scope the method
+	method block param in visitMethSigBlock - scope the method
+	function param in visitSigParam - scope the function
+	function block param in visitSigBlock - scope the function
+	assignment statement in visitSetVariable
+		depends on whether in function/method
+			if so then scope the function or method from here on
+				may be multiple assignments so using first line
+			if not then scope in main or library from here on
+				may be multiple assignments so using first line
+	simple expression in visitExprVar
+		don't need as it must have a value first
+	parameter when calling in visitCallVar
+		this is needed in case the parameter is being filled in as var param
+		scope from first use depends on whether in function/method or main/library
+
+	the name of list/map in visitListElement
+		don't need it e.g. 'list'{1} because it must already exist from below
+	the name of list/map in visitSetListElement
+		need it e.g. 'list'{1} : "something"
+		scope from first use depends on whether in function/method or main/library
+
+Currently too much effort to do this properly instead will add all identifiers with
+their position in the text.
+
 using files (in appleROM.rem)
 	the variables in the using area are not added to the main program lib
 	now they are but the ordering is not preserved so a variable can be completed

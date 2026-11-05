@@ -1,14 +1,15 @@
 library
-		- Constants for directions.
+	- Constants for directions.
 	NORTH : 1
 	SOUTH : 2
 	WEST : 3
 	EAST : 4
 	
 	=-
-	Create a grid object with 'rows' of 'columns' each.
+	A grid object with 'rows' of 'columns' each.
 	=-
 	a grid of 'rows' by 'columns' :
+		
 		create 'rows', 'columns'
 			'type' : "Maze Grid"
 			'cells' : do 
@@ -21,22 +22,26 @@ library
 				'rows', 'columns'
 				
 			=-
-			Return the cell at position <'row', 'column'> of grid 'OBJECT'.
+			Return the cell at 'position' of grid 'OBJECT'.
+			If no cell at 'position' returns null.
 			=-
-			MY cell at 'row' by 'column' :
+			MY cell at 'position' :
+				'row' : 'position'{1}
+				'column' : 'position'{2}
+
 				if (all of {
 					['row' is in (1 to 'rows')]
 					['column' is in (1 to 'columns')]
 				})
 					return 'cells'{'row'}{'column'}
 				null
-			
+
 			=-
 			Return a random cell from the grid 'OBJECT'.
 			=-
 			MY random cell :
 				'cells'{random 'rows'}{random 'columns'}
-				
+				'column'
 			=-
 			Return the number of cells in the grid 'OBJECT'.
 			=-
@@ -44,49 +49,21 @@ library
 				'rows' × 'columns'
 			
 			=-
-			Creates the iterator for the grid 'OBJECT'.
-			Produces each row.
+			Carry out the 'block' on each 'cell' in the grid 'OBJECT'.
 			=-
-			iterator from ME :
-				create 'cells', 'rows'
-					'row' : 0
-							
-					end ME :
-						'row' = 'rows'
+			on each #cell in ME ['block'] :
+				for each 'row' from 1 to 'rows' 
+					for each 'column' from 1 to 'columns' 
+						#cell : 'cells'{'row'}{'column'}
+						do 'block'
 						
-					next ME :
-						increment 'row'
-						'cells'{'row'}
-			
-			=-
-			Creates an iterator to go over every cell in the grid.
-			=-
-			MY cell iterator :
-				create 'cells', 'rows', 'columns'
-					'row' : 1
-					'column' : 1
-					
-					end ME :
-						'row' > 'rows'
-					
-					next ME :
-						'cell' : 'cells'{'row'}{'column'}
-						increment 'column'
-						if ('column' > 'columns') 
-							'column' = 1
-							increment 'row'
-						'cell'
-						
-	
 	=-
-	Create a single cell with connections to 
-	surrounding ones.
+	A single cell object with connections to surrounding ones.
 	=-
 	a cell at 'row' 'column':
-		create
+	
+		create 'row', 'column'
 			'type' : "Maze Cell"
-			'row' : 'row'
-			'column' : 'column'
 			'links' : { }
 			'directions' : {
 				{'row' - 1, 'column'}
@@ -97,6 +74,15 @@ library
 			
 			getters
 				'row', 'column', 'links', 'directions'
+			
+			=-
+			Return the cell in the 'direction' from the cell 'OBJECT'
+			exists in the 'grid'.
+			If no cell in the 'direction' returns null.
+			=-
+			'direction' at ME in 'grid' :
+				'coords' : 'directions'{'direction'}
+				'grid' cell at 'coords'
 			
 			=-
 			Return a string represenation of the cell 'OBJECT'.

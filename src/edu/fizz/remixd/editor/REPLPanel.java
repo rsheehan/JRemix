@@ -32,10 +32,13 @@ public class REPLPanel extends JPanel {
     private final GridBagConstraints gbcForSpace;
     private final Component glueBox;
 
+    private RemixdApp remixdApp;
+
     private boolean darkAreas;
 
-    public REPLPanel(boolean dark)  {
+    public REPLPanel(boolean dark, RemixdApp remixdApp)  {
         super(new GridBagLayout());
+        this.remixdApp = remixdApp;
         darkAreas = dark;
         setBackgroundDark(dark);
         gbcForCode = new GridBagConstraints();
@@ -53,7 +56,7 @@ public class REPLPanel extends JPanel {
         add(glueBox, gbcForSpace);
         scrollPane = new JScrollPane(this);
         RemixdTextArea initialArea = addREPLTextArea(); // this moves glue and last to the end
-        SwingUtilities.invokeLater(() -> initialArea.setText("help REPL ; type CMD-r or CTRL-r"));
+        SwingUtilities.invokeLater(() -> initialArea.setText("help REPL ; type Command/Control-return"));
         allText = new StringBuilder();
     }
 
@@ -69,6 +72,7 @@ public class REPLPanel extends JPanel {
 
     public RemixdTextArea addREPLTextArea() {
         RemixdTextArea REPLTextArea = new RemixdTextArea(true, darkAreas);
+        REPLTextArea.setUpToUseCmdReturn(remixdApp);
         makeComponentSendScrollingUp(REPLTextArea);
         // to make it scroll when the text would go off the window
         REPLTextArea.addCaretListener(_ -> SwingUtilities.invokeLater(() -> {
