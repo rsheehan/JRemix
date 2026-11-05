@@ -70,9 +70,19 @@ Remix'd has a simple library system which provides a measure of
 encapsulation. Libraries can contain both Java and Remix'd functions as in the 
 graphics library used in the landscape example.
 
+## Running
 You can run Remix'd by putting the remixd.jar file in the same folder as the
 remixdLibraries folder. You may want to add the remixdPrograms folder too.
 Then as long as a recent Java runtime is installed you should be able to run
 Remix'd by double-clicking on the remix.jar file.
 
+## Completing
+Variables and constants can be completed by starting to type the name and
+then typing shift-tab.
+Functions can be completed by typing any part of the function name and then
+typing shift-tab. 
+Repeated shift-tabs cycle through the possible completions.
+Escape reverts to the original text.
+
+## Reference Manual
 I am still working on the Remix'd reference manual.
