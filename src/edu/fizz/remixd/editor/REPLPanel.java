@@ -20,9 +20,6 @@ public class REPLPanel extends JPanel {
     private static final JTextArea dummyTextArea = new JTextArea();
     public static JTextArea currentOutputArea = dummyTextArea;
 
-    /* Keep all text from current code areas. */
-    public static StringBuilder allText;
-
     public static RemixdTextArea getCurrentCodeArea() {
         return currentCodeArea;
     }
@@ -32,7 +29,7 @@ public class REPLPanel extends JPanel {
     private final GridBagConstraints gbcForSpace;
     private final Component glueBox;
 
-    private RemixdApp remixdApp;
+    private final RemixdApp remixdApp;
 
     private boolean darkAreas;
 
@@ -57,7 +54,6 @@ public class REPLPanel extends JPanel {
         scrollPane = new JScrollPane(this);
         RemixdTextArea initialArea = addREPLTextArea(); // this moves glue and last to the end
         SwingUtilities.invokeLater(() -> initialArea.setText("help REPL ; type Command/Control-return"));
-        allText = new StringBuilder();
     }
 
     private void makeComponentSendScrollingUp(Component component) {
@@ -86,7 +82,7 @@ public class REPLPanel extends JPanel {
             AbstractDocument document =  (AbstractDocument)currentCodeArea.getDocument();
             document.setDocumentFilter(new REPLPanelDocumentFilter(document, this));
             currentCodeArea.setHighlightCurrentLine(false);
-            allText.append(currentCodeArea.getText()).append("\n");
+            AutoPairer.disableAutoPair(currentCodeArea);
         }
         currentCodeArea = REPLTextArea;
         remove(glueBox);
@@ -204,7 +200,6 @@ public class REPLPanel extends JPanel {
         for (Component component : allTextAreas) {
             remove(component);
         }
-        allText = new StringBuilder();
     }
 
     private Component createAutoSizingArea(RemixdTextArea textArea) {

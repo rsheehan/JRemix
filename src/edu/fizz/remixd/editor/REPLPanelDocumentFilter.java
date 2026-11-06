@@ -41,33 +41,31 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
             remixdApp.run();
             return;
         }
+        // currently doesn't do any modifications e.g. auto pair
         StringBuilder newText = new StringBuilder(oldDocStringBuilder);
         newText.insert(offset, text);
-        int insertPos = currentCodeArea.getCaretPosition();
-        currentCodeArea.append(newText.toString());
-        currentCodeArea.setCaretPosition(insertPos + offset + text.length());
-        REPLPanel.scrollToBottom();
+        finishInserting(offset, text.length(), newText);
     }
 
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) {
         StringBuilder newText = new StringBuilder(oldDocStringBuilder);
         newText.replace(offset, offset + length, text);
-        RemixdTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
-        int insertPos = currentCodeArea.getCaretPosition();
-        currentCodeArea.append(newText.toString());
-        currentCodeArea.setCaretPosition(insertPos + offset + text.length());
-        REPLPanel.scrollToBottom();
+        finishInserting(offset, text.length(), newText);
     }
 
     @Override
     public void remove(FilterBypass fb, int offset, int length) {
         StringBuilder newText = new StringBuilder(oldDocStringBuilder);
         newText.delete(offset, offset + length);
+        finishInserting(offset, 0, newText);
+    }
+
+    private static void finishInserting(int offset, int length, StringBuilder newText) {
         RemixdTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
-        int insertPos = currentCodeArea.getCaretPosition();
-        currentCodeArea.append(newText.toString());
-        currentCodeArea.setCaretPosition(insertPos + offset);
+        int currentCodeAreaCaretPosition = currentCodeArea.getCaretPosition();
+        currentCodeArea.insertNoCaretListener(newText.toString(), currentCodeAreaCaretPosition);
+        currentCodeArea.setCaretPosition(currentCodeAreaCaretPosition + offset + length);
         REPLPanel.scrollToBottom();
     }
 

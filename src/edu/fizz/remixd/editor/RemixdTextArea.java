@@ -77,12 +77,14 @@ public class RemixdTextArea extends RSyntaxTextArea {
             @Override
             public void focusGained(FocusEvent e) {
                 completionControl.clearCompletions();
+                // added to prevent unnecessary jumps to the bottom of the REPL
                 shouldScrollPanel = RemixdTextArea.this == REPLPanel.getCurrentCodeArea();
             }
 
             @Override
             public void focusLost(FocusEvent e) {
                 completionControl.clearCompletions();
+                // added to prevent unnecessary jumps to the bottom of the REPL
                 shouldScrollPanel = RemixdTextArea.this != REPLPanel.getCurrentCodeArea();
             }
         });
@@ -185,6 +187,12 @@ public class RemixdTextArea extends RSyntaxTextArea {
     public void replaceRangeNoCaretListener(String text, int start, int end) {
         removeCaretListener(caretListener);
         replaceRange(text, start, end);
+        addCaretListener(caretListener);
+    }
+
+    public void insertNoCaretListener(String text, int pos) {
+        removeCaretListener(caretListener);
+        insert(text, pos);
         addCaretListener(caretListener);
     }
 
