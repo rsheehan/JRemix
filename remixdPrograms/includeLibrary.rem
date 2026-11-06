@@ -19,7 +19,7 @@ library
 	making object from IncludeLibrary.rem
 	=-
 	making object : ; can complete here, and in using block
-		"making object" \n
+		"making object in library" \n
 		create
 			'OV1' : 2
 			'OV2' : 4

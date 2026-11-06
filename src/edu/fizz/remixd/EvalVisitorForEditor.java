@@ -212,7 +212,6 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
             if (addIdentifierStack.peek()) { // we are dealing with the main program not an included file
                 for (LibraryExpression lib : libraryExpressions) {
                     lib.addToValidLines(usingBlock.getActiveLines().getFirst());
-                    LibrariesAndCompletions.addLibrary(lib); // should be the libraries we are using
                 }
             }
         } catch (NullPointerException ex) {
@@ -279,7 +278,8 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
                 programLibrary.addConstantForCompletions(constantAssignment.name());
             } else if (node instanceof RemixdParser.FunctionDefinitionContext) {
                 RemixdFunction function = (RemixdFunction)visit(node);
-                programLibrary.addFunction(function);
+                usingBlock.addFunction(function);
+                // see visitUsingStatement
             }
         }
         return usingBlock;

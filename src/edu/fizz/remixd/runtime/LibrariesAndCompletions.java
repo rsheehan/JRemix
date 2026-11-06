@@ -238,22 +238,28 @@ public class LibrariesAndCompletions {
         HashMap<String, String> functionDisplayNames = new HashMap<>(); // maps display names to comments
         SortedSet<String> completionsAtStart = new TreeSet<>();
         SortedSet<String> completionsConsecutive = new TreeSet<>();
-        // check against each usingLibBlock
-        ArrayList<LibraryExpression> alreadyChecked = new ArrayList<>();
-        for (UsingLibBlock usingLibBlock : addedUsingLibBlocks) {
-            for (LibraryExpression lib : YieldLibrary.activeLibraries(usingLibBlock, lineNumber)) {
-                searchForCompletions(searchWord, lib.getFunctionTable(), completionsAtStart, completionsConsecutive, functionDisplayNames);
-                alreadyChecked.add(lib);
-            }
-        }
+
         // check against each non using library
         // this is standard lib and the main program?
         for (LibraryExpression library : addedLibraries) {
-            // check the library is not in the usingLibBlocks
-            if (!alreadyChecked.contains(library)) {
-                searchForActiveCompletions(searchWord, lineNumber, library, completionsAtStart, completionsConsecutive, functionDisplayNames);
+            searchForActiveCompletions(searchWord, lineNumber, library, completionsAtStart, completionsConsecutive, functionDisplayNames);
+        }
+
+        // check against each usingLibBlock list of libraries it uses
+        for (UsingLibBlock usingLibBlock : addedUsingLibBlocks) {
+            for (LibraryExpression lib : YieldLibrary.activeLibraries(usingLibBlock, lineNumber)) {
+                searchForCompletions(searchWord, lib.getFunctionTable(), completionsAtStart, completionsConsecutive, functionDisplayNames);
             }
         }
+        // next check against the usingBlock library i.e. the library block which is using the libraries
+        // this has precedence over the libraries
+        for (UsingLibBlock usingLibBlock : addedUsingLibBlocks) {
+            LibraryExpression usingBlock = usingLibBlock.getUsingBlock();
+            if (isActiveHere(lineNumber, usingBlock)) {
+                searchForCompletions(searchWord, usingBlock.getFunctionTable(), completionsAtStart, completionsConsecutive, functionDisplayNames);
+            }
+        }
+        // then check against methods
         searchForCompletions(searchWord, methodTableForCompletions, completionsAtStart, completionsConsecutive, functionDisplayNames);
         ArrayList<String> allCompletions = new ArrayList<>(completionsAtStart);
         allCompletions.addAll(completionsConsecutive);

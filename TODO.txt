@@ -1,3 +1,5 @@
+Check whether I have to undo other auto editing functions like autoPair.
+
 Map keys are now the string version of any type.
 But doesn't work with say:
 'object' : create
