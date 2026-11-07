@@ -14,14 +14,14 @@ test {
 	… expected 7
 
 	"Swap list items"
-		'list' : {1, 2, 4, 8, 16}
-		('list' {3}) swap ('list' {1})
+		'list' : { 1, 2, 4, 8, 16 }
+		('list'{3}) swap ('list'{1})
 		'list'
-	… expected {4, 2, 1, 8, 16}
+	… expected { 4, 2, 1, 8, 16 }
 
 	"Swap map items"
-		'map' : {"a" : 1, "b" : 3, "c" : 5, "d" : 7}
-		('map' {"b"}) swap ('map' {"d"})
+		'map' : { "a" : 1, "b" : 3, "c" : 5, "d" : 7 }
+		('map'{"b"}) swap ('map'{"d"})
 		'map'
-	… expected {"a" : 1, "d" : 3, "c" : 5, "b" : 7}
+	… expected { "a" : 1, "d" : 3, "c" : 5, "b" : 7 }
 }

@@ -19,9 +19,9 @@ LIB : library
 			A-LIB-CONST
 		… expected 42
 		
-		"Call function in using block which calls lib function."
-			func one ; in the using block, can't find "a lib func" yet
-		…  expected "null"
+-		"Call function in using block which calls lib function."
+-			func one ; in the using block, can't find "a lib func" yet
+-		…  expected "null"
 	}
 ↲
 

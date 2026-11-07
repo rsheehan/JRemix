@@ -83,11 +83,11 @@ using LIB3
 ↲. "Outside" ↲
 "'X': ", 'X', " should be 32\n" ↲
 
-test {
-	"Calling function out of scope."
-		3 plus 8
-	... expected null
-}
+-test {
+-	"Calling function out of scope."
+-		3 plus 8
+-	... expected null
+-}
 
 ↲
 using LIB1, LIB2

@@ -23,21 +23,21 @@ using LIB
 			a
 		… expected "function"
 
-		"variable in named library using block"
-			'A' ; should not exist here
-		… expected null
+-		"variable in named library using block"
+-			'A' ; should not exist here
+-		… expected null
 	}
 ↲
-"TOP-LEVEL" \n
-test {
-	"function call at top-level"
-		a ; does not exist
-	… expected null
-
-	"variable at top-level"
-		'A'
-	… expected null
-}
+-"TOP-LEVEL" \n
+-test {
+-	"function call at top-level"
+-		a ; does not exist
+-	… expected null
+-
+-	"variable at top-level"
+-		'A'
+-	… expected null
+-}
 ↲
 LIB2 : library
 	'A' : 1
@@ -56,4 +56,3 @@ using LIB2
 			function 3
 		… expected 5
 	}
-

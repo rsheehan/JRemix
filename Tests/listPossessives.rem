@@ -11,7 +11,7 @@ a b :
 
 'list' : {
 	a b
-	{3, a b}
+	{ 3, a b }
 }
 
 test {
@@ -29,20 +29,20 @@ test {
 	… expected 2
 
 	"Get list item possessive"
-		('list' {1}) y
+		('list'{1}) y
 	… expected 99
 
 	"Set list item possessive"
-		('list' {1}) x 3
-		('list' {1}) x
+		('list'{1}) x 3
+		('list'{1}) x
 	… expected 3
 
 	"Set list 2D item possessive"
-		('list' {2}{2}) y 4
-		('list' {2}{2}) y
+		('list'{2}{2}) y 4
+		('list'{2}{2}) y
 	… expected 4
 	
 	"In binary operation"
-		('list' {1}) x + ('list' {2}{2}) y
+		('list'{1}) x + ('list'{2}{2}) y
 	… expected 7
 }
