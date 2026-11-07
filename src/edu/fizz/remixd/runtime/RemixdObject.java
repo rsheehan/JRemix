@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RemixdObject implements RemixComplexType {
+public class RemixdObject implements RemixdComplexType {
 
     /*
      * These variables are added to when the initBlock is evaluated in RemixdObjectExpression
@@ -84,8 +84,8 @@ public class RemixdObject implements RemixComplexType {
                 sb.append(tabs).append('\'').append(key).append("' : ");
 
                 Object field = instanceVars.get(key);
-                if (field instanceof RemixComplexType complexField) {
-                    List<RemixComplexType> callerStack = new ArrayList<>();
+                if (field instanceof RemixdComplexType complexField) {
+                    List<RemixdComplexType> callerStack = new ArrayList<>();
                     callerStack.add(this);
                     sb.append(complexField.toString(callerStack, tabs));
                 } else {
@@ -100,7 +100,7 @@ public class RemixdObject implements RemixComplexType {
     }
 
     @Override
-    public String toString(List<RemixComplexType> callerStack, StringBuilder tabs) {
+    public String toString(List<RemixdComplexType> callerStack, StringBuilder tabs) {
         StringBuilder sb = new StringBuilder();
         Method method = findMethod("⫾ to string");
         MethodContext methodContext = new MethodContext(null, this);
@@ -138,7 +138,7 @@ public class RemixdObject implements RemixComplexType {
                 sb.append(tabs).append('\'').append(key).append("' : ");
 
                 Object field = instanceVars.get(key);
-                if (field instanceof RemixComplexType complexField) {
+                if (field instanceof RemixdComplexType complexField) {
                     if (callerStack.contains(complexField)) {
                         sb.append("REC_OBJECT");
                     } else {

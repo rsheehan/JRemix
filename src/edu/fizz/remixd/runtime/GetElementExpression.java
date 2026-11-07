@@ -55,6 +55,7 @@ public class GetElementExpression implements Expression {
                         }
                     }
                     case HashMap nextMap when finalId instanceof String stringId -> listOrMapPart = nextMap.get(stringId);
+                    case HashMap nextMap when finalId instanceof RemixdComplexType objectId -> listOrMapPart = nextMap.get(objectId.toString());
                     case Collection listOrMap when listOrMap.isEmpty() -> listOrMapPart = RemixdNull.value();
                     case null, default -> System.err.printf("\"%s\" cannot have index \"%s\".%n", listName, id);
                 }

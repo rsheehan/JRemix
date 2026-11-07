@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class RemixdList<Expression> extends ArrayList implements RemixComplexType {
+public class RemixdList<Expression> extends ArrayList implements RemixdComplexType {
 
     public RemixdList() {
         super();
@@ -25,8 +25,8 @@ public class RemixdList<Expression> extends ArrayList implements RemixComplexTyp
         sb.append('{');
         for (;;) {
             Object item = it.next();
-            if (item instanceof RemixComplexType complexItem) {
-                List<RemixComplexType> callerStack = new ArrayList<>();
+            if (item instanceof RemixdComplexType complexItem) {
+                List<RemixdComplexType> callerStack = new ArrayList<>();
                 callerStack.add(this);
                 sb.append(complexItem.toString(callerStack, new StringBuilder()));
             } else if (item instanceof String stringItem)
@@ -41,7 +41,7 @@ public class RemixdList<Expression> extends ArrayList implements RemixComplexTyp
     }
 
     @Override
-    public String toString(List<RemixComplexType> callerStack, StringBuilder tabs) {
+    public String toString(List<RemixdComplexType> callerStack, StringBuilder tabs) {
         Iterator it = iterator();
         if (! it.hasNext())
             return "{}";
@@ -50,7 +50,7 @@ public class RemixdList<Expression> extends ArrayList implements RemixComplexTyp
         sb.append('{');
         for (;;) {
             Object item = it.next();
-            if (item instanceof RemixComplexType complexItem) {
+            if (item instanceof RemixdComplexType complexItem) {
                 if (callerStack.contains(complexItem)) {
                     sb.append("REC_LIST");
                 } else {

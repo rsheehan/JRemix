@@ -21,6 +21,10 @@ public class RangeExpression extends AbstractList<Long> {
 
     @Override
     public Long get(int index) {
+        if (index < start || index > finish) {
+            System.err.printf("Index %d is out of range.%n", index);
+            return null;
+        }
         return start + index * direction;
     }
 

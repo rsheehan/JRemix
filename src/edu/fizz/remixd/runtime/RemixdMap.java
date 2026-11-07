@@ -2,7 +2,7 @@ package edu.fizz.remixd.runtime;
 
 import java.util.*;
 
-public class RemixdMap<String, Expression> extends HashMap implements RemixComplexType{
+public class RemixdMap<String, Expression> extends HashMap implements RemixdComplexType {
 
     public RemixdMap() {
         super();
@@ -26,8 +26,8 @@ public class RemixdMap<String, Expression> extends HashMap implements RemixCompl
             Object value = keyValue.getValue();
             sb.append(key);
             sb.append("\" : ");
-            if (value instanceof RemixComplexType complexValue) {
-                List<RemixComplexType> callerStack = new ArrayList<>();
+            if (value instanceof RemixdComplexType complexValue) {
+                List<RemixdComplexType> callerStack = new ArrayList<>();
                 callerStack.add(this);
                 sb.append(complexValue.toString(callerStack, new StringBuilder()));
             } else if (value instanceof java.lang.String stringValue) {
@@ -42,7 +42,7 @@ public class RemixdMap<String, Expression> extends HashMap implements RemixCompl
     }
 
     @Override
-    public java.lang.String toString(List<RemixComplexType> callerStack, StringBuilder tabs) {
+    public java.lang.String toString(List<RemixdComplexType> callerStack, StringBuilder tabs) {
         Iterator<Entry<String, Expression>> iter = entrySet().iterator();
         if (! iter.hasNext())
             return "{}";
@@ -56,7 +56,7 @@ public class RemixdMap<String, Expression> extends HashMap implements RemixCompl
             Object value = keyValue.getValue();
             sb.append(key);
             sb.append("\" : ");
-            if (value instanceof RemixComplexType complexValue) {
+            if (value instanceof RemixdComplexType complexValue) {
                 if (callerStack.contains(complexValue)) {
                     sb.append("REC_MAP");
                 } else {
