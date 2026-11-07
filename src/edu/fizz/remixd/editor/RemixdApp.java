@@ -379,7 +379,7 @@ public class RemixdApp extends RemixdBaseWindow {
         public void actionPerformed(ActionEvent e) {
             replPanel.removeExistingTextAreas();
             replPanel.addREPLTextArea();
-            // also clear the repl context
+            // also clear the repl context but not the method table
             LibrariesAndCompletions.resetREPLEnvironment();
         }
     }

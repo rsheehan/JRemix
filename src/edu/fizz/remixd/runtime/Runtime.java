@@ -21,7 +21,9 @@ public class Runtime {
         loadedLibraries = new HashMap();
         Object result = RemixdNull.value();
         try {
+
             result = program.block.evaluate(RemixdPrepareRun.REPLContext);
+
         } catch (ReturnException exception) {
             System.err.println("ReturnException caught in program.");
         } catch (InterruptedException exception) {

@@ -15,6 +15,11 @@ public abstract class Function {
     protected List<String> formalParameters;
     protected List<Boolean> blockParameters;
     protected boolean transparent = false;
+
+    public String getFunctionComment() {
+        return functionComment;
+    }
+
     protected String functionComment;
 
     public Function(List<String> names, List<String> parameters, List<Boolean> blockParams, boolean transparent, String comment) {
