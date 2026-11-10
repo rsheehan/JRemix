@@ -35,12 +35,12 @@ CALONE : 99
 
 LIB1 : library
 	CL1 : 12
-	- should complete with constants, CPROG, CALONE, CR, CONSTANTS, CONS, CL1
+	- should complete with constants, CALONE, CL1, CONS, CONSTANTS, CPROG, CR
 	C
 
 using LIB1
-	- should complete with constants, CPROG, CALONE, CR, CONSTANTS, CONS, CL1
+	- should complete with constants, CALONE, CL1, CONS, CONSTANTS, CPROG, CR
 	C
 
-- should complete with constants, CPROG, CALONE, CR, CONSTANTS, CONS
+- should complete with constants, CALONE, CONS, CONSTANTS, CPROG, CR
 C

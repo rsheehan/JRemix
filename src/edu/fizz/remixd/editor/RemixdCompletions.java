@@ -7,14 +7,15 @@ import javax.swing.text.BadLocationException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RemixdCompletions {
 
     static boolean completing = false;
     private final RemixdTextArea textArea;
     private CompletionInfo completionsHere;
-    private boolean nextParam = false;
 
     public RemixdCompletions(RemixdTextArea textArea) {
         this.textArea = textArea;
@@ -84,50 +85,47 @@ public class RemixdCompletions {
         String completionText;
         String completionComment = "";
         int splitPos;
+        int[] lineOffset = {0};
         if (completionsHere == null) {
 
             textArea.reparseProgramTextForCompletions(); // editor can be null if printing this document
 
-            String seedWord = wordSoFar(offset);
+            String seedWord = wordSoFar(offset, lineOffset);
 
-            if (seedWord.startsWith("'")) { // variable
-                nextParam = false;
+            if (seedWord.startsWith("§")) { // full constant or variable
+                seedWord = seedWord.substring(1, seedWord.length() - 1); // chop off the ends
+                if (seedWord.startsWith("'")) { // variable
+                    completions = LibrariesAndCompletions.methodCompletionsFromVariable(seedWord);
+                } else { // constant
+                    completions = LibrariesAndCompletions.methodCompletionsFromConstant(seedWord);
+                }
+                seedWord = seedWord + " "; // put space back so it is the right length
+            } else if (seedWord.startsWith("'")) { // variable
+                // now assuming it also endsWith '
                 completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord, lineNumber + 1);
-                seedWord += "'";
-                offset += 1;
             } else if (seedWord.startsWith("#")) { // refvar
-                nextParam = false;
                 completions = LibrariesAndCompletions.variableCompletionsFrom(seedWord, lineNumber + 1);
             } else if (seedWord.equals(seedWord.toUpperCase())) { // constant
-                nextParam = false;
                 completions = LibrariesAndCompletions.constantCompletionsFrom(seedWord, lineNumber + 1); // + existingLines);
             } else { // function call
-                nextParam = true; // <- the one which moves us on
                 seedWord = seedWord.stripLeading();
                 completions = LibrariesAndCompletions.createCompletionsFrom(seedWord, lineNumber + 1); // + existingLines);
             }
             if (!seedWord.isEmpty() && !completions.isEmpty()) {
+                int lineStart = textArea.getLineStartOffsetOfCurrentLine();
                 int seedLength = seedWord.length();
-                if (!seedWord.startsWith("'") && !seedWord.startsWith("#") && !seedWord.equals(seedWord.toUpperCase())) // only function calls
-                    completions.add(seedWord + "\n");
-                completionsHere = new CompletionInfo(completions, offset - seedLength);
+                Collections.sort(completions);
+                completions.add(seedWord + "\n");
+                completionsHere = new CompletionInfo(completions, lineOffset[0] + lineStart);
                 completionAndDoc = completionsHere.nextCompletion();
                 splitPos = completionAndDoc.indexOf('\n');
                 completionText = completionAndDoc.substring(0, splitPos);
                 completionComment = completionAndDoc.substring(splitPos + 1);
                 int endOffset = completionsHere.offset + seedLength;
-
-                textArea.replaceRangeNoCaretListener(completionText, completionsHere.offset, endOffset);
-                int back = seedWord.startsWith("'") ? -1 : 0;
-                textArea.setCaretPosition(completionsHere.offset + completionsHere.currentLength() + back);
-
-                if (nextParam) {
-                    int lineStartOffset = textArea.getLineStartOffset(lineNumber);
-                    // got a crash on completionsHere.offset
-                    AutoTab.selectedNextParam(textArea,
-                                              Objects.requireNonNull(AutoUtil.extractLine(textArea, lineNumber)),
-                                              lineNumber, completionsHere.offset - lineStartOffset,
-                                              lineStartOffset);
+                try {
+                    textArea.replaceRangeNoCaretListener(completionText, completionsHere.offset, endOffset);
+                } catch (IllegalArgumentException _) {
+                    System.out.println("bad no longer");
                 }
             }
         } else {
@@ -137,68 +135,160 @@ public class RemixdCompletions {
             completionText = completionAndDoc.substring(0, splitPos);
             completionComment = completionAndDoc.substring(splitPos + 1);
             int endOffset = completionsHere.offset + completionLength;
-
-            textArea.replaceRangeNoCaretListener(completionText, completionsHere.offset, endOffset);
-            int back = completionText.startsWith("'") ? -1 : 0;
-            textArea.setCaretPosition(completionsHere.offset + completionsHere.currentLength() + back);
-
-            if (nextParam) {
-                int lineStartOffset = textArea.getLineStartOffset(lineNumber);
-                AutoTab.selectedNextParam(textArea,
-                                          Objects.requireNonNull(AutoUtil.extractLine(textArea, lineNumber)),
-                                          lineNumber, completionsHere.offset - lineStartOffset,
-                                          lineStartOffset);
+            try {
+                textArea.replaceRangeNoCaretListener(completionText, completionsHere.offset, endOffset);
+            } catch (IllegalArgumentException _) {
+                System.out.println("Bad no longer");
             }
+
         }
         return completionComment.isEmpty() ? null : completionComment;
     }
 
-    /* From the current position move back to gather a word. */
-    private String wordSoFar(int pos) throws BadLocationException {
-        StringBuilder word = new StringBuilder();
-        boolean nextCharQuote = false;
-        String ch;
-        boolean couldBeConstant = false;
+    static final String VARIABLE_REGEX = "'([^']*)'";
 
-        if (textArea.getDocument().getLength() > pos) {
-            ch = textArea.getText(pos, 1);
-            nextCharQuote = ch.equals("'");
-        }
-        if (pos > 0) {
-            ch = textArea.getText(pos - 1, 1);
-            if (Character.isUpperCase(ch.charAt(0)) || ch.equals("-")) {
-                couldBeConstant = true;
-            }
-        }
-        while (--pos >= 0) {
-            ch = textArea.getText(pos, 1);
-            if (couldBeConstant) {
-                if (" .()[\\]{,}:—§@…’0123456789×÷≤≥≠=√²↲⊕\"\t\n".contains(ch))
-                    break;
-                if (!Character.isUpperCase(ch.charAt(0)) && !ch.equals("-")) {
-                    couldBeConstant = false;
+    /*
+    Returns true iff the pos is inside a variable name e.g. between ' and '.
+    lineText is the complete text of the line
+    The StringBuilder is filled in with the name.
+    Should I consider unclosed variable names. No closing '?
+     */
+    private boolean insideVariable(int pos, String lineText, StringBuilder partialVariableName, int[] lineOffset) {
+        if (lineText.length() > pos) {
+            // check if pos inside a variable
+            Pattern varPattern = Pattern.compile(VARIABLE_REGEX);
+            Matcher varMatcher = varPattern.matcher(lineText);
+            while (varMatcher.find()) {
+                String varName = varMatcher.group();
+                int start = varMatcher.start();
+                int end = varMatcher.end();
+                if (start < pos && pos < end) {
+                    // inside a variable
+                    lineOffset[0] = start;
+                    partialVariableName.append(varName);
+                    return true;
                 }
             }
-            if (".()[\\]{,}:—§@…’0123456789×÷≤≥≠=√²↲⊕\"\t\n".contains(ch)) // ⊕+*×÷%=≠<≤>≥
-                break;
-            if (ch.equals("'")) {
-                if (nextCharQuote)
-                    word.append(ch); // puts quote at beginning as flag
+        }
+        return false;
+    }
+
+    static final String CONSTANT_REGEX = "\\b[A-Z\\p{InGreek}&&\\p{Lu}][A-Z\\p{InGreek}&&\\p{Lu}0-9-]*\\b";
+
+    /*
+    Returns true iff the pos is inside or at end of a constant name
+    lineText is the complete text of the line
+    The StringBuilder is filled in with the name.
+     */
+    private boolean insideConstant(int pos, String lineText, StringBuilder partialConstantName, int[] lineOffset) {
+        // check if pos inside a constant
+        Pattern varPattern = Pattern.compile(CONSTANT_REGEX);
+        Matcher varMatcher = varPattern.matcher(lineText);
+        while (varMatcher.find()) {
+            String varName = varMatcher.group();
+            int start = varMatcher.start();
+            int end = varMatcher.end();
+            if (start < pos && pos <= end) {
+                // inside a constant
+                lineOffset[0] = start;
+                partialConstantName.append(varName);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean completedConstant(int pos, String lineText, StringBuilder completedConstantName, int[] lineOffset) {
+        // check if pos after a constant
+        Pattern varPattern = Pattern.compile(CONSTANT_REGEX + " ");
+        Matcher varMatcher = varPattern.matcher(lineText);
+        while (varMatcher.find()) {
+            String varName = varMatcher.group();
+            int start = varMatcher.start();
+            int end = varMatcher.end();
+            if (pos == end) {
+                // after a constant
+                lineOffset[0] = start;
+                completedConstantName.append("§");
+                completedConstantName.append(varName); // still includes " "
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean completedVariable(int pos, String lineText, StringBuilder completedVariableName, int[] lineOffset) {
+        // check if pos after a constant
+        Pattern varPattern = Pattern.compile(VARIABLE_REGEX + " ");
+        Matcher varMatcher = varPattern.matcher(lineText);
+        while (varMatcher.find()) {
+            String varName = varMatcher.group();
+            int start = varMatcher.start();
+            int end = varMatcher.end();
+            if (pos == end) {
+                // after a variable
+                lineOffset[0] = start;
+                completedVariableName.append("§");
+                completedVariableName.append(varName); // still includes " "
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /* From the current position move back to gather a word. */
+    // array hack to get position in line as well
+    private String wordSoFar(int pos, int[] lineOffset) throws BadLocationException {
+        StringBuilder word = new StringBuilder();
+        char ch;
+
+        int lineNumber = textArea.getLineOfOffset(pos);
+        int posInLine = pos - textArea.getLineStartOffset(lineNumber);
+
+        String line = AutoUtil.extractLine(textArea, lineNumber);
+        if (line == null)
+            return "";
+
+        if (insideVariable(posInLine, line, word, lineOffset))
+            return word.toString(); // starts with "'"
+
+        if (insideConstant(posInLine, line, word, lineOffset))
+            return word.toString(); // starts with CAPITAL
+
+        // search for methods only if in the repl
+        if (textArea.isREPLArea && completedConstant(posInLine, line, word, lineOffset)) {
+            return word.toString(); // starts with "§"
+        }
+
+        if (textArea.isREPLArea && completedVariable(posInLine, line, word, lineOffset)) {
+            return word.toString(); // starts with "§"
+        }
+
+        // none of the above, collect everything
+        // strip off space/tabs at beginning
+        word = new StringBuilder();
+    	if (line.charAt(posInLine - 1) == ' ') {
+            return "";
+        }
+        while (posInLine > 0) {
+            ch = line.charAt(--posInLine);
+            if (".()[\\]{,}:—§@…’0123456789×÷≤≥≠=√²↲⊕\"\t\n".contains(String.valueOf(ch))) { // ⊕+*×÷%=≠<≤>≥
+                posInLine++; // after this char
                 break;
             }
             word.append(ch);
         }
         word.reverse();
-
+        // get rid of trailing spaces
+        word = new StringBuilder(word.toString().stripTrailing());
+        // take into account spaces at the front of word
+        int spaces = word.length() - word.toString().stripLeading().length();
+        lineOffset[0] = posInLine + spaces; // + 1
         // remove "using" at the start
         int using = word.indexOf("using ");
         if (using == 0)
             word.delete(0, 6);
-        return word.toString();
-    }
-
-    public int completionNumber() {
-        return completionsHere == null ? -1 : completionsHere.currentIndex;
+        return word.toString().stripLeading();
     }
 
     private static class CompletionInfo {

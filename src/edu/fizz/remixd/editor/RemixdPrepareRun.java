@@ -73,22 +73,8 @@ public class RemixdPrepareRun {
         HashMap<String, Object> varsFromRun = REPLContext.getVariables();
         for (String name : varsFromRun.keySet()) {
             LibrariesAndCompletions.addVariableName(name);
+        }
 
-            Object value = varsFromRun.get(name);
-            if (value instanceof RemixdObject remixdObject) {
-                // should really check if the name is already there and check to see if the description
-                // needs to be added to
-                LibrariesAndCompletions.methodTableForCompletions.putAll(remixdObject.methodTable());
-            }
-        }
-        // same thing for constants
-        for (LibraryExpression library : REPLContext.getLibraryStack()) {
-            for (Object value : library.getConstantTable().values()) {
-                if (value instanceof RemixdObject remixdObject) {
-                    LibrariesAndCompletions.methodTableForCompletions.putAll(remixdObject.methodTable());
-                }
-            }
-        }
         // constants and functions should be in the existing REPL lib
         // transfer them to library in LibrariesAndCompletions addedLibraries
         Stack<LibraryExpression> libsFromRun = REPLContext.getLibraryStack();

@@ -15,7 +15,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
@@ -234,7 +233,6 @@ public class RemixdTextArea extends RSyntaxTextArea {
             // all using libs are after it (hence used first)
             // no. Change the semantics to be any top-level functions at the top of the stack.
             LibrariesAndCompletions.addLibrary(programLib);
-//            LibrariesAndCompletions.addAfterBaseLibrary(programLib);
             /* the visit above fills in addedLibraries in LibrariesAndCompletions
             this the result program is added as well. */
         } finally {
@@ -303,40 +301,13 @@ public class RemixdTextArea extends RSyntaxTextArea {
 
     private class CaretMove implements CaretListener {
 
-        private int lastLineNumber = 0;
-        private String lastLine = "";
-        private int lastCompletionNumber = -1;
-
         @Override
         public void caretUpdate(CaretEvent event) {
-            int mark = event.getMark();
-            int lineNumber = getLineNumber(mark);
-            String line = AutoUtil.extractLine(RemixdTextArea.this, lineNumber);
-            int completionNumber = completionControl.completionNumber();
-
-            boolean differentLine = lineNumber != lastLineNumber;
-            if (differentLine) {
-                completionControl.clearCompletions();
-            } else { // same line number
-                boolean sameCompletion = completionNumber == lastCompletionNumber;
-                assert line != null;
-                boolean sameLineContents = line.equals(lastLine);
-                if (sameCompletion && !sameLineContents) { // changed
-                    completionControl.clearCompletions();
-                }
-            }
-            lastLineNumber = lineNumber;
-            lastLine = line;
-            lastCompletionNumber = completionNumber;
+            completionControl.clearCompletions();
 
             boolean hasSelection = (getSelectionStart() != getSelectionEnd());
             // Toggle bracket matching based on whether text is currently selected
             setBracketMatchingEnabled(!hasSelection);
         }
-    }
-
-    private int getLineNumber(int mark) {
-        Element root = getDocument().getDefaultRootElement();
-        return root.getElementIndex(mark);
     }
 }

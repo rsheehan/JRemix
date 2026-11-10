@@ -27,6 +27,7 @@ public class RemixdSwingWorker extends SwingWorker {
 
     @Override
     protected java.lang.Boolean doInBackground() {
+        RemixdApp.replPanel.requestFocus();
         result = RemixdPrepareRun.runText(fileName, programText);
         return result != null;// can make it false on an error in the program
     }

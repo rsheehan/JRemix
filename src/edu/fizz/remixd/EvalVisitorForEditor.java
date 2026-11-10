@@ -173,6 +173,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
     public ConstantAssignmentStatement visitLibAssignment(RemixdParser.LibAssignmentContext ctx) {
         String constName = ctx.CONSTANT().getText();
         LibraryExpression library = (LibraryExpression) visit(ctx.library());
+        programLibIdentifiers.put(constName, library);
         return new ConstantAssignmentStatement(constName, library);
     }
 
@@ -196,13 +197,10 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
                         try { // should really check if in REPL
                             libraryExpression = (LibraryExpression) RemixdPrepareRun.REPLContext.retrieve(varName, false);
                         } catch (VarNotFoundException | FunctionNotFoundException _) {} // nothing
-                } else try { // fall back on attempting to evaluate the library expression
-                    Context contextForLib = new Context(LibrariesAndCompletions.getBaseLibrary(), null);
-                    // add any existing functions which may "include aLibrary"
-                    contextForLib.addLibraryToStack(programLibrary);
-                    libraryExpression = (LibraryExpression) libExp.evaluate(contextForLib);
-                } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException |
-                         VarNotFoundException | FunctionNotFoundException _) {}
+                }
+                if (libraryExpression == null) {
+                    libraryExpression = getLibraryExpression(libExp);
+                }
                 if (libraryExpression != null)
                     libraryExpressions.add(libraryExpression);
             }
@@ -219,7 +217,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
         }
         // need the usingLibBlock for the order of libs if more than one
         if (addIdentifierStack.peek()) {
-            UsingLibBlock usingLibBlock = new UsingLibBlock(libraryExpressions.toArray(new Expression[1]), usingBlock);
+            UsingLibBlock usingLibBlock = new UsingLibBlock(libraryExpressions.toArray(new Expression[0]), usingBlock);
             LibrariesAndCompletions.addUsingLibBlock(usingLibBlock);
         }
         if (usingBlock != null) {
@@ -229,6 +227,22 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
             usingBlock.block.setConstantAssignmentLibrary(programLibrary);
         }
         return null;
+    }
+
+    /*
+    Evaluate the libExp in an attempt to get the libraryExpression value.
+     */
+    private LibraryExpression getLibraryExpression(Expression libExp) {
+        LibraryExpression libraryExpression = null;
+        try { // fall back on attempting to evaluate the library expression
+            Context contextForLib = new Context(LibrariesAndCompletions.getBaseLibrary(), null);
+            // add any existing functions which may "include aLibrary"
+            contextForLib.addLibraryToStack(programLibrary);
+            libraryExpression = (LibraryExpression) libExp.evaluate(contextForLib);
+        } catch (ClassCastException | NullPointerException | ReturnException | InterruptedException |
+                 VarNotFoundException | FunctionNotFoundException _) {
+        }
+        return libraryExpression;
     }
 
     private LibraryExpression getLibraryFromConstName(String constantName) {
@@ -491,12 +505,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
         if (ctx.blockOfStatements() == null)
             return null;
         Block block = (Block)visit(ctx.blockOfStatements());
-        Method method = new Method(methSig.getAllNames(), block, methSig.getParameters(), methSig.getBlockParams(), methSig.getSelfRef(), methodComment);
-//        for (String name : method.getAllNames()) {
-//
-//            LibrariesAndCompletions.methodTableForCompletions.put(name, method);
-//        }
-        return method;
+        return new Method(methSig.getAllNames(), block, methSig.getParameters(), methSig.getBlockParams(), methSig.getSelfRef(), methodComment);
     }
 
     /** methodSigPart+ */

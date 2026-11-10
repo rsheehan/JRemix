@@ -1,44 +1,10 @@
-- Multiple libraries at once. -
+an object :
+	create
+		'x' : 1
+		
+		what am ME :
+			"I am an object"
+		
+		MY more thing :
+			inc 'x'
 
-LIB1 : library
-	=-
-	from LIB1
-	=-
-	'A' with 'B' :
-		'A' ⊕ " from LIB1 " ⊕ 'B'
-	
-	'A' alone :
-		"from LIB1"
-
-LIB2 : library
-	=-
-	from LIB2
-	=-
-	'A' with 'B' :
-		'A' ⊕ " from LIB2 " ⊕ 'B'
-
-↲
-using LIB2, LIB1
-	
-	(A) with (B)
-	(A) with (B)
-	test {
-		"2 libraries from first"
-			"a" with "b"
-		… expected "a from LIB1 b"
-
-		"2 libraries only second"
-			"a" alone
-		… expected "from LIB1"
-	}
-↲
-using LIB1, LIB2
-	test {
-		"2 nested libraries from first"
-			"a" with "b"
-		… expected "a from LIB2 b"
-
-		"2 nested libraries only first"
-			"a" alone
-		… expected "from LIB1"
-	}
