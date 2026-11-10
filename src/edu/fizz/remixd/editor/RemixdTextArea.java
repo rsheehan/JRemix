@@ -138,11 +138,13 @@ public class RemixdTextArea extends RSyntaxTextArea {
      */
     public void setDark(boolean dark) {
         if (dark) {
+            setSelectionColor(new Color(100, 100, 100));
             setBackground(Color.black);
             setForeground(Color.white);
             setCurrentLineHighlightColor(Color.darkGray);
             setCaretColor(Color.yellow);
         } else {
+            setSelectionColor(new Color(220, 220, 220));
             setBackground(Color.white);
             setForeground(Color.black);
             setCurrentLineHighlightColor(new Color(240, 240, 240));

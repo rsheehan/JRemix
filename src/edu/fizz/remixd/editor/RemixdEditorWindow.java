@@ -89,11 +89,9 @@ public class RemixdEditorWindow extends RemixdBaseWindow {
         editorTextArea.modifyScheme(dark);
         Gutter gutter = lineNumberPane.getGutter();
         if (dark) {
-            editorTextArea.setSelectionColor(new Color(100, 100, 100));
             gutter.setBackground(Color.black);
             gutter.setLineNumberColor(Color.yellow);
         } else {
-            editorTextArea.setSelectionColor(new Color(220, 220, 220));
             gutter.setBackground(Color.white);
             gutter.setLineNumberColor(Color.blue);
         }
