@@ -180,12 +180,13 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
     /** USING expression (COMMA expression)* usingBlock */
     @Override
     public UsingLibBlock visitUsingStatement(RemixdParser.UsingStatementContext ctx) {
-        LibraryExpression libraryExpression = null;
         ArrayList<LibraryExpression> libraryExpressions = new ArrayList<>();
         LibraryExpression usingBlock = null;
 
         int n = ctx.getChildCount();
         for (int i = 1; i < n - 1; i++) { // first node = "using", last = "usingBlock"
+            LibraryExpression libraryExpression = null;
+
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixdParser.ExpressionContext) {
                 Expression libExp = (Expression) visit(node);
@@ -403,11 +404,9 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
                     String getMethodName = methodTable.createGetter(name, fileName);
                     Method getter = methodTable.get(getMethodName);
                     LibraryExpression.addMethodNameEditing(getMethodName, 1, getter);
-//                    LibrariesAndCompletions.methodTableForCompletions.put(getMethodName, getter);
                     String setMethodName = methodTable.createSetter(name);
                     Method setter = methodTable.get(setMethodName);
                     LibraryExpression.addMethodNameEditing(setMethodName, 1, setter);
-//                    LibrariesAndCompletions.methodTableForCompletions.put(setMethodName, setter);
                 }
             } else if (node instanceof RemixdParser.GetterContext) {
                 List<String> getterNames = (List<String>)visit(node);

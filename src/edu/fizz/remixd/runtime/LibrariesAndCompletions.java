@@ -189,12 +189,18 @@ public class LibrariesAndCompletions {
 
     public static ArrayList<String> methodCompletionsFromVariable(String variable) {
         ArrayList<Method> completionMethods;
+        HashSet<Method> addedMethods = new HashSet();
         ArrayList<String> methodCompletions  = new ArrayList<>();
         Object varObject = REPLContext.variables.get(variable.substring(1, variable.length() - 1));
         if (varObject instanceof RemixdObject object) {
             completionMethods = new ArrayList<>(object.methodTable.values());
             for (Method method : completionMethods) {
-                methodCompletions.add(method.getDisplayNameAndComment(method.getFirstName()));
+                if (!addedMethods.contains(method)) {
+                    for (String name : method.functionNames) {
+                        methodCompletions.add(method.getDisplayNameAndComment(name));
+                    }
+                    addedMethods.add(method);
+                }
             }
             methodCompletions.replaceAll(s -> s.replace("(OBJECT)", variable));
             methodCompletions.replaceAll(s -> s.replace("'OBJECT'", variable));
@@ -204,13 +210,19 @@ public class LibrariesAndCompletions {
 
     public static ArrayList<String> methodCompletionsFromConstant(String constant) {
         ArrayList<Method> completionMethods;
+        HashSet<Method> addedMethods = new HashSet();
         ArrayList<String>methodCompletions = new ArrayList<>();
         for (LibraryExpression library : REPLContext.getLibraryStack().reversed()) {
             Object value = library.getConstantTable().get(constant);
             if (value instanceof RemixdObject object) { // the constant name exists
                 completionMethods = new ArrayList<>(object.methodTable.values());
                 for (Method method : completionMethods) {
-                    methodCompletions.add(method.getDisplayNameAndComment(method.getFirstName()));
+                    if (!addedMethods.contains(method)) {
+                        for (String name : method.functionNames) {
+                            methodCompletions.add(method.getDisplayNameAndComment(name));
+                        }
+                        addedMethods.add(method);
+                    }
                 }
                 methodCompletions.replaceAll(s -> s.replace("(OBJECT)", constant));
                 methodCompletions.replaceAll(s -> s.replace("'OBJECT'", constant));
@@ -290,8 +302,6 @@ public class LibrariesAndCompletions {
             // a "library" block is only a usingLibBlock where it is defined
             int[] startAndFinish = usingBlock.getActiveLines().getFirst();
             if (startAndFinish[0] <= lineNumber && lineNumber <= startAndFinish[1]) {
-//                    activeHere = true;
-//            if (isActiveHere(lineNumber, usingBlock)) {
                 searchForCompletions(searchWord, usingBlock.getFunctionTable(), completionsAtStart, completionsConsecutive, functionDisplayNames);
             }
         }

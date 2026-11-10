@@ -414,7 +414,7 @@ library
 				=-
 				Turn each turtle in the turtle group 'OBJECT' by 'angle' degrees clockwise.
 				=-
-				turn ME 'angle' degrees :
+				turn ME 'angle' degree/degrees :
 					for each 'turtle' in 'turtles'
 						'turtle' heading ('turtle' heading - 'angle')
 					update 'turtle space'
