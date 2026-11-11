@@ -37,7 +37,7 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
     public void insertString(FilterBypass fb, int offset, String text, AttributeSet attrs) {
         RemixdTextArea currentCodeArea = REPLPanel.getCurrentCodeArea();
         if (currentCodeArea.getText().isEmpty() && text.equals("\n")) { // if return is typed we copy the text and run it?
-            currentCodeArea.append(String.valueOf(oldDocStringBuilder));
+            currentCodeArea.append(oldDocStringBuilder.toString());
             remixdApp.run();
             return;
         }
