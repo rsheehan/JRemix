@@ -1,0 +1,16 @@
+
+==========================================================
+ This is a multiline comment.
+ It can be as long as you want.
+==========================================================
+
+'list of numbers' : produce a list of numbers
+- this is a single line comment
+choose from 'list of numbers' ; an end of line comment
+
+=-
+Choose a random item from the 'list'.
+This is a doc comment.
+=-
+choose from 'list' :
+	(random (length of 'list')) in list

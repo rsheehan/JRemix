@@ -1,0 +1,8 @@
+=-
+Display the 'text' on the screen 'n' times.
+=-
+display 'text' on screen 'n' times :
+	repeat 'n' times 
+		'text' ↲
+		
+display (text) on screen (n) times

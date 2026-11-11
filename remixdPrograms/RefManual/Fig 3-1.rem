@@ -1,0 +1,4 @@
+show bottom half of diamond of 'size' from the 'lines' : 
+	if ('size' ≥ 3)
+		for each 'row' from ('size' ÷ 2) to 1 
+			'lines'{'row'} ↲

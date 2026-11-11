@@ -1,0 +1,11 @@
+
+surround 'this list' with 'values' if not empty :
+	if (empty 'this list')
+		return {}
+	join (join 'values' and 'this list') and 'values'
+
+surround {} with {99, 100} if not empty
+- this returns the result {}
+surround {2, 4, 6} with {99, 100} if not empty 
+- this returns the result {99, 100, 2, 4, 6, 99, 100} 
+

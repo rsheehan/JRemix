@@ -4,15 +4,24 @@ a person called 'name' :
 	create 'name'
 		'type' : "person"
 		
+		getter
+			'name' ; must have a getter since used in equals
+		
 		introduce ME to 'other' :
 			"Dear ", 'other' ~
 			", I am pleased to present ", 'name', "." ↲
 		
 		ME to string :
 			'name'
+		
+		'other' equals ME :
+			'other' name = 'name'
 
 'r' : a person called "Robert"
 'j' : a person called "James"
+'s' : a person called "Robert"
 
 introduce 'r' to 'j'
 'r', " is a ", type of 'r' ↲
+
+"'r' = 's' : ", 'r' = 's' ↲

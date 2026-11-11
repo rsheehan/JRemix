@@ -1,0 +1,5 @@
+
+add 'amount' to all elements of 'list' :
+	for each 'index' from 1 to (length of 'list')
+		add 'amount' to ('list'{'index'})
+		

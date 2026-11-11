@@ -1,0 +1,7 @@
+
+'list of numbers' : apply 
+	random 100
+… 5 times
+
+for each 'value' in 'list of numbers' 
+	'value', " squared is ", 'value'² ↲

@@ -1,0 +1,14 @@
+using graphics
+	'window' : a graphics window
+	'shape' : a square
+	'shape' size 100
+	place 'shape' in ('window' next layer)
+	update 'window'
+
+	TURN : 3
+	animate at 1 tick per second
+		change 'shape' heading by TURN degrees
+		update 'window'
+		'degree' : ('shape' heading) radians as degrees
+		'degree'↲
+	… until ['degree' ≥ 90]

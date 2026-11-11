@@ -1,0 +1,13 @@
+LIBZ : library
+	a libz function :
+		"I am a libz function"
+	
+	LIBZCONS : 99
+
+using LIBZ
+	a libz function ↲
+	LIBZCONS
+	
+	a libz function
+	LIBZCONS ↲
+	

@@ -1,0 +1,5 @@
+library
+	simple lib function :
+		"I am a simple library function"
+	
+	LIBCONS : "a constant in the library"
