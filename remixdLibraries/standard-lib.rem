@@ -437,6 +437,43 @@ pluralize 'word' for 'number' :
 		'word'
 
 =-
+Extract the first 'number' characters from the 'string'.
+If 'number' is ≥ the length of 'string' it returns the whole 'string'.
+If 'number' is < 1 it returns the empty string.
+=-
+first 'number' characters in 'string' :
+	'result' : ""
+	'position' : 1
+	while ['position' ≤ 'number']
+		'result' : 'result' ⊕ ('position' inc) in 'string'
+	return 'result'
+
+=-
+Extract the last 'number' characters from the 'string'.
+If 'number' is ≥ the length of 'string' it returns the whole 'string'.
+If 'number' is < 1 it returns the empty string.
+=-
+last 'number' characters in 'string' :
+	'result' : ""
+	'position' : 'string' length - 'number' + 1
+	if ('position' < 1) 
+		'position' : 1
+	while ['position' ≤ 'string' length]
+		'result' : 'result' ⊕ ('position' inc) in 'string'
+	return 'result'
+
+=-
+Check to see if the 'string' finishes in 'last'.
+If not it appends 'last' onto the 'string'.
+=-
+ensure last characters in #string are 'last' :
+	'n' : 'last' length
+	if (last 'n' characters in #string ≠ 'last') 
+		#string : #string ⊕ 'last'
+	… otherwise
+		#string
+
+=-
 Return a substring from 'string' from positions 'start' to 'finish'
 inclusive.
 'start' and 'finish' must be within the range of the string.
@@ -920,6 +957,18 @@ The sublist library.
 =-
 sublist :
 	from "sublist"
+
+=-
+Get the 'library' from the 'directory'.
+If 'directory' is not absolute it is relative to the current directory.
+'library' does not need ".rem" on the end.
+=-
+get 'library' from 'directory' :
+	'library path' : 'directory' ⊕ "/" ⊕ 'library'
+	ensure last characters in 'library path' are ".rem"
+	if (FIRST in 'library path' ≠ "/")
+		'path' : current directory ⊕ "/" ⊕ 'library path'
+	include 'library path'
 
 -==============================-
 

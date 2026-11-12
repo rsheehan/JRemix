@@ -853,6 +853,24 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
     }
 
+    public static final class DirectoryFunction extends Function {
+
+        public DirectoryFunction() {
+            super(
+                    List.of("current directory"),
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    false,
+                    "Returns the unchangeable current directory"
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws ReturnException, InterruptedException {
+            return System.getProperty("user.dir");
+        }
+    }
+
     public static final class HelpHelp extends Function {
 
         public HelpHelp() {
@@ -972,9 +990,6 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             for (String name : context.variables.keySet()) {
                 Object value = context.variables.get(name);
                 String type = getType(value);
-//                if (value instanceof String) {
-//                    value = "\"" + value + "\"";
-//                }
                 helpSB.append('\'')
                         .append(name)
                         .append("' : ")
