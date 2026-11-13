@@ -34,6 +34,10 @@ public class Block implements Expression {
         }
     }
 
+    public Expression getStatementFromBlock(int index) {
+        return statements.get(index); // zero based, be aware when calling. See GetElementExpression.
+    }
+
     public Context getContext() {
         return blockContext;
     }

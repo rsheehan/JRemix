@@ -40,7 +40,8 @@ public class GetElementExpression implements Expression {
         }
         if (listOrMapPart instanceof ArrayList<?> ||
                 listOrMapPart instanceof HashMap<?, ?> ||
-                listOrMapPart instanceof RangeExpression) {
+                listOrMapPart instanceof RangeExpression ||
+        	    listOrMapPart instanceof Block) {
             for (Object elementId : listElementIds) {
                 // TODO: could be errors at any position
                 id = ((Expression) elementId).evaluate(context);
@@ -54,6 +55,14 @@ public class GetElementExpression implements Expression {
                             listOrMapPart = RemixdNull.value();
                         }
                     }
+                    case Block block when finalId instanceof Number numId -> {
+                        int i = numId.intValue();
+                        try {
+                            listOrMapPart = block.getStatementFromBlock(i - 1); // java zero based, Remixd one based
+                        } catch (IndexOutOfBoundsException ex) {
+                            listOrMapPart = RemixdNull.value();
+                        }
+                    }
                     case HashMap nextMap when finalId instanceof String stringId -> listOrMapPart = nextMap.get(stringId);
                     case HashMap nextMap when finalId instanceof RemixdComplexType objectId -> listOrMapPart = nextMap.get(objectId.toString());
                     case Collection listOrMap when listOrMap.isEmpty() -> listOrMapPart = RemixdNull.value();
@@ -61,7 +70,7 @@ public class GetElementExpression implements Expression {
                 }
             }
         } else {
-                System.err.printf("Variable \"%s\" is neither a list nor a map.%n", listName);
+                System.err.printf("Variable \"%s\" is not a list, map or range.%n", listName);
         }
         if (listOrMapPart == null)
             listOrMapPart = RemixdNull.value();

@@ -237,7 +237,7 @@ Filter 'list' using 'condition block' on each 'item' keeping 'keep block'.
 The blocks commonly refer to 'item'.
 =-
 filter 'list' by #item where ['condition block'] keeping ['keep block'] :
-	'new list' : { }
+	'new list' : {}
 	for each #item in 'list'
 		if 'condition block'
 			append (do 'keep block') to 'new list'
@@ -255,7 +255,7 @@ Collect items from 'list' until 'condition' is true.
 The 'condition' is checked before adding the 'item'.
 =-
 keep #item from 'list' until ['condition'] :
-	'new list' : { }
+	'new list' : {}
 	for each #item in 'list'
 		if 'condition'
 			return
@@ -268,7 +268,7 @@ stopping when 'termination' becomes true.
 The conditions are checked before adding the 'item'.
 =-
 keep #item from 'list' where ['condition'] until ['termination'] :
-	'result' : { }
+	'result' : {}
 	for each #item in 'list'
 		if 'termination'
 			return
@@ -281,7 +281,7 @@ Create a new 'list' by applying 'block' to each element of 'list'.
 'block' will usually use the variable passed as 'item'.
 =-
 apply ['block'] to each #item in 'list' :
-	'new list' : { }
+	'new list' : {}
 	for each #item in 'list'
 		append (do 'block') to 'new list'
 	'new list'
@@ -290,7 +290,7 @@ apply ['block'] to each #item in 'list' :
 Create a new 'list' by applying 'block' 'n' times.
 =-
 apply ['block'] 'n' times :
-	'new list' : { }
+	'new list' : {}
 	repeat
 		append (do 'block') to 'new list'
 	… 'n' times
@@ -614,6 +614,33 @@ A sequence is a list, range, map or string.
 'element' is not in 'sequence' :
 	not ('element' is in 'sequence')
 
+=-
+Remove all values equal to 'item' from the 'list'.
+=-
+remove all 'item' from #list :
+	'result' : {}
+	for each 'value' in #list 
+		if ('item' ≠ 'value')
+			append 'value' to 'result'
+	#list : 'result'
+
+=-
+Remove the value at position 'index' in the 'list'.
+'list' is either a list or block.
+Returns the removed value.
+=-
+remove 'index' from #list :
+	'result' : #list{'index'}
+	if (#list is a "Block") 
+		'updated' : []
+	… otherwise
+		'updated' : {}
+	for each 'value' in #list keeping 'count'
+		if ('count' ≠ 'index')
+			append 'value' to 'updated'
+	#list : 'updated'
+	'result'
+
 ==============================
  Map functions
 ==============================
@@ -631,13 +658,13 @@ merge 'extra' into 'map' :
 ==============================
 
 =-
-Extract the statement within 'block'.
+Extract the first (or only) statement within 'block'.
 'block' should be a block containing one statement.
 Because statements are usually executed, putting one inside
 a block means it can be accessed without execution.
 =-
 statement 'block' :
-	first in 'block'
+	'block'{FIRST}
 
 =-
 Enclose the 'statement' in a block.
@@ -966,7 +993,7 @@ If 'directory' is not absolute it is relative to the current directory.
 get 'library' from 'directory' :
 	'library path' : 'directory' ⊕ "/" ⊕ 'library'
 	ensure last characters in 'library path' are ".rem"
-	if (FIRST in 'library path' ≠ "/")
+	if (first in 'library path' ≠ "/")
 		'path' : current directory ⊕ "/" ⊕ 'library path'
 	include 'library path'
 
