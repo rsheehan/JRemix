@@ -19,7 +19,7 @@ using sublist
 	'sublist' start 1
 	'sublist' ↲
 	
-	'sublist' finish (('sublist' base) length)
+	'sublist' finish (('sublist' base list) length)
 	'sublist' ↲
 	
 	"head: ", 'sublist' head, ", rest: ", 'sublist' after head ↲
@@ -27,7 +27,7 @@ using sublist
 	reduce 'func' over 'sublist' starting with 'initial' :
 		if ('sublist' length > 0)
 			'func' { reduce 'func' over ('sublist' after head) 
-								… starting with ('sublist' head), 'initial'}
+								… starting with ('sublist' head), 'initial' }
 		… otherwise
 			'initial'
 	
@@ -35,4 +35,5 @@ using sublist
 	'hundred' : sublist (1 to 100)
 	'hundred' ↲
 	reduce 'add' over 'hundred' starting with 0 ↲
-	reduce 'multiply' over (sublist (1 to 10)) starting with 1 ↲
+	'hundred' ↲
+	reduce 'multiply' over (sublist (1 to 20)) starting with 1.0 ↲

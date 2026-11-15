@@ -4,44 +4,41 @@
 library
 
 	=-
-	Create a sublist from 'list' beginning at index 'start' and ending at index 'finish'.
+	Create a sublist from 'base list' beginning at index 'start' and ending at index 'finish'.
 	An efficient list which can be used to represent a sublist of an existing list.
 	=-
-	a sublist from 'list' between 'start' and 'finish' :
-		create
+	a sublist from 'base list' between 'start' and 'finish' :
+		create 'base list', 'start', 'finish'
 			'type' : "list"
-			'base' : 'list'
-			'start' : 'start'
-			'finish' : 'finish'
 
 			getters/setters
 				'start', 'finish'
 			getter
-				'base'
+				'base list'
 
 			=-
 			Return the first value of the sublist 'OBJECT'.
 			=-
 			MY head :
-				'base' {'start'}
+				'base list'{'start'}
 
 			=-
 			Return a sublist based on 'OBJECT' without the first value.
 			=-
 			MY after head :
-				a sublist from 'base' between ('start' + 1) and 'finish'
+				a sublist from 'base list' between ('start' + 1) and 'finish'
 
 			=-
 			Return the last value of the sublist 'OBJECT'.
 			=-
 			MY tail :
-				'base' {'finish'}
+				'base list' {'finish'}
 
 			=-
 			Return a sublist based on 'OBJECT' without the last value.
 			=-
 			MY before tail :
-				a sublist from 'base' between 'start' and ('finish' - 1)
+				a sublist from 'base list' between 'start' and ('finish' - 1)
 
 			=-
 			Moves the head of the sublist 'OBJECT' on.
@@ -67,7 +64,7 @@ library
 			If the tail is at the end of the underlying list, this does nothing.
 			=-
 			move MY tail forward :
-				if ('finish' < length of 'base')
+				if ('finish' < length of 'base list')
 					inc 'finish'
 
 			=-
@@ -84,10 +81,20 @@ library
 			=-
 			choose from ME :
 				'i' : random (MY length) + 'start' - 1
-				'base'{'i'}
+				'base list'{'i'}
 
-			start ME :
-				iterator
+			iterator from ME :
+				create 'base list', 'finish'
+					'index' : 'start'
+
+					end ME :
+						'index' > 'finish'
+
+					next ME :
+						if ('index' ≤ 'finish')
+							'result' : 'base list'{'index'}
+							inc 'index'
+						'result'
 
 			=-
 			The length of the sublist 'OBJECT'.
@@ -116,21 +123,6 @@ library
 			=-
 			ME to string :
 				ME as string ; calls the std-lib - 'list' as string
-
-			iterator :
-				create
-					'list' : 'base'
-					'pos' : 'start'
-					'finish' : 'finish'
-
-					end ME :
-						'pos' > 'finish'
-
-					next ME :
-						if ('pos' ≤ 'finish')
-							'result' : 'list' {'pos'}
-							inc 'pos'
-						'result'
 
 	=-
 	Create a sublist from the 'list'.

@@ -59,20 +59,32 @@ public class BinaryExpression implements Expression {
             } else if (val1 instanceof LibraryExpression lib1 && val2 instanceof LibraryExpression lib2) {
                 return lib1.equals(lib2);
             } else if (val1 instanceof RemixdObject object1 && val2 instanceof RemixdObject object2) {
-            // To compare objects you need a (other) equals (me) method.
+                boolean result = false;
+                // To compare objects you either need a (other) equals (me) method
+                // or the object references and string values are compared
                 Method method = object2.findMethod("⫾ equals ⫾");
                 if (method != null) {
                     MethodContext methodContext = new MethodContext(null, object2);
                     String formal = method.getArgument(0);
                     try {
                         methodContext.assignParam(formal, object1);
-                        return method.execute(methodContext);
+                        boolean equals = (boolean) method.execute(methodContext);
+                        switch (operator) {
+                            case "=" -> result = equals;
+                            case "!=" -> result = !equals;
+                        }
                     } catch (ReturnException | InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 } else {
-                    return object1.equals(object2);
+                    boolean equals = object1.equals(object2);
+                    boolean stringEquals = String.valueOf(val1).equals(String.valueOf(val2));
+                    switch (operator) {
+                        case "=" -> result = equals || stringEquals;
+                        case "!=" -> result = !equals && !stringEquals;
+                    }
                 }
+                return result;
             } else if (val1 instanceof String || val2 instanceof String) {
                 return comparisonResult(val1, val2);
             } else if (val1 instanceof Boolean && val2 instanceof Boolean) {

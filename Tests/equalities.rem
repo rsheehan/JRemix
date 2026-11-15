@@ -1,0 +1,59 @@
+=
+ Test equalities
+=
+
+'list1' : list from (1 to 10)
+'list2' : { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }
+
+'map1' : { "a" : 3, "b" : 8, "c" : 7 }
+'map2' : { "c" : 7, "a" : 3, "b" : 9 }
+
+'obj1' : object with 99
+'obj2' : object with 100
+'obj3' : no value object
+
+test {
+	[2 = 2] expected true
+	[2 ≠ 2] expected false
+	[1.2 = 1.2] expected true
+	[1.2 ≠ 1.2] expected false
+	[10.0 = 10] expected true
+	[10.0 ≠ 10] expected false
+	["abcd" = "abcd"] expected true
+	["abcd" ≠ "abcd"] expected false
+	['list1' = 'list2'] expected true
+	['list1' ≠ 'list2'] expected false
+	['map1' = 'map2'] expected false
+	['map1' ≠ 'map2'] expected true
+	['obj1' = 'obj2'] expected false
+	['obj1' ≠ 'obj2'] expected true
+	['obj3' = 'obj1'] expected true ; comparison on the string values
+	['obj2' = 'obj3'] expected false;
+}
+↲
+'map2'{"b"} : 8
+'obj1' value 100
+
+test {
+	['map1' = 'map2'] expected true
+	['map1' ≠ 'map2'] expected false
+	['obj1' = 'obj2'] expected true
+	['obj1' ≠ 'obj2'] expected false
+}
+
+object with 'value' :
+	create 'value'
+		'type' : "Value object"
+		
+		setter
+			'value'
+			
+		ME to string :
+			"- " ⊕ 'value' ⊕ " -"
+
+no value object :
+	create
+		'type' : "No value object"
+		
+		ME to string :
+			"- 99 -"
