@@ -9,6 +9,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
+import java.awt.event.MouseWheelListener;
 
 public class REPLPanel extends JPanel {
 
@@ -56,20 +57,9 @@ public class REPLPanel extends JPanel {
         SwingUtilities.invokeLater(() -> initialArea.setText("help REPL ; type Command/Control-return"));
     }
 
-    private void makeComponentSendScrollingUp(Component component) {
-        component.addMouseWheelListener(e -> {
-            RTextScrollPane replTextAreaScrollPane = (RTextScrollPane) SwingUtilities.getAncestorOfClass(
-                    RTextScrollPane.class,
-                    component
-            );
-            scrollPane.dispatchEvent(SwingUtilities.convertMouseEvent(replTextAreaScrollPane, e, scrollPane));
-        });
-    }
-
     public RemixdTextArea addREPLTextArea() {
         RemixdTextArea REPLTextArea = new RemixdTextArea(true, darkAreas);
         REPLTextArea.setUpToUseCmdReturn(remixdApp);
-        makeComponentSendScrollingUp(REPLTextArea);
         // to make it scroll when the text would go off the window
         REPLTextArea.addCaretListener(_ -> SwingUtilities.invokeLater(() -> {
             if (REPLTextArea.shouldScroll()) {
@@ -78,6 +68,17 @@ public class REPLPanel extends JPanel {
             }
         }));
         if (currentCodeArea != null) {
+            currentCodeArea.setHighlightCurrentLine(false);
+            // stop the local scroll pane from getting wheel spins
+            RTextScrollPane replTextAreaScrollPane = (RTextScrollPane) SwingUtilities.getAncestorOfClass(
+                    JScrollPane.class,
+                    currentCodeArea
+            );
+            if (replTextAreaScrollPane != null) {
+                for (MouseWheelListener wheelListener : replTextAreaScrollPane.getMouseWheelListeners())
+                    replTextAreaScrollPane.removeMouseWheelListener(wheelListener);
+            }
+
             // change the document listener
             AbstractDocument document =  (AbstractDocument)currentCodeArea.getDocument();
             document.setDocumentFilter(new REPLPanelDocumentFilter(document, this));
@@ -87,7 +88,7 @@ public class REPLPanel extends JPanel {
         currentCodeArea = REPLTextArea;
         remove(glueBox);
         // createAutoSizingArea also adds scrollable panel for the textArea
-        add(createAutoSizingArea(REPLTextArea), gbcForCode);
+        add(createAutoSizingArea(currentCodeArea), gbcForCode);
         add(glueBox, gbcForSpace);
         revalidate();
         repaint();
