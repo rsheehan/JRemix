@@ -9,11 +9,9 @@ import javax.swing.text.Segment;
 
 public class RemixdDocumentFilter extends DocumentFilter {
 
-    private final RemixdTextArea textArea;
     private final RSyntaxDocument document;
 
     public RemixdDocumentFilter(RemixdTextArea textArea) {
-        this.textArea = textArea;
         document = (RSyntaxDocument) textArea.getDocument();
     }
 
@@ -35,48 +33,26 @@ public class RemixdDocumentFilter extends DocumentFilter {
                 }
             }
         }
+        if (surroundedByParens(offset, length, textSegment)) {
+            offset--;
+            length += 2;
+        }
         fb.remove(offset, length);
     }
 
     @Override
     public void insertString(FilterBypass fb, int offset, String text, AttributeSet attrs) throws BadLocationException {
-        Segment textSegment = new Segment();
-        document.getText(0, document.getLength(), textSegment);
-
-        if (surroundedByParens(offset, 0, textSegment) && shouldRemoveParens(text)) {
-            fb.replace(offset - 1, 2, text, attrs);
-            int pos = offset - 2 + text.length();
-            AutoUtil.positionCaret(textArea, pos);
-            return;
-        }
         fb.insertString(offset, text, attrs);
     }
 
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
             throws BadLocationException {
-        Segment textSegment = new Segment();
-        document.getText(0, document.getLength(), textSegment);
-
-        if (surroundedByParens(offset, length, textSegment) && shouldRemoveParens(text)) {
-            fb.replace(offset - 1, length + 2, text, attrs);
-            return;
-        }
         fb.replace(offset, length, text, attrs);
     }
 
     private char getAChar(int offset, Segment textSegment) {
         return textSegment.array[offset];
-    }
-
-    // Remove parens if input is a digit, CAPITAL letter, "", '', between "( )"
-    private boolean shouldRemoveParens(String text) {
-        char firstChar = text.charAt(0);
-        if (text.length() > 1) { // could be () {} [] "" ''
-            // check that it is not () the rest can cause parentheses to be removed
-            return firstChar != '(';
-        }
-        return Character.isDigit(firstChar) || Character.isUpperCase(firstChar);
     }
 
     /* Is the offset position surrounded by parentheses? */

@@ -51,27 +51,12 @@ public class AutoPairer {
         String matched = matchingPairs.get(typed);
 
         // if between existing matchingPairs of same type e.g. ""
-        // then replace the
 
         String pair = typed + matched;
 
         // If there's an active text selection, surround it
         if (selectionStart != selectionEnd) {
             String selection = textArea.getSelectedText();
-            // if the type pair is '' or ""
-            if (typed.equals(matched)) {
-                // check to see if surrounded by parens
-                String text = textArea.getText();
-                if (selectionStart > 0 && text.length() > selectionEnd) {
-                    if (text.charAt(selectionStart - 1) == '(' &&
-                        text.charAt(selectionEnd) == ')') {
-                        // remove selection and replace with matched pair
-                        textArea.replaceRange(pair, selectionStart - 1, selectionEnd + 1);
-                        textArea.setCaretPosition(selectionStart);
-                        return;
-                    }
-                }
-            }
             textArea.replaceRange(typed + selection + matched, selectionStart, selectionEnd);
             // I think I can call setCaretPosition here as it in the gui thread after keypress
             textArea.setCaretPosition(selectionEnd + 1);
@@ -102,15 +87,5 @@ public class AutoPairer {
             System.err.println("here");
         }
     }
-
-// Could use something like this if wanted to patch on to the
-// new code area when copying an earlier one.
-//    public void doAutoPair(StringBuilder original,
-//                           String newText,
-//                           int caretPos,
-//                           int selectionStart,
-//                           int selectionEnd) {
-//
-//    }
 
 }
