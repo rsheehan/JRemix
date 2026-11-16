@@ -218,7 +218,7 @@ public class RemixdCompletions {
     }
 
     private boolean completedVariable(int pos, String lineText, StringBuilder completedVariableName, int[] lineOffset) {
-        // check if pos after a constant
+        // check if pos after a variable
         Pattern varPattern = Pattern.compile(VARIABLE_REGEX + " ");
         Matcher varMatcher = varPattern.matcher(lineText);
         while (varMatcher.find()) {
