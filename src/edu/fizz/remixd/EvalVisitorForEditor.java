@@ -709,6 +709,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
     @Override
     public Expression  visitExprVar(RemixdParser.ExprVarContext ctx) {
         String varName = identifier(ctx.IDENTIFIER().getText());
+        programLibrary.addVariableWithPos(varName, ctx);
         return new VarValueExpression(varName, fileName, 0, 0);
     }
 
@@ -997,6 +998,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
     @Override
     public GetElementExpression visitListElement(RemixdParser.ListElementContext ctx) {
         String listName = identifier(ctx.IDENTIFIER().getText());
+        programLibrary.addVariableWithPos(listName, ctx);
         // need to loop through possibly multiple listParts
         int n = ctx.getChildCount();
         List listParts = new ArrayList<>();
