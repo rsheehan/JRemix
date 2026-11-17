@@ -313,8 +313,6 @@ public class RemixdApp extends RemixdBaseWindow {
     }
 
     public void run() {
-        replPanel.newOutputArea(getCurrentFileName());
-
         String programText = REPLPanel.getCurrentCodeArea().getText();
 
         remixRunner = new RemixdSwingWorker(RemixdPrepareRun.INTERACTIVETEXT, RemixdApp.this, programText);
@@ -348,7 +346,7 @@ public class RemixdApp extends RemixdBaseWindow {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            REPLPanel.scrollToBottom();
+            REPLPanel.scrollToBottom(REPLPanel.getCurrentCodeArea());
         }
     }
 

@@ -408,7 +408,6 @@ public class RemixdEditorWindow extends RemixdBaseWindow {
         public void actionPerformed(ActionEvent e) {
             // have to remove all dynamicTextAreas and then insert the new output area
             RemixdApp.replPanel.removeExistingTextAreas();
-            RemixdApp.replPanel.newOutputArea(currentFileName);
 
             String programText = editorTextArea.getText();
             LibrariesAndCompletions.resetREPLEnvironment();

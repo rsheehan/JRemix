@@ -8,18 +8,19 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.MouseWheelListener;
+import java.util.concurrent.CompletableFuture;
 
 public class REPLPanel extends JPanel {
 
     private static JScrollPane scrollPane;
-    private static RemixdTextArea currentCodeArea;
     private static final Font outputFont = new Font("Courier New", Font.PLAIN, 15);
-    /* Whatever this is at the moment is where all output and errors should be sent.
-    At first this is just a dummy in case data gets sent here before it is non-null. */
-    private static final JTextArea dummyTextArea = new JTextArea();
-    public static JTextArea currentOutputArea = dummyTextArea;
+
+    private static RemixdTextArea currentCodeArea;
+    public static JTextArea currentOutputArea;
+    public static JTextField currentInputArea;
 
     public static RemixdTextArea getCurrentCodeArea() {
         return currentCodeArea;
@@ -55,6 +56,57 @@ public class REPLPanel extends JPanel {
         scrollPane = new JScrollPane(this);
         RemixdTextArea initialArea = addREPLTextArea(); // this moves glue and last to the end
         SwingUtilities.invokeLater(() -> initialArea.setText("help REPL ; type Command/Control-return"));
+    }
+
+    public void appendTextOutput(String output) {
+        if (currentOutputArea == null) {
+            currentOutputArea = newOutputArea(remixdApp.getCurrentFileName());
+        }
+        currentOutputArea.append(output);
+    }
+
+    public void clearOutputArea() {
+        if (currentOutputArea != null && currentOutputArea.getText().isEmpty())
+            remove(currentOutputArea);
+        currentOutputArea = null;
+    }
+
+    public String inputQuestion(String question) {
+        clearOutputArea();
+        currentInputArea = new JTextField(81);
+        currentInputArea.setFont(outputFont);
+
+        TitledBorder border = BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.RED),
+                question
+        );
+
+        currentInputArea.setBorder(border);
+        remove(glueBox);
+        add(currentInputArea, gbcForOutput);
+        add(glueBox, gbcForSpace);
+        // Inform the layout manager and refresh the UI
+        revalidate();
+        repaint();
+        currentInputArea.setBackground(darkAreas ? Color.black : Color.white);
+        scrollToBottom(currentInputArea);
+        currentInputArea.requestFocusInWindow();
+        String inputText = waitForTextFieldInput();
+        currentInputArea.setEditable(false);
+        return inputText;
+    }
+
+    public static String waitForTextFieldInput() {
+        CompletableFuture<String> future = new CompletableFuture<>();
+        // Triggered on the UI thread when the user presses Enter
+        currentInputArea.addActionListener(_ -> future.complete(currentInputArea.getText()));
+        try {
+            // Blocks the calling background thread until future.complete() is called
+            return future.get();
+        } catch (Exception e) {
+            Thread.currentThread().interrupt();
+            return null;
+        }
     }
 
     public RemixdTextArea addREPLTextArea() {
@@ -98,16 +150,16 @@ public class REPLPanel extends JPanel {
             frame.toFront();
             frame.requestFocus();
         }
-        scrollToBottom();
+        scrollToBottom(REPLTextArea);
         return REPLTextArea;
     }
 
-    public static void scrollToBottom() {
+    public static void scrollToBottom(JTextComponent requestingFocus) {
         // this is gross but SwingUtilites.invokeLater wasn't as reliable.
         Timer timer = new Timer(100, _ -> {
             JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
             verticalBar.setValue(verticalBar.getMaximum());
-            currentCodeArea.requestFocusInWindow();
+            requestingFocus.requestFocusInWindow();
         });
         timer.setRepeats(false);
         timer.start();
@@ -148,11 +200,11 @@ public class REPLPanel extends JPanel {
                     gutter.setLineNumberColor(Color.blue);
                 }
             } else if (component != glueBox)
-                outputSetDark((JTextArea)component);
+                outputSetDark((JTextComponent)component);
         }
     }
 
-    private void outputSetDark(JTextArea output) {
+    private void outputSetDark(JTextComponent output) {
         if (darkAreas) {
             output.setBackground(Color.black);
             output.setForeground(Color.white);
@@ -170,33 +222,33 @@ public class REPLPanel extends JPanel {
     Not only adds a new output text area, a new code area is added beneath it
     by the completing RemixdSwingWorker.
      */
-    public void newOutputArea(String programName) {
-        currentOutputArea = new JTextArea();
-        currentOutputArea.setTabSize(2);
-        currentOutputArea.setColumns(81);
-        currentOutputArea.setLineWrap(true);
-        currentOutputArea.setWrapStyleWord(true);
-        currentOutputArea.setEnabled(false);
-        currentOutputArea.setFont(outputFont);
+    public JTextArea newOutputArea(String programName) {
+        JTextArea outputArea =  new JTextArea();
+        outputArea.setTabSize(2);
+        outputArea.setColumns(81);
+        outputArea.setLineWrap(true);
+        outputArea.setWrapStyleWord(true);
+        outputArea.setEditable(false);
+        outputArea.setFont(outputFont);
 
         TitledBorder border = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.RED),
                 programName + " output"
         );
 
-        currentOutputArea.setBorder(border);
-        outputSetDark(currentOutputArea);
+        outputArea.setBorder(border);
+        outputSetDark(outputArea);
         remove(glueBox);
-        add(currentOutputArea, gbcForOutput);
+        add(outputArea, gbcForOutput);
         add(glueBox, gbcForSpace);
         // Inform the layout manager and refresh the UI
         revalidate();
         repaint();
+        return outputArea;
     }
 
     public void removeExistingTextAreas() {
         currentCodeArea = null;
-        currentOutputArea = dummyTextArea;
         Component[] allTextAreas = getComponents();
         for (Component component : allTextAreas) {
             remove(component);

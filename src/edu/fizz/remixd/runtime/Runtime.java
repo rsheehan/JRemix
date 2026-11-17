@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 public class Runtime {
 
-//    public static String REPL = RemixdPrepareRun.INTERACTIVETEXT;
     public static HashMap<String, LibraryExpression> loadedLibraries; // does not include base library
     // key: library code - usually a function call, value: the LibraryExpression
     /**

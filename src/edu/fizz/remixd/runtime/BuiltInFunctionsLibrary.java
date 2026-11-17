@@ -298,6 +298,25 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
     }
 
+    /** The "input" function. Asks the user for input in the REPL.
+     */
+    public static final class InputFunction extends Function {
+        public InputFunction() {
+            super(
+                    List.of("ask ⫾"),
+                    List.of("question"),
+                    List.of(false),
+                    false,
+                    "Ask the user the 'question'."
+            );
+        }
+
+        public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
+            String question = context.retrieve("question", false).toString();
+            return RemixdApp.replPanel.inputQuestion(question);
+        }
+    }
+
     /** The "print" function. Prints the string version of the value.
      */
     public static final class PrintFunction extends Function {

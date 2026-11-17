@@ -66,7 +66,7 @@ public class REPLPanelDocumentFilter extends DocumentFilter {
         int currentCodeAreaCaretPosition = currentCodeArea.getCaretPosition();
         currentCodeArea.insertNoCaretListener(newText.toString(), currentCodeAreaCaretPosition);
         currentCodeArea.setCaretPosition(currentCodeAreaCaretPosition + offset + length);
-        REPLPanel.scrollToBottom();
+        REPLPanel.scrollToBottom(currentCodeArea);
     }
 
 }
