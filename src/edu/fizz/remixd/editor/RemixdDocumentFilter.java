@@ -2,7 +2,6 @@ package edu.fizz.remixd.editor;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.Segment;
@@ -38,17 +37,6 @@ public class RemixdDocumentFilter extends DocumentFilter {
             length += 2;
         }
         fb.remove(offset, length);
-    }
-
-    @Override
-    public void insertString(FilterBypass fb, int offset, String text, AttributeSet attrs) throws BadLocationException {
-        fb.insertString(offset, text, attrs);
-    }
-
-    @Override
-    public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
-            throws BadLocationException {
-        fb.replace(offset, length, text, attrs);
     }
 
     private char getAChar(int offset, Segment textSegment) {
