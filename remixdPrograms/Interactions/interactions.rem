@@ -1,0 +1,41 @@
+=
+ Creating an event changing system.
+
+ Maintain a list of interactions to process.
+ Interactions can produce further interactions.
+ All interactions are dealt with FIFO.
+=
+
+'interaction list' : { }
+
+an interaction variable :
+	create
+		'type' : "Interaction Variable"
+		'interactions' : { }
+		
+		add ['when'] do ['result'] to ME :
+			'interaction' : an interaction 'when' do 'result'
+			append 'interaction' to 'interactions'
+		
+		fire all of MY actions with 'value' :
+			for each 'interaction' in 'interactions' 
+				do 'interaction' if 'value'
+			
+an interaction ['when'] do ['result'] :
+	create 'when', 'result'
+		'type' : "Interaction"
+		'a' : 4
+		
+		ME to string :
+			"when " ⊕ 'when' ⊕ " do " ⊕ 'result'
+		
+		do ME if 'value' :
+			if (do 'when' with 'value')
+				do 'result'
+
+'inter' : an interaction variable
+
+add ['a' = 4] do ["a is equal to 4" ↲] to 'inter'
+add ['a' > 10] do ["a is less than 10" ↲] to 'inter'
+
+fire all of 'inter' actions with 4

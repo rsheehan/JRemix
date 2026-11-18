@@ -1,0 +1,19 @@
+=
+ Possible design for event/action based addition to Remix'd'.
+=
+
+using get "actionLib" from "remixdPrograms/Interactions"
+	
+	'var' : an interaction variable
+	
+	'var' action ['value' = 4]
+		"'var' is equal to four" ↲
+	
+	'var' action ['value' < 10]
+		"'var' is less than 10" ↲
+	
+	set 'var' to 4
+	'var' value ↲
+	set 'var' to 8
+	'var' value ↲
+	

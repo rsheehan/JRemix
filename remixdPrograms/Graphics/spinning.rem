@@ -18,10 +18,16 @@ using graphics
 
 	'rotation' : every 2 ticks [change 'triangle' heading by 2 degrees]
 	'movement' : every 1 tick [change 'triangle' x-pos by 2]
+	
+	'current pos' : 'triangle' position
 
 	animate at 60 ticks per second
 		animate 'movement'
 		animate 'rotation'
+		'next pos' : 'triangle' position
+		'step line' : a BLUE line from 'current pos' to 'next pos'
+		place 'step line' in ('the window' base layer)
+		'current pos' : 'next pos'
 		update 'the window'
 	… until
 		('triangle' x-pos) ≥ STD-WIDTH

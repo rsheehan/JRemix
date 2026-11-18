@@ -1,8 +1,8 @@
 'func1' : function 
-	'a' + 10
+	'1' + 10
 	
 'func2' : function 
-	'a'²
+	'1'²
 
 'func3' : {'func1', 'func2'}
 
@@ -13,10 +13,10 @@ chain 'func list' 'value' :
 chain 'func3' 1 ↲
 
 'pipeline' : function 
-	for each 'func' in 'b'
-		'a' : 'func' 'a' ; could pipe into and out of buffer instead
+	for each 'func' in '2'
+		'1' : 'func' '1' ; could pipe into and out of buffer instead
 	help VARS ↲
-	'a'
+	'1'
 
 'pipeline' {2, 'func3'} ↲
 

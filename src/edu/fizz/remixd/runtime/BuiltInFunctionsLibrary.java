@@ -259,8 +259,8 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     "Execute the 'body' in the context of 'parameter context'.\n" +
                             "'parameter context' is either a map, a list or a single value.\n" +
                             "If a map then each key is a parameter name.\n" +
-                            "If a list then the 'body' must have alphabetical parameters starting with 'a'.\n" +
-                            "If a single value then it matches the parameter 'a'."
+                            "If a list then the 'body' must have numerical parameters starting with '1'.\n" +
+                            "If a single value then it matches the parameter '1'."
 
             );
         }
@@ -271,26 +271,30 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
             RemixdMap map = null;
             try {
                 body = (Block)context.retrieve("body", false);
-                body.setContext(null);
                 Object parameters = context.retrieve("parameter context", false);
                 if (parameters instanceof RemixdList list) {
-                    if (list.size() > 26) {
-                        System.err.println("Too many parameters executing function.");
-                    }
-                    char name = 'a';
+                    int num = 1;
                     map = new RemixdMap();
                     for (Object value : list) {
-                        map.put(String.valueOf(name), value);
-                        name++;
+                        map.put(String.valueOf(num), value);
+                        num++;
                     }
                 } else if (parameters instanceof RemixdMap) {
                     map = (RemixdMap) parameters;
                 } else { // we assume one variable only if not a list or map
                     map = new RemixdMap();
-                    map.put("a", parameters);
+                    map.put("1", parameters);
                 }
-                Context callContext = new Context(context, false);
-                callContext.variables = map;
+                // it is possible the block has a block context already
+                // so the new variables need to be merged with this
+                Context callContext = null;
+                Context bodyContext = body.getContext();
+                if (bodyContext == null) {
+                    callContext = new Context(context, false);
+                    callContext.variables = map;
+                } else {
+                    bodyContext.variables.putAll(map);
+                }
                 return body.evaluate(callContext);
             } catch (VarNotFoundException | FunctionNotFoundException e) {
                 throw new RuntimeException(e);

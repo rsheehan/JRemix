@@ -1,17 +1,17 @@
 iterate 'func' over 'list' starting with 'initial' :
 	'result' : 'initial'
 	for each 'item' in 'list' 
-		'result': 'func' {'item', 'result'}
+		'result': 'func' { 'item', 'result' }
 
 'add' : function
-	'a' + 'b'
+	'1' + '2'
 
 iterate 'add' over (1 to 100) starting with 0 ↲
 
 extract 'start' to 'finish' from 'list' :
-	'result' : { }
+	'result' : {}
 	for each 'i' from 'start' to 'finish' 
-		append ('list' {'i'}) to 'result'
+		append ('list'{'i'}) to 'result'
 
 separate first from rest in 'list' :
 	'first' : first in 'list'

@@ -21,6 +21,8 @@ FIRST : 1
 SECOND : 2
 THIRD : 3
 
+DIGITS : { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" }
+
 ==============
 Help constants
 ==============
@@ -526,6 +528,28 @@ necessary spaces before concatenating the insertion.
 overwrite 'this string' into #string at 'pos' :
 	place 'this string' into #string at 'pos' overwrite true
 
+=-
+Converts the 'string' to its matching integer.
+Returns "not integer" if 'string' is not an integer.
+=-
+convert 'string' to integer :
+	'result' : 0
+	if (first in 'string' = "-")
+		'sign' : -1
+		'string' : last ('string' length - 1) characters in 'string'
+	… otherwise
+		'sign' : 1
+	'bad' : for each 'digit' in 'string'
+		'next' : index of 'digit' in DIGITS
+		if ('next' = null)
+			return true
+		dec 'next'
+		'result' : 'result' × 10 + 'next'
+	if (not 'bad')
+		'sign' × 'result'
+	… otherwise
+		"not integer"
+
 ==============================
  List string functions
 ==============================
@@ -613,6 +637,15 @@ A sequence is a list, range, map or string.
 =-
 'element' is not in 'sequence' :
 	not ('element' is in 'sequence')
+
+=-
+Return the first position of 'value' in the 'sequence'.
+Returns null if not presetn. 
+=-
+index of 'value' in 'sequence' :
+	for each 'item' in 'sequence' keeping 'count'
+		if ('value' = 'item')
+			return 'count'
 
 =-
 Remove all values equal to 'item' from the 'list'.

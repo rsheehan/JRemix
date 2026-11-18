@@ -1,0 +1,38 @@
+=
+ The simple action library.
+=
+
+library
+	
+	an initial 'value' :
+		create 'value'
+			'type' : "Interaction Variable"
+			'interactions' : { }
+			
+			getter
+				'value'
+			
+			MY action ['when'] ['result'] :
+				'action' : an action 'when' do 'result'
+				append 'action' to 'interactions'
+			
+			set ME to 'new value' :
+				'value' : 'new value'
+				fire all actions
+			
+			fire all actions :
+				for each 'action' in 'interactions' 
+					do 'action' if 'value' matches
+	
+	----
+	
+	an action ['when'] do ['result'] :
+		create 'when', 'result'
+			'type' : "Interaction"
+			
+			do ME if 'value' matches :
+				'parameter' : { "value" : 'value' }
+				if
+					do 'when' with 'parameter'
+				…
+					do 'result' with 'parameter'

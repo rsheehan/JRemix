@@ -1,12 +1,11 @@
 'x' : 1
 
-'a' : [
-'x' : 'y' + 10
-2'x'
-]
+'a' : ; this is a block because there is a single var on the left
+	'x' : 'y' + 10
+	2'x'
 
 'neg square "x" plus 1' : function
-	'result' : ('x' sqrd) + 1
+	'result' : 'x'² + 1
 	help VARS ↲
 	'result'
 
@@ -26,6 +25,30 @@
 
 (function [sine 'x']) {"x" : 0.1} ↲
 
-'sin' : function [sine 'a']
+'sin' : function [sine '1']
 'sin' ↲
 'sin' 0.3 ↲
+
+= output
+'result' : Long
+'a' : Block
+'neg square "x" plus 1' : function
+'x' : Long
+
+10
+30
+40
+'result' : Long
+'a' : Block
+'neg square "x" plus 1' : function
+'a func "y"' : function
+'x' : Long
+'y' : Long
+
+5
+0.19866933079506122
+0.09983341664682815
+function object
+	'body' : [ sine ('1') ]
+0.29552020666133955
+null

@@ -1,0 +1,21 @@
+
+using get "actionLib" from "remixdPrograms/Interactions"
+	
+	'next number' : an initial null
+	'total' : an initial 0
+	'count' : an initial 0
+	
+	'total' ↲
+	
+	'next number' action ['value' > 0]
+		set 'total' to ('total' value + 'value')
+		set 'count' to ('count' value + 1)
+	
+	'next number' action ['value' ≤ 0]
+		"The average is ", 1.0 × 'total' value ÷ 'count' value ↲
+	
+	'value' : 1
+	while ['value' > 0]
+		'value' : ask "next number, enter -1 to finish"
+		'value' : convert 'value' to integer
+		set 'next number' to 'value'
