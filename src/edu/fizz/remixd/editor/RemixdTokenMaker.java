@@ -116,7 +116,8 @@ public class RemixdTokenMaker extends TokenMakerBase {
                 case RemixdLexerToken.COMMENT_END,
                      RemixdLexerToken.COMMENT_INCOMPLETE -> RemixdTokenTypes.COMMENT_MULTILINE;
                 case RemixdLexerToken.CONSTANT -> RemixdTokenTypes.CONSTANT;
-                case RemixdLexerToken.IDENTIFIER -> RemixdTokenTypes.VARIABLE;
+                case RemixdLexerToken.IDENTIFIER,
+                     RemixdLexerToken.WORDPRODUCT-> RemixdTokenTypes.VARIABLE;
                 case RemixdLexerToken.SPACE -> RemixdTokenTypes.WHITESPACE;
                 default -> RemixdTokenTypes.IDENTIFIER;
             };

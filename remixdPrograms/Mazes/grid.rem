@@ -41,7 +41,7 @@ library
 			=-
 			MY random cell :
 				'cells'{random 'rows'}{random 'columns'}
-				'column'
+				
 			=-
 			Return the number of cells in the grid 'OBJECT'.
 			=-
@@ -56,7 +56,18 @@ library
 					for each 'column' from 1 to 'columns' 
 						#cell : 'cells'{'row'}{'column'}
 						do 'block'
-						
+			
+			=-
+			Produce the string version of the maze in ASCII art.
+			=-
+			ME to string :
+				'output' : "+" ⊕  ("---+" 'columns' times) ⊕ "\n"
+				for each 'row' from 1 to 'rows'
+					for each 'column' from 1 to 'columns'
+						'cell' : 'cells'{'row'}{'column'}
+-						'link' : 
+-						if (MY 'cell')
+				
 	=-
 	A single cell object with connections to surrounding ones.
 	=-
@@ -80,7 +91,7 @@ library
 			exists in the 'grid'.
 			If no cell in the 'direction' returns null.
 			=-
-			'direction' at ME in 'grid' :
+			'direction' of ME in 'grid' :
 				'coords' : 'directions'{'direction'}
 				'grid' cell at 'coords'
 			
@@ -89,15 +100,25 @@ library
 			=-
 			ME to string :
 				"<" ⊕ 'row' ⊕ ", " ⊕ 'column' ⊕ ">"
+				
+			=-
+			Compares this cell 'OBJECT' with 'other cell'.
+			True only if they are equal;
+			=-
+			'other' equals ME :
+				all of {
+					['row' = 'other' row]
+					['column' = 'other' column]
+				}
 			
 			=-
 			Connect this cell 'OBJECT' to 'other cell'.
 			=-
 			link ME to 'other cell' :
-				'links'{'other cell'} : true ; this means connected
+				append 'other cell' to 'links'
 
 			=-
 			Disconnect this cell 'OBJECT' from 'other cell'.
 			=-
-			unlink ME from 'other cell' : ; should really have a map delete
-				'links'{'other cell'} : false
+			unlink ME from 'other cell' :
+				remove all 'other cell' from 'links'

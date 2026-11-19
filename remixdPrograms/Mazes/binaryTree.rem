@@ -1,8 +1,7 @@
-GRID-LIB : include "remixdPrograms/Mazes/grid.rem"
+GRID-LIB : get "grid" from "remixdPrograms/Mazes"
 
 using GRID-LIB
 	'grid' : a grid of 4 by 4
-	'cell' : a cell at 1 1
 	
 	'binary tree' : binary tree maze based on 'grid'
 	
@@ -13,14 +12,19 @@ using GRID-LIB
 			from 'cell' in 'grid' if NORTH add to 'neighbours'
 			from 'cell' in 'grid' if EAST add to 'neighbours'
 
-				
-			'neighbours' ↲
 			'link' : choose from 'neighbours'
 			if ('link' ≠ null)
-				
-				'link' ↲
+				link 'cell' to 'link'
+				"cell:", 'cell', " neighbours:", 'neighbours', " link:", 'link' ↲
 
+	=-
+	If there is a path from the 'cell' in the 'grid' in the specified 'direction'
+	then add the connected cell to the 'neighbours' list.
+	=-
 	from 'cell' in 'grid' if 'direction' add to 'neighbours' :
-		'cell' : 'direction' at 'cell' in 'grid'
-		if ('cell' ≠ null)
-			append 'cell' to 'neighbours'
+		'connected cell' : 'direction' of 'cell' in 'grid'
+		if ('connected cell' ≠ null)
+			append 'connected cell' to 'neighbours'
+
+'cell' : 'grid' cell at { 2, 3 }
+'cell' links

@@ -1,0 +1,17 @@
+average numbers :
+	'total' : 0
+	'count' : 0
+	'value' : 1
+	
+	while ['value' > 0] 
+		'value' : ask "next number, enter -1 to finish"
+		'value' : convert 'value' to integer
+		if ('value' > 0)
+			increment 'count'
+			add 'value' to 'total'
+			
+	"Total : ", 'total' ↲
+	"Count : ", 'count' ↲
+	"The average is ", 1.0 × 'total' ÷ 'count' ↲
+
+average numbers

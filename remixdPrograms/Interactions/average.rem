@@ -12,6 +12,8 @@ using get "actionLib" from "remixdPrograms/Interactions"
 		set 'count' to ('count' value + 1)
 	
 	'next number' action ['value' ≤ 0]
+		"Total : ", 'total' value ↲
+		"Count : ", 'count' value ↲
 		"The average is ", 1.0 × 'total' value ÷ 'count' value ↲
 	
 	'value' : 1

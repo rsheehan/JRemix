@@ -1,6 +1,6 @@
 using graphics, turtle
 
-	'the window' : the graphics panel
+	'the window' : a graphics window
 	'turtle space' : a turtle space in 'the window'
 
 	'turtles' : a group of 8 turtles
