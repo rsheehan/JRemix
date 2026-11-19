@@ -1,8 +1,9 @@
 package edu.fizz.remixd.runtime;
 
 import edu.fizz.remixd.EvalVisitorForEditor;
-import edu.fizz.remixd.editor.*;
-//import edu.fizz.remixd.editor.RemixPrepareRunOld;
+import edu.fizz.remixd.editor.RemixdApp;
+import edu.fizz.remixd.editor.RemixdCompletions;
+import edu.fizz.remixd.editor.RemixdPrepareRun;
 
 import java.util.*;
 
@@ -342,7 +343,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public static void publish(Object value) {
             if (RemixdApp.currentSwingWorker != null)
-                RemixdApp.currentSwingWorker.publish(value.toString());
+                RemixdApp.currentSwingWorker.printOutput(value.toString());
             else
                 System.out.println(value);
         }

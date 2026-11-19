@@ -13,7 +13,7 @@ public class TextAreaOutputStream extends OutputStream {
         @Override
         public void write(byte[] buffer, int offset, int length) {
             final String text = new String (buffer, offset, length);
-            destination.publish(text);
+            destination.printOutput(text);
         }
 
         @Override

@@ -11,7 +11,9 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.MouseWheelListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class REPLPanel extends JPanel {
 
@@ -72,41 +74,51 @@ public class REPLPanel extends JPanel {
     }
 
     public String inputQuestion(String question) {
-        clearOutputArea();
-        currentInputArea = new JTextField(81);
-        currentInputArea.setFont(outputFont);
+        String result;
 
-        TitledBorder border = BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.RED),
-                question
-        );
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                clearOutputArea();
+                currentInputArea = new JTextField(81);
+                currentInputArea.setFont(outputFont);
+                currentInputArea.setBackground(darkAreas ? Color.black : Color.white);
 
-        currentInputArea.setBorder(border);
-        remove(glueBox);
-        add(currentInputArea, gbcForOutput);
-        add(glueBox, gbcForSpace);
-        // Inform the layout manager and refresh the UI
-        revalidate();
-        repaint();
-        currentInputArea.setBackground(darkAreas ? Color.black : Color.white);
-        scrollToBottom(currentInputArea);
-        currentInputArea.requestFocusInWindow();
-        String inputText = waitForTextFieldInput();
-        currentInputArea.setEditable(false);
-        return inputText;
+                TitledBorder border = BorderFactory.createTitledBorder(
+                        BorderFactory.createLineBorder(Color.RED),
+                        question
+                );
+
+                currentInputArea.setBorder(border);
+                remove(glueBox);
+                add(currentInputArea, gbcForOutput);
+                add(glueBox, gbcForSpace);
+                // Inform the layout manager and refresh the UI
+                revalidate();
+                repaint();
+                scrollToBottom(currentInputArea);
+                currentInputArea.requestFocusInWindow();
+            });
+        } catch (InterruptedException | InvocationTargetException e) {
+            return "Error in input.";
+        }
+
+        try {
+            result = waitForTextFieldInput();
+        } catch (ExecutionException | InterruptedException e) {
+            return "Error in input.";
+        }
+        return result;
     }
 
-    public static String waitForTextFieldInput() {
-        CompletableFuture<String> future = new CompletableFuture<>();
+    public static String waitForTextFieldInput() throws ExecutionException, InterruptedException {
+        CompletableFuture<String> inputFuture = new CompletableFuture<>();
         // Triggered on the UI thread when the user presses Enter
-        currentInputArea.addActionListener(_ -> future.complete(currentInputArea.getText()));
-        try {
-            // Blocks the calling background thread until future.complete() is called
-            return future.get();
-        } catch (Exception e) {
-            Thread.currentThread().interrupt();
-            return null;
-        }
+        currentInputArea.addActionListener(_ -> {
+            String input = currentInputArea.getText();
+            currentInputArea.setEditable(false);
+            inputFuture.complete(input);
+        });
+        return inputFuture.get();
     }
 
     public RemixdTextArea addREPLTextArea() {
