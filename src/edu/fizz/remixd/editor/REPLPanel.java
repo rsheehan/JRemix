@@ -81,7 +81,6 @@ public class REPLPanel extends JPanel {
                 clearOutputArea();
                 currentInputArea = new JTextField(81);
                 currentInputArea.setFont(outputFont);
-                currentInputArea.setBackground(darkAreas ? Color.black : Color.white);
 
                 TitledBorder border = BorderFactory.createTitledBorder(
                         BorderFactory.createLineBorder(Color.RED),
@@ -89,6 +88,7 @@ public class REPLPanel extends JPanel {
                 );
 
                 currentInputArea.setBorder(border);
+                outputSetDark(currentInputArea);
                 remove(glueBox);
                 add(currentInputArea, gbcForOutput);
                 add(glueBox, gbcForSpace);

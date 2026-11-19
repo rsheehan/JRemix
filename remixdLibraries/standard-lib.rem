@@ -534,11 +534,10 @@ Returns "not integer" if 'string' is not an integer.
 =-
 convert 'string' to integer :
 	'result' : 0
+	'sign' : 1
 	if (first in 'string' = "-")
 		'sign' : -1
 		'string' : last ('string' length - 1) characters in 'string'
-	… otherwise
-		'sign' : 1
 	'bad' : for each 'digit' in 'string'
 		'next' : index of 'digit' in DIGITS
 		if ('next' = null)
