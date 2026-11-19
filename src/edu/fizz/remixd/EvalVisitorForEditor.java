@@ -741,49 +741,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
     /** WORDPRODUCT (from expression) */
     @Override
     public Expression visitExprWordProduct(RemixdParser.ExprWordProductContext ctx) {
-        String[] numberAndWord = splitNumberAndWord(ctx.getText());
-        Expression number;
-        Expression word;
-        try {
-            number = produceLongExpression(numberAndWord[0]);
-        } catch (NumberFormatException exception) {
-            number = produceDoubleExpression(numberAndWord[0]);
-        }
-        if (numberAndWord[1].equals("π") || numberAndWord[1].equals("pi")) {
-            word = produceDoubleExpression("π");
-        } else {
-            word = new VarValueExpression(numberAndWord[1], fileName, 0, 0);
-        }
-        return new BinaryExpression(number, "*", word);
-    }
-
-    private String[] splitNumberAndWord(String productWord) {
-        StringBuilder product;
-        String word;
-        product = new StringBuilder();
-        int i = 0;
-        char c = productWord.charAt(i);
-        if (c == '-') {
-            product.append(c);
-            c = productWord.charAt(++i);
-        }
-        while (Character.isDigit(c)) {
-            product.append(c);
-            c = productWord.charAt(++i);
-        }
-        if (c == '.') {
-            product.append(c);
-            c = productWord.charAt(++i);
-        }
-        while (Character.isDigit(c)) {
-            product.append(c);
-            c = productWord.charAt(++i);
-        }
-        if (productWord.substring(i).equals("π"))
-            word = "π";
-        else
-            word = productWord.substring(i);
-        return new String[] {product.toString(), word};
+        return null;
     }
 
     /** NULL (from expression) */
@@ -894,20 +852,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
     /** WORDPRODUCT (from callPart) */
     @Override
     public Expression visitCallWordProduct(RemixdParser.CallWordProductContext ctx) {
-        String[] numberAndWord = splitNumberAndWord(ctx.getText());
-        Expression number;
-        Expression word;
-        try {
-            number = produceLongExpression(numberAndWord[0]);
-        } catch (NumberFormatException exception) {
-            number = produceDoubleExpression(numberAndWord[0]);
-        }
-        if (numberAndWord[1].equals("π") || numberAndWord[1].equals("pi")) {
-            word = produceDoubleExpression("π");
-        } else {
-            word = new VarValueExpression(numberAndWord[1], fileName, 0, 0);
-        }
-        return new BinaryExpression(number, "*", word);
+        return null;
     }
 
     /** NULL (from callPart) */
@@ -1080,9 +1025,7 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixdParser.KeyValueContext keyValue) {
-//                String key = keyValue.string().getText(); // key());
                 Expression key = (Expression)visit(keyValue.expression(0));
-//                key = key.substring(1,key.length() - 1); // chop off "s at both ends
                 Expression value = (Expression)visit(keyValue.expression(1));
                 map.put(key, value);
             }

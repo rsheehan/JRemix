@@ -614,7 +614,6 @@ public class EvalVisitor extends RemixdParserBaseVisitor<Object> {
     @Override
     public Expression visitExprConstant(RemixdParser.ExprConstantContext ctx) {
         String constantName = ctx.CONSTANT().getText();
-        //        constantValue.setLineNumber(ctx.getStart().getLine() - 1);
         int lineNumber = ctx.getStart().getLine() - 1;
         return new ConstantValueExpression(constantName, lineNumber);
     }
@@ -640,7 +639,13 @@ public class EvalVisitor extends RemixdParserBaseVisitor<Object> {
     /** WORDPRODUCT (from expression) */
     @Override
     public Expression visitExprWordProduct(RemixdParser.ExprWordProductContext ctx) {
-        String[] numberAndWord = splitNumberAndWord(ctx.getText());
+        int lineNumber = ctx.getStart().getLine() - 1;
+        int lineOffset = ctx.getStart().getCharPositionInLine();
+        return getBinaryExpressionFromWordProduct(ctx.getText(), lineNumber, lineOffset);
+    }
+
+    private BinaryExpression getBinaryExpressionFromWordProduct(String text, int lineNumber, int lineOffset) {
+        String[] numberAndWord = splitNumberAndWord(text);
         Expression number;
         Expression word;
         try {
@@ -651,11 +656,8 @@ public class EvalVisitor extends RemixdParserBaseVisitor<Object> {
         if (numberAndWord[1].equals("π") || numberAndWord[1].equals("pi")) {
             word = produceDoubleExpression("π");
         } else {
-            int lineNumber = ctx.getStart().getLine() - 1;
-            int lineOffset = ctx.getStart().getCharPositionInLine();
             word = new VarValueExpression(numberAndWord[1], fileName, lineNumber, lineOffset);
         }
-        int lineNumber = ctx.getStart().getLine() - 1;
         return new BinaryExpression(number, "*", word, fileName, lineNumber);
     }
 
@@ -797,23 +799,9 @@ public class EvalVisitor extends RemixdParserBaseVisitor<Object> {
     /** WORDPRODUCT (from callPart) */
     @Override
     public Expression visitCallWordProduct(RemixdParser.CallWordProductContext ctx) {
-        String[] numberAndWord = splitNumberAndWord(ctx.getText());
-        Expression number;
-        Expression word;
-        try {
-            number = produceLongExpression(numberAndWord[0]);
-        } catch (NumberFormatException exception) {
-            number = produceDoubleExpression(numberAndWord[0]);
-        }
-        if (numberAndWord[1].equals("π") || numberAndWord[1].equals("pi")) {
-            word = produceDoubleExpression("π");
-        } else {
-            int lineNumber = ctx.getStart().getLine() - 1;
-            int lineOffset = ctx.getStart().getCharPositionInLine();
-            word = new VarValueExpression(numberAndWord[1], fileName, lineNumber, lineOffset);
-        }
         int lineNumber = ctx.getStart().getLine() - 1;
-        return new BinaryExpression(number, "*", word, fileName, lineNumber);
+        int lineOffset = ctx.getStart().getCharPositionInLine();
+        return getBinaryExpressionFromWordProduct(ctx.getText(), lineNumber, lineOffset);
     }
 
     /** NULL (from callPart) */
@@ -1012,9 +1000,7 @@ public class EvalVisitor extends RemixdParserBaseVisitor<Object> {
         for (int i = 0; i < n; i++) {
             ParseTree node = ctx.getChild(i);
             if (node instanceof RemixdParser.KeyValueContext keyValue) {
-//                String key = keyValue.string().getText(); // key());
                 Expression key = (Expression)visit(keyValue.expression(0)); // key());
-//                key = key.substring(1,key.length() - 1); // chop off "s at both ends
                 Expression value = (Expression)visit(keyValue.expression(1));
                 map.put(key, value);
             }
