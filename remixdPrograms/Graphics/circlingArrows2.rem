@@ -1,0 +1,47 @@
+===============
+Rotating arrows
+===============
+
+setup 'the window' and 'the animation layer'
+'the arrows' : 36 arrows in 'the animation layer'
+animate 'the arrows' in 'the window'
+
+using graphics
+	
+	setup #window and #animation-layer :
+		#window : a graphics window
+		#animation-layer : #window next layer
+
+	'n' arrows in 'animation layer' :
+		'arrows' : { }
+		'angle' : 0
+		repeat 'n' times
+			'arrow' : an arrow
+			position 'arrow' at ('angle' degrees as radians)
+			add 10 to 'angle'
+			append 'arrow' to 'arrows'
+			place 'arrow' in 'animation layer'
+		return 'arrows'
+
+	an arrow :
+		'arrow' : a shape from {
+			{ 0, 1 }
+			{-2, 2 }
+			{ 0,-2 }
+			{ 2, 2 }
+		}
+		'arrow' colour (random colour)
+		return 'arrow'
+		
+	position 'the arrow' at 'angle' :
+		'x' : CENTRE-X + 200 × cosine 'angle'
+		'y' : CENTRE-Y - 200 × sine 'angle'
+		'the arrow' position { 'x', 'y' }
+		'the arrow' heading (-'angle')
+
+	animate 'arrows' in 'the window' :
+		animate 'the window' 180 times at 30 ticks per second
+			for each 'arrow' in 'arrows'
+				'angle' : -('arrow' heading)
+				add (2 degrees as radians) to 'angle'
+				position 'arrow' at 'angle'

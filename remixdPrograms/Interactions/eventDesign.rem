@@ -1,7 +1,11 @@
 =
  Example event handling design
 =
-=
+UP    : 0
+DOWN  : 1
+LEFT  : 2
+RIGHT : 3
+
 respond to keypress UP-ARROW 
 	a block of code
 	; the trouble is that events need global references
@@ -9,6 +13,7 @@ respond to keypress UP-ARROW
 	; the required data
 
 'events' : a fifo list of '100'
+- how do events get added to the list?
 
 event loop
 	repeat
@@ -19,13 +24,14 @@ event loop
 		
 	… until [event is quit]
 	
-wait on 'events' : ; a busy wait on the next event
-	repeat 
+wait on 'events' : ; a pausing wait on the next event
+	repeat
 		remove next 'notification' from 'events'
+		if ('notification' = "list is empty")
+			pause 0.1 second
 	… until ['notification ≠ "list is empty"]
 	'notification'
-	
-=
+
 =
  The events are held in a FIFO list
 =
