@@ -12,33 +12,12 @@ public class RemixdMap<String, Expression> extends HashMap implements RemixdComp
         super(map);
     }
 
+    @Override
     public java.lang.String toString() {
-        Iterator<Entry<String, Expression>> iter = entrySet().iterator();
-        if (! iter.hasNext())
-            return "{}";
-
-        StringBuilder sb = new StringBuilder();
-        sb.append('{');
-        for (;;) {
-            Entry<String, Expression> keyValue = iter.next();
-            String key = keyValue.getKey();
-            sb.append('"');
-            Object value = keyValue.getValue();
-            sb.append(key);
-            sb.append("\" : ");
-            if (value instanceof RemixdComplexType complexValue) {
-                List<RemixdComplexType> callerStack = new ArrayList<>();
-                callerStack.add(this);
-                sb.append(complexValue.toString(callerStack, new StringBuilder()));
-            } else if (value instanceof java.lang.String stringValue) {
-                sb.append('"').append(stringValue).append('"');
-            } else
-                sb.append(value);
-
-            if (! iter.hasNext())
-                return sb.append('}').toString();
-            sb.append(',').append(' ');
-        }
+        List<RemixdComplexType> callerStack = new ArrayList<>();
+        callerStack.add(this);
+        StringBuilder tabs = new StringBuilder();
+        return toString(callerStack, tabs);
     }
 
     @Override
@@ -48,7 +27,7 @@ public class RemixdMap<String, Expression> extends HashMap implements RemixdComp
             return "{}";
 
         StringBuilder sb = new StringBuilder();
-        sb.append('{');
+        sb.append("{ ");
         for (;;) {
             Entry<String, Expression> keyValue = iter.next();
             String key = keyValue.getKey();
@@ -69,8 +48,8 @@ public class RemixdMap<String, Expression> extends HashMap implements RemixdComp
                 sb.append(value);
 
             if (! iter.hasNext())
-                return sb.append('}').toString();
-            sb.append(',').append(' ');
+                return sb.append(" }").toString();
+            sb.append(", ");
         }
     }
 

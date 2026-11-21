@@ -579,7 +579,7 @@ The 'list' as a string.
 'list' as string :
 	if (not ('list' is a "list"))
 		return 'list'
-	"{" ⊕ join 'list' with separator ", " ⊕ "}"
+	"{ " ⊕ join 'list' with separator ", " ⊕ " }"
 
 ==============================
  List functions

@@ -1,0 +1,65 @@
+=
+ Example event handling design
+=
+=
+respond to keypress UP-ARROW 
+	a block of code
+	; the trouble is that events need global references
+	; so the block above is ok as long as the context when called includes
+	; the required data
+
+'events' : a fifo list of '100'
+
+event loop
+	repeat
+		'notification' : wait on 'events'
+		when
+			['notification'' = keypress UP-ARROW] do [respond to keypress UP-ARROW]
+			etc
+		
+	… until [event is quit]
+	
+wait on 'events' : ; a busy wait on the next event
+	repeat 
+		remove next 'notification' from 'events'
+	… until ['notification ≠ "list is empty"]
+	'notification'
+	
+=
+=
+ The events are held in a FIFO list
+=
+	
+a fifo list of 'size' :
+	create 'size'
+		'type' : "Sized FIFO List"
+		'list' : apply [0] 'size' times
+		'head' : 1 ; position of next removal 
+		'tail' : 1 ; position of next insertion
+		'count' : 0 ; how many elements
+		
+		append next 'item' to ME :
+			if ('count' = 'size')
+				return "list is full" ; notify - list is full
+			
+			'list'{'tail' inc} : 'item'
+			if ('tail' > 'size')
+				'tail' : 1
+			inc 'count'
+		
+		remove next #item from ME :
+			if ('count' < 1)
+				return "list is empty" ; notify - list is empty
+			
+			#item : 'list'{'head' inc}
+			if ('head' > 'size')
+				'head' : 1
+			dec 'count'
+
+'events' : a fifo list of 5
+
+repeat 5 times 
+	append next (random 10) to 'events'
+
+
+remove next 'value' from 'events'

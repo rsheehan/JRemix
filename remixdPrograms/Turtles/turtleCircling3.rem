@@ -1,6 +1,15 @@
 =================
  Rotating Arrows
 =================
+
+RADIUS : 300
+
+prepare 'arrows'
+move 'arrows' around the circle
+remove 'arrows'
+
+-----------------------------------
+
 using graphics, turtle
 
 	prepare #arrows :
@@ -24,10 +33,3 @@ using graphics, turtle
 		turn 'arrows' -90 degrees
 		move 'arrows' RADIUS steps
 		hide 'arrows'
-		
------------------------------------
-RADIUS : 300
-
-prepare 'arrows'
-move 'arrows' around the circle
-remove 'arrows'

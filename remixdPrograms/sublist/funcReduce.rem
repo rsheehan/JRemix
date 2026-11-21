@@ -1,10 +1,10 @@
 'list' : {1, 2, 4, 8, 16, 32, 64, 128, 256}
 
 'add' : function
-	'a' + 'b'
+	'1' + '2'
 
 'multiply' : function
-	'a' × 'b'
+	'1' × '2'
 
 using sublist
 	'sublist' : a sublist from 'list'

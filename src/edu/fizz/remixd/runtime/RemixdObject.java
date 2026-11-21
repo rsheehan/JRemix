@@ -52,56 +52,16 @@ public class RemixdObject implements RemixdComplexType {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        Method method = findMethod("⫾ to string");
-        MethodContext methodContext = new MethodContext(null, this);
-        if (method != null) {
-            try {
-                return sb.append(method.execute(methodContext)).toString();
-            } catch (ReturnException | InterruptedException | VarNotFoundException | FunctionNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            Map<String, Object> instanceVars = getContext().variables;
-            int numberOfFields = instanceVars.size();
-            String typeName = (String) instanceVars.get("type");
-            if (typeName != null) {
-                sb.append(typeName).append(" ");
-                numberOfFields--;
-            }
-            sb.append("object\n");
-            if (numberOfFields == 0)
-                return sb.toString();
-            StringBuilder tabs = new StringBuilder("\t");
-            boolean firstField = true;
-            for (String key : instanceVars.keySet()) {
-                if (key.equals("type"))
-                    continue;
-                if (firstField)
-                    firstField = false;
-                else
-                    sb.append("\n");
-                sb.append(tabs).append('\'').append(key).append("' : ");
-
-                Object field = instanceVars.get(key);
-                if (field instanceof RemixdComplexType complexField) {
-                    List<RemixdComplexType> callerStack = new ArrayList<>();
-                    callerStack.add(this);
-                    sb.append(complexField.toString(callerStack, tabs));
-                } else {
-                    sb.append(field);
-                }
-
-                if (--numberOfFields == 0)
-                    break;
-            }
-            return sb.toString();
-        }
+        List<RemixdComplexType> callerStack = new ArrayList<>();
+        callerStack.add(this);
+        StringBuilder tabs = new StringBuilder();
+        return toString(callerStack, tabs);
     }
 
     @Override
-    public String toString(List<RemixdComplexType> callerStack, StringBuilder tabs) {
+    public String toString(List<RemixdComplexType> callerStack, StringBuilder tabsSoFar) {
         StringBuilder sb = new StringBuilder();
+        StringBuilder tabs = new StringBuilder(tabsSoFar);
         Method method = findMethod("⫾ to string");
         MethodContext methodContext = new MethodContext(null, this);
         if (method != null) {
@@ -121,12 +81,8 @@ public class RemixdObject implements RemixdComplexType {
             sb.append("object\n");
             if (numberOfFields == 0)
                 return sb.toString();
-            if (tabs.length() < 13)
-                tabs.append("\t");
-            else {
-                tabs.delete(0, tabs.length());
-                tabs.append("…\t");
-            }
+
+            tabs.append("\t");
             boolean firstField = true;
             for (String key : instanceVars.keySet()) {
                 if (key.equals("type"))
@@ -135,7 +91,7 @@ public class RemixdObject implements RemixdComplexType {
                     firstField = false;
                 else
                     sb.append("\n");
-                sb.append(tabs).append('\'').append(key).append("' : ");
+                sb.append(tabs).append(key).append(" : ");
 
                 Object field = instanceVars.get(key);
                 if (field instanceof RemixdComplexType complexField) {

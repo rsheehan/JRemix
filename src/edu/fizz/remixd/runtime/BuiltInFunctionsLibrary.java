@@ -337,7 +337,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
 
         public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
             Object value = context.retrieve("value", false);
-            publish(value); // this needs to publish on the RemixdSwingWorker in action.
+            publish(value);
             return RemixdNull.value();
         }
 
@@ -1126,6 +1126,7 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
                     for (String funcName : function.getAllNames()) {
                         if (funcName.contains(what)) {
                             found = true;
+                            break;
                         }
                     }
                     if (found) {

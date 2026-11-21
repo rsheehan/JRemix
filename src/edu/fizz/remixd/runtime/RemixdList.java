@@ -17,39 +17,23 @@ public class RemixdList<Expression> extends ArrayList implements RemixdComplexTy
 
     @Override
     public String toString() {
-        Iterator it = iterator();
-        if (! it.hasNext())
-            return "{}";
-
-        StringBuilder sb = new StringBuilder();
-        sb.append('{');
-        for (;;) {
-            Object item = it.next();
-            if (item instanceof RemixdComplexType complexItem) {
-                List<RemixdComplexType> callerStack = new ArrayList<>();
-                callerStack.add(this);
-                sb.append(complexItem.toString(callerStack, new StringBuilder()));
-            } else if (item instanceof String stringItem)
-                sb.append('"').append(stringItem).append('"');
-            else
-                sb.append(item);
-
-            if (! it.hasNext())
-                return sb.append('}').toString();
-            sb.append(',').append(' ');
-        }
+        List<RemixdComplexType> callerStack = new ArrayList<>();
+        callerStack.add(this);
+        StringBuilder tabs = new StringBuilder();
+        return toString(callerStack, tabs);
     }
 
     @Override
-    public String toString(List<RemixdComplexType> callerStack, StringBuilder tabs) {
+    public String toString(List<RemixdComplexType> callerStack, StringBuilder inTabs) {
+        StringBuilder tabs = new StringBuilder(inTabs);
         Iterator it = iterator();
         if (! it.hasNext())
             return "{}";
 
         StringBuilder sb = new StringBuilder();
-        sb.append('{');
+        sb.append("{ ");
+        Object item = it.next();
         for (;;) {
-            Object item = it.next();
             if (item instanceof RemixdComplexType complexItem) {
                 if (callerStack.contains(complexItem)) {
                     sb.append("REC_LIST");
@@ -62,9 +46,14 @@ public class RemixdList<Expression> extends ArrayList implements RemixdComplexTy
             else
                 sb.append(item);
 
-            if (! it.hasNext())
-                return sb.append('}').toString();
-            sb.append(',').append(' ');
+            if (it.hasNext()) {
+                sb.append(", ");
+                item = it.next();
+                if (item instanceof RemixdObject)
+                    sb.append('\n');
+            } else {
+                return sb.append(" }").toString();
+            }
         }
     }
 }
