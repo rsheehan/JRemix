@@ -1,9 +1,16 @@
 using graphics
 	'window' : a graphics window
 	'square' : a square
+	'square' size 40
 	
 	'layer' : 'window' next layer
 	place 'square' in 'layer'
+	update 'window'
+
+hide 'window' mouse cursor
+
+when mouse moves in 'window' access 'position'
+	'square' position 'position'
 	update 'window'
 =
 	'directions' : { "UP", "DOWN", "LEFT", "RIGHT" }

@@ -284,7 +284,19 @@ library "edu.fizz.remixd.libraries.Graphics"
 				for each 'layer' in 'layers'
 					prepare 'layer' shapes for drawing on 'JGraphics panel'
 				refresh 'JGraphics panel' ; Java
+			
+			=-
+			Hide the mouse cursor when over the panel 'OBJECT'.
+			=-
+			hide MY mouse cursor :
+				hide cursor over 'JGraphics panel' ; Java
 
+			=-
+			Show the mouse cursor when over the panel 'OBJECT'.
+			=-
+			show MY mouse cursor :
+				show cursor over 'JGraphics panel' ; Java
+				
 			==================
 			Clears all layers.
 			==================
@@ -303,17 +315,27 @@ library "edu.fizz.remixd.libraries.Graphics"
 				'layers' : { 'layers'{1} }
 				update ME
 
-			=============
-			Action Events
-			=============
+			======
+			Events
+			======
 			
 			=-
-			Set up an action.
+			Set up a key action.
 			When the 'key' is pressed in the panel 'OBJECT' the [block] executes.
 			Keys are "A" "B" … "Z" but also "UP", "DOWN" etc.
 			=-
 			when 'key' pressed in ME ['block'] :
 				when 'key' pressed in the 'JGraphics panel' do 'block' ; Java
+			
+			=-
+			Set up a mouse move action.
+			When the mouse moves in the panel 'OBJECT' the 'position' gets filled in
+			with the current mouse position and the 'block' is executed.
+			Normally the 'block' will use the 'position' variable.
+			=-
+			when mouse moves in ME access #position ['block'] :
+				#position : {}
+				when mouse moves in the 'JGraphics panel' get #position do 'block' ; Java
 
 		clear 'panel'
 		'panel'

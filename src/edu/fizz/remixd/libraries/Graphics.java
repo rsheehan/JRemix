@@ -412,6 +412,71 @@ public class Graphics extends LibraryExpression {
 
     }
 
+    public static final class AddMouseMoveFunction extends Function {
+
+        public AddMouseMoveFunction() {
+            super(
+                    List.of("when mouse moves in the ⫾ get ⫾ do ⫾"),
+                    List.of("panel", "position", "action block"),
+                    List.of(false, false, true),
+                    false,
+                    "Execute the 'action block' in the 'panel'" +
+                            " when the the mouse is moved.\n" +
+                            "'position' holds the mouse position."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws FunctionNotFoundException, VarNotFoundException {
+            GraphicsPanel panel = (GraphicsPanel)context.retrieve("panel", false);
+            RemixdList position = (RemixdList) context.retrieve("position", false);
+            Block actionBlock = (Block)context.retrieve("action block", false);
+            panel.doActionOnMouseMove(position, actionBlock);
+            return null;
+        }
+
+    }
+
+    public static final class HideCursorFunction extends Function {
+
+        public HideCursorFunction() {
+            super(
+                    List.of("hide cursor over ⫾"),
+                    List.of("panel"),
+                    List.of(false),
+                    false,
+                    "Hide the mouse cursor when over the 'panel'"
+            );
+        }
+
+        public Object execute(Context context) throws FunctionNotFoundException, VarNotFoundException {
+            GraphicsPanel panel = (GraphicsPanel)context.retrieve("panel", false);
+            panel.hideMouseCursor(true);
+            return null;
+        }
+
+    }
+
+    public static final class ShowCursorFunction extends Function {
+
+        public ShowCursorFunction() {
+            super(
+                    List.of("show cursor over ⫾"),
+                    List.of("panel"),
+                    List.of(false),
+                    false,
+                    "Show the default mouse cursor when over the 'panel'"
+            );
+        }
+
+        public Object execute(Context context) throws FunctionNotFoundException, VarNotFoundException {
+            GraphicsPanel panel = (GraphicsPanel)context.retrieve("panel", false);
+            panel.hideMouseCursor(false);
+            return null;
+        }
+
+    }
+
     public static final class AnimateFunction extends Function {
 
         Timer animationTimer;
