@@ -48,6 +48,43 @@ public class BuiltInFunctionsLibrary extends LibraryExpression {
         }
     }
 
+    /** A key code function. */
+    public static final class KeyCodeFunction extends Function {
+        public KeyCodeFunction() {
+            super(
+                    List.of("keycode of ⫾"),
+                    List.of("string"),
+                    List.of(false),
+                    false,
+                    "Return the keycode of the first character in the 'string'."
+            );
+        }
+
+        public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
+            String string = context.retrieve("string", false).toString();
+            return (int) string.charAt(0);
+        }
+    }
+
+    /** Inverse key code function. */
+    public static final class CharacterFromCodeFunction extends Function {
+        public CharacterFromCodeFunction() {
+            super(
+                    List.of("character from ⫾"),
+                    List.of("keycode"),
+                    List.of(false),
+                    false,
+                    "Return the string of the character represented by the 'keycode'."
+            );
+        }
+
+        public Object execute(Context context) throws VarNotFoundException, FunctionNotFoundException {
+            Object value = context.retrieve("keycode", false);
+            int integer = ((Number)value).intValue();
+            return Character.toString(integer);
+        }
+    }
+
     /** Include a Remixd source file. */
     public static final class IncludeFunction extends Function {
 

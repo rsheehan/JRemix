@@ -1,0 +1,27 @@
+test {
+	[character from 65]
+	… expected "A"
+	
+	[keycode of "A"]
+	… expected 65
+	
+	[keycode of "↲"]
+	… expected 8626
+	
+	[character from 8626]
+	… expected "↲"
+}
+↲
+test {
+	[character from (keycode of "A")]
+	… expected "A"
+	
+	[character from (keycode of "↲")]
+	… expected "↲"
+	
+	[keycode of (character from 97)]
+	… expected 97
+	
+	[keycode of (character from 1000)]
+	… expected 1000
+}

@@ -1,3 +1,6 @@
+
+average numbers	
+		
 average numbers :
 	'total' : 0
 	'count' : 0
@@ -13,5 +16,3 @@ average numbers :
 	"Total : ", 'total' ↲
 	"Count : ", 'count' ↲
 	"The average is ", 1.0 × 'total' ÷ 'count' ↲
-
-average numbers
