@@ -228,44 +228,32 @@ library "edu.fizz.remixd.libraries.Graphics"
 
 -==================================================================================================-
 
-	===============
-	Graphics Panels
-	===============
-
-=	-
-	Open the graphics panel with multiple layers.
-	Return the graphics panel.
-	-
-	the graphics panel :
-=		a (open graphics panel) with layers
-
 	===========================================================
 	The Remix 'panel' for drawing in.
 	It has a base layer which is an image for permanent shapes,
 	and multiple layers for animation on top of that.
 
-	It can be the built-in panel from the Remix IDE or a panel
-	in a graphics window created outside this.
+	It is a panel in a graphics window.
+	Action events are associated with the panel.
 	===========================================================
 	=-
 	Return a panel with multiple layers based on 'JGraphics panel'.
 	=-
 	a 'JGraphics panel' with layers :
-		'panel' : create
+		'panel' : create 'JGraphics panel'
 			'type' : "Graphics Panel"
-			'JGraphics' : 'JGraphics panel'
 			'layers' : { a base layer for 'JGraphics panel' }
 			'colour' : DARK-BLUE ; set by "MY colour 'the colour'"
 
 			getters
-				'layers', 'colour'
+				'JGraphics panel', 'layers', 'colour'
 
 			=-
 			Set 'the colour' of the 'OBJECT'.
 			=-
 			MY colour 'the colour' : ; this is a setter
 				'colour' : 'the colour'
-				make the 'JGraphics' background 'colour' ; Java
+				make the 'JGraphics panel' background 'colour' ; Java
 
 			=-
 			Add and return a new shape layer for the panel 'OBJECT'.
@@ -292,10 +280,10 @@ library "edu.fizz.remixd.libraries.Graphics"
 			This redraws all layers.
 			=-
 			update ME :
-				clear transient 'JGraphics' layers ; Java
+				clear transient 'JGraphics panel' layers ; Java
 				for each 'layer' in 'layers'
-					prepare 'layer' shapes for drawing on 'JGraphics'
-				refresh 'JGraphics' ; Java
+					prepare 'layer' shapes for drawing on 'JGraphics panel'
+				refresh 'JGraphics panel' ; Java
 
 			==================
 			Clears all layers.
@@ -304,16 +292,28 @@ library "edu.fizz.remixd.libraries.Graphics"
 			Clear all layers of the panel 'OBJECT' including the base layer.
 			=-
 			clear ME :
-				clear 'JGraphics' base layer
+				clear 'JGraphics panel' base layer
 				clear ME leaving the base layer
 
 			=-
 			Clear all layers of the panel 'OBJECT' keeping the base layer.
 			=-
 			clear ME leaving the base layer :
-				make the 'JGraphics' background 'colour'
+				make the 'JGraphics panel' background 'colour'
 				'layers' : { 'layers'{1} }
 				update ME
+
+			=============
+			Action Events
+			=============
+			
+			=-
+			Set up an action.
+			When the 'key' is pressed in the panel 'OBJECT' the [block] executes.
+			Keys are "A" "B" … "Z" but also "UP", "DOWN" etc.
+			=-
+			when 'key' pressed in ME ['block'] :
+				when 'key' pressed in the 'JGraphics panel' do 'block' ; Java
 
 		clear 'panel'
 		'panel'
@@ -326,7 +326,7 @@ library "edu.fizz.remixd.libraries.Graphics"
 	Return the graphics panel.
 	=-
 	a graphics window :
-		'JWindow' : a "Drawing" window of STD-WIDTH by STD-HEIGHT
+		'JWindow' : a "Drawing" window of STD-WIDTH by STD-HEIGHT ; Java
 		show 'JWindow' ; Java
 		'JGraphics panel' : the 'JWindow' graphics panel ; Java
 		a 'JGraphics panel' with layers

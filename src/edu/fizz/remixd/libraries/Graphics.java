@@ -384,6 +384,34 @@ public class Graphics extends LibraryExpression {
         }
     }
 
+    public static final class AddActionFunction extends Function {
+
+        public AddActionFunction() {
+            super(
+                    List.of("when ⫾ pressed in the ⫾ do ⫾"),
+                    List.of("key", "panel", "action block"),
+                    List.of(false, false, true),
+                    false,
+                    "Execute the 'action block' in the 'panel'" +
+                            " when the 'key' is pressed.\n" +
+                            "Normal code does not call this.\n" +
+                            "Use \"when 'key' pressed in 'OBJECT' [block]\""
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws FunctionNotFoundException, VarNotFoundException {
+            String key = context.retrieve("key", false).toString();
+            KeyStroke keyStroke = KeyStroke.getKeyStroke(key);
+            GraphicsPanel panel = (GraphicsPanel)context.retrieve("panel", false);
+            Block actionBlock = (Block)context.retrieve("action block", false);
+
+            panel.keyAndAction(keyStroke, key + " action", actionBlock);
+            return null;
+        }
+
+    }
+
     public static final class AnimateFunction extends Function {
 
         Timer animationTimer;

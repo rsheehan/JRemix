@@ -1,0 +1,36 @@
+using graphics
+	'window' : a graphics window
+	'square' : a square
+	
+	'layer' : 'window' next layer
+	place 'square' in 'layer'
+	update 'window'
+=
+	'directions' : { "UP", "DOWN", "LEFT", "RIGHT" }
+	for each 'direction' in 'directions' 
+		when 'direction' pressed in 'window'
+			'direction', " pressed" ↲
+
+Because the same block is used in all actions, the value of 'direction' is the same
+so each key says "RIGHT pressed".
+=
+when "UP" pressed in 'window'
+	change 'square' y-pos by -10
+	update 'window'
+
+when "DOWN" pressed in 'window'
+	change 'square' y-pos by 10
+	update 'window'
+
+when "LEFT" pressed in 'window'
+	change 'square' x-pos by -10
+	update 'window'
+
+when "RIGHT" pressed in 'window'
+	change 'square' x-pos by 10
+	update 'window'
+
+when "D" pressed in 'window' 
+	change 'square' y-pos by -10
+	change 'square' x-pos by 10
+	update 'window'

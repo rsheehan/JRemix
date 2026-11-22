@@ -1,8 +1,14 @@
 package edu.fizz.remixd.libraries;
 
+import edu.fizz.remixd.runtime.Block;
+import edu.fizz.remixd.runtime.FunctionNotFoundException;
+import edu.fizz.remixd.runtime.ReturnException;
+import edu.fizz.remixd.runtime.VarNotFoundException;
+
 import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
@@ -15,6 +21,8 @@ public class GraphicsPanel extends JPanel {
     private static final Stroke basicStroke = new BasicStroke(2); // * IMAGE_SCALE);
     private final Dimension graphicsDimension;
     private GraphicsLayerImage baseLayer;
+    private final InputMap inputMap;
+    private final ActionMap actionMap;
     List<DrawObject> drawObjects = new ArrayList<>();
     List<DrawObject> nextDrawObjects = new ArrayList<>();
 
@@ -25,10 +33,26 @@ public class GraphicsPanel extends JPanel {
         baseLayer = new GraphicsLayerImage(size);
         setBackground(new Color(0, 0, 50));
         addComponentListener(new ResizeListener());
+        inputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        actionMap = getActionMap();
     }
 
     public Dimension getPreferredSize() {
         return graphicsDimension;
+    }
+
+    public void keyAndAction(KeyStroke keyStroke, String actionName, Block action) {
+        inputMap.put(keyStroke, actionName);
+        actionMap.put(actionName, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    action.evaluate(null); // should use the block context, so block is anonymous
+                } catch (ReturnException | InterruptedException | VarNotFoundException | FunctionNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
     }
 
     void removeShapes() {
