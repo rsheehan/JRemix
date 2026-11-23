@@ -12,13 +12,22 @@ add the mountains on 'the back layer'
 add the sea on 'the back layer'
 add the islands on 'the front layer'
 
+'user cloud' : a cloud
+place ('user cloud' parts) in 'the cloud layer'
+
 'the clouds' : 10 clouds in 'the cloud layer'
 animate 'the clouds' in 'the window'
+	
+when mouse pressed in 'the window' access 'position'
+	animate 'user cloud' towards ('position'{1})
 
 -============================================================================-
 
 using graphics
 	
+	LEFT : false
+	RIGHT : true
+
 	prepare #window :
 		#window : a graphics window
 		#window colour SKY-BLUE
@@ -99,10 +108,10 @@ using graphics
 		'y1' : 'base' - 'r1'
 		'y2' : 'base' - 'r2'
 
-		'circle A' : a WHITE circle of radius 'r1' at { 'x1', 'y1' }
-		'circle A' outline colour BLACK
-		'circle B' : a WHITE circle of radius 'r2' at { 'x2', 'y2' }
-		'circle B' outline colour BLACK
+		'circleA' : a WHITE circle of radius 'r1' at { 'x1', 'y1' }
+		'circleA' outline colour BLACK
+		'circleB' : a WHITE circle of radius 'r2' at { 'x2', 'y2' }
+		'circleB' outline colour BLACK
 
 		'width' : 'x2' - 'x1'
 		'height' : 'y1' - 'y2' + 'r1'
@@ -116,24 +125,43 @@ using graphics
 		'line' width 2
 
 		- creating the object
-		create 'circle A', 'circle B', 'box', 'line'
+		create 'circleA', 'circleB', 'box', 'line'
 			- these are fields
 			'type' : "Cloud"
-			'size' : 'circle A' radius + 'circle B' radius + 
-										… 'circle B' x-pos - 'circle A' x-pos
+			'size' : 'circleA' radius + 'circleB' radius + 
+										… 'circleB' x-pos - 'circleA' x-pos
 
 			- these are methods
 			MY parts :
-				{ 'circle A', 'circle B', 'box', 'line' }
+				{ 'circleA', 'circleB', 'box', 'line' }
 
 			move ME :
-				'left edge' : 'circle A' x-pos - 'circle A' radius
+				'left edge' : 'circleA' x-pos - 'circleA' radius
 				if ('left edge' < STD-WIDTH) ; ordinary move right
 					for each 'part' in (MY parts)
 						change 'part' x-pos by 1
 				… otherwise ; wrap the cloud around the window
 					for each 'part' in (MY parts)
 						change 'part' x-pos by -(STD-WIDTH + 'size')
-
+						
+			move ME 'direction' :
+				if ('direction')
+					'move' : 1
+				… otherwise 
+					'move' : -1
+				for each 'part' in (MY parts)
+					change 'part' x-pos by 'move'
 	
-
+			animate ME towards 'x-pos' :
+				animate at 60 ticks per second
+					'cloud pos' : 'circleA' x-pos
+					if ('cloud pos' < 'x-pos')
+						move ME RIGHT
+					… otherwise 
+						move ME LEFT
+				… until [all of {
+					['cloud pos' > 'x-pos' - 2]
+					['cloud pos' < 'x-pos' + 2]
+				}]
+		
+-============================================================================-

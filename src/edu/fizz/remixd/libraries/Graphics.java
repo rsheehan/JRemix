@@ -437,6 +437,31 @@ public class Graphics extends LibraryExpression {
 
     }
 
+    public static final class AddMouseDownFunction extends Function {
+
+        public AddMouseDownFunction() {
+            super(
+                    List.of("when mouse button is pressed in the ⫾ get ⫾ do ⫾"),
+                    List.of("panel", "position", "action block"),
+                    List.of(false, false, true),
+                    false,
+                    "Execute the 'action block' in the 'panel'" +
+                            " when the the mouse button is pressed.\n" +
+                            "'position' holds the mouse position."
+            );
+        }
+
+        @Override
+        public Object execute(Context context) throws FunctionNotFoundException, VarNotFoundException {
+            GraphicsPanel panel = (GraphicsPanel)context.retrieve("panel", false);
+            RemixdList position = (RemixdList) context.retrieve("position", false);
+            Block actionBlock = (Block)context.retrieve("action block", false);
+            panel.doActionOnMouseDown(position, actionBlock);
+            return null;
+        }
+
+    }
+
     public static final class HideCursorFunction extends Function {
 
         public HideCursorFunction() {

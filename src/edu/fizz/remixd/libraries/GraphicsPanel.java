@@ -3,6 +3,7 @@ package edu.fizz.remixd.libraries;
 import edu.fizz.remixd.runtime.*;
 
 import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.Graphics;
 import java.awt.event.*;
@@ -66,6 +67,23 @@ public class GraphicsPanel extends JPanel {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
+                position.clear();
+                position.add(e.getX());
+                position.add(e.getY());
+                try {
+                    action.evaluate(null);
+                } catch (ReturnException | InterruptedException | VarNotFoundException | FunctionNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+    }
+
+    public void doActionOnMouseDown(RemixdList position, Block action) {
+        addMouseListener(new MouseInputAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
                 position.clear();
                 position.add(e.getX());
                 position.add(e.getY());

@@ -85,11 +85,7 @@ STRING_START		: '"' -> pushMode(IN_STRING) ;
 fragment IDCHAR		: ~['\t\n↲] ;
 fragment FIRSTCHAR	: ~[.()[\]{,};:—⫾…'\-0-9" ~\t\n↲] ; // ⊕+\-*×÷%=≠<≤>≥
 fragment CHARACTER	: ~[.()[\]{,};:—⫾…'" ~\t\n↲] ; // ⊕+*×÷%=≠<≤>≥
-
 fragment CAPITAL 	: [A-Z\u0391-\u03A9] ; // Roman and Greek capital letters
-
-//EMPTYIDENTIFIER		: ('\'\'') -> channel(HIDDEN) ; // only used to prevent lex error in the editor
-//ERROR_TOKEN			: . ;
 
 mode IN_COMMENT;
 	COMMENT_END		: ({getCharPositionInLine() == 0}? '\t'* '=' ~'\n'*) -> popMode, channel(HIDDEN) ;
