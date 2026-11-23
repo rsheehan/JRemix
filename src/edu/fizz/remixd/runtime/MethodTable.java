@@ -19,7 +19,7 @@ public class MethodTable extends HashMap<String, Method> {
     }
 
     /** Add a getter method for a field. */
-    public String createGetter(String varName, String fileName) {
+    public Method createGetter(String varName, String fileName) {
         // add a getter to the method table
         MethodName methodSig = new MethodName();
         methodSig.setSelfRefNow();
@@ -28,21 +28,26 @@ public class MethodTable extends HashMap<String, Method> {
         // the 0, 0 at the end is only because there is no file location for the function
         block.addStatement(new VarValueExpression(varName, fileName, 0, 0));
         String comment = "Get " + varName + " of the 'OBJECT'." ;
-        addMethod(new Method(methodSig.getAllNames(), block, methodSig.getParameters(), methodSig.getBlockParams(), 1, comment));
-        return methodSig.singleName();
+        Method method = new Method(methodSig.getAllNames(), block, methodSig.getParameters(), methodSig.getBlockParams(), 1, comment);
+        addMethod(method);
+        return method;
     }
 
     /** Add a setter method for a field. */
-    public String createSetter(String varName) {
+    public Method createSetter(String varName) {
         // add a setter to the method table
+        // now words like : MY varName 'value', set MY varName to 'value'
         MethodName methodSig = new MethodName();
+        methodSig.addToName("/set");
         methodSig.setSelfRefNow();
         methodSig.addToName(varName);
+        methodSig.addToName("/to");
         methodSig.addParam("expression"); // a formal parameter
         Block block = new Block();
         block.addStatement(new SetterAssignment(varName));
-        String comment = "Set " + varName + " of the 'OBJECT'." ;
-        addMethod(new Method(methodSig.getAllNames(), block, methodSig.getParameters(), methodSig.getBlockParams(), 1, comment));
-        return methodSig.singleName();
+        String comment = "Set " + varName + " field of the 'OBJECT'." ;
+        Method method = new Method(methodSig.getAllNames(), block, methodSig.getParameters(), methodSig.getBlockParams(), 1, comment);
+        addMethod(method);
+        return method;
     }
 }

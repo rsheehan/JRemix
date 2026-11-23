@@ -401,26 +401,26 @@ public class EvalVisitorForEditor extends RemixdParserBaseVisitor<Object> {
             } else if (node instanceof RemixdParser.GetterSetterContext) {
                 List<String> getSetNames = (List<String>)visit(node);
                 for (String name : getSetNames) {
-                    String getMethodName = methodTable.createGetter(name, fileName);
-                    Method getter = methodTable.get(getMethodName);
-                    LibraryExpression.addMethodNameEditing(getMethodName, 1, getter);
-                    String setMethodName = methodTable.createSetter(name);
-                    Method setter = methodTable.get(setMethodName);
-                    LibraryExpression.addMethodNameEditing(setMethodName, 1, setter);
+                    Method getterMethod = methodTable.createGetter(name, fileName);
+                    for (String getMethodName : getterMethod.getAllNames())
+	                    LibraryExpression.addMethodNameEditing(getMethodName, 1, getterMethod);
+                    Method setterMethod = methodTable.createSetter(name);
+                    for (String setMethodName : setterMethod.getAllNames())
+                        LibraryExpression.addMethodNameEditing(setMethodName, 1, setterMethod);
                 }
             } else if (node instanceof RemixdParser.GetterContext) {
                 List<String> getterNames = (List<String>)visit(node);
                 for (String name : getterNames) {
-                    String methodName = methodTable.createGetter(name, fileName);
-                    Method getter = methodTable.get(methodName);
-                    LibraryExpression.addMethodNameEditing(methodName, 1, getter);
+                    Method getterMethod = methodTable.createGetter(name, fileName);
+                    for (String getMethodName : getterMethod.getAllNames())
+                        LibraryExpression.addMethodNameEditing(getMethodName, 1, getterMethod);
                 }
             }else if (node instanceof RemixdParser.SetterContext) {
                 List<String> setterNames = (List<String>)visit(node);
                 for (String name : setterNames) {
-                    String methodName = methodTable.createSetter(name);
-                    Method setter = methodTable.get(methodName);
-                    LibraryExpression.addMethodNameEditing(methodName, 1, setter);
+                    Method setterMethod = methodTable.createSetter(name);
+                    for (String setMethodName : setterMethod.getAllNames())
+                        LibraryExpression.addMethodNameEditing(setMethodName, 1, setterMethod);
                 }
 
             } else if (node instanceof RemixdParser.MethodDefinitionContext) {
