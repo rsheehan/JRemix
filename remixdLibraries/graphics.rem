@@ -333,7 +333,7 @@ library "edu.fizz.remixd.libraries.Graphics"
 			with the current mouse position and the 'block' is executed.
 			Normally the 'block' will use the 'position' variable.
 			=-
-			when mouse moves in ME access #position ['block'] :
+			when mouse moves in ME use #position ['block'] :
 				#position : {}
 				when mouse moves in the 'JGraphics panel' get #position do 'block' ; Java
 			
@@ -343,7 +343,7 @@ library "edu.fizz.remixd.libraries.Graphics"
 			with the current mouse position and the 'block' is executed.
 			Normally the 'block' will use the 'position' variable.
 			=-
-			when mouse pressed in ME access #position ['block'] :
+			when mouse pressed in ME use #position ['block'] :
 				#position : {}
 				when mouse button is pressed in the 'JGraphics panel' get #position
 					… do 'block' ; Java

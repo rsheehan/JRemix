@@ -9,7 +9,7 @@ using graphics
 
 hide 'window' mouse cursor
 
-when mouse moves in 'window' access 'position'
+when mouse moves in 'window' use 'position'
 	'square' position 'position'
 	update 'window'
 =

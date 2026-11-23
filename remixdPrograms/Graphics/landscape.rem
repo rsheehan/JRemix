@@ -18,7 +18,7 @@ place ('user cloud' parts) in 'the cloud layer'
 'the clouds' : 10 clouds in 'the cloud layer'
 animate 'the clouds' in 'the window'
 	
-when mouse pressed in 'the window' access 'position'
+when mouse pressed in 'the window' use 'position'
 	animate 'user cloud' towards ('position'{1})
 
 -============================================================================-
