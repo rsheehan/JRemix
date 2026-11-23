@@ -192,14 +192,6 @@ public class Context {
         return libraryStack.pop();
     }
 
-//    public LibraryExpression peekLibrary() {
-//        return libraryStack.peek();
-//    }
-
-    public boolean libraryInStack(LibraryExpression library) {
-        return libraryStack.contains(library);
-    }
-
     /**
      * Gets the name associated with this context.
      * @return the name of the file/window/REPL associated
