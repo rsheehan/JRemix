@@ -1,10 +1,13 @@
-an object :
-	create
-		'x' : 1
-		
-		what am ME :
-			"I am an object"
-		
-		MY more thing :
-			inc 'x'
+			animate ME towards 'x-pos' :
+				animate at 60 ticks per second …
 
+					'cloud pos' : 'circleA' x-pos
+					if ('cloud pos' < 'x-pos') …
+						move ME RIGHT
+					… otherwise
+						move ME LEFT
+
+				… until [all of {
+					['cloud pos' > 'x-pos' - 2]
+					['cloud pos' < 'x-pos' + 2]
+				}]

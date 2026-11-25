@@ -639,7 +639,7 @@ A sequence is a list, range, map or string.
 
 =-
 Return the first position of 'value' in the 'sequence'.
-Returns null if not presetn. 
+Returns null if not present. 
 =-
 index of 'value' in 'sequence' :
 	for each 'item' in 'sequence' keeping 'count'

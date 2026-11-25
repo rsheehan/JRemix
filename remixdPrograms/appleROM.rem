@@ -1,12 +1,43 @@
-DOT-SIZE : 4
+=
+ Reads a binary file of Apple IIe character ROM 
+ and displays the character set.
+=
+
+set up 'directory' and 'video ROM'
+set up 'window'
+
+'across' : 0
+'down' : 0
+'char rows' : { }
+'bytes' : bytes from 'video ROM'
+
+DOT-SIZE : 4 ; needs to be before function using it is called
 DOT-SPACE : 5
 
+for each 'byte' in 'bytes' keeping 'count'
+	if ('count' > 256 × 8)
+		return
+	append 'byte' to 'char rows'
+	if (length of 'char rows' = 8)
+		display 'char rows' at 'across' 'down' in 'window'
+		'char rows' : { }
+		increment 'across'
+		if ('across' = 16)
+			'across' : 0
+			add 8 to 'down'
+
+-----------------------------
+
 using files
-	'directory' : file directory "/Users/robert/Documents/AppleII/ROMS"
-	'video ROM' : open file "IIE.US#062000" in 'directory' for BINARY-READING
 	
+	set up #directory and #file :
+		#directory : file directory "/Users/robert/Documents/AppleII/ROMS"
+		#file : open file "IIE.US#062000" in #directory for BINARY-READING
+		
 using graphics
-	'window' : a graphics window
+	
+	set up #window :
+		#window : a graphics window
 
 	display 'character' at 'across' 'down' in 'window' :
 		'character', " across: ", 'across', " down: ", 'down' ↲
@@ -43,19 +74,4 @@ bits from 'value' :
 					'result'
 					
 -----------------------------
-'across' : 0
-'down' : 0
-'char rows' : { }
-'bytes' : bytes from 'video ROM'
 
-for each 'byte' in 'bytes' keeping 'count'
-	if ('count' > 256 × 8)
-		return
-	append 'byte' to 'char rows'
-	if (length of 'char rows' = 8)
-		display 'char rows' at 'across' 'down' in 'window'
-		'char rows' : { }
-		increment 'across'
-		if ('across' = 16)
-			'across' : 0
-			add 8 to 'down'
