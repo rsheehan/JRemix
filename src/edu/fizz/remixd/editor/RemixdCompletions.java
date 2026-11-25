@@ -267,8 +267,11 @@ public class RemixdCompletions {
         // none of the above, collect everything
         // strip off space/tabs at beginning
         word = new StringBuilder();
-    	if (line.charAt(posInLine - 1) == ' ') {
-            return "";
+    	while (posInLine == 0 || line.charAt(posInLine - 1) == ' ') {
+            if (posInLine == 0)
+                return "";
+            else
+                posInLine--;
         }
         while (posInLine > 0) {
             ch = line.charAt(--posInLine);

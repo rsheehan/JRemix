@@ -30,13 +30,6 @@ public class AutoIndent {
                 int selectionStart = textArea.getSelectionStart();
                 int selectionEnd = textArea.getSelectionEnd();
                 int caretPos;
-//                if (!AutoUtil.onlyInCodeSection(selectionStart,
-//                                                selectionEnd,
-//                                                caretPos,
-//                                                textArea)) {
-//                    return;
-//                }
-
                 int lengthToRemove = selectionEnd - selectionStart;
                 if (lengthToRemove > 0) {
                     caretPos = selectionStart;
@@ -56,14 +49,17 @@ public class AutoIndent {
                     StringBuilder textToInsert = new StringBuilder("\n");
                     tabsThisLine = AutoUtil.numberOfTabs(currentLine);
                     textToInsert.repeat("\t", Math.max(0, tabsThisLine + 1));
+                    int newPositionOfCaret = caretPos + 1 + tabsThisLine + 1;
                     // then if remaining text from the line add a newline and ellipsis
                     if (!restOfLine.equals("\n") && !restOfLine.isEmpty()) {
-                        textToInsert.append('\n');
+                        textToInsert.insert(0, "…");
+                        textToInsert.append("\n");
                         textToInsert.repeat("\t", Math.max(0, tabsThisLine));
                         textToInsert.append("…");
+                        newPositionOfCaret++;
                     }
                     textArea.replaceRange(textToInsert.toString(), caretPos, caretPos + lengthToRemove);
-                    textArea.setCaretPosition(caretPos + 1 + tabsThisLine + 1);
+                    textArea.setCaretPosition(newPositionOfCaret);
                     return;
                 }
                 StringBuilder newLineTabs = new StringBuilder("\n");

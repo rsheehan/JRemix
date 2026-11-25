@@ -20,7 +20,7 @@ PRINTLN				: ('\\n' | '↲') ;
 
 SPACE				: (' ' | '\t') -> channel(HIDDEN) ;
 CONT				: ( // also used to help deal with PreProcess output
-					'\n' '\t'* ELLIPSIS
+					('\n' '\t'*)+ ELLIPSIS
 					|
 					ELLIPSIS
 					) -> channel(HIDDEN) ;

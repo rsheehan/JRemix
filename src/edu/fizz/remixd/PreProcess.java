@@ -59,61 +59,62 @@ public class PreProcess {
             writer.write(ch);
             gobbleToEndOfCommentBlock(reader, writer);
             return true; // back and on to next line
-        } else if (ch == '\n') { // it was a blank line
-            writer.write(ch);
-            return true;
-        } else { // print all characters until either '\n' or ';'
-            // doesn't deal with ';' comment in first position on line
-            while (ch != '\n' && ch != ';') {
-                if (ch != 0) // coming back from ellipsis handling
-                    writer.write(ch);
-                if (ch == '"') {
-                    gobbleString(reader, writer);
-                }
-                ch = reader.read();
-                if (ch == -1) // end of the file so need to
-                    return finishFile(lineDepth, restOfLine.toString(), writer);
-                if (ch == '\n') {
-                    // this is the position we need to put block brackets if required
-                    restOfLine = new StringBuilder("\n");
-                    // if the following line starts with tabs and "..." then carry on
-                    // adding the following line to the current line output
-                    // after adding the new line to keep the line numbering for the editor
-                    // But doesn't work because the indentation of some lines starting
-                    // with an ellipsis is required to close a block.
-                    String possibleTabEllipsis = dealWithPossibleEllipsis(reader, lineDepth);
-                    if (!possibleTabEllipsis.isEmpty()) {
-                        restOfLine.append(possibleTabEllipsis);
-                        writer.write(restOfLine.toString());
-                        restOfLine = new StringBuilder();
-                        ch = 0; // just so it continues at the while
+        } else {
+            if (ch == '\n') { // it was a blank line
+                writer.write(ch);
+            } else { // print all characters until either '\n' or ';'
+                // doesn't deal with ';' comment in first position on line
+                while (ch != '\n' && ch != ';') {
+                    if (ch != 0) // coming back from ellipsis handling
+                        writer.write(ch);
+                    if (ch == '"') {
+                        gobbleString(reader, writer);
                     }
-                } else if (ch == ';') {
-                    // scan to end of the line keeping the string for writing later
-                    restOfLine = new StringBuilder(";");
-                    int commentCh;
-                    do {
-                        commentCh = reader.read();
-                        if (commentCh == -1) {
-                            return finishFile(lineDepth, restOfLine.toString(), writer); // another end of file
+                    ch = reader.read();
+                    if (ch == -1) // end of the file so need to
+                        return finishFile(lineDepth, restOfLine.toString(), writer);
+                    if (ch == '\n') {
+                        // this is the position we need to put block brackets if required
+                        restOfLine = new StringBuilder("\n");
+                        // if the following line starts with tabs and "..." then carry on
+                        // adding the following line to the current line output
+                        // after adding the new line to keep the line numbering for the editor
+                        // But doesn't work because the indentation of some lines starting
+                        // with an ellipsis is required to close a block.
+                        String possibleTabEllipsis = dealWithPossibleEllipsis(reader, lineDepth);
+                        if (!possibleTabEllipsis.isEmpty()) {
+                            restOfLine.append(possibleTabEllipsis);
+                            writer.write(restOfLine.toString());
+                            restOfLine = new StringBuilder();
+                            ch = 0; // just so it continues at the while
                         }
-                        restOfLine.append((char) commentCh);
-                    } while (commentCh != '\n');
+                    } else if (ch == ';') {
+                        // scan to end of the line keeping the string for writing later
+                        restOfLine = new StringBuilder(";");
+                        int commentCh;
+                        do {
+                            commentCh = reader.read();
+                            if (commentCh == -1) {
+                                return finishFile(lineDepth, restOfLine.toString(), writer); // another end of file
+                            }
+                            restOfLine.append((char) commentCh);
+                        } while (commentCh != '\n');
+                    }
                 }
+                // still need to print the rest of the line
+                // find the following indentation level
+                int tabCount = findFollowingIndentation(reader);
+                if (tabCount == -1) {
+                    return false;
+                }
+                if (tabCount == lineDepth + 1) {
+                    writer.write('['); // precede newline with '['
+                } else {
+                    closeBlocks(tabCount, lineDepth, writer);
+                }
+                // print the rest of the line e.g. in remaining comment
+                writer.write(restOfLine.toString());
             }
-            // still need to print the rest of the line
-            // find the following indentation level
-            int tabCount = findFollowingIndentation(reader);
-            if (tabCount == -1) {
-                return false;
-            }
-            if (tabCount == lineDepth + 1) {
-                writer.write('['); // precede newline with '['
-            } else {
-                closeBlocks(tabCount, lineDepth, writer);
-            }
-            // print the rest of the line e.g. in remaining comment
-            writer.write(restOfLine.toString());
             return true;
         }
     }
@@ -130,12 +131,20 @@ public class PreProcess {
     private static String dealWithPossibleEllipsis(BufferedReader reader, int prevLineTabs) throws IOException {
         reader.mark(1024); // so can reset to here
         int ch;
+        int tabCount = 0;
         StringBuilder tabEllipsis = new StringBuilder();
         scanner : while ((ch = reader.read()) != -1) {
             switch (ch) {
-                case '\t' -> tabEllipsis.append((char) ch);
+                case '\n' -> {
+                    tabEllipsis.append((char) ch);
+                    tabCount = 0;
+                }
+                case '\t' -> {
+                    tabEllipsis.append((char) ch);
+                    tabCount++;
+                }
                 case '…' -> {
-                    if (tabEllipsis.length() < prevLineTabs)
+                    if (tabCount < prevLineTabs)
                         break scanner;
                     tabEllipsis.append((char) ch);
                     return tabEllipsis.toString();

@@ -15,11 +15,11 @@ add the islands on 'the front layer'
 'user cloud' : a cloud
 place ('user cloud' parts) in 'the cloud layer'
 
-'the clouds' : 10 clouds in 'the cloud layer'
-animate 'the clouds' in 'the window'
-	
 when mouse pressed in 'the window' use 'position'
 	animate 'user cloud' towards ('position'{1})
+
+'the clouds' : 10 clouds in 'the cloud layer'
+animate 'the clouds' in 'the window'
 
 -============================================================================-
 
@@ -137,7 +137,7 @@ using graphics
 
 			move ME :
 				'left edge' : 'circleA' x-pos - 'circleA' radius
-				if ('left edge' < STD-WIDTH) ; ordinary move right
+				if ('left edge' < STD-WIDTH) … ; ordinary move right
 					for each 'part' in (MY parts)
 						change 'part' x-pos by 1
 				… otherwise ; wrap the cloud around the window
@@ -145,7 +145,7 @@ using graphics
 						change 'part' x-pos by -(STD-WIDTH + 'size')
 						
 			move ME 'direction' :
-				if ('direction')
+				if ('direction') … 
 					'move' : 1
 				… otherwise 
 					'move' : -1
@@ -153,15 +153,17 @@ using graphics
 					change 'part' x-pos by 'move'
 	
 			animate ME towards 'x-pos' :
-				animate at 60 ticks per second
+				animate at 60 ticks per second … 
+					
 					'cloud pos' : 'circleA' x-pos
-					if ('cloud pos' < 'x-pos')
+					if ('cloud pos' < 'x-pos') … 
 						move ME RIGHT
 					… otherwise 
 						move ME LEFT
+					
 				… until [all of {
 					['cloud pos' > 'x-pos' - 2]
 					['cloud pos' < 'x-pos' + 2]
 				}]
-		
+
 -============================================================================-
