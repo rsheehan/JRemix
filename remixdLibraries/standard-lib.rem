@@ -813,6 +813,12 @@ The absolute value of 'number'.
 	abs 'number'
 
 =-
+Whether the 'number' is within 1 of 'other'.
+=-
+'number' close to 'other' :
+	| ('other' - 'number') | < 1
+	
+=-
 Is 'number' divisible by 'div'?
 =-
 'number' is divisible by 'div' :

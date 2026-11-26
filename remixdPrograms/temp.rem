@@ -1,13 +1,8 @@
-			animate ME towards 'x-pos' :
-				animate at 60 ticks per second …
-
-					'cloud pos' : 'circleA' x-pos
-					if ('cloud pos' < 'x-pos') …
-						move ME RIGHT
-					… otherwise
-						move ME LEFT
-
-				… until [all of {
-					['cloud pos' > 'x-pos' - 2]
-					['cloud pos' < 'x-pos' + 2]
-				}]
+move ME :
+	'left edge' : 'circleA' x-pos - 'circleA' radius
+	if ('left edge' < STD-WIDTH) ; ordinary move right
+		for each 'part' in (MY parts)
+			"PART ", 'part' ↲
+	… otherwise ; wrap the cloud around the window
+		for each 'part' in (MY parts)
+			change 'part' x-pos by -(STD-WIDTH + 'size')

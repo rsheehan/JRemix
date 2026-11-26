@@ -22,6 +22,7 @@ public class MethodTable extends HashMap<String, Method> {
     public Method createGetter(String varName, String fileName) {
         // add a getter to the method table
         MethodName methodSig = new MethodName();
+        methodSig.addToName("/get");
         methodSig.setSelfRefNow();
         methodSig.addToName(varName);
         Block block = new Block();

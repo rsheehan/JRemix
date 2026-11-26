@@ -65,7 +65,7 @@ library "edu.fizz.remixd.libraries.Graphics"
 	Create an 'n' sided polygon.
 	=-
 	a/an 'n' sided polygon :
-		'points' : { }
+		'points' : {}
 		for each 'side' from 0 to ('n' - 1)
 			append {
 				cosine (2π × 'side' ÷ 'n')
@@ -229,7 +229,7 @@ library "edu.fizz.remixd.libraries.Graphics"
 -==================================================================================================-
 
 	===========================================================
-	The Remix 'panel' for drawing in.
+	The Remix 'panel' for drawing.
 	It has a base layer which is an image for permanent shapes,
 	and multiple layers for animation on top of that.
 
@@ -339,8 +339,8 @@ library "edu.fizz.remixd.libraries.Graphics"
 			
 			=-
 			Set up a mouse button pressed action.
-			When the mouse button is pressed in the panel 'OBJECT' the 'position' gets filled in
-			with the current mouse position and the 'block' is executed.
+			When the mouse button is pressed in the panel 'OBJECT' the 'position' gets
+			filled in with the current mouse position and the 'block' is executed.
 			Normally the 'block' will use the 'position' variable.
 			=-
 			when mouse pressed in ME use #position ['block'] :
@@ -373,7 +373,7 @@ library "edu.fizz.remixd.libraries.Graphics"
 	a shape layer :
 		create
 			'type' : "Shape Layer"
-			'shapes' : { }
+			'shapes' : {}
 
 			getter
 				'shapes'
@@ -392,7 +392,7 @@ library "edu.fizz.remixd.libraries.Graphics"
 			Clear all shapes from the shape layer 'OBJECT'.
 			=-
 			clear MY shapes :
-				'shapes' : { }
+				'shapes' : {}
 
 			=-
 			Prepare and show the shapes of the shape layer 'OBJECT' on the
@@ -418,7 +418,7 @@ library "edu.fizz.remixd.libraries.Graphics"
 			Returns an empty list.
 			=-
 			MY shapes : ; a getter for shapes which are not stored
-				{ }
+				{}
 
 			=-
 			Place a 'shape' in the base layer 'OBJECT'.
@@ -481,5 +481,21 @@ library "edu.fizz.remixd.libraries.Graphics"
 			update 'the window'
 			decrement 'number'
 		… until ['number' < 1]
+
+	=-
+	Tries to animate the 'action' at 'n' ticks per second, stopping when 'completed'.
+	Only allows one such animation at a time based on the 'busy' variable.
+	'busy' must be initialised to false before this is first called.
+	=-
+	exclusive #busy at 'n' ticks per second ['action'] until ['completed'] :
+		if #busy
+			return
+		#busy : true
+		animate at 'n' ticks per second …
+			do 'action'
+		… until
+			if 'completed'
+				#busy : false
+			not #busy
 
 -==================================================================================================-

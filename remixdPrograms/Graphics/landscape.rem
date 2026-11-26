@@ -18,7 +18,7 @@ place ('user cloud' parts) in 'the cloud layer'
 when mouse pressed in 'the window' use 'position'
 	animate 'user cloud' towards ('position'{1})
 
-'the clouds' : 10 clouds in 'the cloud layer'
+'the clouds' : add 10 clouds to 'the cloud layer'
 animate 'the clouds' in 'the window'
 
 -============================================================================-
@@ -28,6 +28,9 @@ using graphics
 	LEFT : false
 	RIGHT : true
 
+	=-
+	Sets up and fills in the graphics 'window'.
+	=-
 	prepare #window :
 		#window : a graphics window
 		#window colour SKY-BLUE
@@ -41,37 +44,38 @@ using graphics
 			'mountain' : a DARK-GREY mountain with BLACK edges
 											… of height 300 based at 600
 			place 'mountain' in 'the layer'
-
+			
 	add the sea on 'the layer' :
 		'sea' : a DARK-BLUE box of STD-WIDTH x 200 at {
 			STD-WIDTH ÷ 2
 			STD-HEIGHT - 100
 		}
 		place 'sea' in 'the layer'
-
+		
 	add the islands on 'the layer' :
 		for each 'location' from 650 to 680 in steps of 3
 			'island' : a GREY mountain with WHITE edges
 				… of height 250 based at 'location'
 			place 'island' in 'the layer'
-
-	'n' clouds in 'the layer' :
+			
+	add 'n' clouds to 'the layer' : ; returns the list of clouds
 		apply
 			'cloud' : a cloud
 			place ('cloud' parts) in 'the layer'
 			'cloud'
 		… 'n' times
-
+		
 	animate 'the clouds' in 'the window' :
-		animate 'the window' 600 times at 30 ticks per second
+		animate 'the window' 300 times at 30 ticks per second
 			for each 'cloud' in 'the clouds'
 				move 'cloud'
-
+	
 	=
 	A mountain is an isosceles triangle.
 	=
 	a 'colour' mountain with 'outline colour' edges
 		… of height 'max height' based at 'level' :
+			
 		'centre' : random STD-WIDTH
 		'height' : random 'max height' + 20
 		'width'  : random 150 + 300
@@ -91,10 +95,11 @@ using graphics
 	returned from "MY parts".
 
 	When animated the "move ME" method changes the positions of all the parts.
-	The "move ME" also wraps the cloud around when it passes off the window.
 	=
 	a cloud :
+		
 		- setting up the object’s field values
+		
 		'base'   : random (STD-HEIGHT - 200)
 		'across' : random STD-WIDTH
 		'r1' : random 10 + 30
@@ -125,45 +130,64 @@ using graphics
 		'line' width 2
 
 		- creating the object
+		
 		create 'circleA', 'circleB', 'box', 'line'
-			- these are fields
+		
+			- these are fields and include those variables on the create line
+			
 			'type' : "Cloud"
 			'size' : 'circleA' radius + 'circleB' radius + 
 										… 'circleB' x-pos - 'circleA' x-pos
-
-			- these are methods
+			'move to mouse' : false
+			
+			- methods follow
+			
+			=-
+			Return all of the parts of the cloud 'OBJECT'.
+			=-
 			MY parts :
 				{ 'circleA', 'circleB', 'box', 'line' }
-
+				
+			=-
+			Move the cloud 'OBJECT' one step to the right.
+			Wraps the cloud around to the left side of the window when it goes off the right.
+			=-
 			move ME :
 				'left edge' : 'circleA' x-pos - 'circleA' radius
-				if ('left edge' < STD-WIDTH) … ; ordinary move right
+				if ('left edge' < STD-WIDTH) ; ordinary move right
 					for each 'part' in (MY parts)
 						change 'part' x-pos by 1
 				… otherwise ; wrap the cloud around the window
 					for each 'part' in (MY parts)
 						change 'part' x-pos by -(STD-WIDTH + 'size')
-						
+			
+			=-
+			Move the cloud 'OBJECT' in the 'direction'.
+			LEFT is false. RIGHT is true.
+			=-
 			move ME 'direction' :
-				if ('direction') … 
+				if ('direction')
 					'move' : 1
 				… otherwise 
 					'move' : -1
 				for each 'part' in (MY parts)
 					change 'part' x-pos by 'move'
-	
+			
+			=-
+			Start animating the cloud 'OBJECT' towards the 'x-pos' position.
+			The animation stops when the cloud reaches the position.
+			=-
 			animate ME towards 'x-pos' :
-				animate at 60 ticks per second … 
-					
-					'cloud pos' : 'circleA' x-pos
-					if ('cloud pos' < 'x-pos') … 
+				exclusive 'move to mouse' at 60 ticks per second … 
+				
+					'left' : 'line' start
+					'right' : 'line' finish
+					'cloud pos' : average of { 'left'{1}, 'right'{1} }
+					if ('cloud pos' < 'x-pos')
 						move ME RIGHT
 					… otherwise 
 						move ME LEFT
-					
-				… until [all of {
-					['cloud pos' > 'x-pos' - 2]
-					['cloud pos' < 'x-pos' + 2]
-				}]
+						
+				… until ['cloud pos' close to 'x-pos']
 
 -============================================================================-

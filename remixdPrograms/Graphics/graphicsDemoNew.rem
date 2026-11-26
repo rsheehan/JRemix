@@ -1,16 +1,11 @@
+
 using graphics
-	'squares rotation' : every 1 tick
-		for each 'square' in ('square layer' shapes)
-			change 'square' heading by 2 degrees
-
-	'arrows movement' : every 2 ticks
-		for each 'arrow' in ('arrow layer' shapes)
-			change 'arrow' x-pos by 5
-
+	
 	'window' : a graphics window
+
 	'arrow layer' : 'window' next layer
 	'square layer' : 'window' next layer
-
+	
 	repeat
 		'shape' : a square
 		'shape' colour    (random colour)
@@ -31,5 +26,13 @@ using graphics
 		animate 'arrows movement'
 		update 'window'
 	… until [ 'arrow' x-pos ≥ STD-WIDTH ]
+	
+	'squares rotation' : every 1 tick
+		for each 'square' in ('square layer' shapes)
+			change 'square' heading by 2 degrees
+
+	'arrows movement' : every 2 ticks
+		for each 'arrow' in ('arrow layer' shapes)
+			change 'arrow' x-pos by 5
 
 "Finished" ↲

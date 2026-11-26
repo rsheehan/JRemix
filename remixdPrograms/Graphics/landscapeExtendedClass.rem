@@ -1,0 +1,214 @@
+=====================
+ A landscape program
+=====================
+prepare 'the window'
+
+'the back layer'  : 'the window' base layer
+'the cloud layer' : 'the window' next layer
+'the front layer' : 'the window' next layer
+	
+add the sun on 'the back layer'
+add the mountains on 'the back layer'
+add the sea on 'the back layer'
+add the islands on 'the front layer'
+
+'user cloud' : user controlled cloud
+add 'user cloud' to 'the cloud layer' layer
+
+when mouse pressed in 'the window' use 'position'
+	animate 'user cloud' towards ('position'{1})
+
+'the clouds' : 10 clouds
+for each 'cloud' in 'the clouds'
+	add 'cloud' to 'the cloud layer' layer
+animate 'the clouds' in 'the window'
+
+-============================================================================-
+
+using graphics
+	
+	LEFT : false
+	RIGHT : true
+
+	=-
+	Sets up and fills in the graphics 'window'.
+	=-
+	prepare #window :
+		#window : a graphics window
+		#window colour SKY-BLUE
+
+	add the sun on 'the layer' :
+		'sun' : a YELLOW circle of radius 40 at {800, 100}
+		place 'sun' in 'the layer'
+		
+	add the mountains on 'the layer' :
+		repeat 20 times
+			'mountain' : a DARK-GREY mountain with BLACK edges
+											… of height 300 based at 600
+			place 'mountain' in 'the layer'
+			
+	add the sea on 'the layer' :
+		'sea' : a DARK-BLUE box of STD-WIDTH x 200 at {
+			STD-WIDTH ÷ 2
+			STD-HEIGHT - 100
+		}
+		place 'sea' in 'the layer'
+		
+	add the islands on 'the layer' :
+		for each 'location' from 650 to 680 in steps of 3
+			'island' : a GREY mountain with WHITE edges
+				… of height 250 based at 'location'
+			place 'island' in 'the layer'
+			
+	=
+	A mountain is an isosceles triangle.
+	=
+	a 'colour' mountain with 'outline colour' edges
+		… of height 'max height' based at 'level' :
+			
+		'centre' : random STD-WIDTH
+		'height' : random 'max height' + 20
+		'width'  : random 150 + 300
+		'mountain' : a 'colour' shape from {
+			{ 0, -'height' }
+			{ 'width' ÷ 2, 0 }
+			{ -'width' ÷ 2, 0 }
+		} scaled by 1 at { 'centre', 'level' }
+		'mountain' outline colour 'outline colour'
+		'mountain'
+	
+	'n' clouds : ; returns the list of clouds
+		apply
+			a cloud
+		… 'n' times
+		
+	animate 'the clouds' in 'the window' :
+		animate 'the window' 300 times at 30 ticks per second
+			for each 'cloud' in 'the clouds'
+				move 'cloud'
+	
+	==========================================================================
+	A cloud is a composite object comprising of two circles, a rectangle
+	and a line.
+
+	Each part is added separately to the same window layer using the list
+	returned from "MY parts".
+
+	When animated the "move ME" method changes the positions of all the parts.
+	==========================================================================
+	a cloud :
+		
+		- setting up the object’s field values
+		
+		'base'   : random (STD-HEIGHT - 200)
+		'across' : random STD-WIDTH
+		'r1' : random 10 + 30
+		'r2' : random 10 + 20
+		'distance' : 10
+		if ('r1' > 'r2') ; bigger circle to the right
+			'r1' swap 'r2'
+
+		'x1' : ('across' - 'r1') + 'distance'
+		'x2' : ('across' + 'r2') - 'distance'
+		'y1' : 'base' - 'r1'
+		'y2' : 'base' - 'r2'
+
+		'circleA' : a WHITE circle of radius 'r1' at { 'x1', 'y1' }
+		'circleA' outline colour BLACK
+		'circleB' : a WHITE circle of radius 'r2' at { 'x2', 'y2' }
+		'circleB' outline colour BLACK
+
+		'width' : 'x2' - 'x1'
+		'height' : 'y1' - 'y2' + 'r1'
+		'position' : {
+			('x1' + 'x2') ÷ 2
+			('y1' + 'r1' + 'y2' + 1) ÷ 2
+		}
+
+		'box' : a WHITE box of 'width' x 'height' at 'position'
+		'line' : a BLACK line from { 'x1', 'y1' + 'r1' } to { 'x2', 'y1' + 'r1' }
+		'line' width 2
+
+		- creating the object
+		
+		create 'circleA', 'circleB', 'box', 'line'
+		
+			- these are fields and include those variables on the create line
+			
+			'type' : "Cloud"
+			'size' : 'circleA' radius + 'circleB' radius + 
+										… 'circleB' x-pos - 'circleA' x-pos
+			'position' : average of { 'x1', 'x2' }
+			'move to mouse' : false
+			
+			getter
+				'line'
+			
+			- methods follow
+			
+			=-
+			Return all of the parts of the cloud 'OBJECT'.
+			=-
+			MY parts :
+				{ 'circleA', 'circleB', 'box', 'line' }
+			
+			=-
+			Add the cloud 'OBJECT' to 'the layer'.
+			=-
+			add ME to 'the layer' layer :
+				place (MY parts) in 'the layer'
+				
+			=-
+			Move the cloud 'OBJECT' one step to the right.
+			Wraps the cloud around to the left side of the window when it goes off the right.
+			=-
+			move ME :
+				'left edge' : 'circleA' x-pos - 'circleA' radius
+				if ('left edge' < STD-WIDTH)
+					for each 'part' in (MY parts)
+						change 'part' x-pos by 1
+				… otherwise ; wrap the cloud around the window
+					for each 'part' in (MY parts)
+						change 'part' x-pos by -(STD-WIDTH + 'size')
+
+	=
+	A user controlled cloud is a specialised cloud which reacts
+	to mouse presses.
+	=
+	user controlled cloud :
+		'cloud' : a cloud
+		'start' : ('cloud' line) start
+		'finish' : ('cloud' line) finish
+
+		extend 'cloud'
+			'position' : average of { 'start'{1}, 'finish'{1} }
+				
+			=-
+			Move the user controlled cloud 'OBJECT' in the 'direction'.
+			LEFT is false. RIGHT is true.
+			=-
+			move ME 'direction' :
+				if ('direction')
+					'move' : 1
+					increment 'position'
+				… otherwise 
+					'move' : -1
+					decrement 'position'
+				for each 'part' in (MY parts)
+					change 'part' x-pos by 'move'
+			
+			=-
+			Start animating the user controlled cloud 'OBJECT' towards the 'x-pos' position.
+			The animation stops when the cloud reaches the position.
+			=-
+			animate ME towards 'x-pos' :
+				exclusive 'move to mouse' at 60 ticks per second … 
+				
+					if ('position' < 'x-pos')
+						move ME RIGHT
+					… otherwise 
+						move ME LEFT
+						
+				… until ['position' close to 'x-pos']
+			
+-============================================================================-
